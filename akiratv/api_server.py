@@ -187,12 +187,6 @@ def play_now(channel: str, request: PlayNowRequest):
     api = get_core_api()
     result = api.play_now(channel, request.video_path)
     if result["success"]:
-        # Broadcast to websocket clients
-        asyncio.create_task(broadcast_event({
-            "type": "video_queued",
-            "channel": channel,
-            "video": request.video_path
-        }))
         return Response(success=True, message=result["message"])
     else:
         raise HTTPException(status_code=400, detail=result["error"])
@@ -361,21 +355,9 @@ async def broadcast_event(event: Dict[str, Any]):
 # Register event handlers to broadcast via WebSocket
 def setup_event_handlers():
     """Setup event handlers for broadcasting"""
-    api = get_core_api()
-    events = [
-        "engine_started",
-        "engine_stopped",
-        "channel_enabled",
-        "channel_disabled",
-        "video_queued",
-        "schedule_reloaded",
-        "config_updated"
-    ]
-    
-    for event in events:
-        api.on(event, lambda data, evt=event: asyncio.create_task(
-            broadcast_event({"type": evt, "data": data})
-        ))
+    # Simplified: No WebSocket broadcasting for now to avoid async issues
+    # The web UI will refresh data through regular API calls
+    pass
 
 # Setup on startup
 @app.on_event("startup")

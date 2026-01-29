@@ -234,13 +234,16 @@ body {
 .channel-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .channel-name {
     font-size: 18px;
     font-weight: 600;
+    flex: 1;
 }
 
 .channel-type {
@@ -249,6 +252,68 @@ body {
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
+}
+
+.channel-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border);
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: var(--text-secondary);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+    background-color: white;
+}
+
+.toggle-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .channel-type.linear {
@@ -416,4 +481,170 @@ body {
     .channels-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Add Channel Form */
+.add-channel-form {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.add-channel-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.add-channel-input .input {
+    flex: 1;
+    max-width: 300px;
+}
+
+.add-channel-help {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 10% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 18px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-body p {
+    margin: 0 0 20px 0;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.channel-type-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.channel-type-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-tertiary);
+}
+
+.channel-type-option:hover {
+    border-color: var(--accent);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.channel-type-option input[type="radio"] {
+    margin-right: 15px;
+    transform: scale(1.2);
+}
+
+.option-content {
+    flex: 1;
+}
+
+.option-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.option-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.channel-type-option input[type="radio"]:checked + .option-content .option-title {
+    color: var(--accent);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 25px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-primary);
+    border-radius: 0 0 12px 12px;
 }

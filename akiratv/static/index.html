@@ -70,9 +70,64 @@
         <!-- Channels Section -->
         <div class="section">
             <div class="section-title">📺 Channels</div>
+            
+            <!-- Add Channel Form -->
+            <div class="add-channel-form">
+                <div class="add-channel-input">
+                    <input type="text" class="input" id="newChannelName" placeholder="Enter channel name..." maxlength="50">
+                    <button class="btn btn-primary" onclick="showAddChannelModal()">+ Add Channel</button>
+                </div>
+                <div class="add-channel-help">
+                    Use only letters, numbers, hyphens (-), and underscores (_)
+                </div>
+            </div>
+            
             <div class="channels-grid" id="channelsGrid">
                 <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
                     <div class="loading"></div> Loading channels...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Channel Modal -->
+        <div class="modal" id="addChannelModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Select Channel Type</h3>
+                    <button class="modal-close" onclick="hideAddChannelModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>What type of channel is '<span id="modalChannelName"></span>'?</p>
+                    
+                    <div class="channel-type-options">
+                        <label class="channel-type-option">
+                            <input type="radio" name="channelType" value="linear" checked>
+                            <div class="option-content">
+                                <div class="option-title">📺 Linear</div>
+                                <div class="option-description">Scheduled programming from schedule.json files</div>
+                            </div>
+                        </label>
+                        
+                        <label class="channel-type-option">
+                            <input type="radio" name="channelType" value="vod">
+                            <div class="option-content">
+                                <div class="option-title">🎬 VOD</div>
+                                <div class="option-description">On-demand, play videos via API/UI</div>
+                            </div>
+                        </label>
+                        
+                        <label class="channel-type-option">
+                            <input type="radio" name="channelType" value="dynamic">
+                            <div class="option-content">
+                                <div class="option-title">🔄 Dynamic</div>
+                                <div class="option-description">Standby loop + VOD interruptions + optional schedule</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="hideAddChannelModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="createChannel()">Create Channel</button>
                 </div>
             </div>
         </div>

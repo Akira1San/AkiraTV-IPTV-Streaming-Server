@@ -13,14 +13,23 @@ async function init() {
 }
 
 // API Calls
-async function apiCall(endpoint, method = 'GET', body = null) {
+async function apiCall(endpoint, method = 'GET', body = null, params = null) {
     const options = {
         method,
         headers: { 'Content-Type': 'application/json' }
     };
-    if (body) options.body = JSON.stringify(body);
+    
+    let url = `${API_BASE}${endpoint}`;
+    
+    // Handle URL parameters for POST requests (like form data)
+    if (method === 'POST' && params) {
+        const urlParams = new URLSearchParams(params);
+        url += `?${urlParams.toString()}`;
+    } else if (body) {
+        options.body = JSON.stringify(body);
+    }
 
-    const response = await fetch(`${API_BASE}${endpoint}`, options);
+    const response = await fetch(url, options);
     return response.json();
 }
 
@@ -73,7 +82,6 @@ async function loadChannels() {
 
         grid.innerHTML = channels.map(ch => {
             const urlData = getChannelUrl(ch.name);
-            const enabledBadge = ch.enabled ? '✅ Enabled' : '❌ Disabled';
             const statusColor = ch.status === 'running' ? 'var(--success)' : 'var(--text-secondary)';
             
             return `
@@ -81,10 +89,17 @@ async function loadChannels() {
                     <div class="channel-header">
                         <div class="channel-name">${ch.name}</div>
                         <div class="channel-type ${ch.type}">${ch.type}</div>
+                        <div class="channel-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${ch.enabled ? 'checked' : ''} 
+                                       onchange="toggleChannel('${ch.name}', this.checked)">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">${ch.enabled ? 'Enabled' : 'Disabled'}</span>
+                        </div>
                     </div>
                     <div class="channel-info">
                         Status: <strong style="color: ${statusColor}">${ch.status}</strong><br>
-                        ${enabledBadge}<br>
                         Type: ${ch.type.toUpperCase()}
                     </div>
                     ${ch.enabled ? `
@@ -100,7 +115,7 @@ async function loadChannels() {
                         ` : ''}
                     ` : `
                         <div style="text-align: center; padding: 10px; color: var(--text-secondary); font-size: 12px;">
-                            Channel disabled in config
+                            Channel disabled - enable to access streaming URL
                         </div>
                     `}
                 </div>
@@ -217,6 +232,92 @@ async function playNow(channel) {
         }
     } catch (error) {
         showToast('Failed to play video', 'error');
+    }
+}
+
+// Channel Enable/Disable Toggle
+async function toggleChannel(channelName, enabled) {
+    try {
+        const endpoint = enabled ? `/api/channels/${channelName}/enable` : `/api/channels/${channelName}/disable`;
+        const result = await apiCall(endpoint, 'POST');
+        
+        if (result.success) {
+            showToast(`Channel ${channelName} ${enabled ? 'enabled' : 'disabled'}`, 'success');
+            // Reload channels to update the UI
+            await loadChannels();
+        } else {
+            showToast(result.error || `Failed to ${enabled ? 'enable' : 'disable'} channel`, 'error');
+            // Revert the toggle on error
+            await loadChannels();
+        }
+    } catch (error) {
+        showToast(`Failed to ${enabled ? 'enable' : 'disable'} channel`, 'error');
+        // Revert the toggle on error
+        await loadChannels();
+    }
+}
+
+// Add Channel Modal Functions
+function showAddChannelModal() {
+    const channelName = document.getElementById('newChannelName').value.trim();
+    
+    if (!channelName) {
+        showToast('Enter a channel name first', 'error');
+        return;
+    }
+    
+    // Validate channel name
+    if (!channelName.replace(/_/g, '').replace(/-/g, '').match(/^[a-zA-Z0-9]+$/)) {
+        showToast('Use only letters, numbers, hyphens (-), and underscores (_)', 'error');
+        return;
+    }
+    
+    // Set the channel name in the modal
+    document.getElementById('modalChannelName').textContent = channelName;
+    
+    // Reset radio buttons to linear
+    document.querySelector('input[name="channelType"][value="linear"]').checked = true;
+    
+    // Show modal
+    document.getElementById('addChannelModal').style.display = 'block';
+}
+
+function hideAddChannelModal() {
+    document.getElementById('addChannelModal').style.display = 'none';
+}
+
+async function createChannel() {
+    const channelName = document.getElementById('newChannelName').value.trim();
+    const selectedType = document.querySelector('input[name="channelType"]:checked').value;
+    
+    try {
+        const result = await apiCall('/api/channels', 'POST', null, {
+            channel_name: channelName,
+            channel_type: selectedType
+        });
+        
+        if (result.success) {
+            showToast(`Channel '${channelName}' created successfully as ${selectedType.toUpperCase()} type!`, 'success');
+            
+            // Clear the input and hide modal
+            document.getElementById('newChannelName').value = '';
+            hideAddChannelModal();
+            
+            // Reload channels to show the new one
+            await loadChannels();
+        } else {
+            showToast(result.error || 'Failed to create channel', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to create channel', 'error');
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('addChannelModal');
+    if (event.target === modal) {
+        hideAddChannelModal();
     }
 }
 

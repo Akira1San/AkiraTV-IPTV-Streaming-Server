@@ -120,6 +120,16 @@
         "bitrate": "1500k"
       },
       "enable_subtitles": false
+    },
+    "critters": {
+      "enabled": true
+    },
+    "testme": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
     }
   },
   "worker": {
