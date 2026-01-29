@@ -69,7 +69,7 @@ async function updateStatus() {
 // Load Channels
 async function loadChannels() {
     try {
-        // Load both channels and global config
+        // Load channels and config first
         const [channelsData, configData] = await Promise.all([
             apiCall('/api/channels'),
             apiCall('/api/config')
@@ -81,6 +81,26 @@ async function loadChannels() {
         
         console.log('📺 Loaded channels:', channels);
         
+        // Try to load proper URLs, but don't fail if it doesn't work
+        let channelUrls = {};
+        try {
+            const urlsData = await apiCall('/api/channels/urls');
+            channelUrls = urlsData.channels || {};
+            console.log('🔗 Channel URLs:', channelUrls);
+        } catch (error) {
+            console.warn('Could not load channel URLs, using fallback:', error);
+            // Use fallback URL generation
+            channels.forEach(ch => {
+                if (ch.enabled) {
+                    channelUrls[ch.name] = {
+                        lan: {
+                            stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`
+                        }
+                    };
+                }
+            });
+        }
+        
         document.getElementById('channelsCount').textContent = channels.length;
 
         if (channels.length === 0) {
@@ -89,12 +109,14 @@ async function loadChannels() {
         }
 
         grid.innerHTML = channels.map(ch => {
-            const urlData = getChannelUrl(ch.name);
             const statusColor = ch.status === 'running' ? 'var(--success)' : 'var(--text-secondary)';
             
             // Get current transcoding and subtitle settings
             const transcodingSetting = getChannelTranscodingSetting(ch.name);
             const subtitlesSetting = getChannelSubtitlesSetting(ch.name);
+            
+            // Get proper URLs for this channel (with fallback)
+            const urls = channelUrls[ch.name] || {};
             
             return `
                 <div class="channel-card" style="${ch.enabled ? '' : 'opacity: 0.6;'}">
@@ -144,10 +166,7 @@ async function loadChannels() {
                     </div>
                     
                     ${ch.enabled ? `
-                        <div class="channel-url">
-                            <span style="overflow: hidden; text-overflow: ellipsis;">${urlData}</span>
-                            <button class="copy-btn" onclick="copyToClipboard('${urlData}')">Copy</button>
-                        </div>
+                        ${generateChannelUrls(ch.name, urls)}
                         ${ch.type !== 'linear' ? `
                             <div class="channel-controls">
                                 <button class="btn btn-danger btn-small" onclick="stopChannel('${ch.name}')">⏹️ Stop Current Video</button>
@@ -170,8 +189,60 @@ async function loadChannels() {
     }
 }
 
+function generateChannelUrls(channelName, urls) {
+    if (!urls || Object.keys(urls).length === 0) {
+        // Fallback to a basic URL
+        const fallbackUrl = `http://192.168.50.183:8081/hls/${channelName}/index.m3u8`;
+        return `<div class="channel-url">
+            <div class="url-label">📺 Stream:</div>
+            <span style="overflow: hidden; text-overflow: ellipsis;">${fallbackUrl}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${fallbackUrl}')">Copy</button>
+        </div>`;
+    }
+    
+    let urlsHtml = '';
+    
+    // LAN URL
+    if (urls.lan && urls.lan.stream) {
+        urlsHtml += `
+            <div class="channel-url">
+                <div class="url-label">📺 LAN Stream:</div>
+                <span style="overflow: hidden; text-overflow: ellipsis;">${urls.lan.stream}</span>
+                <button class="copy-btn" onclick="copyToClipboard('${urls.lan.stream}')">Copy</button>
+            </div>
+        `;
+    }
+    
+    // Tailscale URL
+    if (urls.tailscale && urls.tailscale.stream) {
+        urlsHtml += `
+            <div class="channel-url">
+                <div class="url-label">🌐 Tailscale Stream:</div>
+                <span style="overflow: hidden; text-overflow: ellipsis;">${urls.tailscale.stream}</span>
+                <button class="copy-btn" onclick="copyToClipboard('${urls.tailscale.stream}')">Copy</button>
+            </div>
+        `;
+    }
+    
+    // Ngrok URL (if configured)
+    if (urls.ngrok && urls.ngrok.stream) {
+        urlsHtml += `
+            <div class="channel-url">
+                <div class="url-label">🌍 Ngrok Stream:</div>
+                <span style="overflow: hidden; text-overflow: ellipsis;">${urls.ngrok.stream}</span>
+                <button class="copy-btn" onclick="copyToClipboard('${urls.ngrok.stream}')">Copy</button>
+            </div>
+        `;
+    }
+    
+    return urlsHtml || `<div class="channel-url">
+        <span style="color: var(--text-secondary);">URLs not available</span>
+    </div>`;
+}
+
 // Get Channel URL
 function getChannelUrl(channel) {
+    // This will be replaced by the proper URLs from the API
     const port = window.location.port || '8080';
     const host = window.location.hostname;
     return `http://${host}:${port}/hls/${channel}/index.m3u8`;

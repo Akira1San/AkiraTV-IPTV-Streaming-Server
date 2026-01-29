@@ -445,10 +445,20 @@ input:checked + .toggle-slider:before {
     font-family: 'Courier New', monospace;
     color: var(--accent);
     word-break: break-all;
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.url-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 11px;
+    min-width: 120px;
+    flex-shrink: 0;
 }
 
 .copy-btn {

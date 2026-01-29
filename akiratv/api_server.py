@@ -228,6 +228,80 @@ def get_channel_url(channel: str):
         raise HTTPException(status_code=400, detail=urls["error"])
     return urls
 
+@app.get("/api/channels/urls")
+def get_all_channel_urls():
+    """Get streaming URLs for all enabled channels with LAN, Ngrok, and Tailscale variants"""
+    try:
+        import socket
+        from pathlib import Path
+        
+        api = get_core_api()
+        config = api.get_config()
+        
+        # Get HTTP server configuration
+        http_conf = config.get("output", {}).get("http", {})
+        port = http_conf.get("port", 8081)
+        bind = http_conf.get("bind", "127.0.0.1")
+        
+        # Determine local IP
+        if bind == "0.0.0.0":
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect(("8.8.8.8", 80))
+                local_ip = s.getsockname()[0]
+                s.close()
+            except:
+                local_ip = "127.0.0.1"
+        else:
+            local_ip = bind
+        
+        # Try to detect Tailscale IP
+        tailscale_ip = None
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("100.100.100.100", 1))  # Tailscale network dummy IP
+            tailscale_ip = s.getsockname()[0]
+            s.close()
+        except:
+            pass
+        
+        # Get enabled channels
+        channels = api.get_channels()
+        enabled_channels = [ch for ch in channels if ch.enabled]
+        
+        channel_urls = {}
+        
+        for channel in enabled_channels:
+            channel_name = channel.name
+            urls = {
+                "lan": {
+                    "stream": f"http://{local_ip}:{port}/hls/{channel_name}/index.m3u8",
+                    "epg": f"http://{local_ip}:{port}/xmltv.xml"
+                }
+            }
+            
+            # Add Tailscale URLs if available
+            if tailscale_ip and tailscale_ip != local_ip:
+                urls["tailscale"] = {
+                    "stream": f"http://{tailscale_ip}:{port}/hls/{channel_name}/index.m3u8",
+                    "epg": f"http://{tailscale_ip}:{port}/xmltv.xml"
+                }
+            
+            # Note: Ngrok URL would need to be configured or detected
+            # For now, we'll leave it as a placeholder that can be configured
+            
+            channel_urls[channel_name] = urls
+        
+        return {
+            "channels": channel_urls,
+            "local_ip": local_ip,
+            "port": port,
+            "tailscale_ip": tailscale_ip
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get channel URLs: {str(e)}")
+
 @app.post("/api/channels/{channel}/play", response_model=Response)
 def play_now(channel: str, request: PlayNowRequest):
     """Play video on VOD/Dynamic channel"""
