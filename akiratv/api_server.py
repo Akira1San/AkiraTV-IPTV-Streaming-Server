@@ -29,7 +29,7 @@ class ConfigUpdateRequest(BaseModel):
 class ChannelUpdateRequest(BaseModel):
     enabled: Optional[bool] = None
     transcoding: Optional[str] = None  # "global" | "enabled" | "disabled"
-    subtitles: Optional[str] = None
+    subtitles: Optional[str] = None    # "global" | "enabled" | "disabled"
 
 class Response(BaseModel):
     success: bool
@@ -169,6 +169,53 @@ def disable_channel(channel: str):
     result = api.disable_channel(channel)
     if result["success"]:
         return Response(success=True, message=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["error"])
+
+@app.patch("/api/channels/{channel}", response_model=Response)
+def update_channel_settings(channel: str, request: ChannelUpdateRequest):
+    """Update channel-specific settings (transcoding, subtitles)"""
+    api = get_core_api()
+    
+    # Get current config
+    config = api.get_config()
+    channels_config = config.get("channels", {})
+    
+    if channel not in channels_config:
+        raise HTTPException(status_code=404, detail=f"Channel '{channel}' not found")
+    
+    # Prepare updates
+    updates = {}
+    channel_updates = {}
+    
+    if request.transcoding is not None:
+        if request.transcoding == "global":
+            # Remove channel-specific override
+            if "transcoding" in channels_config[channel]:
+                del channels_config[channel]["transcoding"]
+        else:
+            # Set channel-specific override
+            channel_updates["transcoding"] = {"enabled": request.transcoding == "enabled"}
+    
+    if request.subtitles is not None:
+        if request.subtitles == "global":
+            # Remove channel-specific override
+            if "enable_subtitles" in channels_config[channel]:
+                del channels_config[channel]["enable_subtitles"]
+        else:
+            # Set channel-specific override
+            channel_updates["enable_subtitles"] = request.subtitles == "enabled"
+    
+    # Apply channel updates
+    if channel_updates:
+        channels_config[channel].update(channel_updates)
+    
+    # Update the config
+    updates["channels"] = channels_config
+    result = api.update_config(updates)
+    
+    if result["success"]:
+        return Response(success=True, message=f"Channel '{channel}' settings updated")
     else:
         raise HTTPException(status_code=400, detail=result["error"])
 

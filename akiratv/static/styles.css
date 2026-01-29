@@ -316,6 +316,54 @@ input:checked + .toggle-slider:before {
     font-weight: 500;
 }
 
+/* Channel Settings */
+.channel-settings {
+    margin: 15px 0;
+    padding: 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.setting-row:last-child {
+    margin-bottom: 0;
+}
+
+.setting-label {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.setting-select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    padding: 4px 8px;
+    font-size: 12px;
+    min-width: 80px;
+    cursor: pointer;
+}
+
+.setting-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.setting-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
 .channel-type.linear {
     background: rgba(0, 212, 255, 0.2);
     color: var(--accent);

@@ -67,9 +67,15 @@ async function updateStatus() {
 // Load Channels
 async function loadChannels() {
     try {
-        const data = await apiCall('/api/channels');
+        // Load both channels and global config
+        const [channelsData, configData] = await Promise.all([
+            apiCall('/api/channels'),
+            apiCall('/api/config')
+        ]);
+        
+        globalConfig = configData;
+        const channels = channelsData.channels;
         const grid = document.getElementById('channelsGrid');
-        const channels = data.channels;
         
         console.log('📺 Loaded channels:', channels);
         
@@ -83,6 +89,10 @@ async function loadChannels() {
         grid.innerHTML = channels.map(ch => {
             const urlData = getChannelUrl(ch.name);
             const statusColor = ch.status === 'running' ? 'var(--success)' : 'var(--text-secondary)';
+            
+            // Get current transcoding and subtitle settings
+            const transcodingSetting = getChannelTranscodingSetting(ch.name);
+            const subtitlesSetting = getChannelSubtitlesSetting(ch.name);
             
             return `
                 <div class="channel-card" style="${ch.enabled ? '' : 'opacity: 0.6;'}">
@@ -102,6 +112,27 @@ async function loadChannels() {
                         Status: <strong style="color: ${statusColor}">${ch.status}</strong><br>
                         Type: ${ch.type.toUpperCase()}
                     </div>
+                    
+                    <!-- Channel Settings -->
+                    <div class="channel-settings">
+                        <div class="setting-row">
+                            <label class="setting-label">Transcoding:</label>
+                            <select class="setting-select" onchange="updateChannelSetting('${ch.name}', 'transcoding', this.value)">
+                                <option value="global" ${transcodingSetting === 'global' ? 'selected' : ''}>Global</option>
+                                <option value="enabled" ${transcodingSetting === 'enabled' ? 'selected' : ''}>Enabled</option>
+                                <option value="disabled" ${transcodingSetting === 'disabled' ? 'selected' : ''}>Disabled</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <label class="setting-label">Subtitles:</label>
+                            <select class="setting-select" onchange="updateChannelSetting('${ch.name}', 'subtitles', this.value)">
+                                <option value="global" ${subtitlesSetting === 'global' ? 'selected' : ''}>Global</option>
+                                <option value="enabled" ${subtitlesSetting === 'enabled' ? 'selected' : ''}>Enabled</option>
+                                <option value="disabled" ${subtitlesSetting === 'disabled' ? 'selected' : ''}>Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     ${ch.enabled ? `
                         <div class="channel-url">
                             <span style="overflow: hidden; text-overflow: ellipsis;">${urlData}</span>
@@ -318,6 +349,68 @@ window.onclick = function(event) {
     const modal = document.getElementById('addChannelModal');
     if (event.target === modal) {
         hideAddChannelModal();
+    }
+}
+
+// Global config cache for channel settings
+let globalConfig = null;
+
+// Helper functions to get channel settings
+function getChannelTranscodingSetting(channelName) {
+    if (!globalConfig) return 'global';
+    
+    const channelConfig = globalConfig.channels?.[channelName];
+    if (!channelConfig) return 'global';
+    
+    if (channelConfig.transcoding && 'enabled' in channelConfig.transcoding) {
+        return channelConfig.transcoding.enabled ? 'enabled' : 'disabled';
+    }
+    return 'global';
+}
+
+function getChannelSubtitlesSetting(channelName) {
+    if (!globalConfig) return 'global';
+    
+    const channelConfig = globalConfig.channels?.[channelName];
+    if (!channelConfig) return 'global';
+    
+    if ('enable_subtitles' in channelConfig) {
+        return channelConfig.enable_subtitles ? 'enabled' : 'disabled';
+    }
+    return 'global';
+}
+
+// Update channel-specific settings
+async function updateChannelSetting(channelName, settingType, value) {
+    try {
+        const requestBody = {};
+        requestBody[settingType] = value;
+        
+        const result = await apiCall(`/api/channels/${channelName}`, 'PATCH', requestBody);
+        
+        if (result.success) {
+            showToast(`${channelName} ${settingType} set to ${value}`, 'success');
+            // Refresh config cache
+            await loadGlobalConfig();
+        } else {
+            showToast(result.error || `Failed to update ${settingType}`, 'error');
+            // Reload channels to revert the dropdown
+            await loadChannels();
+        }
+    } catch (error) {
+        showToast(`Failed to update ${settingType}`, 'error');
+        // Reload channels to revert the dropdown
+        await loadChannels();
+    }
+}
+
+// Load global config for channel settings
+async function loadGlobalConfig() {
+    try {
+        globalConfig = await apiCall('/api/config');
+    } catch (error) {
+        console.error('Failed to load global config:', error);
+        globalConfig = null;
     }
 }
 

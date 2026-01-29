@@ -44,9 +44,9 @@
       "enabled": true,
       "type": "vod",
       "transcoding": {
-        "enabled": false
+        "enabled": true
       },
-      "enable_subtitles": false
+      "enable_subtitles": true
     },
     "akiratv": {
       "enabled": true,
