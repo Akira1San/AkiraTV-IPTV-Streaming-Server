@@ -64,6 +64,9 @@
                 <button class="btn btn-secondary" onclick="reloadSchedule()">
                     📅 Reload Schedule
                 </button>
+                <button class="btn btn-secondary" onclick="showConfigModal()">
+                    ⚙️ Configuration
+                </button>
             </div>
         </div>
 
@@ -128,6 +131,165 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" onclick="hideAddChannelModal()">Cancel</button>
                     <button class="btn btn-primary" onclick="createChannel()">Create Channel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Modal -->
+        <div class="modal" id="configModal">
+            <div class="modal-content config-modal">
+                <div class="modal-header">
+                    <h3>⚙️ Configuration</h3>
+                    <button class="modal-close" onclick="hideConfigModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab Navigation -->
+                    <div class="config-tabs">
+                        <button class="config-tab active" onclick="showConfigTab('settings')">Settings</button>
+                        <button class="config-tab" onclick="showConfigTab('info')">Info</button>
+                    </div>
+                    
+                    <!-- Settings Tab -->
+                    <div id="settingsTab" class="config-tab-content active">
+                        <div class="config-section">
+                            <h4>🎬 Transcoding Settings</h4>
+                            <div class="config-grid">
+                                <div class="config-item">
+                                    <label>Transcoding Mode:</label>
+                                    <select id="transcodingMode" class="config-select">
+                                        <option value="enabled">Enabled</option>
+                                        <option value="disabled">Disabled</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>Bitrate:</label>
+                                    <select id="transcodingBitrate" class="config-select">
+                                        <option value="auto">Auto</option>
+                                        <option value="custom">Custom</option>
+                                        <option value="1000k">1000k</option>
+                                        <option value="1500k">1500k</option>
+                                        <option value="2000k">2000k</option>
+                                        <option value="2500k">2500k</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>Custom Bitrate:</label>
+                                    <input type="text" id="customBitrate" class="config-input" placeholder="e.g., 1200k">
+                                </div>
+                                <div class="config-item">
+                                    <label>Video Quality:</label>
+                                    <select id="videoQuality" class="config-select">
+                                        <option value="source">Source</option>
+                                        <option value="1080p">1080p</option>
+                                        <option value="720p">720p</option>
+                                        <option value="480p">480p</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>Encoder:</label>
+                                    <select id="encoder" class="config-select">
+                                        <option value="auto">Auto</option>
+                                        <option value="cpu">CPU</option>
+                                        <option value="nvenc">NVENC</option>
+                                        <option value="qsv">QSV</option>
+                                        <option value="amf">AMF</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>Hardware Acceleration:</label>
+                                    <select id="hwaccel" class="config-select">
+                                        <option value="none">None</option>
+                                        <option value="cuda">CUDA</option>
+                                        <option value="nvenc">NVENC</option>
+                                        <option value="qsv">QSV</option>
+                                        <option value="vaapi">VAAPI</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-section">
+                            <h4>📝 Subtitle Settings</h4>
+                            <div class="config-grid">
+                                <div class="config-item">
+                                    <label>
+                                        <input type="checkbox" id="enableSubtitles"> Enable Subtitles
+                                    </label>
+                                </div>
+                                <div class="config-item">
+                                    <label>Font Size:</label>
+                                    <input type="number" id="subtitleFontSize" class="config-input" min="12" max="72" value="28">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-section">
+                            <h4>💾 Storage Settings</h4>
+                            <div class="config-grid">
+                                <div class="config-item">
+                                    <label>Storage Mode:</label>
+                                    <select id="storageMode" class="config-select" onchange="toggleStoragePath()">
+                                        <option value="disk">Disk</option>
+                                        <option value="ram">RAM</option>
+                                    </select>
+                                </div>
+                                <div class="config-item" id="diskPathItem">
+                                    <label>Disk Path:</label>
+                                    <input type="text" id="diskPath" class="config-input" value="./output">
+                                </div>
+                                <div class="config-item" id="ramPathItem" style="display: none;">
+                                    <label>RAM Path:</label>
+                                    <input type="text" id="ramPath" class="config-input" value="R:/akiratv">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-section">
+                            <h4>🌐 Output Settings</h4>
+                            <div class="config-grid">
+                                <div class="config-item">
+                                    <label>HTTP Port:</label>
+                                    <input type="number" id="httpPort" class="config-input" min="1024" max="65535" value="8081">
+                                </div>
+                                <div class="config-item">
+                                    <label>
+                                        <input type="checkbox" id="enablePreGen"> Pre-generate segments
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Info Tab -->
+                    <div id="infoTab" class="config-tab-content">
+                        <div class="info-content">
+                            <div class="app-logo">
+                                <h2>AkiraTV — Local IPTV Streamer</h2>
+                            </div>
+                            
+                            <div class="features-list">
+                                <div class="feature-item">✅ Multi-channel linear TV streaming</div>
+                                <div class="feature-item">✅ Per-channel schedules (weekly/daily)</div>
+                                <div class="feature-item">✅ Live-TV seeking (join mid-program)</div>
+                                <div class="feature-item">✅ EPG with Kodi XMLTV support</div>
+                                <div class="feature-item">✅ Channel logos & program descriptions</div>
+                                <div class="feature-item">✅ Global sharing via Ngrok</div>
+                                <div class="feature-item">✅ RAM-disk acceleration (ImDisk)</div>
+                                <div class="feature-item">✅ HLS streaming with -c copy (zero CPU)</div>
+                                <div class="feature-item">✅ Bumper-free continuous playback</div>
+                                <div class="feature-item">✅ Dark theme & responsive UI</div>
+                            </div>
+                            
+                            <div class="app-footer">
+                                <p>© 2025 AkiraTV</p>
+                                <p><a href="https://github.com/yourname/akiratv" target="_blank">GitHub Repository</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="hideConfigModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveConfiguration()">Save Configuration</button>
                 </div>
             </div>
         </div>

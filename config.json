@@ -6,7 +6,7 @@
       "enabled": false,
       "bitrate": "auto",
       "custom_bitrate": "1500k",
-      "video_quality": "source",
+      "video_quality": "720p",
       "encoder": "auto",
       "audio_quality": "copy",
       "fps": "auto",

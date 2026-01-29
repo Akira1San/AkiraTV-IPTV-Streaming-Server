@@ -467,6 +467,154 @@ async function loadGlobalConfig() {
     }
 }
 
+// Configuration Modal Functions
+function showConfigModal() {
+    loadConfigurationData();
+    document.getElementById('configModal').style.display = 'block';
+}
+
+function hideConfigModal() {
+    document.getElementById('configModal').style.display = 'none';
+}
+
+function showConfigTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.config-tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.config-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + 'Tab').classList.add('active');
+    document.querySelector(`[onclick="showConfigTab('${tabName}')"]`).classList.add('active');
+}
+
+async function loadConfigurationData() {
+    try {
+        const config = await apiCall('/api/config');
+        
+        // Transcoding settings
+        const ffmpeg = config.ffmpeg || {};
+        const transcoding = ffmpeg.transcoding || {};
+        
+        document.getElementById('transcodingMode').value = transcoding.enabled ? 'enabled' : 'disabled';
+        document.getElementById('transcodingBitrate').value = transcoding.bitrate || 'auto';
+        document.getElementById('customBitrate').value = transcoding.custom_bitrate || '1500k';
+        document.getElementById('videoQuality').value = transcoding.video_quality || 'source';
+        document.getElementById('encoder').value = transcoding.encoder || 'auto';
+        document.getElementById('hwaccel').value = ffmpeg.hwaccel || 'none';
+        
+        // Subtitle settings
+        document.getElementById('enableSubtitles').checked = ffmpeg.enable_subtitles || false;
+        document.getElementById('subtitleFontSize').value = transcoding.subtitle_font_size || '28';
+        
+        // Storage settings
+        const storage = config.storage || {};
+        document.getElementById('storageMode').value = storage.type || 'disk';
+        document.getElementById('diskPath').value = storage.disk_path || './output';
+        document.getElementById('ramPath').value = storage.ram_path || 'R:/akiratv';
+        toggleStoragePath();
+        
+        // Output settings
+        const output = config.output || {};
+        const http = output.http || {};
+        document.getElementById('httpPort').value = http.port || 8081;
+        
+        const streaming = config.streaming || {};
+        document.getElementById('enablePreGen').checked = streaming.pre_gen || false;
+        
+        // Handle custom bitrate visibility
+        toggleCustomBitrate();
+        
+    } catch (error) {
+        console.error('Failed to load configuration:', error);
+        showToast('Failed to load configuration', 'error');
+    }
+}
+
+function toggleStoragePath() {
+    const storageMode = document.getElementById('storageMode').value;
+    const diskPathItem = document.getElementById('diskPathItem');
+    const ramPathItem = document.getElementById('ramPathItem');
+    
+    if (storageMode === 'disk') {
+        diskPathItem.style.display = 'flex';
+        ramPathItem.style.display = 'none';
+    } else {
+        diskPathItem.style.display = 'none';
+        ramPathItem.style.display = 'flex';
+    }
+}
+
+function toggleCustomBitrate() {
+    const bitrateMode = document.getElementById('transcodingBitrate').value;
+    const customBitrateInput = document.getElementById('customBitrate');
+    
+    if (bitrateMode === 'custom') {
+        customBitrateInput.disabled = false;
+        customBitrateInput.style.opacity = '1';
+    } else {
+        customBitrateInput.disabled = true;
+        customBitrateInput.style.opacity = '0.5';
+    }
+}
+
+// Add event listener for bitrate change
+document.addEventListener('DOMContentLoaded', function() {
+    const bitrateSelect = document.getElementById('transcodingBitrate');
+    if (bitrateSelect) {
+        bitrateSelect.addEventListener('change', toggleCustomBitrate);
+    }
+});
+
+async function saveConfiguration() {
+    try {
+        const config = {
+            ffmpeg: {
+                hwaccel: document.getElementById('hwaccel').value,
+                enable_subtitles: document.getElementById('enableSubtitles').checked,
+                transcoding: {
+                    enabled: document.getElementById('transcodingMode').value === 'enabled',
+                    bitrate: document.getElementById('transcodingBitrate').value,
+                    custom_bitrate: document.getElementById('customBitrate').value,
+                    video_quality: document.getElementById('videoQuality').value,
+                    encoder: document.getElementById('encoder').value,
+                    subtitle_font_size: document.getElementById('subtitleFontSize').value
+                }
+            },
+            storage: {
+                type: document.getElementById('storageMode').value,
+                disk_path: document.getElementById('diskPath').value,
+                ram_path: document.getElementById('ramPath').value
+            },
+            output: {
+                http: {
+                    port: parseInt(document.getElementById('httpPort').value)
+                }
+            },
+            streaming: {
+                pre_gen: document.getElementById('enablePreGen').checked
+            }
+        };
+        
+        // Wrap config in updates field as expected by API
+        const result = await apiCall('/api/config', 'PATCH', { updates: config });
+        
+        if (result.success) {
+            showToast('Configuration saved successfully', 'success');
+            hideConfigModal();
+            // Refresh global config cache
+            await loadGlobalConfig();
+        } else {
+            showToast(result.error || 'Failed to save configuration', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to save configuration', 'error');
+    }
+}
+
 // WebSocket
 function connectWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';

@@ -645,7 +645,7 @@ input:checked + .toggle-slider:before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-bottom: 1px solid var(--border);
 }
 
@@ -738,8 +738,154 @@ input:checked + .toggle-slider:before {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-top: 1px solid var(--border);
     background: var(--bg-primary);
     border-radius: 0 0 12px 12px;
+}
+
+/* Configuration Modal Styles */
+.config-modal {
+    max-width: 800px;
+    width: 95%;
+    max-height: 90vh;
+    margin: 2% auto;
+}
+
+.config-modal .modal-body {
+    padding: 15px 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.config-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 12px;
+}
+
+.config-tab {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.config-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+}
+
+.config-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.config-tab-content {
+    display: none;
+}
+
+.config-tab-content.active {
+    display: block;
+}
+
+.config-section {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.config-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.config-item label {
+    font-size: 11px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.config-select, .config-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    padding: 5px 8px;
+    font-size: 11px;
+}
+
+.config-select:focus, .config-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.config-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Info Tab Styles */
+.info-content {
+    text-align: center;
+    padding: 10px;
+}
+
+.app-logo h2 {
+    margin: 0 0 15px 0;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 6px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+.feature-item {
+    padding: 4px 0;
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.app-footer {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.app-footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.app-footer a:hover {
+    text-decoration: underline;
 }
