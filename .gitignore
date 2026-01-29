@@ -1,0 +1,80 @@
+videos/Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_clip_part01.mp4
+videos/Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_clip_part01.mp4
+videos/critters.csv
+videos/Critters1986._clip_part01.mp4
+videos/Critters222.mp4
+akiratv/__pycache__/__main__.cpython-312.pyc
+akiratv/__pycache__/app_context.cpython-312.pyc
+akiratv/__pycache__/assets.cpython-312.pyc
+akiratv/__pycache__/chunk_resolver.cpython-312.pyc
+akiratv/__pycache__/collection_wizard.cpython-312.pyc
+akiratv/__pycache__/config.cpython-312.pyc
+akiratv/__pycache__/core.cpython-312.pyc
+akiratv/__pycache__/dashboard.cpython-312.pyc
+akiratv/__pycache__/http_server.cpython-312.pyc
+akiratv/__pycache__/inventory.cpython-312.pyc
+akiratv/__pycache__/playlist.cpython-312.pyc
+akiratv/__pycache__/scheduler.cpython-312.pyc
+akiratv/__pycache__/server.cpython-312.pyc
+akiratv/__pycache__/simple_scheduler.cpython-312.pyc
+akiratv/__pycache__/stats.cpython-312.pyc
+akiratv/__pycache__/storage.cpython-312.pyc
+akiratv/__pycache__/utils.cpython-312.pyc
+akiratv/__pycache__/worker.cpython-312.pyc
+akiratv/__pycache__/xmltv.cpython-312.pyc
+akiratv/ui/__pycache__/__init__.cpython-312.pyc
+akiratv/ui/__pycache__/main.cpython-312.pyc
+akiratv/ui/__pycache__/tabs.cpython-312.pyc
+akiratv/ui/__pycache__/widgets.cpython-312.pyc
+akiratv/ui/__pycache__/xmltv.cpython-312.pyc
+akiratv/workers/__pycache__/__init__.cpython-312.pyc
+akiratv/workers/__pycache__/base_worker.cpython-312.pyc
+akiratv/workers/__pycache__/linear_worker.cpython-312.pyc
+akiratv/workers/__pycache__/transcoding.cpython-312.pyc
+akiratv/workers/__pycache__/vod_worker.cpython-312.pyc
+output/standby.mp4
+output/New folder/standby.mp4
+output/New folder/standby_gpu.mp4
+scheduler.log
+logs/worker.log
+akiratv/server/__pycache__/__init__.cpython-312.pyc
+akiratv/server/__pycache__/app_context.cpython-312.pyc
+akiratv/server/__pycache__/dashboard.cpython-312.pyc
+akiratv/server/__pycache__/http_server.cpython-312.pyc
+akiratv/server/__pycache__/server.cpython-312.pyc
+user/covers/10000 bc.jpg
+user/covers/A Nightmare on Elm Street.jpg
+user/covers/armour_of_god_2_operation_condor.jpg
+user/covers/connan the barbarian.jpg
+user/covers/Freddy.vs.Jason.2003.jpg
+user/covers/highlander_2_the_quickening.jpg
+user/covers/Independence Day 1996.jpg
+user/covers/John Carpenters Vampires.jpg
+user/covers/Maze.Runner.The.Scorch.Trials.jpg
+user/covers/Phantoms.jpg
+user/covers/Planet.of.the.Apes.2001.jpg
+user/covers/Police.Story.3.1992.jpg
+user/covers/screamers.jpg
+user/covers/Terminator.2.1991.jpg
+user/covers/The Cabin in the Woods.jpg
+user/covers/the_evil_dead_iii_army_of_darkness_1992.jpg
+user/covers/the_mutant_chronicles.jpg
+user/covers/the_postman.jpg
+user/covers/the_terminator_1984_tv_gpu (2).jpg
+user/covers/Total.Recall.1990.Remastered.1080p.jpg
+user/collections/collections_akiratv.json
+user/collections/collections_anime.json
+user/collections/collections_don_dragon.json
+user/collections/collections_horror.json
+user/collections/collections_tatkotv.json
+user/schedules/schedule_akiratv.json
+user/schedules/schedule_don_dragon.json
+user/schedules/schedule_horror.json
+ffmpeg-20260116-234308.log
+ffmpeg-20260116-234310.log
+ffmpeg-20260116-234311.log
+ffmpeg-20260117-003807.log
+ffmpeg-20260117-010142.log
+ffmpeg-20260117-010748.log
+playlists/live.m3u
+ffmpeg-20260117-030150.log

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV Control Panel</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">AkiraTV</div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span id="statusText">Checking...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Channels</div>
+                <div class="stat-value" id="channelsCount">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Viewers</div>
+                <div class="stat-value" id="viewersCount">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Uptime</div>
+                <div class="stat-value" id="uptimeValue">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Status</div>
+                <div class="stat-value" id="statusValue">-</div>
+            </div>
+        </div>
+
+        <!-- Now Playing -->
+        <div class="now-playing">
+            <div class="now-playing-title">NOW PLAYING</div>
+            <div class="now-playing-content" id="nowPlaying">No program info</div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="section-title">🎮 Control Panel</div>
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="startBtn" onclick="startEngine()">
+                    ▶️ Start Streaming
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopEngine()" disabled>
+                    ⏹️ Stop Streaming
+                </button>
+                <button class="btn btn-secondary" onclick="restartEngine()">
+                    🔄 Restart
+                </button>
+                <button class="btn btn-secondary" onclick="clearCache()">
+                    🗑️ Clear Cache
+                </button>
+                <button class="btn btn-secondary" onclick="reloadSchedule()">
+                    📅 Reload Schedule
+                </button>
+            </div>
+        </div>
+
+        <!-- Channels Section -->
+        <div class="section">
+            <div class="section-title">📺 Channels</div>
+            <div class="channels-grid" id="channelsGrid">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <div class="loading"></div> Loading channels...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

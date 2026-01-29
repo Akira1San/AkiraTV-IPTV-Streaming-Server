@@ -1,0 +1,49 @@
+{
+  "collections": [
+    {
+      "id": "akira_1988_trailer",
+      "name": "Akira (1988) Trailer",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/dynamic/Akira (1988) Trailer.mp4",
+          "duration": 75.882812
+        }
+      ]
+    },
+    {
+      "id": "swallowed_star_moviebattleofprimordialstar",
+      "name": "Swallowed Star MovieBattleofPrimordialStar",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/dynamic/Swallowed Star MovieBattleofPrimordialStar.mp4",
+          "duration": 75.789932
+        }
+      ]
+    },
+    {
+      "id": "ghost_in_the_shell_1995_original_english_trailer_fhd",
+      "name": "Ghost in the Shell (1995).mp4",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/dynamic/Ghost in the Shell (1995).mp4",
+          "duration": 97.291
+        }
+      ]
+    }
+  ]
+}

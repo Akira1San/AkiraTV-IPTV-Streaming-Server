@@ -1,0 +1,550 @@
+{
+  "collections": [
+    {
+      "id": "10000_bc_2008",
+      "name": "10-хиляди години пр.н.е. (2008)",
+      "cover": null,
+      "description": "Млад ловец на мамути пътува през непознати земи, за да спаси любимата си и народа си от жестоки поробители.",
+      "genre": ["Приключенски", "Екшън", "Фентъзи"],
+      "year": 2008,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/10000 bc.mp4",
+          "duration": 6535.820958
+        }
+      ]
+    },
+    {
+      "id": "armour_of_god_2_operation_condor_1991",
+      "name": "Доспехите на бога 2: Операция Кондор (1991)",
+      "cover": "user/covers/armour_of_god_2_operation_condor.jpg",
+      "description": "Джеки Чан се завръща като „Азиатския ястреб“, който този път търси изгубено нацистко злато в пустинята Сахара.",
+      "genre": ["Екшън", "Комедия", "Приключенски"],
+      "year": 1991,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Armour of God 2 Operation Condor 1991.mp4",
+          "duration": 7029.334
+        }
+      ]
+    },
+    {
+      "id": "conan_the_barbarian_1982",
+      "name": "Конан Варварина (1982)",
+      "cover": "user/covers/connan the barbarian.jpg",
+      "description": "Младият Конан търси отмъщение срещу лидера на култ към змиите, който е избил семейството му.",
+      "genre": ["Приключенски", "Фентъзи", "Екшън"],
+      "year": 1982,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Conan the Barbarian.mp4",
+          "duration": 7831.859002
+        }
+      ]
+    },
+    {
+      "id": "conan_the_destroyer_1984",
+      "name": "Конан Разрушителя (1984)",
+      "cover": "user/covers/connan the barbarian.jpg",
+      "description": "Конан е нает от кралица, за да придружи принцеса и нейния пазител в търсене на магически рог.",
+      "genre": ["Приключенски", "Фентъзи", "Екшън"],
+      "year": 1984,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Conan the Destroyer.1984.mp4",
+          "duration": 6076.5935
+        }
+      ]
+    },
+    {
+      "id": "drive_angry_2011",
+      "name": "С мръсна газ (2011)",
+      "cover": null,
+      "description": "Мъж избягва от ада, за да отмъсти на сектата, убила дъщеря му и отвлякла внучката му.",
+      "genre": ["Екшън", "Фентъзи", "Криминален"],
+      "year": 2011,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Drive.Angry.2011.BDRip.x264.AAC.BGAudio-REFLUX_gpu_720x404.mp4",
+          "duration": 6271.295011
+        }
+      ]
+    },
+    {
+      "id": "full_eclipse_1993",
+      "name": "Пълно затъмнение (1993)",
+      "cover": null,
+      "description": "Полицията в Лос Анджелис разполага със специален отряд от детективи, които се превръщат във върколаци, за да борят престъпността.",
+      "genre": ["Екшън", "Ужаси", "Криминален"],
+      "year": 1993,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Full Eclipse (1993) BG Audio_gpu_720x404.mp4",
+          "duration": 5585.971995
+        }
+      ]
+    },
+    {
+      "id": "ghosts_of_mars_2001",
+      "name": "Призраци от Марс (2001)",
+      "cover": null,
+      "description": "В бъдещето на Марс полицаи и затворници трябва да се обединят срещу древни марсиански духове, които обсебват телата на миньорите.",
+      "genre": ["Екшън", "Ужаси", "Научна фантастика"],
+      "year": 2001,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Ghosts.of.Mars.2001.1080p.BluRay.DUAL.AUDiO.H.265-WAR_part01_gpu_720x404_joined.mp4",
+          "duration": 5887.403016
+        }
+      ]
+    },
+    {
+      "id": "hackers_1995",
+      "name": "Хакери (1995)",
+      "cover": null,
+      "description": "Група тийнейджъри хакери откриват доказателства за корпоративен заговор и са преследвани от ФБР и престъпен софтуерен инженер.",
+      "genre": ["Криминален", "Трилър", "Драма"],
+      "year": 1995,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Hackers.1995.REMASTERED.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4",
+          "duration": 6315.366708
+        }
+      ]
+    },
+    {
+      "id": "highlander_1986",
+      "name": "Шотландски боец (1986)",
+      "cover": null,
+      "description": "Безсмъртен шотландски войн от 16-ти век трябва да се изправи срещу последния си опонент в съвременен Ню Йорк.",
+      "genre": ["Екшън", "Приключенски", "Фентъзи"],
+      "year": 1986,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Highlander.1986.BDRip.1080p.BG.Audio-AbI&SR_gpu_720x404.mp4",
+          "duration": 6998.143991
+        }
+      ]
+    },
+    {
+      "id": "highlander_2_the_quickening_1991",
+      "name": "Шотландски боец 2 (1991)",
+      "cover": "user/covers/highlander_2_the_quickening.jpg",
+      "description": "В бъдещето Конър Маклауд трябва да спаси Земята от корумпирана корпорация, която контролира изкуствения озонов слой.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "year": 1991,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Highlander.2.The Quickening.1991.BDRip.x264.AAC.BGAUDiO-SiSO_fmp4_tv_gpu.mp4",
+          "duration": 6583.02
+        }
+      ]
+    },
+    {
+      "id": "independence_day_1996",
+      "name": "Денят на независимостта (1996)",
+      "cover": "user/covers/Independence Day 1996.jpg",
+      "description": "Земята е нападната от извънземни и оцелелите трябва да се обединят за контраатака на 4-ти юли.",
+      "genre": ["Екшън", "Приключенски", "Научна фантастика"],
+      "year": 1996,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Independence Day 1996 TC.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+          "duration": 8688.032404
+        }
+      ]
+    },
+    {
+      "id": "johnny_mnemonic_1995",
+      "name": "Джони Мнемоник (1995)",
+      "cover": null,
+      "description": "Куриер с имплантиран чип в главата носи информация, която е жизненоважна, но може и да го убие, ако не я достави навреме.",
+      "genre": ["Екшън", "Научна фантастика", "Трилър"],
+      "year": 1995,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Johnny Mnemonic 1995 BDRip.BG.Audio-AbI&SR_gpu_720x404.mp4",
+          "duration": 5800.419625
+        }
+      ]
+    },
+    {
+      "id": "mad_max_2_1981",
+      "name": "Лудия Макс 2: Войнът на пътя (1981)",
+      "cover": null,
+      "description": "В постапокалиптична пустош, Макс помага на малка общност да защити рафинерията си от банда варвари.",
+      "genre": ["Екшън", "Приключенски", "Научна фантастика"],
+      "year": 1981,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Mad Max 2 1981.Unrated.BDRip.BG.Audio.LoveJesus_gpu_720x404.mp4",
+          "duration": 5730.099375
+        }
+      ]
+    },
+    {
+      "id": "mad_max_3_beyond_thunderdome_1985",
+      "name": "Лудия Макс 3: Отвъд Купола на смъртта (1985)",
+      "cover": null,
+      "description": "Макс попада в Градът на размяната, където трябва да се бие в гладиаторска арена, за да оцелее.",
+      "genre": ["Екшън", "Приключенски", "Научна фантастика"],
+      "year": 1985,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Mad Max 3 Beyond Thunderdome 1985 1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+          "duration": 6418.052625
+        }
+      ]
+    },
+    {
+      "id": "maze_runner_1_2014",
+      "name": "Лабиринтът: Невъзможно бягство (2014)",
+      "cover": null,
+      "description": "Група момчета са затворени в центъра на гигантски лабиринт и трябва да намерят изход, докато се пазят от чудовища.",
+      "genre": ["Екшън", "Мистерия", "Научна фантастика"],
+      "year": 2014,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Maze.Runner 1 .2014._tv_gpu.mp4",
+          "duration": 6806.04925
+        }
+      ]
+    },
+    {
+      "id": "maze_runner_2_scorch_trials_2015",
+      "name": "Лабиринтът: В обгорените земи (2015)",
+      "cover": "user/covers/Maze.Runner.The.Scorch.Trials.jpg",
+      "description": "След бягството от лабиринта, Томас и приятелите му се изправят пред нови предизвикателства в пустинна пустош.",
+      "genre": ["Екшън", "Научна фантастика", "Трилър"],
+      "year": 2015,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Maze.Runner 2 The.Scorch.Trials.2015_tv_gpu.mp4",
+          "duration": 7902.019125
+        }
+      ]
+    },
+    {
+      "id": "maze_runner_3_death_cure_2018",
+      "name": "Лабиринтът: Последният кандидат (2018)",
+      "cover": null,
+      "description": "Томас води групата си на последна мисия в „Последния град“, за да спасят приятелите си и да намерят лек.",
+      "genre": ["Екшън", "Научна фантастика", "Трилър"],
+      "year": 2018,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Maze.Runner 3 The.Death.Cure.2018.BDRip.x264.AC3.BGAUDiO-SiSO_gpu_720x404.mp4",
+          "duration": 8632.64
+        }
+      ]
+    },
+    {
+      "id": "men_at_work_1990",
+      "name": "Ченгета под прикритие (1990)",
+      "cover": null,
+      "description": "Двама боклукчии откриват труда на политик и се забъркват в опасна игра на котка и мишка с корумпирани служители.",
+      "genre": ["Комедия", "Екшън", "Криминален"],
+      "year": 1990,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Men At Work (1990) BG Audio_gpu_720x404.mp4",
+          "duration": 5663.973991
+        }
+      ]
+    },
+    {
+      "id": "no_escape_1994",
+      "name": "Няма измъкване (1994)",
+      "cover": null,
+      "description": "Офицер е пратен в затворнически остров за най-опасните престъпници, където трябва да избере страна в брутална война.",
+      "genre": ["Екшън", "Научна фантастика", "Трилър"],
+      "year": 1994,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/No Escape_gpu_720x404.mp4",
+          "duration": 6635.211917
+        }
+      ]
+    },
+    {
+      "id": "outlander_2008",
+      "name": "Аутлендър (2008)",
+      "cover": null,
+      "description": "Човек от друга планета се разбива в Норвегия по време на викингите, носейки със себе си смъртоносно извънземно чудовище.",
+      "genre": ["Екшън", "Научна фантастика", "Приключенски"],
+      "year": 2008,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Outlander.2008.BDRip.XviD.AC3.BGAUDiO-SiSO_gpu_720x404.mp4",
+          "duration": 6907.609042
+        }
+      ]
+    },
+    {
+      "id": "planet_of_the_apes_2001",
+      "name": "Планетата на маймуните (2001)",
+      "cover": "user/covers/Planet.of.the.Apes.2001.jpg",
+      "description": "Астронавт се разбива на планета, където интелигентни маймуни управляват хората като роби.",
+      "genre": ["Екшън", "Приключенски", "Научна фантастика"],
+      "year": 2001,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Planet.of.the.Apes.2001.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+          "duration": 7198.081875
+        }
+      ]
+    },
+    {
+      "id": "police_story_1_1985",
+      "name": "Полицейска история (1985)",
+      "cover": null,
+      "description": "Честен полицай от Хонконг е натопен за убийство от наркобарон и трябва да изчисти името си.",
+      "genre": ["Екшън", "Комедия", "Криминален"],
+      "year": 1985,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Police.Story 1 1985.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4",
+          "duration": 6031.086708
+        }
+      ]
+    },
+    {
+      "id": "police_story_2_1988",
+      "name": "Полицейска история 2 (1988)",
+      "cover": null,
+      "description": "Детектив Кевин Чан се изправя срещу терористи, които взривяват сгради и изнудват корпорации.",
+      "genre": ["Екшън", "Комедия", "Криминален"],
+      "year": 1988,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Police.Story 2.1988.EXT.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4",
+          "duration": 7200.087875
+        }
+      ]
+    },
+    {
+      "id": "police_story_3_supercop_1992",
+      "name": "Полицейска история 3: Супер ченге (1992)",
+      "cover": "user/covers/Police.Story.3.1992.jpg",
+      "description": "Кевин Чан отива под прикритие в китайски затвор, за да се внедри в международен наркокартел.",
+      "genre": ["Екшън", "Комедия", "Криминален"],
+      "year": 1992,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Police.Story 3.1992.REMASTERED.1080p.BDRip.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+          "duration": 5790.040458
+        }
+      ]
+    },
+    {
+      "id": "red_sonja_1985",
+      "name": "Червената Соня (1985)",
+      "cover": null,
+      "description": "Жената-воин Соня тръгва на мисия да си върне магически талисман от зла кралица.",
+      "genre": ["Екшън", "Приключенски", "Фентъзи"],
+      "year": 1985,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Red Sonja 1985.BDRip.XviD.DUAL-REFLUX_tv.mp4",
+          "duration": 5331.07575
+        }
+      ]
+    },
+    {
+      "id": "screamers_2_the_hunting_2009",
+      "name": "Скрещящи 2: Ловът (2009)",
+      "cover": "user/covers/screamers.jpg",
+      "description": "Група спасители пристигат на планетата Сириус 6Б, само за да открият, че Скрещящите са еволюирали в по-опасна форма.",
+      "genre": ["Научна фантастика", "Ужаси", "Екшън"],
+      "year": 2009,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Screamers.The.Hunting.2009_gpu_subs_gpu_720x404.mp4",
+          "duration": 5688.891542
+        }
+      ]
+    },
+    {
+      "id": "screamers_1_1995",
+      "name": "Скрещящи (1995)",
+      "cover": "user/covers/screamers.jpg",
+      "description": "На далечна миньорска планета, войници трябва да оцелеят срещу самовъзпроизвеждащи се машини-убийци.",
+      "genre": ["Научна фантастика", "Ужаси", "Трилър"],
+      "year": 1995,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Screamers_fmp4_burned_tv_gpu.mp4",
+          "duration": 6120.114
+        }
+      ]
+    },
+    {
+      "id": "star_trek_first_contact_1996",
+      "name": "Стар Трек: Първи контакт (1996)",
+      "cover": null,
+      "description": "Екипажът на Ентърпрайз пътува назад във времето, за да спре Боргите от промяна на човешката история.",
+      "genre": ["Екшън", "Приключенски", "Научна фантастика"],
+      "year": 1996,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Star Trek First Contact 1996.mp4",
+          "duration": 6190.142292
+        }
+      ]
+    },
+    {
+      "id": "terminator_1_1984",
+      "name": "Терминаторът (1984)",
+      "cover": "user/covers/the_terminator_1984_tv_gpu (2).jpg",
+      "description": "Киборг-убиец е пратен от бъдещето, за да убие Сара Конър, чийто син ще води съпротивата срещу машините.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "year": 1984,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Terminator 1 1984_tv_gpu.mp4",
+          "duration": 6423.041625
+        }
+      ]
+    },
+    {
+      "id": "terminator_2_judgment_day_1991",
+      "name": "Терминатор 2: Денят на страшния съд (1991)",
+      "cover": "user/covers/Terminator.2.1991.jpg",
+      "description": "Препрограмиран Терминатор трябва да защити младия Джон Конър от нов, по-мощен течен киборг.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "year": 1991,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Terminator 2 1991.TC.1080p.BluRay.x265.Dual-DiN_tv_gpu.mp4",
+          "duration": 8228.303417
+        }
+      ]
+    },
+    {
+      "id": "terminator_3_rise_of_the_machines_2003",
+      "name": "Терминатор 3: Бунтът на машините (2003)",
+      "cover": null,
+      "description": "Джон Конър е вече възрастен, но нов Терминатор пристига, за да довърши мисията на Скайнет.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "year": 2003,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Terminator 3 Rise Of the Machines 2003.mp4",
+          "duration": 6520.472292
+        }
+      ]
+    },
+    {
+      "id": "the_13th_warrior_1999",
+      "name": "13-ият войн (1999)",
+      "cover": null,
+      "description": "Арабски посланик се присъединява към група викинги, за да се бият срещу мистериозно и древно зло.",
+      "genre": ["Екшън", "Приключенски", "История"],
+      "year": 1999,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/The.13th.Warrior.1999.1080p.BluRay.AV1-DiN_gpu_720x404.mp4",
+          "duration": 6166.16
+        }
+      ]
+    },
+    {
+      "id": "the_frighteners_1996",
+      "name": "Секретарката (1996)",
+      "cover": null,
+      "description": "Мъж, който може да вижда призраци, ги използва за измами, докато не се появява истински зловещ дух.",
+      "genre": ["Комедия", "Фентъзи", "Ужаси"],
+      "year": 1996,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/The.Frighteners.1996.TC.Open.Matte.WEB-DLRip.BG.Audio-Atany & Stezarai & charmedssss_gpu_720x404.mp4",
+          "duration": 6595.880958
+        }
+      ]
+    },
+    {
+      "id": "the_hard_way_1991",
+      "name": "Трудният начин (1991)",
+      "cover": null,
+      "description": "Холивудска звезда се прикрепя към корав детектив, за да проучи роля, но двамата се озовават в реална опасност.",
+      "genre": ["Екшън", "Комедия", "Криминален"],
+      "year": 1991,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/The.Hard.Way.1991.1080p.BluRay.AV1-DiN_gpu_720x404.mp4",
+          "duration": 6644.054083
+        }
+      ]
+    },
+    {
+      "id": "mutant_chronicles_2008",
+      "name": "Хроники на мутантите (2008)",
+      "cover": "user/covers/the_mutant_chronicles.jpg",
+      "description": "Войници от бъдещето се борят срещу армия от мутанти, освободени от древна машина.",
+      "genre": ["Екшън", "Приключенски", "Научна фантастика"],
+      "year": 2008,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/The.Mutant.Chronicles[2008]DvDrip-aXXo_fmp4_burned_tv_gpu.mp4",
+          "duration": 6415.117042
+        }
+      ]
+    },
+    {
+      "id": "the_postman_1997",
+      "name": "Месия на бъдещето (1997)",
+      "cover": "user/covers/the_postman.jpg",
+      "description": "Скитник в постапокалиптична Америка намира пощенска униформа и вдъхва надежда на хората, че цивилизацията се завръща.",
+      "genre": ["Екшън", "Приключенски", "Драма"],
+      "year": 1997,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/The.Postman.1997.BDRip.x264.AAC-HUD_fmp4_burned_tv_gpu.mp4",
+          "duration": 10670.010998
+        }
+      ]
+    },
+    {
+      "id": "the_running_man_1987",
+      "name": "Бягащият човек (1987)",
+      "cover": null,
+      "description": "В антиутопично бъдеще, невинно осъден мъж трябва да оцелее в брутално телевизионно шоу, където професионални убийци го преследват.",
+      "genre": ["Екшън", "Научна фантастика", "Трилър"],
+      "year": 1987,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/The.Running.Man.1987.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4",
+          "duration": 6043.053
+        }
+      ]
+    },
+    {
+      "id": "total_recall_1990",
+      "name": "Зов за завръщане (1990)",
+      "cover": "user/covers/Total.Recall.1990.Remastered.1080p.jpg",
+      "description": "Мъж открива, че спомените му са фалшиви и пътува до Марс, за да разбере истинската си самоличност.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "year": 1990,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Total Recall 1990.mp4",
+          "duration": 6796.347208
+        }
+      ]
+    },
+    {
+      "id": "van_helsing_2004",
+      "name": "Ван Хелсинг (2004)",
+      "cover": null,
+      "description": "Ловецът на чудовища Ван Хелсинг е изпратен в Трансилвания, за да спре граф Дракула, който използва Франкенщайн и върколаци за пъклените си планове.",
+      "genre": ["Екшън", "Приключенски", "Фентъзи"],
+      "year": 2004,
+      "videos": [
+        {
+          "path": "C:/Videos/akiratv/Van.Helsing.2004.720p.BRRiP.BG-AUDiO.AC3.XviD-HS0_gpu_720x404.mp4",
+          "duration": 7891.258375
+        }
+      ]
+    }
+  ]
+}

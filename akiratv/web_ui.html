@@ -1,0 +1,1865 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV Control Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent: #00d4ff;
+            --accent-hover: #00b8e6;
+            --success: #00c853;
+            --error: #ff3b30;
+            --warning: #ff9500;
+            --border: #3a3a3a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--border);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            background: var(--bg-tertiary);
+        }
+
+        .status-badge.running {
+            background: rgba(0, 200, 83, 0.2);
+            color: var(--success);
+        }
+
+        .status-badge.stopped {
+            background: rgba(255, 59, 48, 0.2);
+            color: var(--error);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #d32f2f;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-primary);
+        }
+
+        /* Channels Section */
+        .section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Add Channel Form */
+        .add-channel-form {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .form-row .input {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .form-row .btn {
+            flex-shrink: 0;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .channel-count {
+            margin-left: auto;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .channel-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .channel-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .channel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .channel-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .channel-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .channel-type {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .channel-type.linear {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent);
+        }
+
+        .channel-type.vod {
+            background: rgba(255, 149, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .channel-type.dynamic {
+            background: rgba(0, 200, 83, 0.2);
+            color: var(--success);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-primary);
+            border: 2px solid var(--border);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-secondary);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+            background-color: #fff;
+        }
+
+        .toggle-switch:hover .toggle-slider {
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Settings Button */
+        .btn-icon {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            justify-content: flex-end;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .channel-info {
+            margin: 10px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .channel-url {
+            background: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+            word-break: break-all;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Play Now Section */
+        .play-now-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Now Playing */
+        .now-playing {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .now-playing-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .now-playing-content {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--bg-tertiary);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .channels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .channel-controls {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-end;
+            }
+
+            .channel-header {
+                align-items: flex-start;
+            }
+
+            .bulk-actions {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .bulk-actions .btn-sm {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .channel-count {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-row .input,
+            .form-row .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .form-row .btn {
+                margin-bottom: 0;
+            }
+
+            .config-tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+
+            .config-actions {
+                flex-direction: column;
+            }
+
+            .config-actions .btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .modal-header {
+                padding: 15px 20px;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
+        }
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .modal-footer {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
+
+            .settings-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .settings-row label {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .settings-input,
+            .url-display {
+                width: 100%;
+            }
+
+            .url-display {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .url-display .btn {
+                width: 100%;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--error); }
+        .toast.info { border-left: 4px solid var(--accent); }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Configuration Section */
+        .config-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            background: var(--bg-tertiary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .config-tab {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .config-tab.active {
+            display: block;
+        }
+
+        .config-group {
+            margin-bottom: 20px;
+        }
+
+        .config-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .config-help {
+            display: block;
+            margin-top: 5px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .config-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .config-checkbox input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .config-checkbox input[type="checkbox"]:checked + .checkmark {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .config-checkbox input[type="checkbox"]:checked + .checkmark::after {
+            content: 'âœ“';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        /* Channel Settings Button */
+        .btn-icon {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .btn-icon:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--error);
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Settings Styles */
+        .settings-group {
+            margin-bottom: 30px;
+        }
+
+        .settings-group h3 {
+            margin: 0 0 15px 0;
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .settings-row label {
+            min-width: 140px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .settings-input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .settings-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .settings-value {
+            flex: 1;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .url-display {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .url-input {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">AkiraTV</div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span id="statusText">Checking...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Channels</div>
+                <div class="stat-value" id="channelsCount">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Viewers</div>
+                <div class="stat-value" id="viewersCount">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Uptime</div>
+                <div class="stat-value" id="uptimeValue">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Status</div>
+                <div class="stat-value" id="statusValue">-</div>
+            </div>
+        </div>
+
+        <!-- Now Playing -->
+        <div class="now-playing">
+            <div class="now-playing-title">NOW PLAYING</div>
+            <div class="now-playing-content" id="nowPlaying">No program info</div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="section-title">ðŸŽ® Control Panel</div>
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="startBtn" onclick="startEngine()">
+                    â–¶ï¸ Start Streaming
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopEngine()" disabled>
+                    â¹ï¸ Stop Streaming
+                </button>
+                <button class="btn btn-secondary" onclick="restartEngine()">
+                    ðŸ”„ Restart
+                </button>
+                <button class="btn btn-secondary" onclick="clearCache()">
+                    ðŸ—‘ï¸ Clear Cache
+                </button>
+                <button class="btn btn-secondary" onclick="reloadSchedule()">
+                    ðŸ“… Reload Schedule
+                </button>
+            </div>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="section">
+            <div class="section-title">ðŸ“º Channels</div>
+            
+            <!-- Add Channel Form -->
+            <div class="add-channel-form">
+                <div class="form-row">
+                    <input type="text" class="input" id="newChannelName" placeholder="Enter channel name..." maxlength="50" onkeypress="if(event.key==='Enter') addChannel()">
+                    <select class="input" id="newChannelType">
+                        <option value="linear">Linear (Scheduled)</option>
+                        <option value="vod">VOD (On-demand)</option>
+                        <option value="dynamic">Dynamic (Standby + VOD)</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="addChannel()">
+                        âž• Add Channel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="bulk-actions">
+                <button class="btn btn-secondary btn-sm" onclick="enableAllChannels()">
+                    âœ… Enable All
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="disableAllChannels()">
+                    âŒ Disable All
+                </button>
+                <span class="channel-count" id="channelCount">0 channels</span>
+            </div>
+            
+            <div class="channels-grid" id="channelsGrid">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <div class="loading"></div> Loading channels...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Settings Modal (single instance) -->
+    <div id="channelSettingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalChannelName">Channel Settings</h2>
+                <button class="modal-close" onclick="closeChannelSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Channel Info -->
+                <div class="settings-group">
+                    <h3>Channel Information</h3>
+                    <div class="settings-row">
+                        <label>Channel Name:</label>
+                        <span id="settingsChannelName" class="settings-value"></span>
+                    </div>
+                    <div class="settings-row">
+                        <label>Channel Type:</label>
+                        <span id="settingsChannelType" class="settings-value"></span>
+                    </div>
+                </div>
+                <!-- Transcoding Settings -->
+                <div class="settings-group">
+                    <h3>Transcoding Settings</h3>
+                    <div class="settings-row">
+                        <label>Transcoding Mode:</label>
+                        <select id="channelTranscoding" class="settings-input">
+                            <option value="global">Use Global Setting</option>
+                            <option value="enabled">Enabled</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label>Subtitles:</label>
+                        <select id="channelSubtitles" class="settings-input">
+                            <option value="global">Use Global Setting</option>
+                            <option value="enabled">Enabled</option>
+                            <option value="disabled">Disabled</option>
+                        </select>
+                    </div>
+                    <!-- Advanced Transcoding Options (shown when transcoding is enabled) -->
+                    <div id="advancedTranscodingOptions" style="display: none;">
+                        <div class="settings-row">
+                            <label>Bitrate Override:</label>
+                            <select id="channelBitrate" class="settings-input">
+                                <option value="">Use Global Setting</option>
+                                <option value="auto">Auto</option>
+                                <option value="1000k">1000k</option>
+                                <option value="1500k">1500k</option>
+                                <option value="2000k">2000k</option>
+                                <option value="2500k">2500k</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="settings-row" id="customBitrateRow" style="display: none;">
+                            <label>Custom Bitrate:</label>
+                            <input type="text" id="channelCustomBitrate" class="settings-input" placeholder="1200k">
+                        </div>
+                        <div class="settings-row">
+                            <label>Video Quality:</label>
+                            <select id="channelVideoQuality" class="settings-input">
+                                <option value="">Use Global Setting</option>
+                                <option value="source">Source (Original)</option>
+                                <option value="1080p">1080p</option>
+                                <option value="720p">720p</option>
+                                <option value="480p">480p</option>
+                                <option value="640x480">640x480</option>
+                                <option value="720x404">720x404</option>
+                            </select>
+                        </div>
+                        <div class="settings-row">
+                            <label>Encoder Override:</label>
+                            <select id="channelEncoder" class="settings-input">
+                                <option value="">Use Global Setting</option>
+                                <option value="auto">Auto</option>
+                                <option value="cpu">CPU (x264)</option>
+                                <option value="nvenc">NVENC (NVIDIA)</option>
+                                <option value="qsv">Quick Sync (Intel)</option>
+                                <option value="amf">AMF (AMD)</option>
+                            </select>
+                        </div>
+                        <div class="settings-row">
+                            <label>Audio Quality:</label>
+                            <select id="channelAudioQuality" class="settings-input">
+                                <option value="">Use Global Setting</option>
+                                <option value="copy">Copy (Fastest)</option>
+                                <option value="aac_128k">AAC 128k</option>
+                                <option value="aac_160k">AAC 160k</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- Channel URLs -->
+                <div class="settings-group">
+                    <h3>Streaming URLs</h3>
+                    <div class="settings-row">
+                        <label>HLS Stream:</label>
+                        <div class="url-display">
+                            <input type="text" id="channelStreamUrl" class="settings-input url-input" readonly>
+                            <button class="btn btn-secondary btn-sm" onclick="copyChannelUrl('stream')">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeChannelSettings()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveChannelSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Settings Modal -->
+    <div id="channelSettingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalChannelName">Channel Settings</h3>
+                <button class="modal-close" onclick="closeChannelSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <label class="config-label">Transcoding:</label>
+                    <select class="input" id="channelTranscoding">
+                        <option value="global">Use Global Setting</option>
+                        <option value="enabled">Enabled</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+                    <small class="config-help">Override global transcoding setting for this channel</small>
+                </div>
+
+                <div class="settings-group">
+                    <label class="config-label">Subtitles:</label>
+                    <select class="input" id="channelSubtitles">
+                        <option value="global">Use Global Setting</option>
+                        <option value="enabled">Enabled</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+                    <small class="config-help">Override global subtitle setting for this channel</small>
+                </div>
+
+                <div class="settings-group">
+                    <label class="config-label">Channel Type:</label>
+                    <select class="input" id="channelTypeSelect">
+                        <option value="linear">Linear (Scheduled)</option>
+                        <option value="vod">VOD (On-demand)</option>
+                        <option value="dynamic">Dynamic (Standby + VOD)</option>
+                    </select>
+                    <small class="config-help">Change the channel type and behavior</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveChannelSettings()">Save Settings</button>
+                <button class="btn btn-secondary" onclick="closeChannelSettings()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin; // Same server
+        let ws = null;
+        let isRunning = false;
+
+        // Initialize
+        async function init() {
+            await updateStatus();
+            await loadChannels();
+            
+            connectWebSocket();
+            setInterval(updateStatus, 10000); // Update every 10s (was 5s)
+        }
+
+        // API Calls
+        async function apiCall(endpoint, method = 'GET', body = null, params = null) {
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' }
+            };
+            if (body) options.body = JSON.stringify(body);
+            
+            // Add URL parameters for GET/POST requests
+            let url = `${API_BASE}${endpoint}`;
+            if (params && method === 'POST') {
+                const urlParams = new URLSearchParams(params);
+                url += `?${urlParams.toString()}`;
+            }
+
+            const response = await fetch(url, options);
+            return response.json();
+        }
+
+        // Update Status
+        async function updateStatus() {
+            try {
+                const data = await apiCall('/api/status');
+                isRunning = data.is_running;
+                
+                const badge = document.getElementById('statusBadge');
+                const text = document.getElementById('statusText');
+                
+                if (isRunning) {
+                    badge.className = 'status-badge running';
+                    text.textContent = 'Streaming';
+                    document.getElementById('startBtn').disabled = true;
+                    document.getElementById('stopBtn').disabled = false;
+                } else {
+                    badge.className = 'status-badge stopped';
+                    text.textContent = 'Stopped';
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('stopBtn').disabled = true;
+                }
+
+                // Update stats
+                document.getElementById('viewersCount').textContent = data.stats.viewers || 0;
+                document.getElementById('uptimeValue').textContent = formatUptime(data.uptime);
+                document.getElementById('statusValue').textContent = data.stats.status || 'N/A';
+                document.getElementById('nowPlaying').textContent = data.stats.now_playing || 'No program info';
+            } catch (error) {
+                console.error('Failed to update status:', error);
+            }
+        }
+
+        // Load Channels
+        async function loadChannels() {
+            try {
+                const data = await apiCall('/api/channels');
+                const grid = document.getElementById('channelsGrid');
+                const channels = data.channels;
+                
+                console.log('ðŸ“º Loaded channels:', channels); // DEBUG
+                
+                const enabledCount = channels.filter(ch => ch.enabled).length;
+                document.getElementById('channelsCount').textContent = channels.length;
+                document.getElementById('channelCount').textContent = `${channels.length} channels (${enabledCount} enabled)`;
+
+                if (channels.length === 0) {
+                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">No channels configured</div>';
+                    return;
+                }
+
+                grid.innerHTML = channels.map(ch => {
+                    const urlData = getChannelUrl(ch.name);
+                    const enabledBadge = ch.enabled ? 'âœ… Enabled' : 'âŒ Disabled';
+                    const statusColor = ch.status === 'running' ? 'var(--success)' : 'var(--text-secondary)';
+                    
+                    return `
+                        <div class="channel-card" style="${ch.enabled ? '' : 'opacity: 0.6;'}">
+                            <div class="channel-header">
+                                <div class="channel-name">${ch.name}</div>
+                                <div class="channel-controls">
+                                    <div class="channel-type ${ch.type}">${ch.type}</div>
+                                    <button class="btn-icon" onclick="openChannelSettings('${ch.name}')" title="Channel Settings">
+                                        âš™ï¸
+                                    </button>
+                                    <label class="toggle-switch" title="${ch.enabled ? 'Disable' : 'Enable'} channel">
+                                        <input type="checkbox" ${ch.enabled ? 'checked' : ''} 
+                                               onchange="toggleChannel('${ch.name}', this.checked)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="channel-info">
+                                Status: <strong style="color: ${statusColor}">${ch.status}</strong><br>
+                                ${enabledBadge}<br>
+                                Type: ${ch.type.toUpperCase()}
+                            </div>
+                            ${ch.enabled ? `
+                                <div class="channel-url">
+                                    <span style="overflow: hidden; text-overflow: ellipsis;">${urlData}</span>
+                                    <button class="copy-btn" onclick="copyToClipboard('${urlData}')">Copy</button>
+                                </div>
+                                ${ch.type !== 'linear' ? `
+                                    <div class="play-now-form">
+                                        <input type="text" class="input" id="path_${ch.name}" placeholder="Video path...">
+                                        <button class="btn btn-primary" onclick="playNow('${ch.name}')">â–¶ï¸ Play</button>
+                                    </div>
+                                ` : ''}
+                            ` : `
+                                <div style="text-align: center; padding: 10px; color: var(--text-secondary); font-size: 12px;">
+                                    Channel disabled - enable to show streaming options
+                                </div>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Failed to load channels:', error);
+                showToast('Failed to load channels', 'error');
+            }
+        }
+
+        // Get Channel URL
+        function getChannelUrl(channel) {
+            const port = window.location.port || '8080';
+            const host = window.location.hostname;
+            return `http://${host}:${port}/hls/${channel}/index.m3u8`;
+        }
+
+        // Engine Control
+        async function startEngine() {
+            showLoading('start');
+            try {
+                const result = await apiCall('/api/start', 'POST');
+                if (result.success) {
+                    showToast('Engine started successfully', 'success');
+                    await updateStatus();
+                    await loadChannels();
+                } else {
+                    showToast(result.error || 'Failed to start', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to start engine', 'error');
+            }
+            hideLoading('start');
+        }
+
+        async function stopEngine() {
+            showLoading('stop');
+            try {
+                const result = await apiCall('/api/stop', 'POST');
+                if (result.success) {
+                    showToast('Engine stopped', 'success');
+                    await updateStatus();
+                } else {
+                    showToast(result.error || 'Failed to stop', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to stop engine', 'error');
+            }
+            hideLoading('stop');
+        }
+
+        async function restartEngine() {
+            if (!confirm('Restart AkiraTV? This will disconnect all viewers.')) return;
+            
+            try {
+                const result = await apiCall('/api/restart', 'POST');
+                if (result.success) {
+                    showToast('Engine restarting...', 'info');
+                    setTimeout(async () => {
+                        await updateStatus();
+                        await loadChannels();
+                    }, 3000);
+                } else {
+                    showToast(result.error || 'Failed to restart', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to restart engine', 'error');
+            }
+        }
+
+        async function clearCache() {
+            try {
+                const result = await apiCall('/api/cache/clear', 'POST');
+                if (result.success) {
+                    showToast(`Cleared ${result.data.deleted} files`, 'success');
+                } else {
+                    showToast(result.error || 'Failed to clear cache', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to clear cache', 'error');
+            }
+        }
+
+        async function reloadSchedule() {
+            try {
+                const result = await apiCall('/api/schedule/reload', 'POST');
+                if (result.success) {
+                    showToast('Schedule reloaded', 'success');
+                } else {
+                    showToast(result.error || 'Failed to reload', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to reload schedule', 'error');
+            }
+        }
+
+        async function playNow(channel) {
+            const input = document.getElementById(`path_${channel}`);
+            const path = input.value.trim();
+            
+            if (!path) {
+                showToast('Enter video path', 'error');
+                return;
+            }
+
+            try {
+                const result = await apiCall(`/api/channels/${channel}/play`, 'POST', { video_path: path });
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    input.value = '';
+                } else {
+                    showToast(result.error || 'Failed to play', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to play video', 'error');
+            }
+        }
+
+        // Add Channel
+        async function addChannel() {
+            const nameInput = document.getElementById('newChannelName');
+            const typeSelect = document.getElementById('newChannelType');
+            
+            const channelName = nameInput.value.trim();
+            const channelType = typeSelect.value;
+            
+            if (!channelName) {
+                showToast('Enter channel name', 'error');
+                nameInput.focus();
+                return;
+            }
+            
+            // Validate channel name
+            if (!channelName.match(/^[a-zA-Z0-9_-]+$/)) {
+                showToast('Use only letters, numbers, hyphens, and underscores', 'error');
+                nameInput.focus();
+                return;
+            }
+            
+            try {
+                const result = await apiCall('/api/channels', 'POST', null, {
+                    channel_name: channelName,
+                    channel_type: channelType
+                });
+                
+                if (result.success) {
+                    showToast(`Channel '${channelName}' added successfully!`, 'success');
+                    nameInput.value = '';
+                    typeSelect.value = 'linear';
+                    await loadChannels(); // Refresh the channels list
+                } else {
+                    showToast(result.error || 'Failed to add channel', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to add channel', 'error');
+            }
+        }
+
+        // Toggle Channel Enable/Disable
+        async function toggleChannel(channelName, enabled) {
+            try {
+                const endpoint = enabled ? 
+                    `/api/channels/${channelName}/enable` : 
+                    `/api/channels/${channelName}/disable`;
+                
+                const result = await apiCall(endpoint, 'POST');
+                
+                if (result.success) {
+                    const action = enabled ? 'enabled' : 'disabled';
+                    showToast(`Channel '${channelName}' ${action}`, 'success');
+                    
+                    // Update the channel card appearance immediately
+                    updateChannelCardAppearance(channelName, enabled);
+                    
+                    // Refresh channels list to get updated data
+                    setTimeout(() => loadChannels(), 500);
+                } else {
+                    showToast(result.error || `Failed to ${enabled ? 'enable' : 'disable'} channel`, 'error');
+                    // Revert the toggle if the API call failed
+                    const toggle = document.querySelector(`input[onchange*="${channelName}"]`);
+                    if (toggle) toggle.checked = !enabled;
+                }
+            } catch (error) {
+                showToast(`Failed to ${enabled ? 'enable' : 'disable'} channel`, 'error');
+                // Revert the toggle if the API call failed
+                const toggle = document.querySelector(`input[onchange*="${channelName}"]`);
+                if (toggle) toggle.checked = !enabled;
+            }
+        }
+
+        function updateChannelCardAppearance(channelName, enabled) {
+            // Find the channel card and update its appearance immediately
+            const channelCards = document.querySelectorAll('.channel-card');
+            channelCards.forEach(card => {
+                const nameElement = card.querySelector('.channel-name');
+                if (nameElement && nameElement.textContent === channelName) {
+                    // Update opacity
+                    card.style.opacity = enabled ? '1' : '0.6';
+                    
+                    // Update enabled badge
+                    const infoElement = card.querySelector('.channel-info');
+                    if (infoElement) {
+                        const currentInfo = infoElement.innerHTML;
+                        const newBadge = enabled ? 'âœ… Enabled' : 'âŒ Disabled';
+                        const updatedInfo = currentInfo.replace(/(âœ… Enabled|âŒ Disabled)/, newBadge);
+                        infoElement.innerHTML = updatedInfo;
+                    }
+                }
+            });
+        }
+
+        // Bulk Channel Actions
+        async function enableAllChannels() {
+            if (!confirm('Enable all channels? This will affect streaming configuration.')) {
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/channels');
+                const channels = data.channels;
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const channel of channels) {
+                    if (!channel.enabled) {
+                        try {
+                            const result = await apiCall(`/api/channels/${channel.name}/enable`, 'POST');
+                            if (result.success) {
+                                successCount++;
+                            } else {
+                                errorCount++;
+                            }
+                        } catch (error) {
+                            errorCount++;
+                        }
+                    }
+                }
+
+                if (successCount > 0) {
+                    showToast(`Enabled ${successCount} channels`, 'success');
+                    await loadChannels();
+                }
+                if (errorCount > 0) {
+                    showToast(`Failed to enable ${errorCount} channels`, 'error');
+                }
+            } catch (error) {
+                showToast('Failed to enable channels', 'error');
+            }
+        }
+
+        async function disableAllChannels() {
+            if (!confirm('Disable all channels? This will stop all streaming.')) {
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/channels');
+                const channels = data.channels;
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const channel of channels) {
+                    if (channel.enabled) {
+                        try {
+                            const result = await apiCall(`/api/channels/${channel.name}/disable`, 'POST');
+                            if (result.success) {
+                                successCount++;
+                            } else {
+                                errorCount++;
+                            }
+                        } catch (error) {
+                            errorCount++;
+                        }
+                    }
+                }
+
+                if (successCount > 0) {
+                    showToast(`Disabled ${successCount} channels`, 'success');
+                    await loadChannels();
+                }
+                if (errorCount > 0) {
+                    showToast(`Failed to disable ${errorCount} channels`, 'error');
+                }
+            } catch (error) {
+                showToast('Failed to disable channels', 'error');
+            }
+        }
+
+        // Channel Settings Modal
+        let currentChannelSettings = null;
+
+        async function openChannelSettings(channelName) {
+            try {
+                // Get current channel configuration
+                const config = await apiCall('/api/config');
+                const channelConfig = config.channels[channelName] || {};
+                
+                currentChannelSettings = channelName;
+                
+                // Update modal title
+                document.getElementById('modalChannelName').textContent = `${channelName} Settings`;
+                
+                // Populate form with current settings
+                const transcodingConfig = channelConfig.transcoding || {};
+                let transcodingValue = 'global';
+                if ('enabled' in transcodingConfig) {
+                    transcodingValue = transcodingConfig.enabled ? 'enabled' : 'disabled';
+                }
+                document.getElementById('channelTranscoding').value = transcodingValue;
+                
+                let subtitlesValue = 'global';
+                if ('enable_subtitles' in channelConfig) {
+                    subtitlesValue = channelConfig.enable_subtitles ? 'enabled' : 'disabled';
+                }
+                document.getElementById('channelSubtitles').value = subtitlesValue;
+                
+                document.getElementById('channelTypeSelect').value = channelConfig.type || 'linear';
+                
+                // Show modal
+                document.getElementById('channelSettingsModal').classList.add('show');
+            } catch (error) {
+                showToast('Failed to load channel settings', 'error');
+            }
+        }
+
+        function closeChannelSettings() {
+            document.getElementById('channelSettingsModal').classList.remove('show');
+            currentChannelSettings = null;
+        }
+
+        async function saveChannelSettings() {
+            if (!currentChannelSettings) return;
+            
+            try {
+                const transcoding = document.getElementById('channelTranscoding').value;
+                const subtitles = document.getElementById('channelSubtitles').value;
+                const channelType = document.getElementById('channelTypeSelect').value;
+                
+                // Build the update object
+                const updates = {
+                    channels: {
+                        [currentChannelSettings]: {
+                            type: channelType
+                        }
+                    }
+                };
+                
+                // Add transcoding override if not global
+                if (transcoding !== 'global') {
+                    updates.channels[currentChannelSettings].transcoding = {
+                        enabled: transcoding === 'enabled'
+                    };
+                }
+                
+                // Add subtitles override if not global
+                if (subtitles !== 'global') {
+                    updates.channels[currentChannelSettings].enable_subtitles = subtitles === 'enabled';
+                }
+                
+                const result = await apiCall('/api/config', 'PATCH', { updates });
+                
+                if (result.success) {
+                    showToast(`Settings saved for ${currentChannelSettings}`, 'success');
+                    closeChannelSettings();
+                    await loadChannels(); // Refresh channels to show any type changes
+                } else {
+                    showToast(result.error || 'Failed to save settings', 'error');
+                }
+            } catch (error) {
+                showToast('Failed to save channel settings', 'error');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('channelSettingsModal');
+            if (event.target === modal) {
+                closeChannelSettings();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeChannelSettings();
+            }
+        });
+
+        // Configuration Management
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'stats_update') {
+                    document.getElementById('viewersCount').textContent = data.viewers || 0;
+                    document.getElementById('nowPlaying').textContent = data.stats.now_playing || 'No program info';
+                }
+                
+                if (data.type === 'video_queued') {
+                    showToast(`Playing: ${data.data.video}`, 'info');
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket closed, reconnecting...');
+                setTimeout(connectWebSocket, 5000);
+            };
+        }
+
+        // Utilities
+        function formatUptime(seconds) {
+            if (!seconds || seconds === 0) return '0s';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${h}h ${m}m ${s}s`;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            showToast('URL copied!', 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function showLoading(btnId) {
+            const btn = document.getElementById(`${btnId}Btn`);
+            btn.innerHTML = '<span class="loading"></span> Processing...';
+            btn.disabled = true;
+        }
+
+        function hideLoading(btnId) {
+            const btn = document.getElementById(`${btnId}Btn`);
+            if (btnId === 'start') {
+                btn.innerHTML = 'â–¶ï¸ Start Streaming';
+            } else {
+                btn.innerHTML = 'â¹ï¸ Stop Streaming';
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
+

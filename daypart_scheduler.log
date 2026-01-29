@@ -1,0 +1,116 @@
+2025-12-24 17:38:27,124 [INFO] Loaded channels: ['critters', 'horror', 'akiratv', 'anime', '2min', 'live']
+2025-12-24 17:38:27,124 [INFO] Loaded 4 collections from collections_2min.json
+2025-12-24 17:38:27,125 [INFO] Loaded 9 collections from collections_action.json
+2025-12-24 17:38:27,125 [INFO] Loaded 9 collections from collections_akiratv.json
+2025-12-24 17:38:27,125 [INFO] Loaded 1 collections from collections_anime.json
+2025-12-24 17:38:27,125 [ERROR] Failed loading C:\AkiraTV\AkiraTV\user\collections\collections_horror.json
+Traceback (most recent call last):
+  File "C:\AkiraTV\AkiraTV\akiratv\daypart_scheduler_imgui.py", line 123, in load_collections
+    data = json.load(f)
+           ^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Invalid \escape: line 64 column 17 (char 1774)
+2025-12-24 17:38:27,148 [INFO] Loaded 17 collections from collections_me.json
+2025-12-24 17:38:27,148 [INFO] Loaded 9 collections from collections_t.json
+2025-12-24 17:38:27,148 [INFO] Loaded 9 collections from collections_test.json
+2025-12-24 17:38:27,149 [INFO] Total collections loaded: 58
+2025-12-24 17:50:20,020 [INFO] Loaded channels: ['critters', 'horror', 'akiratv', 'anime', '2min', 'live']
+2025-12-24 17:50:20,020 [INFO] Loaded 4 collections from collections_2min.json
+2025-12-24 17:50:20,020 [INFO] Loaded 9 collections from collections_action.json
+2025-12-24 17:50:20,021 [INFO] Loaded 9 collections from collections_akiratv.json
+2025-12-24 17:50:20,021 [INFO] Loaded 1 collections from collections_anime.json
+2025-12-24 17:50:20,021 [ERROR] Failed loading C:\AkiraTV\AkiraTV\user\collections\collections_horror.json
+Traceback (most recent call last):
+  File "C:\AkiraTV\AkiraTV\akiratv\daypart_scheduler_imgui.py", line 118, in load_collections
+    data = json.load(f)
+           ^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Invalid \escape: line 64 column 17 (char 1774)
+2025-12-24 17:50:20,022 [INFO] Loaded 17 collections from collections_me.json
+2025-12-24 17:50:20,022 [INFO] Loaded 9 collections from collections_t.json
+2025-12-24 17:50:20,023 [INFO] Loaded 9 collections from collections_test.json
+2025-12-24 17:50:20,023 [INFO] Total collections loaded: 58
+2025-12-24 18:00:55,079 [INFO] Loaded channels: ['critters', 'horror', 'akiratv', 'anime', '2min', 'live']
+2025-12-24 18:00:55,080 [INFO] Loaded 4 collections from collections_2min.json
+2025-12-24 18:00:55,080 [INFO] Loaded 9 collections from collections_action.json
+2025-12-24 18:00:55,080 [INFO] Loaded 9 collections from collections_akiratv.json
+2025-12-24 18:00:55,080 [INFO] Loaded 1 collections from collections_anime.json
+2025-12-24 18:00:55,081 [ERROR] Failed loading C:\AkiraTV\AkiraTV\user\collections\collections_horror.json
+Traceback (most recent call last):
+  File "C:\AkiraTV\AkiraTV\akiratv\daypart_scheduler_imgui.py", line 118, in load_collections
+    data = json.load(f)
+           ^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Invalid \escape: line 64 column 17 (char 1774)
+2025-12-24 18:00:55,082 [INFO] Loaded 17 collections from collections_me.json
+2025-12-24 18:00:55,082 [INFO] Loaded 9 collections from collections_t.json
+2025-12-24 18:00:55,082 [INFO] Loaded 9 collections from collections_test.json
+2025-12-24 18:00:55,082 [INFO] Total collections loaded: 58
+2025-12-24 18:00:55,663 [ERROR] GUI error
+Traceback (most recent call last):
+  File "C:\AkiraTV\AkiraTV\akiratv\daypart_scheduler_imgui.py", line 238, in gui
+    imgui.columns(2, "main_columns", border=True)
+TypeError: columns(): incompatible function arguments. The following argument types are supported:
+    1. columns(count: int = 1, id_: str | None = None, borders: bool = True) -> None
+
+Invoked with types: int, str, kwargs = { border: bool }
+2025-12-24 19:24:27,085 [INFO] Loaded channels: ['critters', 'horror', 'akiratv', 'anime', '2min', 'live']
+2025-12-24 19:24:27,085 [INFO] Loaded 4 collections from collections_2min.json
+2025-12-24 19:24:27,085 [INFO] Loaded 9 collections from collections_action.json
+2025-12-24 19:24:27,085 [INFO] Loaded 9 collections from collections_akiratv.json
+2025-12-24 19:24:27,085 [INFO] Loaded 1 collections from collections_anime.json
+2025-12-24 19:24:27,085 [ERROR] Failed loading C:\AkiraTV\AkiraTV\user\collections\collections_horror.json
+Traceback (most recent call last):
+  File "C:\AkiraTV\AkiraTV\akiratv\daypart_scheduler_imgui.py", line 118, in load_collections
+    data = json.load(f)
+           ^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python312\Lib\json\decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Invalid \escape: line 64 column 17 (char 1774)
+2025-12-24 19:24:27,085 [INFO] Loaded 17 collections from collections_me.json
+2025-12-24 19:24:27,085 [INFO] Loaded 9 collections from collections_t.json
+2025-12-24 19:24:27,085 [INFO] Loaded 9 collections from collections_test.json
+2025-12-24 19:24:27,085 [INFO] Total collections loaded: 58

@@ -1,0 +1,289 @@
+{
+  "collections": [
+    {
+      "id": "dark_angel",
+      "name": "Тъмен ангел (1990)",
+      "cover": null,
+      "description": "Полицейски детектив от Хюстън преследва извънземен дилър на наркотици, който инжектира жертвите си със смъртоносни дози хероин.",
+      "genre": ["Екшън", "Криминален", "Научна фантастика"],
+      "rating": "NR",
+      "year": 1990,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Dark.Angel.1990.720p.BluRay.x264.BG Audio Sopolin4o & T12.mkv",
+          "duration": 5477.013
+        }
+      ]
+    },
+    {
+      "id": "keeper_of_the_city_j_dvdrip_bg_audio_madmax___goredolo___hell_team",
+      "name": "Пазителят на града (1991)",
+      "cover": null,
+      "description": "Детектив преследва сериен убиец, който мисли, че прочиства града от корумпирани мафиоти.",
+      "genre": ["Криминален", "Драма", "Трилър"],
+      "rating": "NR",
+      "year": 1991,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Keeper of the City 1991.J.DVDRip.BG Audio.MadMax & Goredolo & Hell Team.mkv",
+          "duration": 5472.064
+        }
+      ]
+    },
+    {
+      "id": "stone_cold",
+      "name": "Студен като камък (1991)",
+      "cover": null,
+      "description": "Полицай под прикритие се внедрява в опасна рокерска банда, планираща убийството на правителствени служители.",
+      "genre": ["Екшън", "Криминален", "Драма"],
+      "rating": "NR",
+      "year": 1991,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Stone.Cold.1991.1080p.mkv",
+          "duration": 5529.042
+        }
+      ]
+    },
+    {
+      "id": "commando_bdrip_xvid_tv_vhs_bg_audio",
+      "name": "Командо (1985)",
+      "cover": null,
+      "description": "Пенсиониран полковник от специалните части има само няколко часа, за да намери отвлечената си дъщеря.",
+      "genre": ["Екшън", "Приключенски", "Трилър"],
+      "rating": "NR",
+      "year": 1985,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Commando.1985.BDRip.XviD.TV.VHS.BG AUDIO - T12 & Satanas/Commando.1985.BDRip.XviD.TV.VHS.BG AUDIO.mkv",
+          "duration": 5415.666
+        }
+      ]
+    },
+    {
+      "id": "last_man_standing",
+      "name": "Последният оцелял (1996)",
+      "cover": null,
+      "description": "Наемен убиец се озовава в средата на война между две враждуващи банди в малък град по време на Сухия режим.",
+      "genre": ["Екшън", "Криминален", "Драма"],
+      "rating": "NR",
+      "year": 1996,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Last.Man.Standing.1996.1080p.BluRay.x265-DiN/Last.Man.Standing.1996.1080p.BluRay.x265-DiN.mkv",
+          "duration": 6063.328
+        }
+      ]
+    },
+    {
+      "id": "raw_deal_j",
+      "name": "Сурова сделка (1986)",
+      "cover": null,
+      "description": "Бивш агент на ФБР се внедрява в мафията, за да отмъсти за сина на свой приятел и да си върне старата работа.",
+      "genre": ["Екшън", "Криминален", "Трилър"],
+      "rating": "NR",
+      "year": 1986,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Raw Deal 1986.J.1080p.BluRay.BG Audio.MadMax & T12 & Goredolo/Raw Deal 1986.J.1080p.BluRay.BG Audio.mkv",
+          "duration": 6335.04
+        }
+      ]
+    },
+    {
+      "id": "total_recall_remastered",
+      "name": "Зов за завръщане (1990)",
+      "cover": "user/covers/Total.Recall.1990.Remastered.1080p.jpg",
+      "description": "Когато човек отива за имплантиране на спомени за почивка на Марс, той открива, че целият му живот е лъжа.",
+      "genre": ["Екшън", "Научна фантастика", "Трилър"],
+      "rating": "NR",
+      "year": 1990,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Total.Recall.1990.Remastered.1080p.BDRip.AV1-DiN/Total.Recall.1990.Remastered.mkv",
+          "duration": 6796.667
+        }
+      ]
+    },
+    {
+      "id": "american_cyborg_steel_warrior_dvdrip_xvid_bg_and_eng_audio_atany",
+      "name": "Американски киборг: Стоманен воин (1993)",
+      "cover": null,
+      "description": "След ядрена война хората са стерилни и контролирани от роботи. Единствената бременна жена трябва да бъде защитена.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "rating": "NR",
+      "year": 1993,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/American.Cyborg.Steel.Warrior.1993.DVDRip.XviD.BG.and.ENG.Audio-Atany.avi",
+          "duration": 5445.12
+        }
+      ]
+    },
+    {
+      "id": "bloodsport_iii_dvdrip_bg_audio_atany___stezarai",
+      "name": "Кървав спорт 3 (1996)",
+      "cover": null,
+      "description": "Алекс Кардо трябва да се бие в турнира Кумите, за да отмъсти за смъртта на своя ментор.",
+      "genre": ["Екшън"],
+      "rating": "NR",
+      "year": 1996,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Bloodsport.III.1996.DVDRip.BG.Audio-Atany & Stezarai.avi",
+          "duration": 5521.104438
+        }
+      ]
+    },
+    {
+      "id": "cia_ii_target_alexa_dvdrip_bg_audio_atany___stezarai",
+      "name": "ЦРУ 2: Мишена Алекса (1993)",
+      "cover": null,
+      "description": "Терористи открадват ядрен детонатор и ЦРУ трябва да разчита на бивша терористка, за да го върне.",
+      "genre": ["Екшън", "Трилър"],
+      "rating": "NR",
+      "year": 1993,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/CIA.II.Target.Alexa.1993.DVDRip.BG.Audio-Atany & Stezarai.avi",
+          "duration": 5260.88
+        }
+      ]
+    },
+    {
+      "id": "cybertracker_dvdrip_xvid_bg_and_eng_audio_atany",
+      "name": "Кибер проследяване (1994)",
+      "cover": null,
+      "description": "Агент по сигурността е натопен за убийство и трябва да избяга от перфектната машина за убиване – Кибер проследяващия.",
+      "genre": ["Екшън", "Научна фантастика"],
+      "rating": "NR",
+      "year": 1994,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/CyberTracker.1994.DVDRip.XviD.BG.and.ENG.Audio-Atany.avi",
+          "duration": 5230.6
+        }
+      ]
+    },
+    {
+      "id": "never_say_die_dvdrip_bg_audio_atany___stezarai",
+      "name": "Никога не казвай сбогом (1994)",
+      "cover": null,
+      "description": "Бивш агент на специалните части се изправя срещу смъртоносен култ, докато се опитва да спаси живота си.",
+      "genre": ["Екшън", "Трилър"],
+      "rating": "NR",
+      "year": 1994,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Never.Say.Die.1994.DVDRip.BG.Audio-Atany & Stezarai.avi",
+          "duration": 5977.012708
+        }
+      ]
+    },
+    {
+      "id": "only_the_strong_hdtvrip_bg_audio_atany___stezarai",
+      "name": "Само най-силните (1993)",
+      "cover": null,
+      "description": "Бивш войник се връща в старата си гимназия, за да преподава капоейра на проблемни тийнейджъри.",
+      "genre": ["Екшън", "Драма"],
+      "rating": "NR",
+      "year": 1993,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Only.the.Strong.1993.HDTVRip.BG.Audio-Atany & Stezarai.avi",
+          "duration": 5759.467801
+        }
+      ]
+    },
+    {
+      "id": "snake_eater_dvdrip_xvid_bg_and_eng_audio_atany",
+      "name": "Змията (1989)",
+      "cover": null,
+      "description": "Полицай, известен като „Змията“, се завръща в родния си край, за да отмъсти за семейството си.",
+      "genre": ["Екшън"],
+      "rating": "NR",
+      "year": 1989,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Snake.Eater.1989.DVDRip.XviD.BG.and.ENG.Audio-Atany.avi",
+          "duration": 5673.454924
+        }
+      ]
+    },
+    {
+      "id": "snake_eater_2_the_drug_buster_dvdrip_xvid_bg_audio_atany",
+      "name": "Змията 2: Разбивачът на дрога (1989)",
+      "cover": null,
+      "description": "След като е несправедливо затворен в психиатрия, Джак Кели „Змията“ бяга, за да се изправи срещу наркодилъри.",
+      "genre": ["Екшън"],
+      "rating": "NR",
+      "year": 1989,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Snake.Eater.2.The.Drug.Buster.1989.DVDRip.XviD.BG.Audio-Atany.avi",
+          "duration": 5549.585708
+        }
+      ]
+    },
+    {
+      "id": "white_tiger_dvdrip_xvid_bg_and_eng_audio_atany",
+      "name": "Бял тигър (1996)",
+      "cover": null,
+      "description": "Агент на ДЕА преследва китайски мафиот, убил партньора му по време на провалена сделка.",
+      "genre": ["Екшън", "Криминален"],
+      "rating": "NR",
+      "year": 1996,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/White.Tiger.1996.DVDRip.XviD.BG.and.ENG.Audio-Atany.avi",
+          "duration": 5381.52
+        }
+      ]
+    },
+    {
+      "id": "best_of_the_best_04_fs_xvid_dvdrip",
+      "name": "Най-добрият от най-добрите 4: Без предупреждение (1998)",
+      "cover": null,
+      "description": "Томи Лий трябва да защити себе си и дъщеря си от руската мафия, която търси откраднати компютърни дискове.",
+      "genre": ["Екшън", "Трилър"],
+      "rating": "NR",
+      "year": 1998,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Best.Of.The.Best.4.1998.FS.XviD.DVDRip/Best.Of.The.Best.04.1998.FS.XviD.DVDRip.avi",
+          "duration": 5193.24
+        }
+      ]
+    },
+    {
+      "id": "sudden_impact",
+      "name": "Внезапен удар (1983)",
+      "cover": null,
+      "description": "Мръсният Хари Калахан разследва поредица от убийства, извършени от жена, търсеща отмъщение за миналото си.",
+      "genre": ["Екшън", "Криминален", "Трилър"],
+      "rating": "NR",
+      "year": 1983,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/Sudden.Impact.1983.720p.BDRip.AC3.XviD-SHiRK/Sudden.Impact.1983.720p.BDRip.AC3.XviD-SHiRK.avi",
+          "duration": 7029.033235
+        }
+      ]
+    },
+    {
+      "id": "the_contract_killer__1998___bgaudio_tvrip__planet",
+      "name": "Наемен убиец (1998)",
+      "cover": null,
+      "description": "Млад наемен убиец с морален кодекс се съюзява с дребен мошеник, за да хване опасен престъпник.",
+      "genre": ["Екшън", "Комедия", "Криминален"],
+      "rating": "NR",
+      "year": 1998,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/TatkoTV/The Contract Killer (1998) [BGAudio.TVRip]-Planet/The Contract Killer (1998) [BGAudio.TVRip]-Planet.avi",
+          "duration": 5685.36
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5425 @@
+[
+  {
+    "duration_seconds": 8234.432,
+    "overall_bitrate": 1917586,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1784870,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128099,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Aliens 2.mp4",
+    "path": "C:\\Videos\\Akiratv\\Aliens 2.mp4"
+  },
+  {
+    "duration_seconds": 5445.231,
+    "overall_bitrate": 1630784,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1498598,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128464,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "American Cyborg Steel Warrior 1993.mp4",
+    "path": "C:\\Videos\\Akiratv\\American Cyborg Steel Warrior 1993.mp4"
+  },
+  {
+    "duration_seconds": 5989.817,
+    "overall_bitrate": 1931490,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1797564,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129342,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Big.Trouble.in.Little.China.1986.1080p.BDRip.AV1-DiN.mp4",
+    "path": "C:\\Videos\\Akiratv\\Big.Trouble.in.Little.China.1986.1080p.BDRip.AV1-DiN.mp4"
+  },
+  {
+    "duration_seconds": 5477.013,
+    "overall_bitrate": 1629666,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1496764,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127857,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Dark Angel.mp4",
+    "path": "C:\\Videos\\Akiratv\\Dark Angel.mp4"
+  },
+  {
+    "duration_seconds": 6703.743,
+    "overall_bitrate": 1905115,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1770649,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129852,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Dark.City.mp4",
+    "path": "C:\\Videos\\Akiratv\\Dark.City.mp4"
+  },
+  {
+    "duration_seconds": 6756.291,
+    "overall_bitrate": 1932736,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1796549,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129695,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Falling Down.mp4",
+    "path": "C:\\Videos\\Akiratv\\Falling Down.mp4"
+  },
+  {
+    "duration_seconds": 5402.419,
+    "overall_bitrate": 1929030,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1793141,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129389,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Identity.2003.576p.BRRIP.x264.AAC-GOD.mp4",
+    "path": "C:\\Videos\\Akiratv\\Identity.2003.576p.BRRIP.x264.AAC-GOD.mp4"
+  },
+  {
+    "duration_seconds": 7854.847,
+    "overall_bitrate": 1916528,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1781490,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128627,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "last action hero.x265.mp4",
+    "path": "C:\\Videos\\Akiratv\\last action hero.x265.mp4"
+  },
+  {
+    "duration_seconds": 6007.96,
+    "overall_bitrate": 1916179,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1782963,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128592,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Legion.mp4",
+    "path": "C:\\Videos\\Akiratv\\Legion.mp4"
+  },
+  {
+    "duration_seconds": 6352.846,
+    "overall_bitrate": 1605462,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1470242,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128688,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Mindhunters.mp4",
+    "path": "C:\\Videos\\Akiratv\\Mindhunters.mp4"
+  },
+  {
+    "duration_seconds": 8069.687,
+    "overall_bitrate": 1930532,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1795026,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130911,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Once.Upon.a.Time.in.China.1991.mp4",
+    "path": "C:\\Videos\\Akiratv\\Once.Upon.a.Time.in.China.1991.mp4"
+  },
+  {
+    "duration_seconds": 6485.568,
+    "overall_bitrate": 1922651,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1787981,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130068,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Pandorum.mp4",
+    "path": "C:\\Videos\\Akiratv\\Pandorum.mp4"
+  },
+  {
+    "duration_seconds": 6444.897,
+    "overall_bitrate": 1939027,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1802079,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 132324,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Pineapple.Express.2008.HDTV.1080i.x264.BGAUDiO-4PLAY.mp4",
+    "path": "C:\\Videos\\Akiratv\\Pineapple.Express.2008.HDTV.1080i.x264.BGAUDiO-4PLAY.mp4"
+  },
+  {
+    "duration_seconds": 6646.4,
+    "overall_bitrate": 2127433,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1992512,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130296,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "So Close 2002.mp4",
+    "path": "C:\\Videos\\Akiratv\\So Close 2002.mp4"
+  },
+  {
+    "duration_seconds": 7648.704,
+    "overall_bitrate": 1930262,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1796095,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129544,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Superman .II1980.mp4",
+    "path": "C:\\Videos\\Akiratv\\Superman .II1980.mp4"
+  },
+  {
+    "duration_seconds": 7498.496,
+    "overall_bitrate": 2126100,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1992070,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129403,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Superman III 1983 DD5.mp4",
+    "path": "C:\\Videos\\Akiratv\\Superman III 1983 DD5.mp4"
+  },
+  {
+    "duration_seconds": 6516.033,
+    "overall_bitrate": 1629822,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1495791,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129516,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Swordsman II 1991.mp4",
+    "path": "C:\\Videos\\Akiratv\\Swordsman II 1991.mp4"
+  },
+  {
+    "duration_seconds": 5848.634,
+    "overall_bitrate": 1921614,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1787265,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129724,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The Crow 1994 XviD LTRG.mp4",
+    "path": "C:\\Videos\\Akiratv\\The Crow 1994 XviD LTRG.mp4"
+  },
+  {
+    "duration_seconds": 7577.278,
+    "overall_bitrate": 1932886,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1796506,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129856,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The Fifth Element 1997.mp4",
+    "path": "C:\\Videos\\Akiratv\\The Fifth Element 1997.mp4"
+  },
+  {
+    "duration_seconds": 5493.238,
+    "overall_bitrate": 1920237,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1785935,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129678,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Tron 1982.mp4",
+    "path": "C:\\Videos\\Akiratv\\Tron 1982.mp4"
+  },
+  {
+    "duration_seconds": 7508.668,
+    "overall_bitrate": 2113714,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1980989,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128100,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Tron legacy 2010.mp4",
+    "path": "C:\\Videos\\Akiratv\\Tron legacy 2010.mp4"
+  },
+  {
+    "duration_seconds": 6535.821,
+    "overall_bitrate": 1518287,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1383917,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129750,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "10000 bc.mp4",
+    "path": "C:\\Videos\\akiratv_old\\10000 bc.mp4"
+  },
+  {
+    "duration_seconds": 7029.334,
+    "overall_bitrate": 1380023,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1246333,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129109,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Armour of God 2 Operation Condor 1991.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Armour of God 2 Operation Condor 1991.mp4"
+  },
+  {
+    "duration_seconds": 5900.561,
+    "overall_bitrate": 2390294,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2257061,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128608,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "barb wire.mp4",
+    "path": "C:\\Videos\\akiratv_old\\barb wire.mp4"
+  },
+  {
+    "duration_seconds": 5755.833,
+    "overall_bitrate": 2061630,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1927220,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129787,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Casper 1995 DVDRip.BG.Audio.BiTANeM.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Casper 1995 DVDRip.BG.Audio.BiTANeM.mp4"
+  },
+  {
+    "duration_seconds": 7831.859,
+    "overall_bitrate": 1486099,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1350368,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129209,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Conan the Barbarian.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Conan the Barbarian.mp4"
+  },
+  {
+    "duration_seconds": 6076.593,
+    "overall_bitrate": 1460604,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1327841,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128144,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Conan the Destroyer.1984.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Conan the Destroyer.1984.mp4"
+  },
+  {
+    "duration_seconds": 7247.407,
+    "overall_bitrate": 1690242,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1557919,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127700,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Constantine 2005.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Constantine 2005.mp4"
+  },
+  {
+    "duration_seconds": 7112.272,
+    "overall_bitrate": 1787464,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1657695,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127622,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Cowboys and Aliens 2011.TC.1080p.BDRip.AV1-DiN.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Cowboys and Aliens 2011.TC.1080p.BDRip.AV1-DiN.mp4"
+  },
+  {
+    "duration_seconds": 6271.295,
+    "overall_bitrate": 1585884,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1449085,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130274,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Drive Angry 2011 BDRip.x264.AAC.BGAudio-REFLUX_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Drive Angry 2011 BDRip.x264.AAC.BGAudio-REFLUX_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 6489.216,
+    "overall_bitrate": 1754974,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1620901,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129452,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Enemy Mine.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Enemy Mine.mp4"
+  },
+  {
+    "duration_seconds": 5585.972,
+    "overall_bitrate": 1335802,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1205064,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 126205,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Full Eclipse (1993) BG Audio_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Full Eclipse (1993) BG Audio_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 5887.403,
+    "overall_bitrate": 1445743,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1310654,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130702,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Ghosts.of.Mars.2001.1080p.BluRay.DUAL.AUDiO.H.265-WAR_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Ghosts.of.Mars.2001.1080p.BluRay.DUAL.AUDiO.H.265-WAR_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 6315.367,
+    "overall_bitrate": 1393295,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1259919,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128785,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Hackers.1995.REMASTERED.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Hackers.1995.REMASTERED.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 6998.144,
+    "overall_bitrate": 1489560,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1355131,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129808,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Highlander.1986.BDRip.1080p.BG.Audio-AbI&SR_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Highlander.1986.BDRip.1080p.BG.Audio-AbI&SR_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 6583.02,
+    "overall_bitrate": 1277429,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1140006,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130896,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Highlander.2.The Quickening.1991.BDRip.x264.AAC.BGAUDiO-SiSO_fmp4_tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Highlander.2.The Quickening.1991.BDRip.x264.AAC.BGAUDiO-SiSO_fmp4_tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 8688.032,
+    "overall_bitrate": 1413698,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1279397,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129693,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Independence Day 1996 TC.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Independence Day 1996 TC.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 5800.42,
+    "overall_bitrate": 1340954,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1206396,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129936,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Johnny Mnemonic 1995 BDRip.BG.Audio-AbI&SR_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Johnny Mnemonic 1995 BDRip.BG.Audio-AbI&SR_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 5730.099,
+    "overall_bitrate": 1684307,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1550311,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129369,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Mad Max 2 1981.Unrated.BDRip.BG.Audio.LoveJesus_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Mad Max 2 1981.Unrated.BDRip.BG.Audio.LoveJesus_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 6418.053,
+    "overall_bitrate": 1463154,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1329219,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129312,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Mad Max 3 Beyond Thunderdome 1985 1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Mad Max 3 Beyond Thunderdome 1985 1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 6806.049,
+    "overall_bitrate": 1105891,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 972550,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128716,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Maze Runner 1 .2014._tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Maze Runner 1 .2014._tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 7902.019,
+    "overall_bitrate": 1127488,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 994459,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128404,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Maze Runner 2 The.Scorch.Trials.2015_tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Maze Runner 2 The.Scorch.Trials.2015_tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 8632.64,
+    "overall_bitrate": 1519839,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1386369,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128848,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Maze Runner 3 The.Death.Cure.2018.BDRip.x264.AC3.BGAUDiO-SiSO_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Maze Runner 3 The.Death.Cure.2018.BDRip.x264.AC3.BGAUDiO-SiSO_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 5663.974,
+    "overall_bitrate": 1403213,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1270735,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127960,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Men At Work (1990) BG Audio_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Men At Work (1990) BG Audio_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 6635.212,
+    "overall_bitrate": 2559744,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2425912,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129207,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "No Escape.mp4",
+    "path": "C:\\Videos\\akiratv_old\\No Escape.mp4"
+  },
+  {
+    "duration_seconds": 6907.609,
+    "overall_bitrate": 1560695,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1426906,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129163,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Outlander.2008.BDRip.XviD.AC3.BGAUDiO-SiSO_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Outlander.2008.BDRip.XviD.AC3.BGAUDiO-SiSO_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 7198.082,
+    "overall_bitrate": 1234556,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1101105,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128833,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Planet.of.the.Apes.2001.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Planet.of.the.Apes.2001.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 6031.087,
+    "overall_bitrate": 1454620,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1320827,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129111,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Police.Story 1 1985.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Police.Story 1 1985.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4"
+  },
+  {
+    "duration_seconds": 7200.088,
+    "overall_bitrate": 1453066,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1318313,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130079,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Police.Story 2.1988.EXT.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Police.Story 2.1988.EXT.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4"
+  },
+  {
+    "duration_seconds": 5790.04,
+    "overall_bitrate": 1718639,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1585526,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129346,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Police.Story 3 1992.REMASTERED.1080p.BDRip.AV1-DiN_remux_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Police.Story 3 1992.REMASTERED.1080p.BDRip.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 5331.076,
+    "overall_bitrate": 1648948,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1514485,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129851,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Red Sonja 1985.BDRip.XviD.DUAL-REFLUX_tv.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Red Sonja 1985.BDRip.XviD.DUAL-REFLUX_tv.mp4"
+  },
+  {
+    "duration_seconds": 6117.696,
+    "overall_bitrate": 2051662,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1917892,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128528,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Reign of Fire 2002.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Reign of Fire 2002.mp4"
+  },
+  {
+    "duration_seconds": 6120.114,
+    "overall_bitrate": 1172716,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1038658,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129434,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Screamers 1.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Screamers 1.mp4"
+  },
+  {
+    "duration_seconds": 5688.892,
+    "overall_bitrate": 1271570,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1137651,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129295,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Screamers 2 The Hunting.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Screamers 2 The Hunting.mp4"
+  },
+  {
+    "duration_seconds": 5447.067,
+    "overall_bitrate": 2297970,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2165575,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128249,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "split second.mp4",
+    "path": "C:\\Videos\\akiratv_old\\split second.mp4"
+  },
+  {
+    "duration_seconds": 6190.142,
+    "overall_bitrate": 1713423,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1579929,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128870,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Star Trek First Contact 1996.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Star Trek First Contact 1996.mp4"
+  },
+  {
+    "duration_seconds": 6423.042,
+    "overall_bitrate": 1172721,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1040166,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127929,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Terminator 1 1984_tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Terminator 1 1984_tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 8228.326,
+    "overall_bitrate": 1314287,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1182532,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128655,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Terminator 2 1991.TC.1080p.BluRay.x265.Dual-DiN_tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Terminator 2 1991.TC.1080p.BluRay.x265.Dual-DiN_tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6520.472,
+    "overall_bitrate": 1595129,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1461312,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129192,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Terminator 3 Rise Of the Machines 2003.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Terminator 3 Rise Of the Machines 2003.mp4"
+  },
+  {
+    "duration_seconds": 6166.16,
+    "overall_bitrate": 1434396,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1301406,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128377,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The 13th Warrior 1999.1080p.BluRay.AV1-DiN_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The 13th Warrior 1999.1080p.BluRay.AV1-DiN_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 6415.117,
+    "overall_bitrate": 997812,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 863757,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129431,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The Mutant Chronicles[2008]DvDrip-aXXo_fmp4_burned_tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The Mutant Chronicles[2008]DvDrip-aXXo_fmp4_burned_tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6043.053,
+    "overall_bitrate": 3007643,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2874944,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128090,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The Running Man 1987.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The Running Man 1987.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4"
+  },
+  {
+    "duration_seconds": 5848.718,
+    "overall_bitrate": 1761343,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1627256,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129464,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Crow.1994.BDRip.AC3.XviD-LTRG.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The.Crow.1994.BDRip.AC3.XviD-LTRG.mp4"
+  },
+  {
+    "duration_seconds": 6595.881,
+    "overall_bitrate": 1994789,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1860937,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129226,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Frighteners.1996.TC.Open.Matte.WEB-DLRip.BG.Audio-Atany & Stezarai & charmedssss_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The.Frighteners.1996.TC.Open.Matte.WEB-DLRip.BG.Audio-Atany & Stezarai & charmedssss_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 6644.054,
+    "overall_bitrate": 3499024,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 3365343,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129055,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Hard.Way.1991.1080p.BluRay.AV1-DiN_gpu_720x404.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The.Hard.Way.1991.1080p.BluRay.AV1-DiN_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 10670.011,
+    "overall_bitrate": 1281980,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1146192,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129295,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Postman.1997.BDRip.x264.AAC-HUD_fmp4_burned_tv_gpu.mp4",
+    "path": "C:\\Videos\\akiratv_old\\The.Postman.1997.BDRip.x264.AAC-HUD_fmp4_burned_tv_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6796.347,
+    "overall_bitrate": 1385564,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1251107,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129924,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Total Recall 1990.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Total Recall 1990.mp4"
+  },
+  {
+    "duration_seconds": 7508.683,
+    "overall_bitrate": 1602087,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1469494,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127971,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Tron legacy 2010.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Tron legacy 2010.mp4"
+  },
+  {
+    "duration_seconds": 7891.258,
+    "overall_bitrate": 1771007,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1637005,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129389,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Van Helsing 2004.mp4",
+    "path": "C:\\Videos\\akiratv_old\\Van Helsing 2004.mp4"
+  },
+  {
+    "duration_seconds": 7986.759,
+    "overall_bitrate": 1924160,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1789194,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130348,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Battle.of.Wits.2006.1080p.BDRip.AV1-DiN.mp4",
+    "path": "C:\\Videos\\asian_vids\\A.Battle.of.Wits.2006.1080p.BDRip.AV1-DiN.mp4"
+  },
+  {
+    "duration_seconds": 7687.744,
+    "overall_bitrate": 1928392,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1793309,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130458,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Hard Boiled 1992.1080p.BluRay.DD5.1.H.265-WAR.mp4",
+    "path": "C:\\Videos\\asian_vids\\Hard Boiled 1992.1080p.BluRay.DD5.1.H.265-WAR.mp4"
+  },
+  {
+    "duration_seconds": 5217.295,
+    "overall_bitrate": 1630361,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1496803,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128935,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Legacy.of.Rage.DVDRip.XviD-WAR.mp4",
+    "path": "C:\\Videos\\asian_vids\\Legacy.of.Rage.DVDRip.XviD-WAR.mp4"
+  },
+  {
+    "duration_seconds": 9469.502,
+    "overall_bitrate": 1921969,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1787742,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129604,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Musa (2001) DVDRip DivX 5.0.mp4",
+    "path": "C:\\Videos\\asian_vids\\Musa (2001) DVDRip DivX 5.0.mp4"
+  },
+  {
+    "duration_seconds": 8069.687,
+    "overall_bitrate": 1930532,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1795026,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130911,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Once Upon a Time in China 1991.mp4",
+    "path": "C:\\Videos\\asian_vids\\Once Upon a Time in China 1991.mp4"
+  },
+  {
+    "duration_seconds": 5751.788,
+    "overall_bitrate": 1933633,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1798963,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130045,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Royal Warriors 1986.mp4",
+    "path": "C:\\Videos\\asian_vids\\Royal Warriors 1986.mp4"
+  },
+  {
+    "duration_seconds": 6646.4,
+    "overall_bitrate": 2127433,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1992512,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130296,
+        "language": "chi",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "So Close 2002.mp4",
+    "path": "C:\\Videos\\asian_vids\\So Close 2002.mp4"
+  },
+  {
+    "duration_seconds": 6516.033,
+    "overall_bitrate": 1629822,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1495791,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129516,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Swordsman II 1991.mp4",
+    "path": "C:\\Videos\\asian_vids\\Swordsman II 1991.mp4"
+  },
+  {
+    "duration_seconds": 5812.832,
+    "overall_bitrate": 1920821,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1794442,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130545,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Tai-Chi.Master.1993.BDRip.x264.AC3-WAF.mp4",
+    "path": "C:\\Videos\\asian_vids\\The.Tai-Chi.Master.1993.BDRip.x264.AC3-WAF.mp4"
+  },
+  {
+    "duration_seconds": 5837.589,
+    "overall_bitrate": 1455129,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 1321981,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128523,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4"
+  },
+  {
+    "duration_seconds": 5290.341,
+    "overall_bitrate": 1409854,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 1276572,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128659,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4"
+  },
+  {
+    "duration_seconds": 5968.016,
+    "overall_bitrate": 979035,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 846232,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128196,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4"
+  },
+  {
+    "duration_seconds": 5452.486,
+    "overall_bitrate": 1036581,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 902674,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129335,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Екзекуторът (1994) БГ Аудио [N95JkUhDJnM].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Екзекуторът (1994) БГ Аудио [N95JkUhDJnM].mp4"
+  },
+  {
+    "duration_seconds": 5745.127,
+    "overall_bitrate": 1135469,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 1002038,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128814,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY].mp4"
+  },
+  {
+    "duration_seconds": 4852.097,
+    "overall_bitrate": 1330373,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 1201878,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 123870,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk].mp4"
+  },
+  {
+    "duration_seconds": 5297.447,
+    "overall_bitrate": 1047128,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 913516,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128998,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs].mp4"
+  },
+  {
+    "duration_seconds": 4994.101,
+    "overall_bitrate": 971183,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 838391,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128169,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok].mp4"
+  },
+  {
+    "duration_seconds": 5028.583,
+    "overall_bitrate": 965255,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 831707,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128932,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk].mp4"
+  },
+  {
+    "duration_seconds": 5143.475,
+    "overall_bitrate": 1002980,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 869406,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129018,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s].mp4"
+  },
+  {
+    "duration_seconds": 5177.934,
+    "overall_bitrate": 1016729,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 883138,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128966,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc].mp4"
+  },
+  {
+    "duration_seconds": 5039.101,
+    "overall_bitrate": 1265194,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 1130798,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129785,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I].mp4"
+  },
+  {
+    "duration_seconds": 5837.589,
+    "overall_bitrate": 1483898,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1350751,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128522,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4"
+  },
+  {
+    "duration_seconds": 5701.397,
+    "overall_bitrate": 1336887,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 1204194,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128074,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw]_Part1_joined.mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw]_Part1_joined.mp4"
+  },
+  {
+    "duration_seconds": 5290.341,
+    "overall_bitrate": 1424540,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1291344,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128574,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4"
+  },
+  {
+    "duration_seconds": 5968.016,
+    "overall_bitrate": 956617,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 823767,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128243,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4",
+    "path": "C:\\Videos\\don dragon_encoded\\encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4"
+  },
+  {
+    "duration_seconds": 5452.487,
+    "overall_bitrate": 562341,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "av1",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 429735,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Екзекуторът (1994) БГ Аудио [N95JkUhDJnM].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Екзекуторът (1994) БГ Аудио [N95JkUhDJnM].mp4"
+  },
+  {
+    "duration_seconds": 5745.128,
+    "overall_bitrate": 631960,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "av1",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 499335,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY].mp4"
+  },
+  {
+    "duration_seconds": 5151.022,
+    "overall_bitrate": 510095,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 25.0,
+        "bitrate": 376340,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Жаден за Кръв (1992) БГ Аудио [Gr4taTL-UMU].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Жаден за Кръв (1992) БГ Аудио [Gr4taTL-UMU].mp4"
+  },
+  {
+    "duration_seconds": 5229.273,
+    "overall_bitrate": 2401798,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 59.94005994005994,
+        "bitrate": 2258894,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Железни Бойци (1995) БГ Аудио [BPx4O1kyIKI].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Железни Бойци (1995) БГ Аудио [BPx4O1kyIKI].mp4"
+  },
+  {
+    "duration_seconds": 5347.254,
+    "overall_bitrate": 2000932,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 60.0,
+        "bitrate": 1862443,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128000,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Изкупление (2002) БГ Субтитри [TIFmIJi8VAU].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Изкупление (2002) БГ Субтитри [TIFmIJi8VAU].mp4"
+  },
+  {
+    "duration_seconds": 4852.065,
+    "overall_bitrate": 679166,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 646,
+        "height": 480,
+        "fps": 25.0,
+        "bitrate": 545331,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk].mp4"
+  },
+  {
+    "duration_seconds": 5297.447,
+    "overall_bitrate": 570862,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 29.97002997002997,
+        "bitrate": 435318,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs].mp4"
+  },
+  {
+    "duration_seconds": 4994.101,
+    "overall_bitrate": 407462,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "av1",
+        "width": 1280,
+        "height": 720,
+        "fps": 25.0,
+        "bitrate": 274347,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok].mp4"
+  },
+  {
+    "duration_seconds": 5028.583,
+    "overall_bitrate": 277861,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "av1",
+        "width": 708,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 145234,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128000,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk].mp4"
+  },
+  {
+    "duration_seconds": 5143.475,
+    "overall_bitrate": 411545,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 276926,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s].mp4"
+  },
+  {
+    "duration_seconds": 5177.934,
+    "overall_bitrate": 404073,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 269447,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128000,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc].mp4"
+  },
+  {
+    "duration_seconds": 5039.102,
+    "overall_bitrate": 710179,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 480,
+        "fps": 23.0,
+        "bitrate": 577378,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I].mp4"
+  },
+  {
+    "duration_seconds": 5275.341,
+    "overall_bitrate": 3219778,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 50.0,
+        "bitrate": 3081721,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Огнен Ад (1997) БГ Аудио [IzuwbLyFY_o].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Огнен Ад (1997) БГ Аудио [IzuwbLyFY_o].mp4"
+  },
+  {
+    "duration_seconds": 5837.589,
+    "overall_bitrate": 2411779,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 2277128,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4"
+  },
+  {
+    "duration_seconds": 5815.786,
+    "overall_bitrate": 2333664,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 2200459,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw].mp4"
+  },
+  {
+    "duration_seconds": 4800.029,
+    "overall_bitrate": 656867,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 720,
+        "height": 480,
+        "fps": 23.976023976023978,
+        "bitrate": 522706,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Предсказателят (1998) БГ Аудио [AHxZuHtj_DU].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Предсказателят (1998) БГ Аудио [AHxZuHtj_DU].mp4"
+  },
+  {
+    "duration_seconds": 4768.566,
+    "overall_bitrate": 2500708,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 50.0,
+        "bitrate": 2363020,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Удар в Бъдещето (1991) БГ Аудио [e40M15m2yxE].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Удар в Бъдещето (1991) БГ Аудио [e40M15m2yxE].mp4"
+  },
+  {
+    "duration_seconds": 5290.342,
+    "overall_bitrate": 2750238,
+    "video_tracks": [
+      {
+        "index": 1,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 2615967,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 0,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4"
+  },
+  {
+    "duration_seconds": 5968.016,
+    "overall_bitrate": 549040,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "av1",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 416421,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128000,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4",
+    "path": "C:\\Videos\\don dragon_videos\\Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4"
+  },
+  {
+    "duration_seconds": 75.883,
+    "overall_bitrate": 1903989,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "fps": 29.97002997002997,
+        "bitrate": 1854783,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 47999,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Akira (1988) Trailer.mp4",
+    "path": "C:\\Videos\\dynamic\\Akira (1988) Trailer.mp4"
+  },
+  {
+    "duration_seconds": 97.291,
+    "overall_bitrate": 2066575,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 1920,
+        "height": 1080,
+        "fps": 23.976023976023978,
+        "bitrate": 1937080,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 126917,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Ghost in the Shell (1995).mp4",
+    "path": "C:\\Videos\\dynamic\\Ghost in the Shell (1995).mp4"
+  },
+  {
+    "duration_seconds": 75.79,
+    "overall_bitrate": 1638844,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 1920,
+        "height": 804,
+        "fps": 27.0,
+        "bitrate": 1589509,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 47999,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Swallowed Star MovieBattleofPrimordialStar.mp4",
+    "path": "C:\\Videos\\dynamic\\Swallowed Star MovieBattleofPrimordialStar.mp4"
+  },
+  {
+    "duration_seconds": 6515.217,
+    "overall_bitrate": 1920243,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1784582,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 131038,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "28.Days.Later.2002.HDTV.1080i.x264.BGAUDiO-4PLAY.mp4",
+    "path": "C:\\Videos\\horror\\28.Days.Later.2002.HDTV.1080i.x264.BGAUDiO-4PLAY.mp4"
+  },
+  {
+    "duration_seconds": 6785.779,
+    "overall_bitrate": 1916554,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1782933,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128997,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "30.Days.of.Night.2007.720p.BluRay.DTS.x264-ESiR_gpu.mp4",
+    "path": "C:\\Videos\\horror\\30.Days.of.Night.2007.720p.BluRay.DTS.x264-ESiR_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5139.573,
+    "overall_bitrate": 1912509,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1778487,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127873,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Darkness Falls 2003_gpu.mp4",
+    "path": "C:\\Videos\\horror\\Darkness Falls 2003_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6223.092,
+    "overall_bitrate": 1927051,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1792750,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129678,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Ginger.Snaps.mp4",
+    "path": "C:\\Videos\\horror\\Ginger.Snaps.mp4"
+  },
+  {
+    "duration_seconds": 5562.056,
+    "overall_bitrate": 1918191,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1783911,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129655,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "House on Haunted Hill.mp4",
+    "path": "C:\\Videos\\horror\\House on Haunted Hill.mp4"
+  },
+  {
+    "duration_seconds": 7594.592,
+    "overall_bitrate": 1894853,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1760769,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129459,
+        "language": "jpn",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "I.Am.a.Hero.2015.576p.BDRip.x265.AC3-TuKCo.mp4",
+    "path": "C:\\Videos\\horror\\I.Am.a.Hero.2015.576p.BDRip.x265.AC3-TuKCo.mp4"
+  },
+  {
+    "duration_seconds": 6271.315,
+    "overall_bitrate": 1917887,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1782326,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129410,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The Faculty 1998_gpu.mp4",
+    "path": "C:\\Videos\\horror\\The Faculty 1998_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5738.794,
+    "overall_bitrate": 1629513,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1492993,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129963,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The Fly.1986.HQBDRip-AVC.PT.mp4",
+    "path": "C:\\Videos\\horror\\The Fly.1986.HQBDRip-AVC.PT.mp4"
+  },
+  {
+    "duration_seconds": 5888.142,
+    "overall_bitrate": 1927500,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1793004,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129873,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Warlock II - The Armageddon.J.1993.mp4",
+    "path": "C:\\Videos\\horror\\Warlock II - The Armageddon.J.1993.mp4"
+  },
+  {
+    "duration_seconds": 7215.508,
+    "overall_bitrate": 2282794,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2148936,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129856,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Blade.1998.1080p.BDRip.AV1-DiN_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\Blade.1998.1080p.BDRip.AV1-DiN_gpu.mp4"
+  },
+  {
+    "duration_seconds": 7012.101,
+    "overall_bitrate": 2278854,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2144904,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130005,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Blade.II.2002.1080p.BDRip.AV1-DiN_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\Blade.II.2002.1080p.BDRip.AV1-DiN_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6772.683,
+    "overall_bitrate": 2236373,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2101893,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129910,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Blade.Trinity.2004.1080p.BDRip.AV1-DiN_gpu_720x404.mp4",
+    "path": "C:\\Videos\\horrors2\\Blade.Trinity.2004.1080p.BDRip.AV1-DiN_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 5856.142,
+    "overall_bitrate": 1256171,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1122599,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129307,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Freddy.vs.Jason.2003.BDRip.x264.AAC-WAR_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\Freddy.vs.Jason.2003.BDRip.x264.AAC-WAR_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5544.164,
+    "overall_bitrate": 895381,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 759698,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129152,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Howl 2015_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\Howl 2015_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6470.506,
+    "overall_bitrate": 1115179,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 979418,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129226,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "John.Carpenters.Vampires_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\John.Carpenters.Vampires_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6327.584,
+    "overall_bitrate": 1987672,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1852815,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130235,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Mimic.1997.1080p.BluRay.x265-DiN.mp4",
+    "path": "C:\\Videos\\horrors2\\Mimic.1997.1080p.BluRay.x265-DiN.mp4"
+  },
+  {
+    "duration_seconds": 5764.117,
+    "overall_bitrate": 1026408,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 890832,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129046,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Phantoms.1998.BRRip.x264.AAC-WAR_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\Phantoms.1998.BRRip.x264.AAC-WAR_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5426.671,
+    "overall_bitrate": 2299165,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 2165874,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128663,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Return of the Living Dead part 1.mp4",
+    "path": "C:\\Videos\\horrors2\\Return of the Living Dead part 1.mp4"
+  },
+  {
+    "duration_seconds": 5363.413,
+    "overall_bitrate": 2082427,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1945922,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129975,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Return of the Living Dead Part 2.mp4",
+    "path": "C:\\Videos\\horrors2\\Return of the Living Dead Part 2.mp4"
+  },
+  {
+    "duration_seconds": 5701.376,
+    "overall_bitrate": 1158898,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1025265,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129220,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Blob.1988.BDRip.x264.AC3-TuKCo_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\The.Blob.1988.BDRip.x264.AC3-TuKCo_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5702.614,
+    "overall_bitrate": 1013691,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 879915,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129151,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Cabin.in.the.Woods_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\The.Cabin.in.the.Woods_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 4846.258,
+    "overall_bitrate": 1339930,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1206388,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128916,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The.Evil.Dead.III.Army.of.Darkness.1992_part01_joined_fmp4_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\The.Evil.Dead.III.Army.of.Darkness.1992_part01_joined_fmp4_gpu.mp4"
+  },
+  {
+    "duration_seconds": 7088.081,
+    "overall_bitrate": 1281823,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1146320,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128972,
+        "language": "kor",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Train.to.Busan_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\Train.to.Busan_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5224.97,
+    "overall_bitrate": 1535089,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1400479,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130143,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Cobra.mp4",
+    "path": "C:\\Videos\\TatkoTV\\Cobra.mp4"
+  },
+  {
+    "duration_seconds": 5415.702,
+    "overall_bitrate": 1875202,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1742344,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128234,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Commando.mp4",
+    "path": "C:\\Videos\\TatkoTV\\Commando.mp4"
+  },
+  {
+    "duration_seconds": 6584.755,
+    "overall_bitrate": 1740504,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1604689,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129877,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Double Impact.mp4",
+    "path": "C:\\Videos\\TatkoTV\\Double Impact.mp4"
+  },
+  {
+    "duration_seconds": 6617.728,
+    "overall_bitrate": 1605626,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1473076,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128007,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "lionheart.mp4",
+    "path": "C:\\Videos\\TatkoTV\\lionheart.mp4"
+  },
+  {
+    "duration_seconds": 6335.079,
+    "overall_bitrate": 1698382,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1565595,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128161,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Raw Deal.mp4",
+    "path": "C:\\Videos\\TatkoTV\\Raw Deal.mp4"
+  },
+  {
+    "duration_seconds": 6250.077,
+    "overall_bitrate": 1643777,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1509326,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129826,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Red heat.mp4",
+    "path": "C:\\Videos\\TatkoTV\\Red heat.mp4"
+  },
+  {
+    "duration_seconds": 6850.016,
+    "overall_bitrate": 1837896,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1704929,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128364,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "road house.mp4",
+    "path": "C:\\Videos\\TatkoTV\\road house.mp4"
+  },
+  {
+    "duration_seconds": 5673.042,
+    "overall_bitrate": 1757993,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 640,
+        "height": 368,
+        "fps": 23.976023976023978,
+        "bitrate": 1627375,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128247,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "To Be the Best 1993.mp4",
+    "path": "C:\\Videos\\TatkoTV\\To Be the Best 1993.mp4"
+  },
+  {
+    "duration_seconds": 5956.159,
+    "overall_bitrate": 1930775,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1796000,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130150,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Above the Law 1988.BDRip.x265.10.bit.AC3.bgaudio-mucker.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Above the Law 1988.BDRip.x265.10.bit.AC3.bgaudio-mucker.mp4"
+  },
+  {
+    "duration_seconds": 5193.355,
+    "overall_bitrate": 1931411,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1797290,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129498,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Best The Best 1998 XviD.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Best The Best 1998 XviD.mp4"
+  },
+  {
+    "duration_seconds": 5445.732,
+    "overall_bitrate": 1929574,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1795628,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129321,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Best the Best III Turning Back 1995 BRRip XviD.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Best the Best III Turning Back 1995 BRRip XviD.mp4"
+  },
+  {
+    "duration_seconds": 6096.132,
+    "overall_bitrate": 1928790,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1795745,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128420,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "best the best.mp4",
+    "path": "C:\\Videos\\tatkotv2\\best the best.mp4"
+  },
+  {
+    "duration_seconds": 5612.289,
+    "overall_bitrate": 1929954,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1797875,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128549,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Best.of.the.Best.1989.1080p.BDRip.AV1-DiN.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Best.of.the.Best.1989.1080p.BDRip.AV1-DiN.mp4"
+  },
+  {
+    "duration_seconds": 7518.094,
+    "overall_bitrate": 1926440,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1790682,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129348,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "black Rain.mp4",
+    "path": "C:\\Videos\\tatkotv2\\black Rain.mp4"
+  },
+  {
+    "duration_seconds": 5533.57,
+    "overall_bitrate": 1929721,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1797281,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127813,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Bloodsport.1998.BDRip.BG.Audio.LoveJesus.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Bloodsport.1998.BDRip.BG.Audio.LoveJesus.mp4"
+  },
+  {
+    "duration_seconds": 4968.797,
+    "overall_bitrate": 1935279,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1800485,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130178,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Bloodsport.II.1996.DVDRip.XviD.BG.and.ENG.Audio-Atany.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Bloodsport.II.1996.DVDRip.XviD.BG.and.ENG.Audio-Atany.mp4"
+  },
+  {
+    "duration_seconds": 5521.141,
+    "overall_bitrate": 1931590,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1798667,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128300,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Bloodsport.III.1996.DVDRip.BG.Audio-Atany & Stezarai.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Bloodsport.III.1996.DVDRip.BG.Audio-Atany & Stezarai.mp4"
+  },
+  {
+    "duration_seconds": 4825.404,
+    "overall_bitrate": 2125457,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1989326,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 131505,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Bounty.tracker.RIP.BY.CMD.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Bounty.tracker.RIP.BY.CMD.mp4"
+  },
+  {
+    "duration_seconds": 5260.964,
+    "overall_bitrate": 1932581,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1799017,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128939,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "CIA.II.Target.Alexa.1993.DVDRip.BG.Audio-Atany & Stezarai.mp4",
+    "path": "C:\\Videos\\tatkotv2\\CIA.II.Target.Alexa.1993.DVDRip.BG.Audio-Atany & Stezarai.mp4"
+  },
+  {
+    "duration_seconds": 5477.013,
+    "overall_bitrate": 1629666,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1496764,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127857,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Dark Angel.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Dark Angel.mp4"
+  },
+  {
+    "duration_seconds": 6908.944,
+    "overall_bitrate": 1931712,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1796567,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130739,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Demolition Man.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Demolition Man.mp4"
+  },
+  {
+    "duration_seconds": 5587.415,
+    "overall_bitrate": 1627621,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1495074,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 127923,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Double.Team.1997.BG.AUDiO.DVDRip.XviD-SLSS.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Double.Team.1997.BG.AUDiO.DVDRip.XviD-SLSS.mp4"
+  },
+  {
+    "duration_seconds": 5764.58,
+    "overall_bitrate": 1632617,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1496310,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130945,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Hard Target 1993.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Hard Target 1993.mp4"
+  },
+  {
+    "duration_seconds": 5518.346,
+    "overall_bitrate": 1926756,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1791525,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130607,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Hard To Kill 1990.DVDRip.XviD.BGAUDIO-Zamunda.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Hard To Kill 1990.DVDRip.XviD.BGAUDIO-Zamunda.mp4"
+  },
+  {
+    "duration_seconds": 5369.614,
+    "overall_bitrate": 1930311,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1796244,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129620,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Marked.For.Death.1990.BRRip.BG.Audio.LoveJesus.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Marked.For.Death.1990.BRRip.BG.Audio.LoveJesus.mp4"
+  },
+  {
+    "duration_seconds": 5977.054,
+    "overall_bitrate": 1926742,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1793066,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129049,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Never.Say.Die.1994.DVDRip.BG.Audio-Atany & Stezarai.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Never.Say.Die.1994.DVDRip.BG.Audio-Atany & Stezarai.mp4"
+  },
+  {
+    "duration_seconds": 5759.504,
+    "overall_bitrate": 1632474,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1498394,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129457,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Only the Strong 1993.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Only the Strong 1993.mp4"
+  },
+  {
+    "duration_seconds": 5172.709,
+    "overall_bitrate": 1929808,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1795173,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130011,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Road House 2.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Road House 2.mp4"
+  },
+  {
+    "duration_seconds": 5695.776,
+    "overall_bitrate": 1926604,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1792736,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129268,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Snake Eater 1.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Snake Eater 1.mp4"
+  },
+  {
+    "duration_seconds": 5580.512,
+    "overall_bitrate": 1926752,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1793487,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128672,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Snake Eater 2.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Snake Eater 2.mp4"
+  },
+  {
+    "duration_seconds": 5495.52,
+    "overall_bitrate": 1920771,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1787339,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128842,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Snake Eater 3.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Snake Eater 3.mp4"
+  },
+  {
+    "duration_seconds": 5529.107,
+    "overall_bitrate": 1929036,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1797135,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130799,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Stone Cold 1991.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Stone Cold 1991.mp4"
+  },
+  {
+    "duration_seconds": 5955.658,
+    "overall_bitrate": 1922259,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1787875,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129775,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Swordfish.2001.480p.BRRip.XviD.BGAUDiO-KiNGS.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Swordfish.2001.480p.BRRip.XviD.BGAUDiO-KiNGS.mp4"
+  },
+  {
+    "duration_seconds": 5971.048,
+    "overall_bitrate": 1923892,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1794909,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 124359,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Tango and Cash.mp4",
+    "path": "C:\\Videos\\tatkotv2\\Tango and Cash.mp4"
+  },
+  {
+    "duration_seconds": 5675.015,
+    "overall_bitrate": 1927128,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1794053,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128452,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "The quest.mp4",
+    "path": "C:\\Videos\\tatkotv2\\The quest.mp4"
+  },
+  {
+    "duration_seconds": 5381.626,
+    "overall_bitrate": 1632564,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "hevc",
+        "width": 720,
+        "height": 400,
+        "fps": 23.976023976023978,
+        "bitrate": 1499176,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128782,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "White.Tiger.1996.mp4",
+    "path": "C:\\Videos\\tatkotv2\\White.Tiger.1996.mp4"
+  },
+  {
+    "duration_seconds": 5732.143,
+    "overall_bitrate": 1268430,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1131552,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 130348,
+        "language": "bul",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A Nightmare on Elm Street 2010_gpu_720x404.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A Nightmare on Elm Street 2010_gpu_720x404.mp4"
+  },
+  {
+    "duration_seconds": 5400.186,
+    "overall_bitrate": 1088963,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 955089,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129247,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.Street 1 1984.BDRip.BG.Audio-AtanyStezarai_part01_fmp4_burned_joined_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street 1 1984.BDRip.BG.Audio-AtanyStezarai_part01_fmp4_burned_joined_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5137.132,
+    "overall_bitrate": 1407636,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1274044,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128967,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.Street.II.Freddys.Revenge.1985_part01_joined_fmp4_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.II.Freddys.Revenge.1985_part01_joined_fmp4_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5791.244,
+    "overall_bitrate": 1144143,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1010415,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129102,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.Street.III.Dream. Warriors.1987 fmp4_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.III.Dream. Warriors.1987 fmp4_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5595.256,
+    "overall_bitrate": 1391998,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1258171,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129203,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.Street.IV.The_Dream.Master.1988.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.IV.The_Dream.Master.1988.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5378.54,
+    "overall_bitrate": 1394261,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1260523,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129113,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.Street.V.The.Dream.Child.1989.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.V.The.Dream.Child.1989.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5352.514,
+    "overall_bitrate": 1429210,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1295491,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129095,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.Street.VI.The.Final.Nightmare.1991.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.VI.The.Final.Nightmare.1991.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 6727.846,
+    "overall_bitrate": 1332427,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1198627,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129175,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "A.Nightmare.on.Elm.street.VII.New.Nightmare.1994.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.street.VII.New.Nightmare.1994.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5153.386,
+    "overall_bitrate": 1234238,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1098359,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129355,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Critters 1 1986._fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\critters\\Critters 1 1986._fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5148.226,
+    "overall_bitrate": 1384256,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1250640,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 128991,
+        "language": "und",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Critters 2 1988_part01_fmp4_joined_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\critters\\Critters 2 1988_part01_fmp4_joined_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5086.72,
+    "overall_bitrate": 1278406,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1144397,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129383,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\critters\\Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_fmp4_burned_gpu.mp4"
+  },
+  {
+    "duration_seconds": 5668.121,
+    "overall_bitrate": 1310948,
+    "video_tracks": [
+      {
+        "index": 0,
+        "codec": "h264",
+        "width": 720,
+        "height": 404,
+        "fps": 23.976023976023978,
+        "bitrate": 1177126,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "audio_tracks": [
+      {
+        "index": 1,
+        "codec": "aac",
+        "channels": 2,
+        "bitrate": 129194,
+        "language": "eng",
+        "title": null
+      }
+    ],
+    "subtitle_tracks": [],
+    "name": "Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_fmp4_burned_gpu.mp4",
+    "path": "C:\\Videos\\horrors2\\critters\\Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_fmp4_burned_gpu.mp4"
+  }
+]

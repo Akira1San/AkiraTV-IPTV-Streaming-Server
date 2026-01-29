@@ -1,0 +1,29 @@
+/* Minimal stylesheet migrated from inline styles for easier maintenance */
+:root {
+  --bg: #0d1117;
+  --bg-tertiary: #131a2a;
+  --text: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --primary: #2563eb;
+  --secondary: #374151;
+  --success: #10b981;
+  --error: #f87171;
+}
+html, body { margin: 0; padding: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: var(--text); background: #0d1220; }
+.btn { padding: 6px 12px; border-radius: 6px; border: 0; cursor: pointer; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-secondary { background: #374151; color: #fff; }
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); align-items: center; justify-content: center; }
+.modal.show { display: flex; }
+.modal-content { background: #111; padding: 16px; border-radius: 8px; min-width: 320px; color: var(--text); }
+.channel-card { border: 1px solid #2b2b2b; padding: 12px; border-radius: 8px; background: #1a1a1a; }
+.disabled { opacity: .6; }
+.status-running { color: var(--success); }
+.status-stopped { color: var(--error); }
+.empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
+.small-note { font-size: 12px; color: var(--text-secondary); }
+.hidden { display: none; }
+.url-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.bulk-actions { padding: 8px; display: flex; gap: 8px; align-items: center; }
+.centered { text-align: center; }
+.large-note { padding: 40px; color: var(--text-secondary); }

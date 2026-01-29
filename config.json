@@ -1,0 +1,133 @@
+{
+  "ffmpeg": {
+    "hwaccel": "nvenc",
+    "enable_subtitles": false,
+    "transcoding": {
+      "enabled": false,
+      "bitrate": "auto",
+      "custom_bitrate": "1500k",
+      "video_quality": "source",
+      "encoder": "auto",
+      "audio_quality": "copy",
+      "fps": "auto",
+      "threads": "2",
+      "subtitle_font_size": "28"
+    }
+  },
+  "storage": {
+    "type": "ram",
+    "ram_path": "R:/akiratv",
+    "disk_path": "./output"
+  },
+  "output": {
+    "mode": "ram_http",
+    "http": {
+      "port": 8081,
+      "bind": "0.0.0.0"
+    },
+    "hls": {
+      "segment_time": 6,
+      "playlist_size": 4
+    }
+  },
+  "streaming": {
+    "strategy": "concat",
+    "mode": "",
+    "pre_gen": true
+  },
+  "channels": {
+    "myAkiraTV": {
+      "enabled": false,
+      "type": "linear"
+    },
+    "live": {
+      "enabled": true,
+      "type": "vod",
+      "transcoding": {
+        "enabled": false
+      },
+      "enable_subtitles": false
+    },
+    "akiratv": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "AnimeTV": {
+      "enabled": false,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      },
+      "enable_subtitles": false
+    },
+    "horror": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "don_dragon": {
+      "enabled": false,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      },
+      "enable_subtitles": false
+    },
+    "TatkoTV": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      },
+      "enable_subtitles": false
+    },
+    "fma": {
+      "enabled": false,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "superman_cartoonTV": {
+      "enabled": false,
+      "type": "linear"
+    },
+    "asian_vids": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      },
+      "enable_subtitles": false
+    },
+    "dynamic": {
+      "enabled": false,
+      "type": "dynamic",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "test_channel": {
+      "enabled": true,
+      "type": "vod",
+      "transcoding": {
+        "enabled": true,
+        "bitrate": "1500k"
+      },
+      "enable_subtitles": false
+    }
+  },
+  "worker": {
+    "auto_restart_ffmpeg": true,
+    "max_ram_usage_percent": 80
+  },
+  "ui": {
+    "dark_mode": false
+  },
+  "channel": "critters"
+}
