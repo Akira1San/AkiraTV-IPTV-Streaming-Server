@@ -364,6 +364,53 @@ input:checked + .toggle-slider:before {
     color: var(--text-primary);
 }
 
+/* Small buttons for channel actions */
+.btn-small {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-small.btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.btn-small.btn-secondary:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent);
+}
+
+.btn-small.btn-danger {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--error);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.btn-small.btn-danger:hover {
+    background: var(--error);
+    color: white;
+    border-color: var(--error);
+}
+
+/* Adjust setting row for multiple buttons */
+.setting-row:has(.btn-small) {
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.setting-row .btn-small + .btn-small {
+    margin-left: 8px;
+}
+
 .channel-type.linear {
     background: rgba(0, 212, 255, 0.2);
     color: var(--accent);

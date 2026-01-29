@@ -123,13 +123,6 @@
     },
     "critters": {
       "enabled": true
-    },
-    "testme": {
-      "enabled": true,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
-      }
     }
   },
   "worker": {

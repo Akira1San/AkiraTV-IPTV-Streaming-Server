@@ -131,6 +131,14 @@ async function loadChannels() {
                                 <option value="disabled" ${subtitlesSetting === 'disabled' ? 'selected' : ''}>Disabled</option>
                             </select>
                         </div>
+                        <div class="setting-row">
+                            <button class="btn-small btn-secondary" onclick="reloadChannelSchedule('${ch.name}')">
+                                📅 Reload Schedule
+                            </button>
+                            <button class="btn-small btn-danger" onclick="confirmDeleteChannel('${ch.name}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
                     </div>
                     
                     ${ch.enabled ? `
@@ -235,12 +243,57 @@ async function reloadSchedule() {
     try {
         const result = await apiCall('/api/schedule/reload', 'POST');
         if (result.success) {
-            showToast('Schedule reloaded', 'success');
+            showToast('All schedules reloaded', 'success');
         } else {
-            showToast(result.error || 'Failed to reload', 'error');
+            showToast(result.error || 'Failed to reload schedules', 'error');
         }
     } catch (error) {
-        showToast('Failed to reload schedule', 'error');
+        showToast('Failed to reload schedules', 'error');
+    }
+}
+
+// Per-channel schedule reload
+async function reloadChannelSchedule(channelName) {
+    try {
+        const result = await apiCall(`/api/channels/${channelName}/reload-schedule`, 'POST');
+        if (result.success) {
+            showToast(`Schedule reloaded for ${channelName}`, 'success');
+        } else {
+            showToast(result.error || `Failed to reload schedule for ${channelName}`, 'error');
+        }
+    } catch (error) {
+        showToast(`Failed to reload schedule for ${channelName}`, 'error');
+    }
+}
+
+// Delete channel with confirmation
+function confirmDeleteChannel(channelName) {
+    const confirmed = confirm(
+        `Are you sure you want to delete channel '${channelName}'?\n\n` +
+        `This will:\n` +
+        `• Remove the channel from your configuration\n` +
+        `• Stop the channel if it's currently running\n` +
+        `• This action cannot be undone\n\n` +
+        `Click OK to delete or Cancel to keep the channel.`
+    );
+    
+    if (confirmed) {
+        deleteChannel(channelName);
+    }
+}
+
+async function deleteChannel(channelName) {
+    try {
+        const result = await apiCall(`/api/channels/${channelName}`, 'DELETE');
+        if (result.success) {
+            showToast(`Channel '${channelName}' deleted successfully`, 'success');
+            // Reload channels to update the UI
+            await loadChannels();
+        } else {
+            showToast(result.error || `Failed to delete channel '${channelName}'`, 'error');
+        }
+    } catch (error) {
+        showToast(`Failed to delete channel '${channelName}'`, 'error');
     }
 }
 

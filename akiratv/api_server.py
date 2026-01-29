@@ -340,13 +340,53 @@ def clear_cache():
 
 @app.post("/api/schedule/reload", response_model=Response)
 def reload_schedule(channel: Optional[str] = None):
-    """Reload schedule"""
+    """Reload schedule for all channels or specific channel"""
     api = get_core_api()
     result = api.reload_schedule(channel)
     if result["success"]:
-        return Response(success=True, message=result["message"])
+        message = f"Schedule reloaded for {channel}" if channel else "All schedules reloaded"
+        return Response(success=True, message=message)
     else:
         raise HTTPException(status_code=400, detail=result["error"])
+
+@app.post("/api/channels/{channel}/reload-schedule", response_model=Response)
+def reload_channel_schedule(channel: str):
+    """Reload schedule for a specific channel"""
+    api = get_core_api()
+    result = api.reload_schedule(channel)
+    if result["success"]:
+        return Response(success=True, message=f"Schedule reloaded for {channel}")
+    else:
+        raise HTTPException(status_code=400, detail=result["error"])
+
+@app.delete("/api/channels/{channel}", response_model=Response)
+def delete_channel(channel: str):
+    """Delete a channel from configuration"""
+    api = get_core_api()
+    
+    # Get current config
+    config = api.get_config()
+    channels_config = config.get("channels", {})
+    
+    if channel not in channels_config:
+        raise HTTPException(status_code=404, detail=f"Channel '{channel}' not found")
+    
+    # Remove the channel from config
+    del channels_config[channel]
+    
+    # Update the full config
+    config["channels"] = channels_config
+    
+    # Save directly to config.json file
+    try:
+        import json
+        config_path = "config.json"
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=2)
+        
+        return Response(success=True, message=f"Channel '{channel}' deleted successfully")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save config: {str(e)}")
 
 # ========================================
 # WEBSOCKET FOR LIVE UPDATES
