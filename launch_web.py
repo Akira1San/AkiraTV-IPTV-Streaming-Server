@@ -53,8 +53,8 @@ def main():
         print()
         sys.exit(1)
     
-    # Find project root
-    project_root = Path(__file__).parent.parent
+    # Find project root (current directory, not parent)
+    project_root = Path(__file__).parent
     os.chdir(project_root)
     
     print(f"📁 Project root: {project_root}")
