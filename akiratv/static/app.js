@@ -8,6 +8,8 @@ let isRunning = false;
 async function init() {
     await updateStatus();
     await loadChannels();
+    await loadChannelDropdown();
+    await refreshPlaylist();
     connectWebSocket();
     setInterval(updateStatus, 10000); // Update every 10s
 }
@@ -160,6 +162,9 @@ async function loadChannels() {
                 </div>
             `;
         }).join('');
+        
+        // Refresh channel dropdown for playlist controls
+        await loadChannelDropdown();
     } catch (error) {
         console.error('Failed to load channels:', error);
         showToast('Failed to load channels', 'error');
@@ -249,6 +254,244 @@ async function reloadSchedule() {
         }
     } catch (error) {
         showToast('Failed to reload schedules', 'error');
+    }
+}
+
+async function generateXMLTV() {
+    try {
+        showToast('Generating XMLTV files...', 'info');
+        const result = await apiCall('/api/xmltv/generate', 'POST');
+        if (result.success) {
+            const data = result.data;
+            showToast(
+                `✅ XMLTV + M3U Generated!\n\n` +
+                `In Kodi IPTV Simple Client:\n` +
+                `• M3U Path: ${data.m3u_url}\n` +
+                `• XMLTV Path: ${data.xmltv_url}`,
+                'success'
+            );
+        } else {
+            showToast(result.error || 'Failed to generate XMLTV', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to generate XMLTV', 'error');
+    }
+}
+
+async function openConfigFile() {
+    try {
+        const result = await apiCall('/api/config/file');
+        if (result.exists) {
+            // Show info about config file location
+            showToast(`Config file: ${result.path}\n\nNote: Use your file manager to open this file`, 'info');
+        } else {
+            showToast('Config file not found', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to get config file info', 'error');
+    }
+}
+
+async function openLogs() {
+    try {
+        const result = await apiCall('/api/logs');
+        const filesList = result.files.length > 0 
+            ? result.files.map(f => `• ${f.name} (${Math.round(f.size/1024)}KB)`).join('\n')
+            : 'No log files found';
+        
+        showToast(
+            `Logs directory: ${result.directory}\n\n` +
+            `Log files:\n${filesList}\n\n` +
+            `Note: Use your file manager to open this directory`,
+            'info'
+        );
+    } catch (error) {
+        showToast('Failed to get logs info', 'error');
+    }
+}
+
+// Playlist Controls Functions
+async function loadChannelDropdown() {
+    try {
+        const data = await apiCall('/api/channels');
+        const channels = data.channels;
+        const select = document.getElementById('channelSelect');
+        
+        // Clear existing options
+        select.innerHTML = '';
+        
+        // Add enabled channels that support play_now (VOD and Dynamic)
+        const playableChannels = channels.filter(ch => 
+            ch.enabled && (ch.type === 'vod' || ch.type === 'dynamic')
+        );
+        
+        if (playableChannels.length === 0) {
+            select.innerHTML = '<option value="">No playable channels available</option>';
+            return;
+        }
+        
+        playableChannels.forEach(ch => {
+            const option = document.createElement('option');
+            option.value = ch.name;
+            option.textContent = `${ch.name} (${ch.type.toUpperCase()})`;
+            select.appendChild(option);
+        });
+        
+        // Select first channel
+        select.value = playableChannels[0].name;
+        
+    } catch (error) {
+        console.error('Failed to load channel dropdown:', error);
+        document.getElementById('channelSelect').innerHTML = '<option value="">Error loading channels</option>';
+    }
+}
+
+function browseVideo() {
+    // Since we can't open file dialogs from web, show instructions
+    showToast(
+        'Enter the full path to your video file in the text field.\n\n' +
+        'Example:\n' +
+        'C:\\Videos\\movie.mp4\n' +
+        '/home/user/videos/movie.mp4\n\n' +
+        'Supported formats: MP4, MKV, AVI, MOV, M4V, WMV, FLV',
+        'info'
+    );
+}
+
+function browseFolder() {
+    // Since we can't open folder dialogs from web, show instructions
+    showToast(
+        'Enter the full path to your video folder in the text field.\n\n' +
+        'Example:\n' +
+        'C:\\Videos\\Movies\n' +
+        '/home/user/videos/movies\n\n' +
+        'The folder will be scanned for all video files.',
+        'info'
+    );
+}
+
+async function playNowFromInput() {
+    const channelSelect = document.getElementById('channelSelect');
+    const pathInput = document.getElementById('playNowPath');
+    
+    const channel = channelSelect.value;
+    const videoPath = pathInput.value.trim();
+    
+    if (!channel) {
+        showToast('Please select a channel', 'error');
+        return;
+    }
+    
+    if (!videoPath) {
+        showToast('Please enter a video path', 'error');
+        return;
+    }
+    
+    try {
+        const result = await apiCall(`/api/channels/${channel}/play`, 'POST', { video_path: videoPath });
+        if (result.success) {
+            showToast(result.message, 'success');
+            pathInput.value = ''; // Clear input
+        } else {
+            showToast(result.error || 'Failed to play video', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to play video', 'error');
+    }
+}
+
+async function createPlaylistFromFolder() {
+    const folderInput = document.getElementById('folderPath');
+    const folderPath = folderInput.value.trim();
+    
+    if (!folderPath) {
+        showToast('Please enter a folder path', 'error');
+        return;
+    }
+    
+    try {
+        showToast('Creating playlist...', 'info');
+        const result = await apiCall('/api/playlist/create', 'POST', null, { folder_path: folderPath });
+        
+        if (result.success) {
+            showToast(
+                `✅ Playlist Created!\n\n` +
+                `${result.data.video_count} videos found\n` +
+                `Playlist: ${result.data.playlist_path}`,
+                'success'
+            );
+            folderInput.value = ''; // Clear input
+            await refreshPlaylist(); // Refresh the playlist dropdown
+        } else {
+            showToast(result.error || 'Failed to create playlist', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to create playlist', 'error');
+    }
+}
+
+async function refreshPlaylist() {
+    try {
+        const result = await apiCall('/api/playlist/videos');
+        const select = document.getElementById('playlistSelect');
+        
+        // Clear existing options
+        select.innerHTML = '';
+        
+        if (result.videos.length === 0) {
+            select.innerHTML = '<option value="">No playlist loaded</option>';
+            return;
+        }
+        
+        // Add videos to dropdown
+        result.videos.forEach(video => {
+            const option = document.createElement('option');
+            option.value = video.name;
+            option.textContent = video.name;
+            select.appendChild(option);
+        });
+        
+        // Select first video
+        if (result.videos.length > 0) {
+            select.value = result.videos[0].name;
+        }
+        
+    } catch (error) {
+        console.error('Failed to refresh playlist:', error);
+        document.getElementById('playlistSelect').innerHTML = '<option value="">Error loading playlist</option>';
+    }
+}
+
+async function playSelectedVideo() {
+    const channelSelect = document.getElementById('channelSelect');
+    const playlistSelect = document.getElementById('playlistSelect');
+    
+    const channel = channelSelect.value;
+    const videoName = playlistSelect.value;
+    
+    if (!channel) {
+        showToast('Please select a channel', 'error');
+        return;
+    }
+    
+    if (!videoName || videoName === '') {
+        showToast('Please select a video from the playlist', 'error');
+        return;
+    }
+    
+    try {
+        const result = await apiCall('/api/playlist/play-selected', 'POST', { 
+            channel: channel, 
+            video_name: videoName 
+        });
+        
+        if (result.success) {
+            showToast(result.message, 'success');
+        } else {
+            showToast(result.error || 'Failed to play selected video', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to play selected video', 'error');
     }
 }
 
@@ -656,13 +899,24 @@ function copyToClipboard(text) {
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.textContent = message;
+    
+    // Handle multi-line messages
+    if (message.includes('\n')) {
+        const lines = message.split('\n');
+        toast.innerHTML = lines.map(line => `<div>${line}</div>`).join('');
+    } else {
+        toast.textContent = message;
+    }
+    
     document.body.appendChild(toast);
+    
+    // Auto-dismiss after longer time for longer messages
+    const dismissTime = message.length > 100 ? 8000 : 3000;
     
     setTimeout(() => {
         toast.style.animation = 'slideIn 0.3s ease reverse';
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, dismissTime);
 }
 
 function showLoading(btnId) {
