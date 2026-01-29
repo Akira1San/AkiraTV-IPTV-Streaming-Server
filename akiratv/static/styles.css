@@ -951,6 +951,14 @@ input:checked + .toggle-slider:before {
     color: var(--text-secondary);
 }
 
+.playlist-help {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-right: 10px;
+}
+
 /* Responsive playlist controls */
 @media (max-width: 768px) {
     .playlist-row {

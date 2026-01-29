@@ -495,6 +495,29 @@ async function playSelectedVideo() {
     }
 }
 
+async function createStandbyLoop() {
+    try {
+        showToast('Creating standby loop videos...\nThis may take a few minutes depending on your inventory size.', 'info');
+        
+        const result = await apiCall('/api/standby/create', 'POST');
+        
+        if (result.success) {
+            const data = result.data;
+            showToast(
+                `✅ Standby Loops Created!\n\n` +
+                `Directory: ${data.directory}\n\n` +
+                `Created files:\n${data.files_list}\n\n` +
+                `These videos can be used by Dynamic channels for standby mode.`,
+                'success'
+            );
+        } else {
+            showToast(result.error || 'Failed to create standby loops', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to create standby loops', 'error');
+    }
+}
+
 // Per-channel schedule reload
 async function reloadChannelSchedule(channelName) {
     try {
