@@ -435,6 +435,56 @@ class CoreAPI:
             logger.error(f"CoreAPI: {error_msg}")
             return {"success": False, "error": error_msg}
 
+    def stop_channel(self, channel: str) -> Dict[str, Any]:
+        """
+        Stop playback on a specific VOD or Dynamic channel
+        
+        Args:
+            channel: Channel name
+            
+        Returns:
+            {"success": bool, "message": str} or {"success": False, "error": str}
+        """
+        if not self._running:
+            return {"success": False, "error": "Engine not running"}
+        
+        if not self._engine:
+            return {"success": False, "error": "Engine not initialized"}
+        
+        # Check if channel exists and is VOD/Dynamic
+        channel_status = self.get_channel(channel)
+        if not channel_status:
+            return {"success": False, "error": f"Channel '{channel}' not found"}
+        
+        if channel_status.type not in ["vod", "dynamic"]:
+            return {"success": False, "error": f"Channel '{channel}' is not VOD or Dynamic type"}
+        
+        try:
+            # Check if worker exists and is running
+            if hasattr(self._engine, 'workers') and channel in self._engine.workers:
+                worker, thread = self._engine.workers[channel]
+                if worker and hasattr(worker, 'ffmpeg_process'):
+                    # Stop the current FFmpeg process (this will stop current video)
+                    if worker.ffmpeg_process and worker.ffmpeg_process.poll() is None:
+                        worker.ffmpeg_process.terminate()
+                        try:
+                            worker.ffmpeg_process.wait(timeout=3)
+                        except:
+                            worker.ffmpeg_process.kill()
+                        self._emit("video_stopped", {"channel": channel})
+                        logger.info(f"CoreAPI: Stopped current video on {channel}")
+                        return {"success": True, "message": f"Stopped current video on {channel}"}
+                    else:
+                        return {"success": True, "message": f"No video currently playing on {channel}"}
+                else:
+                    return {"success": False, "error": f"Channel '{channel}' worker not available"}
+            else:
+                return {"success": False, "error": f"Channel '{channel}' is not running"}
+        except Exception as e:
+            error_msg = f"Failed to stop channel: {str(e)}"
+            logger.error(f"CoreAPI: {error_msg}")
+            return {"success": False, "error": error_msg}
+
     # ========================================
     # SCHEDULING
     # ========================================

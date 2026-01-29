@@ -152,6 +152,7 @@ async function loadChannels() {
                             <div class="play-now-form">
                                 <input type="text" class="input" id="path_${ch.name}" placeholder="Video path...">
                                 <button class="btn btn-primary" onclick="playNow('${ch.name}')">▶️ Play</button>
+                                <button class="btn btn-danger btn-small" onclick="stopChannel('${ch.name}')">⏹️ Stop</button>
                             </div>
                         ` : ''}
                     ` : `
@@ -518,6 +519,27 @@ async function createStandbyLoop() {
     }
 }
 
+async function stopSelectedChannel() {
+    const channelSelect = document.getElementById('channelSelect');
+    const channel = channelSelect.value;
+    
+    if (!channel) {
+        showToast('Please select a channel', 'error');
+        return;
+    }
+    
+    try {
+        const result = await apiCall(`/api/channels/${channel}/stop`, 'POST');
+        if (result.success) {
+            showToast(result.message, 'success');
+        } else {
+            showToast(result.error || 'Failed to stop channel', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to stop channel', 'error');
+    }
+}
+
 // Per-channel schedule reload
 async function reloadChannelSchedule(channelName) {
     try {
@@ -582,6 +604,19 @@ async function playNow(channel) {
         }
     } catch (error) {
         showToast('Failed to play video', 'error');
+    }
+}
+
+async function stopChannel(channel) {
+    try {
+        const result = await apiCall(`/api/channels/${channel}/stop`, 'POST');
+        if (result.success) {
+            showToast(result.message, 'success');
+        } else {
+            showToast(result.error || 'Failed to stop channel', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to stop channel', 'error');
     }
 }
 

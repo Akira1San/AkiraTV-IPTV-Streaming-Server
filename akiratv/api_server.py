@@ -238,6 +238,16 @@ def play_now(channel: str, request: PlayNowRequest):
     else:
         raise HTTPException(status_code=400, detail=result["error"])
 
+@app.post("/api/channels/{channel}/stop", response_model=Response)
+def stop_channel(channel: str):
+    """Stop current video on VOD/Dynamic channel"""
+    api = get_core_api()
+    result = api.stop_channel(channel)
+    if result["success"]:
+        return Response(success=True, message=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["error"])
+
 # ========================================
 # CONFIGURATION ENDPOINTS
 # ========================================
