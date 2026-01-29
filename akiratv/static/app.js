@@ -149,10 +149,8 @@ async function loadChannels() {
                             <button class="copy-btn" onclick="copyToClipboard('${urlData}')">Copy</button>
                         </div>
                         ${ch.type !== 'linear' ? `
-                            <div class="play-now-form">
-                                <input type="text" class="input" id="path_${ch.name}" placeholder="Video path...">
-                                <button class="btn btn-primary" onclick="playNow('${ch.name}')">▶️ Play</button>
-                                <button class="btn btn-danger btn-small" onclick="stopChannel('${ch.name}')">⏹️ Stop</button>
+                            <div class="channel-controls">
+                                <button class="btn btn-danger btn-small" onclick="stopChannel('${ch.name}')">⏹️ Stop Current Video</button>
                             </div>
                         ` : ''}
                     ` : `
@@ -585,28 +583,7 @@ async function deleteChannel(channelName) {
     }
 }
 
-async function playNow(channel) {
-    const input = document.getElementById(`path_${channel}`);
-    const path = input.value.trim();
-    
-    if (!path) {
-        showToast('Enter video path', 'error');
-        return;
-    }
-
-    try {
-        const result = await apiCall(`/api/channels/${channel}/play`, 'POST', { video_path: path });
-        if (result.success) {
-            showToast(result.message, 'success');
-            input.value = '';
-        } else {
-            showToast(result.error || 'Failed to play', 'error');
-        }
-    } catch (error) {
-        showToast('Failed to play video', 'error');
-    }
-}
-
+// Channel Stop Function
 async function stopChannel(channel) {
     try {
         const result = await apiCall(`/api/channels/${channel}/stop`, 'POST');

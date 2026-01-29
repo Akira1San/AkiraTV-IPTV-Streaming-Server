@@ -325,6 +325,11 @@ input:checked + .toggle-slider:before {
     border-radius: 6px;
 }
 
+.channel-controls {
+    margin: 10px 0;
+    text-align: center;
+}
+
 .setting-row {
     display: flex;
     align-items: center;
