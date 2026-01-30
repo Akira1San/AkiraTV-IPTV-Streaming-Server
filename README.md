@@ -232,7 +232,203 @@ AkiraTV supports multiple transcoding options:
 
 See [README_TRANSCODING.txt](README_TRANSCODING.txt) for detailed transcoding guide.
 
-## 🌐 Network Access
+## 🌐 Network Access & Streaming URLs
+
+AkiraTV provides multiple streaming URL options for different access scenarios:
+
+### 📡 **Available Streaming URLs**
+
+When you enable a channel, AkiraTV automatically generates multiple streaming URLs:
+
+#### 🏠 **Local/LAN Access**
+```
+http://192.168.1.100:8081/hls/channelname/index.m3u8
+```
+- **Use for**: Local network streaming (same WiFi/Ethernet)
+- **Best for**: Home devices, Kodi on local network
+- **Bandwidth**: No internet bandwidth usage
+- **Speed**: Fastest, direct connection
+
+#### 🌐 **Tailscale Access** (Secure VPN)
+```
+http://100.64.1.2:8081/hls/channelname/index.m3u8
+```
+- **Use for**: Secure remote access via Tailscale VPN
+- **Best for**: Personal devices anywhere in the world
+- **Setup**: Install Tailscale on server and client devices
+- **Security**: End-to-end encrypted, no public exposure
+- **Learn more**: [tailscale.com](https://tailscale.com)
+
+#### 🌍 **Ngrok Access** (Public Tunnel)
+```
+http://abc123.ngrok-free.app/hls/channelname/index.m3u8
+```
+- **Use for**: Temporary public access, sharing with friends
+- **Best for**: Quick sharing, testing, demonstrations
+- **Setup**: Install ngrok and create tunnel
+- **Security**: Public URL, consider authentication
+- **Learn more**: [ngrok.com](https://ngrok.com)
+
+#### 🔒 **Localhost** (Development)
+```
+http://127.0.0.1:8081/hls/channelname/index.m3u8
+```
+- **Use for**: Local testing and development
+- **Best for**: Same machine access only
+- **Bandwidth**: No network usage
+
+### 🎯 **Choosing the Right URL**
+
+| Scenario | Recommended URL | Why |
+|----------|----------------|-----|
+| **Kodi on same network** | LAN (192.168.x.x) | Fastest, no internet needed |
+| **Phone at home** | LAN (192.168.x.x) | Best performance, no data usage |
+| **Remote access (secure)** | Tailscale | Encrypted, always works |
+| **Sharing with friends** | Ngrok | Easy setup, temporary sharing |
+| **Testing locally** | Localhost | Development and testing |
+
+### 🛠️ **Setup Instructions**
+
+#### **Tailscale Setup** (Recommended for remote access)
+1. **Install Tailscale** on your AkiraTV server:
+   ```bash
+   # Windows: Download from tailscale.com
+   # Linux: curl -fsSL https://tailscale.com/install.sh | sh
+   # macOS: brew install tailscale
+   ```
+
+2. **Connect your server**:
+   ```bash
+   sudo tailscale up
+   ```
+
+3. **Install Tailscale** on client devices (phone, laptop, etc.)
+
+4. **Use Tailscale IP** in streaming URLs (usually starts with 100.x.x.x)
+
+#### **Ngrok Setup** (For public access)
+1. **Install ngrok**:
+   ```bash
+   # Download from ngrok.com and extract
+   # Add to PATH or use full path
+   ```
+
+2. **Create tunnel**:
+   ```bash
+   ngrok http 8081
+   ```
+
+3. **Use the generated URL** (e.g., `abc123.ngrok-free.app`)
+
+4. **For permanent URLs**: Upgrade to ngrok paid plan
+
+### 📱 **Mobile Access Examples**
+
+#### **Kodi on Android/iOS**
+```
+M3U URL: http://192.168.1.100:8081/channels.m3u
+XMLTV URL: http://192.168.1.100:8081/xmltv.xml
+```
+
+#### **VLC Media Player**
+```
+Network Stream: http://192.168.1.100:8081/hls/movies/index.m3u8
+```
+
+#### **Web Browser**
+```
+AkiraTV Interface: http://192.168.1.100:8001
+```
+
+### 🔐 **Security Considerations**
+
+#### **LAN URLs** 🏠
+- ✅ **Safe**: Only accessible on your local network
+- ✅ **Fast**: Direct connection, no internet routing
+- ❌ **Limited**: No remote access
+
+#### **Tailscale URLs** 🌐
+- ✅ **Secure**: End-to-end encrypted VPN
+- ✅ **Private**: Not publicly accessible
+- ✅ **Reliable**: Works from anywhere
+- ❌ **Setup**: Requires Tailscale on all devices
+
+#### **Ngrok URLs** 🌍
+- ✅ **Easy**: Quick public access
+- ✅ **Shareable**: Send URL to friends
+- ❌ **Public**: Anyone with URL can access
+- ❌ **Temporary**: Free URLs change frequently
+
+### � **Network Access Diagram**
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Your Device   │    │   AkiraTV Server │    │  Streaming URLs │
+│                 │    │                  │    │                 │
+│ 🏠 Same Network │◄──►│ 192.168.1.100    │◄──►│ LAN: :8081/hls  │
+│ 📱 Phone/Tablet │    │                  │    │                 │
+│ 📺 Kodi/VLC     │    │ Ports:           │    │ Web: :8001      │
+└─────────────────┘    │ • 8001 (Web UI)  │    │ API: :8000      │
+                       │ • 8081 (Stream)  │    └─────────────────┘
+┌─────────────────┐    │ • 8000 (API)     │    
+│ 🌐 Remote Access│    └──────────────────┘    ┌─────────────────┐
+│                 │                            │ Tailscale VPN   │
+│ Tailscale VPN   │◄──────────────────────────►│ 100.x.x.x:8081  │
+│ (Secure)        │                            │ (Encrypted)     │
+└─────────────────┘                            └─────────────────┘
+
+┌─────────────────┐                            ┌─────────────────┐
+│ 🌍 Public Access│                            │ Ngrok Tunnel    │
+│                 │◄──────────────────────────►│ abc.ngrok.app   │
+│ Ngrok Tunnel    │                            │ (Temporary)     │
+│ (Share/Demo)    │                            └─────────────────┘
+└─────────────────┘
+```
+
+### 💡 **Pro Tips**
+
+1. **Use LAN URLs** for best performance at home
+2. **Set up Tailscale** for secure remote access
+3. **Use Ngrok** only for temporary sharing
+4. **Copy URLs** directly from the web interface
+5. **Test URLs** in VLC before configuring Kodi
+6. **Check firewall settings** if URLs don't work
+
+### 📋 **Quick Reference - URL Templates**
+
+Copy and modify these templates for your setup:
+
+```bash
+# Replace YOUR_IP with your server's IP address
+# Replace CHANNEL_NAME with your actual channel name
+
+# LAN Streaming URLs
+http://YOUR_IP:8081/hls/CHANNEL_NAME/index.m3u8
+http://YOUR_IP:8081/channels.m3u
+http://YOUR_IP:8081/xmltv.xml
+
+# Web Interface
+http://YOUR_IP:8001
+
+# Tailscale URLs (replace TAILSCALE_IP)
+http://TAILSCALE_IP:8081/hls/CHANNEL_NAME/index.m3u8
+
+# Ngrok URLs (replace NGROK_SUBDOMAIN)
+http://NGROK_SUBDOMAIN.ngrok-free.app/hls/CHANNEL_NAME/index.m3u8
+```
+
+**Example with real values:**
+```bash
+# LAN (192.168.1.100)
+http://192.168.1.100:8081/hls/movies/index.m3u8
+http://192.168.1.100:8001
+
+# Tailscale (100.64.1.2)  
+http://100.64.1.2:8081/hls/movies/index.m3u8
+
+# Ngrok (abc123.ngrok-free.app)
+http://abc123.ngrok-free.app/hls/movies/index.m3u8
+```
 
 ### Local Network
 - **LAN Access**: `http://YOUR_IP:8001`
