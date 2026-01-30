@@ -103,7 +103,28 @@ const translations = {
         'messages.failedToReloadSchedules': 'Failed to reload schedules',
         'messages.failedToLoadGuide': 'Failed to load TV Guide',
         'messages.noChannelsFound': 'No channels with schedules found',
-        'messages.noChannelsConfigured': 'No channels configured'
+        'messages.noChannelsConfigured': 'No channels configured',
+        
+        // Wizard
+        'wizard.title': '🧙‍♂️ Collection & Scheduler Wizard',
+        'wizard.description': 'Create collections and schedules easily through the web interface. Perfect for new users who want to get started quickly without using command-line tools.',
+        'wizard.loading': 'Loading wizard...',
+        'wizard.next': 'Next',
+        'wizard.previous': 'Previous',
+        'wizard.finish': 'Finish',
+        'wizard.collection.title': 'Create Collection',
+        'wizard.collection.description': 'Scan video folders and create organized collections for your channels. Automatically detects video files and generates metadata.',
+        'wizard.collection.button': '🚀 Create Collection',
+        'wizard.collection.modalTitle': '📁 Collection Wizard',
+        'wizard.scheduler.title': 'Create Schedule',
+        'wizard.scheduler.description': 'Build weekly programming schedules for your channels. Drag and drop videos to create professional TV schedules.',
+        'wizard.scheduler.button': '📺 Create Schedule',
+        'wizard.scheduler.modalTitle': '📅 Scheduler Wizard',
+        
+        // Common
+        'common.cancel': 'Cancel',
+        'common.save': 'Save',
+        'common.close': 'Close'
     },
     bg: {
         // Status and stats
@@ -200,7 +221,28 @@ const translations = {
         'messages.failedToReloadSchedules': 'Неуспешно презареждане на програмите',
         'messages.failedToLoadGuide': 'Неуспешно зареждане на телевизионната програма',
         'messages.noChannelsFound': 'Не са намерени канали с програми',
-        'messages.noChannelsConfigured': 'Няма конфигурирани канали'
+        'messages.noChannelsConfigured': 'Няма конфигурирани канали',
+        
+        // Wizard
+        'wizard.title': '🧙‍♂️ Помощник за колекции и програми',
+        'wizard.description': 'Създавайте колекции и програми лесно чрез уеб интерфейса. Перфектно за нови потребители, които искат да започнат бързо без използване на команден ред.',
+        'wizard.loading': 'Зарежда помощника...',
+        'wizard.next': 'Напред',
+        'wizard.previous': 'Назад',
+        'wizard.finish': 'Завърши',
+        'wizard.collection.title': 'Създай колекция',
+        'wizard.collection.description': 'Сканирайте папки с видеа и създайте организирани колекции за вашите канали. Автоматично открива видео файлове и генерира метаданни.',
+        'wizard.collection.button': '🚀 Създай колекция',
+        'wizard.collection.modalTitle': '📁 Помощник за колекции',
+        'wizard.scheduler.title': 'Създай програма',
+        'wizard.scheduler.description': 'Изградете седмични програми за вашите канали. Плъзгайте и пускайте видеа за създаване на професионални телевизионни програми.',
+        'wizard.scheduler.button': '📺 Създай програма',
+        'wizard.scheduler.modalTitle': '📅 Помощник за програми',
+        
+        // Common
+        'common.cancel': 'Отказ',
+        'common.save': 'Запази',
+        'common.close': 'Затвори'
     }
 };
 

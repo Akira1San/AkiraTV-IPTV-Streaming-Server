@@ -1719,6 +1719,417 @@ input:checked + .toggle-slider:before {
     }
 }
 
+/* Wizard Panel Styles */
+.wizard-intro {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.wizard-intro p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.wizard-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.wizard-card {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.wizard-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
+}
+
+.wizard-card-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.wizard-card-content h3 {
+    color: var(--text-primary);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+}
+
+.wizard-card-content p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+.wizard-btn {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s;
+    min-width: 180px;
+}
+
+.wizard-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+/* Wizard Modal Styles */
+.wizard-modal .modal-content {
+    max-width: 900px;
+    width: 95%;
+    max-height: 85vh;
+}
+
+.wizard-modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.wizard-modal-body {
+    flex: 1;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 25px;
+}
+
+.wizard-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    gap: 15px;
+}
+
+.wizard-loading .loading {
+    width: 32px;
+    height: 32px;
+}
+
+/* Wizard Step Styles */
+.wizard-steps {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.wizard-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+}
+
+.wizard-step.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+}
+
+.wizard-step.completed {
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+}
+
+.wizard-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -15px;
+    width: 30px;
+    height: 2px;
+    background: var(--border);
+    z-index: -1;
+}
+
+.wizard-step-number {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.wizard-step.active .wizard-step-number {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.wizard-step.completed .wizard-step-number {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Wizard Styles */
+@media (max-width: 768px) {
+    .wizard-actions {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .wizard-card {
+        padding: 20px;
+    }
+    
+    .wizard-card-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+    }
+    
+    .wizard-card-content h3 {
+        font-size: 18px;
+    }
+    
+    .wizard-btn {
+        min-width: 150px;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .wizard-modal .modal-content {
+        width: 98%;
+        max-height: 90vh;
+        margin: 5% auto;
+    }
+    
+    .wizard-modal-body {
+        padding: 20px;
+        max-height: 50vh;
+    }
+    
+    .wizard-steps {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .wizard-step:not(:last-child)::after {
+        display: none;
+    }
+}
+
+/* Wizard Content Styles */
+.wizard-content {
+    padding: 20px 0;
+}
+
+.wizard-content h4 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.wizard-content p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 25px 0;
+}
+
+.folder-input-section,
+.config-section,
+.channel-selection {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group:last-child {
+    margin-bottom: 0;
+}
+
+.input-group label {
+    display: block;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.wizard-input,
+.wizard-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.wizard-input:focus,
+.wizard-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.wizard-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.input-group small {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.folder-help {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.folder-preview,
+.channel-info {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.folder-preview h5,
+.channel-info h5 {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.review-section {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.wizard-actions-preview {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.wizard-actions-preview h5 {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.wizard-actions-preview ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.wizard-actions-preview li {
+    margin-bottom: 5px;
+}
+
+.wizard-actions-preview code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.schedule-builder {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.schedule-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.schedule-grid {
+    min-height: 200px;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.schedule-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.schedule-review {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
 /* Responsive TV Guide */
 @media (max-width: 768px) {
     .guide-grid {
@@ -1741,4 +2152,536 @@ input:checked + .toggle-slider:before {
         align-items: flex-start;
         gap: 5px;
     }
+}
+
+/* ========================================
+   WIZARD STYLES
+   ======================================== */
+
+/* Wizard Modal */
+.wizard-modal .modal-content {
+    max-width: 900px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.wizard-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.wizard-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Wizard Steps */
+.wizard-steps {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.wizard-step {
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.wizard-step.active {
+    opacity: 1;
+}
+
+.wizard-step.completed {
+    opacity: 1;
+    color: var(--success);
+}
+
+.wizard-step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.wizard-step.active .wizard-step-number {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg-primary);
+}
+
+.wizard-step.completed .wizard-step-number {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+/* Wizard Content */
+.wizard-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.wizard-content h4 {
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+
+.wizard-content p {
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* Wizard Input Groups */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.wizard-input, .wizard-select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.wizard-input:focus, .wizard-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.wizard-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Folder Input Section */
+.folder-input-section {
+    margin-bottom: 25px;
+}
+
+.folder-input-section .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.folder-input-section .wizard-input {
+    flex: 1;
+}
+
+.folder-help {
+    margin-top: 8px;
+}
+
+.folder-help small {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* Folder Preview */
+.folder-preview {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.folder-preview h5 {
+    color: var(--accent);
+    margin-bottom: 15px;
+}
+
+.folder-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.folder-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.folder-stat:last-child {
+    border-bottom: none;
+}
+
+.folder-stat.error {
+    color: var(--error);
+    font-weight: 500;
+}
+
+/* Configuration Section */
+.config-section {
+    margin-bottom: 25px;
+}
+
+.config-section h4 {
+    color: var(--accent);
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+/* Review Section */
+.review-section {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-item strong {
+    color: var(--text-primary);
+}
+
+/* Wizard Actions Preview */
+.wizard-actions-preview {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.wizard-actions-preview h5 {
+    color: var(--accent);
+    margin-bottom: 15px;
+}
+
+.wizard-actions-preview ul {
+    list-style: none;
+    padding: 0;
+}
+
+.wizard-actions-preview li {
+    padding: 8px 0;
+    color: var(--text-secondary);
+}
+
+.wizard-actions-preview code {
+    background: var(--bg-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+/* Channel Selection */
+.channel-selection {
+    margin-bottom: 25px;
+}
+
+.channel-info {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.channel-info h5 {
+    color: var(--accent);
+    margin-bottom: 15px;
+}
+
+.channel-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.channel-info-item:last-child {
+    border-bottom: none;
+}
+
+/* Schedule Builder */
+.schedule-builder {
+    margin-top: 20px;
+}
+
+.schedule-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.schedule-stats {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.schedule-grid {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 200px;
+}
+
+.schedule-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Schedule Days Grid */
+.schedule-days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.schedule-day {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.schedule-day-header {
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 15px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.schedule-day-slots {
+    min-height: 100px;
+    margin-bottom: 15px;
+}
+
+/* Time Slots */
+.time-slot {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.time-slot-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.time-input {
+    width: 80px;
+    padding: 6px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.video-input {
+    flex: 1;
+    padding: 6px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
+}
+
+.video-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Schedule Builder Actions */
+.schedule-builder-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.schedule-builder-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.schedule-builder-header h5 {
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.schedule-builder-header p {
+    color: var(--text-secondary);
+}
+
+/* Wizard Cards */
+.wizard-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.wizard-card {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.wizard-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.wizard-card-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.wizard-card-content h3 {
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+.wizard-card-content p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.wizard-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Wizard Loading */
+.wizard-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.wizard-loading .loading {
+    margin-right: 10px;
+}
+
+/* Responsive Design for Wizards */
+@media (max-width: 768px) {
+    .wizard-modal .modal-content {
+        width: 95vw;
+        max-height: 95vh;
+        margin: 2.5vh auto;
+    }
+    
+    .wizard-steps {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .wizard-step {
+        margin: 5px 0;
+    }
+    
+    .schedule-days-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .folder-input-section .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .time-slot-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .time-input {
+        width: 100%;
+    }
+    
+    .schedule-builder-actions {
+        flex-direction: column;
+    }
+    
+    .wizard-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Wizard Intro */
+.wizard-intro {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.wizard-intro p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
 }

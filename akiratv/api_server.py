@@ -1066,6 +1066,200 @@ def create_standby_loop():
         raise HTTPException(status_code=500, detail=f"Failed to create standby loops: {str(e)}")
 
 # ========================================
+# WIZARD ENDPOINTS
+# ========================================
+
+@app.post("/api/wizard/scan-folder", response_model=Response)
+def scan_folder_for_videos(folder_path: str):
+    """Scan folder for video files"""
+    try:
+        from pathlib import Path
+        
+        folder = Path(folder_path)
+        if not folder.exists():
+            raise HTTPException(status_code=400, detail="Folder does not exist")
+        
+        if not folder.is_dir():
+            raise HTTPException(status_code=400, detail="Path is not a directory")
+        
+        # Video file extensions
+        video_extensions = {'.mp4', '.mkv', '.avi', '.mov', '.m4v', '.wmv', '.flv', '.webm', '.mpg', '.mpeg', '.ts', '.m2ts'}
+        
+        videos = []
+        total_size = 0
+        
+        # Scan for video files
+        for file_path in folder.rglob('*'):
+            if file_path.is_file() and file_path.suffix.lower() in video_extensions:
+                try:
+                    file_size = file_path.stat().st_size
+                    videos.append({
+                        'name': file_path.name,
+                        'path': str(file_path),
+                        'size': file_size,
+                        'format': file_path.suffix[1:].upper(),
+                        'relative_path': str(file_path.relative_to(folder))
+                    })
+                    total_size += file_size
+                except Exception as e:
+                    print(f"Error processing {file_path}: {e}")
+                    continue
+        
+        # Sort by name
+        videos.sort(key=lambda x: x['name'].lower())
+        
+        return Response(
+            success=True,
+            message=f"Found {len(videos)} video files",
+            data={
+                "videos": videos,
+                "total_size": total_size,
+                "folder_path": str(folder),
+                "video_count": len(videos)
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to scan folder: {str(e)}")
+
+@app.post("/api/wizard/collection/create", response_model=Response)
+def create_collection_wizard(
+    collection_name: str,
+    channel_name: str, 
+    channel_type: str,
+    folder_path: str,
+    collection_data: dict
+):
+    """Create collection and channel from wizard"""
+    try:
+        from pathlib import Path
+        import json
+        
+        # Validate inputs
+        if not collection_name.strip():
+            raise HTTPException(status_code=400, detail="Collection name is required")
+        
+        if not channel_name.strip():
+            raise HTTPException(status_code=400, detail="Channel name is required")
+        
+        if channel_type not in ['linear', 'vod', 'dynamic']:
+            raise HTTPException(status_code=400, detail="Invalid channel type")
+        
+        # Create collections directory
+        collections_dir = Path("user/collections")
+        collections_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create collection file
+        collection_file = collections_dir / f"collections_{channel_name}.json"
+        
+        # Prepare collection data
+        collection_content = {
+            "name": collection_name,
+            "channel": channel_name,
+            "type": channel_type,
+            "folder": folder_path,
+            "created": collection_data.get("created"),
+            "videos": collection_data.get("videos", []),
+            "metadata": collection_data.get("metadata", {})
+        }
+        
+        # Write collection file
+        with open(collection_file, 'w', encoding='utf-8') as f:
+            json.dump(collection_content, f, indent=2, ensure_ascii=False)
+        
+        # Add channel to config
+        api = get_core_api()
+        result = api.add_channel(channel_name, channel_type)
+        
+        if not result["success"]:
+            # Clean up collection file if channel creation failed
+            if collection_file.exists():
+                collection_file.unlink()
+            raise HTTPException(status_code=400, detail=result["error"])
+        
+        return Response(
+            success=True,
+            message=f"Collection '{collection_name}' and channel '{channel_name}' created successfully",
+            data={
+                "collection_file": str(collection_file),
+                "channel_name": channel_name,
+                "channel_type": channel_type,
+                "video_count": len(collection_content["videos"])
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create collection: {str(e)}")
+
+@app.post("/api/wizard/schedule/create", response_model=Response)
+def create_schedule_wizard(
+    channel_name: str,
+    schedule_type: str,
+    schedule_data: dict
+):
+    """Create schedule from wizard"""
+    try:
+        from pathlib import Path
+        import json
+        
+        # Validate inputs
+        if not channel_name.strip():
+            raise HTTPException(status_code=400, detail="Channel name is required")
+        
+        if schedule_type not in ['weekly', 'daily']:
+            raise HTTPException(status_code=400, detail="Invalid schedule type")
+        
+        # Check if channel exists
+        api = get_core_api()
+        channel = api.get_channel(channel_name)
+        if not channel:
+            raise HTTPException(status_code=404, detail=f"Channel '{channel_name}' not found")
+        
+        # Create schedules directory
+        schedules_dir = Path("user/schedules")
+        schedules_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create schedule file
+        schedule_file = schedules_dir / f"schedule_{channel_name}.json"
+        
+        # Prepare schedule content
+        schedule_content = {
+            "channel": channel_name,
+            "type": schedule_type,
+            "created": schedule_data.get("created", ""),
+            "weekly": schedule_data.get("weekly", {}),
+            "metadata": {
+                "total_slots": sum(len(day_schedule) for day_schedule in schedule_data.get("weekly", {}).values()),
+                "days_with_schedule": len(schedule_data.get("weekly", {})),
+                "created_by": "wizard"
+            }
+        }
+        
+        # Write schedule file
+        with open(schedule_file, 'w', encoding='utf-8') as f:
+            json.dump(schedule_content, f, indent=2, ensure_ascii=False)
+        
+        # Reload schedule for the channel
+        reload_result = api.reload_schedule(channel_name)
+        if not reload_result["success"]:
+            print(f"Warning: Failed to reload schedule for {channel_name}: {reload_result.get('error')}")
+        
+        return Response(
+            success=True,
+            message=f"Schedule created successfully for channel '{channel_name}'",
+            data={
+                "schedule_file": str(schedule_file),
+                "channel_name": channel_name,
+                "schedule_type": schedule_type,
+                "total_slots": schedule_content["metadata"]["total_slots"],
+                "days_with_schedule": schedule_content["metadata"]["days_with_schedule"]
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create schedule: {str(e)}")
+
+# ========================================
 # WEBSOCKET FOR LIVE UPDATES
 # ========================================
 

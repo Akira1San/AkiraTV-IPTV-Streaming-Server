@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV Wizard Test</title>
+    <link rel="stylesheet" href="akiratv/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AkiraTV Wizard Test</h1>
+        
+        <div class="wizard-actions">
+            <div class="wizard-card">
+                <div class="wizard-card-icon">📁</div>
+                <div class="wizard-card-content">
+                    <h3>Create Collection</h3>
+                    <p>Test the collection wizard functionality</p>
+                    <button class="btn btn-primary wizard-btn" onclick="showCollectionWizard()">
+                        🚀 Create Collection
+                    </button>
+                </div>
+            </div>
+            
+            <div class="wizard-card">
+                <div class="wizard-card-icon">📅</div>
+                <div class="wizard-card-content">
+                    <h3>Create Schedule</h3>
+                    <p>Test the scheduler wizard functionality</p>
+                    <button class="btn btn-primary wizard-btn" onclick="showSchedulerWizard()">
+                        📺 Create Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Collection Wizard Modal -->
+        <div class="modal wizard-modal" id="collectionWizardModal">
+            <div class="modal-content wizard-modal-content">
+                <div class="modal-header">
+                    <h3>📁 Collection Wizard</h3>
+                    <button class="modal-close" onclick="hideCollectionWizard()">&times;</button>
+                </div>
+                <div class="modal-body wizard-modal-body" id="collectionWizardBody">
+                    <div class="wizard-loading">
+                        <div class="loading"></div>
+                        <span>Loading wizard...</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="hideCollectionWizard()">Cancel</button>
+                    <button class="btn btn-primary" id="collectionWizardNext" onclick="collectionWizardNext()" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduler Wizard Modal -->
+        <div class="modal wizard-modal" id="schedulerWizardModal">
+            <div class="modal-content wizard-modal-content">
+                <div class="modal-header">
+                    <h3>📅 Scheduler Wizard</h3>
+                    <button class="modal-close" onclick="hideSchedulerWizard()">&times;</button>
+                </div>
+                <div class="modal-body wizard-modal-body" id="schedulerWizardBody">
+                    <div class="wizard-loading">
+                        <div class="loading"></div>
+                        <span>Loading wizard...</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="hideSchedulerWizard()">Cancel</button>
+                    <button class="btn btn-primary" id="schedulerWizardNext" onclick="schedulerWizardNext()" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mock functions for testing -->
+    <script>
+        // Mock translation function
+        function t(key) {
+            const translations = {
+                'wizard.next': 'Next',
+                'wizard.finish': 'Finish',
+                'common.cancel': 'Cancel'
+            };
+            return translations[key] || key;
+        }
+        
+        // Mock API call function
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            console.log('Mock API call:', endpoint, method, body);
+            
+            // Simulate different responses
+            if (endpoint === '/api/channels') {
+                return {
+                    channels: [
+                        { name: 'test_channel', type: 'linear', enabled: true, status: 'running' },
+                        { name: 'movie_channel', type: 'vod', enabled: true, status: 'stopped' }
+                    ]
+                };
+            }
+            
+            if (endpoint === '/api/wizard/scan-folder') {
+                return {
+                    success: true,
+                    data: {
+                        videos: [
+                            { name: 'movie1.mp4', size: 1024000000, format: 'MP4' },
+                            { name: 'movie2.mkv', size: 2048000000, format: 'MKV' }
+                        ],
+                        total_size: 3072000000,
+                        video_count: 2
+                    }
+                };
+            }
+            
+            // Default success response
+            return { success: true, message: 'Mock operation completed' };
+        }
+        
+        // Mock toast function
+        function showToast(message, type = 'info') {
+            console.log(`Toast [${type}]:`, message);
+            alert(`${type.toUpperCase()}: ${message}`);
+        }
+        
+        // Mock load functions
+        async function loadChannels() {
+            console.log('Mock: Loading channels');
+        }
+        
+        async function loadTVGuide() {
+            console.log('Mock: Loading TV guide');
+        }
+    </script>
+    
+    <script src="akiratv/static/wizard.js"></script>
+</body>
+</html>
