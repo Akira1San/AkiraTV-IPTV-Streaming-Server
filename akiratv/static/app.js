@@ -84,6 +84,9 @@ const translations = {
         'channels.searchResults': 'channels found',
         'channels.noResults': 'No channels match your search',
         'channels.showingAll': 'Showing all channels',
+        'channels.filterAll': 'All',
+        'channels.filterEnabled': 'Enabled',
+        'channels.filterDisabled': 'Disabled',
         
         // Messages
         'messages.urlCopied': 'URL copied!',
@@ -178,6 +181,9 @@ const translations = {
         'channels.searchResults': 'канала намерени',
         'channels.noResults': 'Няма канали, които да съответстват на търсенето',
         'channels.showingAll': 'Показват се всички канали',
+        'channels.filterAll': 'Всички',
+        'channels.filterEnabled': 'Включени',
+        'channels.filterDisabled': 'Изключени',
         
         // Messages
         'messages.urlCopied': 'URL копиран!',
@@ -329,6 +335,7 @@ async function updateStatus() {
 
 // Load Channels
 let allChannelsData = []; // Store all channels for search
+let currentChannelFilter = 'all'; // Current filter: 'all', 'enabled', 'disabled'
 
 async function loadChannels() {
     try {
@@ -360,6 +367,9 @@ async function loadChannels() {
         
         document.getElementById('channelsCount').textContent = channels.length;
 
+        // Update filter counts
+        updateFilterCounts(channels);
+        
         // Display channels (filtered if search is active)
         displayChannels(channels, channelUrls);
         
@@ -524,28 +534,22 @@ function setupChannelSearch() {
 function filterChannels(searchTerm) {
     const resultsInfo = document.getElementById('searchResultsInfo');
     
-    if (!searchTerm) {
-        // Show all channels
-        const channelUrls = {};
-        allChannelsData.forEach(ch => {
-            if (ch.enabled) {
-                channelUrls[ch.name] = {
-                    lan: {
-                        stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`,
-                        epg: `http://192.168.50.183:8081/xmltv.xml`
-                    }
-                };
-            }
-        });
-        displayChannels(allChannelsData, channelUrls);
-        resultsInfo.style.display = 'none';
-        return;
+    // Apply both search and status filters
+    let filteredChannels = allChannelsData;
+    
+    // Apply status filter first
+    if (currentChannelFilter === 'enabled') {
+        filteredChannels = filteredChannels.filter(channel => channel.enabled);
+    } else if (currentChannelFilter === 'disabled') {
+        filteredChannels = filteredChannels.filter(channel => !channel.enabled);
     }
     
-    // Filter channels by name (case insensitive)
-    const filteredChannels = allChannelsData.filter(channel => 
-        channel.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Apply search filter
+    if (searchTerm) {
+        filteredChannels = filteredChannels.filter(channel => 
+            channel.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }
     
     // Generate URLs for filtered channels
     const channelUrls = {};
@@ -564,13 +568,41 @@ function filterChannels(searchTerm) {
     displayChannels(filteredChannels, channelUrls);
     
     // Show search results info
-    if (filteredChannels.length > 0) {
-        resultsInfo.innerHTML = `<span class="search-icon">🔍</span> ${filteredChannels.length} ${t('channels.searchResults')}`;
-        resultsInfo.style.display = 'flex';
+    if (searchTerm) {
+        if (filteredChannels.length > 0) {
+            resultsInfo.innerHTML = `<span class="search-icon">🔍</span> ${filteredChannels.length} ${t('channels.searchResults')}`;
+            resultsInfo.style.display = 'flex';
+        } else {
+            resultsInfo.innerHTML = `<span class="search-icon">🔍</span> ${t('channels.noResults')}`;
+            resultsInfo.style.display = 'flex';
+        }
     } else {
-        resultsInfo.innerHTML = `<span class="search-icon">🔍</span> ${t('channels.noResults')}`;
-        resultsInfo.style.display = 'flex';
+        resultsInfo.style.display = 'none';
     }
+}
+
+// Channel Filter Functions
+function updateFilterCounts(channels) {
+    const allCount = channels.length;
+    const enabledCount = channels.filter(ch => ch.enabled).length;
+    const disabledCount = channels.filter(ch => !ch.enabled).length;
+    
+    document.getElementById('countAll').textContent = allCount;
+    document.getElementById('countEnabled').textContent = enabledCount;
+    document.getElementById('countDisabled').textContent = disabledCount;
+}
+
+function setChannelFilter(filter) {
+    currentChannelFilter = filter;
+    
+    // Update button states
+    document.getElementById('filterAll').classList.toggle('active', filter === 'all');
+    document.getElementById('filterEnabled').classList.toggle('active', filter === 'enabled');
+    document.getElementById('filterDisabled').classList.toggle('active', filter === 'disabled');
+    
+    // Apply current search term with new filter
+    const searchTerm = document.getElementById('channelSearch').value.trim();
+    filterChannels(searchTerm);
 }
 
 function clearChannelSearch() {
@@ -581,6 +613,8 @@ function clearChannelSearch() {
     searchInput.value = '';
     clearBtn.style.display = 'none';
     resultsInfo.style.display = 'none';
+    
+    // Apply current filter without search term
     filterChannels('');
 }
 

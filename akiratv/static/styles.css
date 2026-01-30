@@ -773,6 +773,68 @@ input:checked + .toggle-slider:before {
     font-weight: 600;
 }
 
+/* Channel Filters */
+.channel-filters-container {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.channel-filters {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 25px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.filter-btn:hover {
+    border-color: var(--accent);
+    background: var(--bg-primary);
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+.filter-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 24px;
+    text-align: center;
+}
+
+.filter-btn.active .filter-count {
+    background: rgba(0, 0, 0, 0.2);
+    color: #000;
+}
+
 /* Modal Styles */
 .modal {
     display: none;
@@ -1608,6 +1670,28 @@ input:checked + .toggle-slider:before {
     .search-results-info {
         font-size: 12px;
         margin-top: 8px;
+    }
+    
+    /* Mobile filter buttons */
+    .channel-filters-container {
+        padding: 12px;
+    }
+    
+    .channel-filters {
+        gap: 6px;
+    }
+    
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: 80px;
+        flex: 1;
+        max-width: 120px;
+    }
+    
+    .filter-count {
+        font-size: 11px;
+        padding: 1px 6px;
     }
     
     .channels-grid {

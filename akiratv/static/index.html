@@ -168,6 +168,24 @@
                 <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
             </div>
             
+            <!-- Channel Filters -->
+            <div class="channel-filters-container">
+                <div class="channel-filters">
+                    <button class="filter-btn active" id="filterAll" onclick="setChannelFilter('all')">
+                        <span data-i18n="channels.filterAll">All</span>
+                        <span class="filter-count" id="countAll">0</span>
+                    </button>
+                    <button class="filter-btn" id="filterEnabled" onclick="setChannelFilter('enabled')">
+                        <span data-i18n="channels.filterEnabled">Enabled</span>
+                        <span class="filter-count" id="countEnabled">0</span>
+                    </button>
+                    <button class="filter-btn" id="filterDisabled" onclick="setChannelFilter('disabled')">
+                        <span data-i18n="channels.filterDisabled">Disabled</span>
+                        <span class="filter-count" id="countDisabled">0</span>
+                    </button>
+                </div>
+            </div>
+            
             <!-- Add Channel Form -->
             <div class="add-channel-form">
                 <div class="add-channel-input">
