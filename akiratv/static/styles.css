@@ -1022,3 +1022,263 @@ input:checked + .toggle-slider:before {
         width: 100%;
     }
 }
+
+/* TV Guide Styles */
+.guide-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.guide-time {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.guide-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+}
+
+.guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 15px;
+    padding: 15px;
+}
+
+.guide-channel-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.2s;
+}
+
+.guide-channel-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.guide-channel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.guide-channel-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.guide-channel-type {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.guide-channel-type.linear {
+    background: rgba(0, 212, 255, 0.2);
+    color: var(--accent);
+}
+
+.guide-channel-type.vod {
+    background: rgba(255, 149, 0, 0.2);
+    color: var(--warning);
+}
+
+.guide-channel-type.dynamic {
+    background: rgba(0, 200, 83, 0.2);
+    color: var(--success);
+}
+
+.guide-channel-status {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.guide-channel-status.running {
+    background: rgba(0, 200, 83, 0.2);
+    color: var(--success);
+}
+
+.guide-channel-status.stopped {
+    background: rgba(255, 59, 48, 0.2);
+    color: var(--error);
+}
+
+.guide-error {
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--error);
+}
+
+.guide-current-program,
+.guide-next-program {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.guide-current-program {
+    border-left: 4px solid var(--success);
+}
+
+.guide-next-program {
+    border-left: 4px solid var(--accent);
+}
+
+.guide-no-program {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--text-secondary);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.guide-program-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.guide-program-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.guide-program-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.guide-program-duration {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.guide-schedule {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.guide-schedule-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.guide-schedule-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.guide-schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 10px;
+}
+
+.guide-schedule-item:last-child {
+    border-bottom: none;
+}
+
+.guide-schedule-item.current {
+    background: rgba(0, 200, 83, 0.1);
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin: 2px 0;
+}
+
+.guide-schedule-item.current .guide-schedule-title {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.guide-schedule-time {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-family: 'Courier New', monospace;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+.guide-schedule-title {
+    font-size: 12px;
+    color: var(--text-primary);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.guide-schedule-more {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+    padding: 6px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 4px;
+}
+
+/* Responsive TV Guide */
+@media (max-width: 768px) {
+    .guide-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .guide-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .guide-container {
+        max-height: 500px;
+    }
+    
+    .guide-channel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}

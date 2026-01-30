@@ -123,6 +123,22 @@
             </div>
         </div>
 
+        <!-- TV Guide Section -->
+        <div class="section">
+            <div class="section-title">📺 TV Guide</div>
+            
+            <div class="guide-controls">
+                <button class="btn btn-secondary" onclick="refreshGuide()">🔄 Refresh Guide</button>
+                <div class="guide-time" id="guideTime">Loading...</div>
+            </div>
+            
+            <div class="guide-container" id="guideContainer">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <div class="loading"></div> Loading TV Guide...
+                </div>
+            </div>
+        </div>
+
         <!-- Channels Section -->
         <div class="section">
             <div class="section-title">📺 Channels</div>

@@ -10,8 +10,10 @@ async function init() {
     await loadChannels();
     await loadChannelDropdown();
     await refreshPlaylist();
+    await loadTVGuide();
     connectWebSocket();
     setInterval(updateStatus, 10000); // Update every 10s
+    setInterval(loadTVGuide, 60000); // Update guide every minute
 }
 
 // API Calls
@@ -1105,6 +1107,109 @@ function hideLoading(btnId) {
     } else {
         btn.innerHTML = '⏹️ Stop Streaming';
     }
+}
+
+// TV Guide Functions
+async function loadTVGuide() {
+    try {
+        const guideData = await apiCall('/api/guide');
+        displayTVGuide(guideData);
+        
+        // Update guide time
+        const now = new Date();
+        document.getElementById('guideTime').textContent = 
+            `Current Time: ${now.toLocaleTimeString()} - ${now.toLocaleDateString()}`;
+            
+    } catch (error) {
+        console.error('Failed to load TV guide:', error);
+        document.getElementById('guideContainer').innerHTML = 
+            '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load TV Guide</div>';
+    }
+}
+
+function displayTVGuide(guideData) {
+    const container = document.getElementById('guideContainer');
+    const guide = guideData.guide;
+    
+    if (!guide || Object.keys(guide).length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">No channels with schedules found</div>';
+        return;
+    }
+    
+    let guideHtml = '<div class="guide-grid">';
+    
+    // Sort channels by name
+    const sortedChannels = Object.keys(guide).sort();
+    
+    for (const channelName of sortedChannels) {
+        const channelGuide = guide[channelName];
+        
+        guideHtml += `
+            <div class="guide-channel-card">
+                <div class="guide-channel-header">
+                    <div class="guide-channel-name">${channelName}</div>
+                    <div class="guide-channel-type ${channelGuide.type}">${channelGuide.type}</div>
+                    <div class="guide-channel-status ${channelGuide.status === 'running' ? 'running' : 'stopped'}">
+                        ${channelGuide.status}
+                    </div>
+                </div>
+                
+                ${channelGuide.error ? `
+                    <div class="guide-error">⚠️ ${channelGuide.error}</div>
+                ` : ''}
+                
+                ${channelGuide.current_program ? `
+                    <div class="guide-current-program">
+                        <div class="guide-program-label">🔴 NOW PLAYING</div>
+                        <div class="guide-program-title">${channelGuide.current_program.display_name}</div>
+                        <div class="guide-program-time">Started: ${channelGuide.current_program.time}</div>
+                        <div class="guide-program-duration">${channelGuide.current_program.duration_estimate}</div>
+                    </div>
+                ` : `
+                    <div class="guide-no-program">
+                        <div class="guide-program-label">⏸️ NO SCHEDULE</div>
+                        <div class="guide-program-title">No current program</div>
+                    </div>
+                `}
+                
+                ${channelGuide.next_program ? `
+                    <div class="guide-next-program">
+                        <div class="guide-program-label">⏭️ UP NEXT</div>
+                        <div class="guide-program-title">${channelGuide.next_program.display_name}</div>
+                        <div class="guide-program-time">Starts: ${channelGuide.next_program.time}</div>
+                        <div class="guide-program-duration">${channelGuide.next_program.duration_estimate}</div>
+                    </div>
+                ` : ''}
+                
+                ${channelGuide.schedule && channelGuide.schedule.length > 0 ? `
+                    <div class="guide-schedule">
+                        <div class="guide-schedule-label">📅 TODAY'S SCHEDULE</div>
+                        <div class="guide-schedule-list">
+                            ${channelGuide.schedule.slice(0, 5).map(program => `
+                                <div class="guide-schedule-item ${program.is_current ? 'current' : ''}">
+                                    <div class="guide-schedule-time">${program.time}</div>
+                                    <div class="guide-schedule-title">${program.display_name}</div>
+                                </div>
+                            `).join('')}
+                            ${channelGuide.schedule.length > 5 ? `
+                                <div class="guide-schedule-more">... and ${channelGuide.schedule.length - 5} more programs</div>
+                            ` : ''}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    guideHtml += '</div>';
+    container.innerHTML = guideHtml;
+}
+
+async function refreshGuide() {
+    document.getElementById('guideContainer').innerHTML = 
+        '<div style="text-align: center; padding: 40px; color: var(--text-secondary);"><div class="loading"></div> Refreshing TV Guide...</div>';
+    await loadTVGuide();
+    showToast('TV Guide refreshed', 'success');
 }
 
 // Initialize on load

@@ -583,6 +583,154 @@ def get_logs_info():
         "message": f"Logs directory: {log_dir}"
     }
 
+@app.get("/api/guide")
+def get_tv_guide():
+    """Get TV guide data for all channels"""
+    try:
+        import json
+        from datetime import datetime, timedelta
+        from pathlib import Path
+        
+        # Get current time
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        current_day = now.strftime("%A").lower()
+        
+        # Get all channels
+        api = get_core_api()
+        channels = api.get_channels()
+        
+        guide_data = {}
+        
+        for channel in channels:
+            if not channel.enabled:
+                continue
+                
+            channel_name = channel.name
+            schedule_file = Path(f"user/schedules/schedule_{channel_name}.json")
+            
+            if not schedule_file.exists():
+                # No schedule file, show as "No schedule"
+                guide_data[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "current_program": None,
+                    "next_program": None,
+                    "schedule": []
+                }
+                continue
+            
+            try:
+                with open(schedule_file, 'r', encoding='utf-8') as f:
+                    schedule_data = json.load(f)
+                
+                # Get today's schedule
+                today_schedule = schedule_data.get("weekly", {}).get(current_day, [])
+                
+                # Find current and next programs
+                current_program = None
+                next_program = None
+                
+                # Convert current time to minutes for comparison
+                current_minutes = time_to_minutes(current_time)
+                
+                # Sort schedule by time
+                sorted_schedule = sorted(today_schedule, key=lambda x: time_to_minutes(x["time"]))
+                
+                for i, program in enumerate(sorted_schedule):
+                    program_minutes = time_to_minutes(program["time"])
+                    
+                    # Check if this program is currently playing
+                    if i < len(sorted_schedule) - 1:
+                        next_program_minutes = time_to_minutes(sorted_schedule[i + 1]["time"])
+                        if program_minutes <= current_minutes < next_program_minutes:
+                            current_program = program
+                            next_program = sorted_schedule[i + 1]
+                            break
+                    else:
+                        # Last program of the day
+                        if program_minutes <= current_minutes:
+                            current_program = program
+                            # Next program would be first program of tomorrow
+                            if sorted_schedule:
+                                next_program = sorted_schedule[0]
+                            break
+                
+                # If no current program found, use the last program that started
+                if not current_program and sorted_schedule:
+                    for program in reversed(sorted_schedule):
+                        if time_to_minutes(program["time"]) <= current_minutes:
+                            current_program = program
+                            break
+                
+                # Format programs for display
+                if current_program:
+                    current_program["display_name"] = Path(current_program["file"]).stem
+                    current_program["duration_estimate"] = "~90 min"  # Could be calculated from file
+                
+                if next_program:
+                    next_program["display_name"] = Path(next_program["file"]).stem
+                    next_program["duration_estimate"] = "~90 min"
+                
+                # Get next few programs for the guide
+                upcoming_programs = []
+                current_index = -1
+                
+                # Find current program index
+                for i, program in enumerate(sorted_schedule):
+                    if current_program and program["time"] == current_program["time"]:
+                        current_index = i
+                        break
+                
+                # Get next 5 programs
+                for i in range(max(0, current_index), min(len(sorted_schedule), current_index + 6)):
+                    program = sorted_schedule[i].copy()
+                    program["display_name"] = Path(program["file"]).stem
+                    program["is_current"] = (i == current_index)
+                    upcoming_programs.append(program)
+                
+                guide_data[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "current_program": current_program,
+                    "next_program": next_program,
+                    "schedule": upcoming_programs
+                }
+                
+            except Exception as e:
+                # Error reading schedule file
+                guide_data[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "current_program": None,
+                    "next_program": None,
+                    "schedule": [],
+                    "error": f"Error reading schedule: {str(e)}"
+                }
+        
+        return {
+            "guide": guide_data,
+            "current_time": current_time,
+            "current_day": current_day,
+            "timestamp": now.isoformat()
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get TV guide: {str(e)}")
+
+def time_to_minutes(time_str):
+    """Convert HH:MM:SS to minutes since midnight"""
+    try:
+        parts = time_str.split(":")
+        hours = int(parts[0])
+        minutes = int(parts[1])
+        return hours * 60 + minutes
+    except:
+        return 0
+
 @app.post("/api/playlist/create", response_model=Response)
 def create_playlist(folder_path: str):
     """Create playlist from video folder"""
