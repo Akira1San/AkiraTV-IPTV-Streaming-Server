@@ -1069,24 +1069,67 @@ def create_standby_loop():
 # WIZARD ENDPOINTS
 # ========================================
 
+@app.post("/api/wizard/log", response_model=Response)
+def log_wizard_event(request: dict):
+    """Log wizard events to file"""
+    try:
+        from pathlib import Path
+        import json
+        from datetime import datetime
+        
+        # Create logs directory
+        logs_dir = Path("logs")
+        logs_dir.mkdir(exist_ok=True)
+        
+        # Create wizard log file
+        log_file = logs_dir / "wizard.log"
+        
+        # Format log entry
+        timestamp = request.get("timestamp", datetime.now().isoformat())
+        level = request.get("level", "info").upper()
+        message = request.get("message", "")
+        data = request.get("data", {})
+        
+        log_entry = f"[{timestamp}] [{level}] {message}"
+        if data:
+            log_entry += f" | Data: {json.dumps(data, ensure_ascii=False)}"
+        log_entry += "\n"
+        
+        # Append to log file
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(log_entry)
+        
+        return Response(success=True, message="Log entry written")
+        
+    except Exception as e:
+        # Don't fail the wizard if logging fails
+        print(f"Failed to write wizard log: {e}")
+        return Response(success=False, error=str(e))
+
 @app.post("/api/wizard/scan-folder", response_model=Response)
-def scan_folder_for_videos(folder_path: str):
+def scan_folder_for_videos(request: dict):
     """Scan folder for video files"""
     try:
         from pathlib import Path
         
+        folder_path = request.get("folder_path")
+        if not folder_path:
+            raise HTTPException(status_code=400, detail="folder_path is required")
+        
         folder = Path(folder_path)
         if not folder.exists():
-            raise HTTPException(status_code=400, detail="Folder does not exist")
+            raise HTTPException(status_code=400, detail=f"Folder does not exist: {folder_path}")
         
         if not folder.is_dir():
-            raise HTTPException(status_code=400, detail="Path is not a directory")
+            raise HTTPException(status_code=400, detail=f"Path is not a directory: {folder_path}")
         
         # Video file extensions
         video_extensions = {'.mp4', '.mkv', '.avi', '.mov', '.m4v', '.wmv', '.flv', '.webm', '.mpg', '.mpeg', '.ts', '.m2ts'}
         
         videos = []
         total_size = 0
+        
+        print(f"🔍 Scanning folder: {folder_path}")
         
         # Scan for video files
         for file_path in folder.rglob('*'):
@@ -1101,12 +1144,15 @@ def scan_folder_for_videos(folder_path: str):
                         'relative_path': str(file_path.relative_to(folder))
                     })
                     total_size += file_size
+                    print(f"📁 Found video: {file_path.name}")
                 except Exception as e:
                     print(f"Error processing {file_path}: {e}")
                     continue
         
         # Sort by name
         videos.sort(key=lambda x: x['name'].lower())
+        
+        print(f"✅ Scan complete: {len(videos)} videos found, {total_size} bytes total")
         
         return Response(
             success=True,
@@ -1120,26 +1166,34 @@ def scan_folder_for_videos(folder_path: str):
         )
         
     except Exception as e:
+        print(f"❌ Folder scan error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to scan folder: {str(e)}")
 
 @app.post("/api/wizard/collection/create", response_model=Response)
-def create_collection_wizard(
-    collection_name: str,
-    channel_name: str, 
-    channel_type: str,
-    folder_path: str,
-    collection_data: dict
-):
+def create_collection_wizard(request: dict):
     """Create collection and channel from wizard"""
     try:
         from pathlib import Path
         import json
         
+        # Extract data from request
+        collection_name = request.get("collection_name")
+        channel_name = request.get("channel_name")
+        channel_type = request.get("channel_type")
+        folder_path = request.get("folder_path")
+        collection_data = request.get("collection_data", {})
+        
+        print(f"🧙‍♂️ Creating collection via wizard:")
+        print(f"   Collection: {collection_name}")
+        print(f"   Channel: {channel_name}")
+        print(f"   Type: {channel_type}")
+        print(f"   Folder: {folder_path}")
+        
         # Validate inputs
-        if not collection_name.strip():
+        if not collection_name or not collection_name.strip():
             raise HTTPException(status_code=400, detail="Collection name is required")
         
-        if not channel_name.strip():
+        if not channel_name or not channel_name.strip():
             raise HTTPException(status_code=400, detail="Channel name is required")
         
         if channel_type not in ['linear', 'vod', 'dynamic']:
@@ -1152,30 +1206,86 @@ def create_collection_wizard(
         # Create collection file
         collection_file = collections_dir / f"collections_{channel_name}.json"
         
-        # Prepare collection data
+        # Prepare collection data in the correct AkiraTV format
+        collections = []
+        
+        for video in collection_data.get("videos", []):
+            # Generate collection ID from video name
+            video_name = video.get("name", "")
+            collection_id = video_name.lower()
+            # Clean up the ID - remove file extension and special characters
+            collection_id = collection_id.rsplit('.', 1)[0]  # Remove extension
+            collection_id = ''.join(c if c.isalnum() else '_' for c in collection_id)  # Replace special chars
+            collection_id = '_'.join(collection_id.split())  # Replace spaces with underscores
+            
+            # Generate display name from video name
+            display_name = video_name.rsplit('.', 1)[0]  # Remove extension
+            # Clean up display name - remove common prefixes and improve formatting
+            display_name = display_name.replace('encoded_', '').replace('_', ' ')
+            display_name = ' '.join(word.capitalize() for word in display_name.split())
+            
+            # Convert Windows path to forward slashes for AkiraTV
+            video_path = video.get("path", "").replace("\\", "/")
+            
+            # Try to get video duration using FFprobe
+            duration = get_video_duration(video_path)
+            
+            collection_entry = {
+                "id": collection_id,
+                "name": display_name,
+                "cover": None,
+                "description": "",
+                "genre": [],
+                "rating": "NR",
+                "year": 2026,  # Could be extracted from filename or metadata
+                "videos": [
+                    {
+                        "path": video_path,
+                        "duration": duration
+                    }
+                ]
+            }
+            collections.append(collection_entry)
+        
+        # Create the proper AkiraTV collections format
         collection_content = {
-            "name": collection_name,
-            "channel": channel_name,
-            "type": channel_type,
-            "folder": folder_path,
-            "created": collection_data.get("created"),
-            "videos": collection_data.get("videos", []),
-            "metadata": collection_data.get("metadata", {})
+            "collections": collections
         }
+        
+        print(f"📁 Writing collection file: {collection_file}")
+        print(f"   Collections count: {len(collections)}")
+        print(f"   Sample collection: {collections[0] if collections else 'None'}")
         
         # Write collection file
         with open(collection_file, 'w', encoding='utf-8') as f:
             json.dump(collection_content, f, indent=2, ensure_ascii=False)
         
+        print(f"✅ Collection file created successfully")
+        
         # Add channel to config
         api = get_core_api()
+        print(f"🔧 Adding channel to config...")
+        print(f"   API instance: {api}")
+        print(f"   Channel name: '{channel_name}'")
+        print(f"   Channel type: '{channel_type}'")
+        
+        # Check if channel already exists
+        existing_channels = api.get_channels()
+        print(f"   Existing channels: {[ch.name for ch in existing_channels]}")
+        
         result = api.add_channel(channel_name, channel_type)
         
-        if not result["success"]:
+        print(f"📊 Channel creation result: {result}")
+        
+        if not result.get("success", False):
+            error_msg = result.get("error", "Unknown error adding channel")
+            print(f"❌ Failed to add channel: {error_msg}")
             # Clean up collection file if channel creation failed
             if collection_file.exists():
                 collection_file.unlink()
-            raise HTTPException(status_code=400, detail=result["error"])
+            raise HTTPException(status_code=400, detail=error_msg)
+        
+        print(f"✅ Channel added to config successfully")
         
         return Response(
             success=True,
@@ -1184,12 +1294,50 @@ def create_collection_wizard(
                 "collection_file": str(collection_file),
                 "channel_name": channel_name,
                 "channel_type": channel_type,
-                "video_count": len(collection_content["videos"])
+                "collections_count": len(collections),
+                "video_count": sum(len(c["videos"]) for c in collections)
             }
         )
         
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
     except Exception as e:
+        print(f"❌ Collection creation error: {str(e)}")
+        print(f"   Request data: {request}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed to create collection: {str(e)}")
+
+def get_video_duration(video_path):
+    """Get video duration using FFprobe"""
+    try:
+        import subprocess
+        import json
+        
+        # Use ffprobe to get video duration
+        cmd = [
+            'ffprobe',
+            '-v', 'quiet',
+            '-print_format', 'json',
+            '-show_format',
+            video_path
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        
+        if result.returncode == 0:
+            data = json.loads(result.stdout)
+            duration = float(data.get('format', {}).get('duration', 0))
+            print(f"   📹 Duration for {video_path}: {duration:.2f}s")
+            return duration
+        else:
+            print(f"   ⚠️ FFprobe failed for {video_path}: {result.stderr}")
+            return 0
+            
+    except Exception as e:
+        print(f"   ⚠️ Could not get duration for {video_path}: {e}")
+        return 0
 
 @app.post("/api/wizard/schedule/create", response_model=Response)
 def create_schedule_wizard(

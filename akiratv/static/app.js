@@ -334,6 +334,22 @@ async function apiCall(endpoint, method = 'GET', body = null, params = null) {
     }
 
     const response = await fetch(url, options);
+    
+    // Check if response is ok (status 200-299)
+    if (!response.ok) {
+        let errorData;
+        try {
+            errorData = await response.json();
+        } catch (e) {
+            // If JSON parsing fails, use status text
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        // Throw error with details from server
+        const errorMessage = errorData.detail || errorData.error || errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+        throw new Error(errorMessage);
+    }
+    
     return response.json();
 }
 

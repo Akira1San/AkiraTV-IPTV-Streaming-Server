@@ -6,11 +6,54 @@ let currentWizard = null; // 'collection' or 'scheduler'
 let wizardStep = 0;
 let wizardData = {};
 
+// Logging system
+class WizardLogger {
+    constructor() {
+        this.logs = [];
+    }
+    
+    log(level, message, data = null) {
+        const timestamp = new Date().toISOString();
+        const logEntry = {
+            timestamp,
+            level,
+            message,
+            data
+        };
+        
+        this.logs.push(logEntry);
+        console.log(`[${level.toUpperCase()}] ${message}`, data || '');
+        
+        // Send to server for file logging
+        this.sendToServer(logEntry);
+    }
+    
+    async sendToServer(logEntry) {
+        try {
+            await fetch('/api/wizard/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(logEntry)
+            });
+        } catch (error) {
+            // Silently fail - don't want logging to break the wizard
+        }
+    }
+    
+    info(message, data) { this.log('info', message, data); }
+    warn(message, data) { this.log('warn', message, data); }
+    error(message, data) { this.log('error', message, data); }
+    debug(message, data) { this.log('debug', message, data); }
+}
+
+const wizardLogger = new WizardLogger();
+
 // ========================================
 // COLLECTION WIZARD
 // ========================================
 
 function showCollectionWizard() {
+    wizardLogger.info('Starting Collection Wizard');
     currentWizard = 'collection';
     wizardStep = 0;
     wizardData = {
@@ -24,6 +67,7 @@ function showCollectionWizard() {
     
     document.getElementById('collectionWizardModal').style.display = 'block';
     loadCollectionWizardStep();
+    wizardLogger.info('Collection Wizard modal opened');
 }
 
 function hideCollectionWizard() {
@@ -34,18 +78,26 @@ function hideCollectionWizard() {
 }
 
 function loadCollectionWizardStep() {
+    console.log(`📋 Loading collection wizard step ${wizardStep}`);
     const body = document.getElementById('collectionWizardBody');
     const nextBtn = document.getElementById('collectionWizardNext');
     
     switch(wizardStep) {
         case 0:
+            console.log('📁 Setting up step 1: Select Folder');
             body.innerHTML = getCollectionStep1HTML();
             nextBtn.textContent = t('wizard.next');
             nextBtn.disabled = true;
-            // Setup folder path input listeners
-            setTimeout(setupFolderPathInput, 100);
+            // Setup folder path input listeners with a delay to ensure DOM is ready
+            setTimeout(() => {
+                console.log('⏰ Setting up folder input after delay');
+                setupFolderPathInput();
+                // Also add a manual scan button for testing
+                addManualScanButton();
+            }, 200);
             break;
         case 1:
+            console.log('⚙️ Setting up step 2: Configure');
             body.innerHTML = getCollectionStep2HTML();
             nextBtn.textContent = t('wizard.next');
             nextBtn.disabled = true;
@@ -53,10 +105,34 @@ function loadCollectionWizardStep() {
             setTimeout(setupCollectionStep2, 100);
             break;
         case 2:
+            console.log('📋 Setting up step 3: Review');
             body.innerHTML = getCollectionStep3HTML();
             nextBtn.textContent = t('wizard.finish');
             nextBtn.disabled = false;
             break;
+    }
+}
+
+function addManualScanButton() {
+    const folderInputSection = document.querySelector('.folder-input-section .input-group');
+    if (folderInputSection) {
+        // Add a manual scan button for debugging
+        const scanButton = document.createElement('button');
+        scanButton.className = 'btn btn-primary';
+        scanButton.textContent = '🔍 Scan';
+        scanButton.onclick = function() {
+            const path = document.getElementById('wizardFolderPath').value.trim();
+            if (path) {
+                console.log('📁 Manual scan triggered:', path);
+                scanFolderForVideos(path);
+            } else {
+                showToast('Please enter a folder path first', 'error');
+            }
+        };
+        folderInputSection.appendChild(scanButton);
+        console.log('✅ Manual scan button added');
+    } else {
+        console.warn('⚠️ Could not find folder input section to add scan button');
     }
 }
 
@@ -117,11 +193,19 @@ function getCollectionStep1HTML() {
             
             <div class="folder-input-section">
                 <div class="input-group">
-                    <input type="text" id="folderPath" class="wizard-input" placeholder="Enter folder path (e.g., C:\\Videos\\Movies)" />
-                    <button class="btn btn-secondary" onclick="browseFolderForCollection()">📁 Browse</button>
+                    <input type="text" id="wizardFolderPath" class="wizard-input" placeholder="Enter folder path (e.g., C:\\Videos\\Movies)" />
                 </div>
                 <div class="folder-help">
                     <small>Supported formats: MP4, MKV, AVI, MOV, M4V, WMV, FLV</small>
+                    <br><small><strong>Tip:</strong> Enter the full path to your video folder, then click "🔍 Scan" or press Enter to scan for videos.</small>
+                </div>
+                <div class="folder-suggestions">
+                    <small><strong>Try these common paths:</strong></small>
+                    <div class="suggestion-buttons">
+                        <button class="btn-suggestion" onclick="tryFolderPath('C:\\\\Users\\\\Public\\\\Videos')">📁 Public Videos</button>
+                        <button class="btn-suggestion" onclick="tryFolderPath('C:\\\\Users\\\\' + (window.navigator.userAgent.includes('Windows') ? 'YourUsername' : 'username') + '\\\\Videos')">📁 User Videos</button>
+                        <button class="btn-suggestion" onclick="tryFolderPath('D:\\\\Movies')">📁 D:\\Movies</button>
+                    </div>
                 </div>
             </div>
             
@@ -246,7 +330,7 @@ function collectionWizardNext() {
 function validateCollectionStep() {
     switch(wizardStep) {
         case 0:
-            const folderPath = document.getElementById('folderPath').value.trim();
+            const folderPath = document.getElementById('wizardFolderPath').value.trim();
             if (!folderPath) {
                 showToast('Please select a folder path', 'error');
                 return false;
@@ -284,19 +368,35 @@ function validateCollectionStep() {
 }
 
 async function scanFolderForVideos(folderPath) {
+    wizardLogger.info('Starting folder scan', { folderPath });
+    
     try {
+        // Show loading state
+        const preview = document.getElementById('folderPreview');
+        const stats = document.getElementById('folderStats');
+        
+        if (stats) {
+            stats.innerHTML = `
+                <div class="folder-stat">
+                    <div class="loading"></div>
+                    <strong>Scanning folder...</strong>
+                </div>
+            `;
+            preview.style.display = 'block';
+        }
+        
         // Call API to scan folder for videos
         const result = await apiCall('/api/wizard/scan-folder', 'POST', {
             folder_path: folderPath
         });
         
+        wizardLogger.info('Scan result received', result);
+        
         if (result.success) {
             wizardData.videoFiles = result.data.videos || [];
+            wizardData.selectedFolder = folderPath;
             
             // Show folder preview
-            const preview = document.getElementById('folderPreview');
-            const stats = document.getElementById('folderStats');
-            
             if (wizardData.videoFiles.length > 0) {
                 stats.innerHTML = `
                     <div class="folder-stat">
@@ -311,56 +411,98 @@ async function scanFolderForVideos(folderPath) {
                     <div class="folder-stat">
                         <strong>💾 Total Size:</strong> ${formatFileSize(result.data.total_size || 0)}
                     </div>
+                    <div class="folder-stat success">
+                        <strong>✅ Ready to proceed!</strong>
+                    </div>
                 `;
                 preview.style.display = 'block';
                 
                 // Enable next button
                 document.getElementById('collectionWizardNext').disabled = false;
+                
+                showToast(`Found ${wizardData.videoFiles.length} video files in folder`, 'success');
+                wizardLogger.info('Folder scan successful', { 
+                    videoCount: wizardData.videoFiles.length,
+                    totalSize: result.data.total_size 
+                });
             } else {
                 stats.innerHTML = `
                     <div class="folder-stat error">
                         <strong>⚠️ No video files found in this folder</strong>
                     </div>
                     <div class="folder-help">
-                        <small>Supported formats: MP4, MKV, AVI, MOV, M4V, WMV, FLV</small>
+                        <small>Supported formats: MP4, MKV, AVI, MOV, M4V, WMV, FLV, WEBM, MPG, MPEG, TS, M2TS</small>
+                    </div>
+                    <div class="folder-help">
+                        <small>Make sure the folder path is correct and contains video files.</small>
                     </div>
                 `;
                 preview.style.display = 'block';
                 document.getElementById('collectionWizardNext').disabled = true;
+                
+                showToast('No video files found in the specified folder', 'warning');
+                wizardLogger.warn('No video files found in folder', { folderPath });
             }
         } else {
-            throw new Error(result.error || 'Failed to scan folder');
+            throw new Error(result.error || result.detail || 'Failed to scan folder');
         }
     } catch (error) {
-        // Fallback: simulate folder scanning
-        console.warn('API scan failed, using simulation:', error);
+        wizardLogger.error('Folder scan failed', { 
+            folderPath, 
+            error: error.message,
+            stack: error.stack 
+        });
         
-        // Simulate finding some videos
-        wizardData.videoFiles = [
-            { name: 'sample_video_1.mp4', size: 1024000000, format: 'mp4' },
-            { name: 'sample_video_2.mkv', size: 2048000000, format: 'mkv' },
-            { name: 'sample_video_3.avi', size: 1536000000, format: 'avi' }
-        ];
-        
+        // Show error in preview
         const preview = document.getElementById('folderPreview');
         const stats = document.getElementById('folderStats');
         
-        stats.innerHTML = `
-            <div class="folder-stat">
-                <strong>📁 Folder:</strong> ${folderPath}
-            </div>
-            <div class="folder-stat">
-                <strong>🎬 Videos Found:</strong> ${wizardData.videoFiles.length} files (simulated)
-            </div>
-            <div class="folder-stat">
-                <strong>📊 Formats:</strong> MP4, MKV, AVI
-            </div>
-            <div class="folder-stat">
-                <strong>💾 Total Size:</strong> ~4.6 GB (estimated)
-            </div>
-        `;
-        preview.style.display = 'block';
-        document.getElementById('collectionWizardNext').disabled = false;
+        if (stats) {
+            // Extract more specific error information
+            let errorMessage = error.message;
+            let helpText = 'Please check the folder path and try again.';
+            
+            if (errorMessage.includes('does not exist')) {
+                helpText = `The folder "${folderPath}" was not found. Please check:`;
+            } else if (errorMessage.includes('not a directory')) {
+                helpText = `"${folderPath}" is not a folder. Please enter a folder path.`;
+            } else if (errorMessage.includes('permission')) {
+                helpText = `Permission denied accessing "${folderPath}". Please check folder permissions.`;
+            }
+            
+            stats.innerHTML = `
+                <div class="folder-stat error">
+                    <strong>❌ Error scanning folder</strong>
+                </div>
+                <div class="folder-help">
+                    <small><strong>Error:</strong> ${errorMessage}</small>
+                </div>
+                <div class="folder-help">
+                    <small><strong>Help:</strong> ${helpText}</small>
+                </div>
+                <div class="folder-help">
+                    <small><strong>Troubleshooting:</strong></small>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>Verify the folder exists: <code>${folderPath}</code></li>
+                        <li>Check spelling and use correct path separators (\\)</li>
+                        <li>Ensure you have read permissions for the folder</li>
+                        <li>Try a different folder (e.g., C:\\Users\\Public\\Videos)</li>
+                    </ul>
+                </div>
+                <div class="folder-help">
+                    <small><strong>Common Windows paths:</strong></small>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>C:\\Users\\${window.navigator.userAgent.includes('Windows') ? 'YourUsername' : 'username'}\\Videos</li>
+                        <li>C:\\Users\\Public\\Videos</li>
+                        <li>D:\\Movies (if you have a D: drive)</li>
+                    </ul>
+                </div>
+            `;
+            preview.style.display = 'block';
+        }
+        
+        document.getElementById('collectionWizardNext').disabled = true;
+        showToast(`Failed to scan folder: ${errorMessage}`, 'error');
     }
 }
 
@@ -379,7 +521,13 @@ function formatFileSize(bytes) {
 
 async function createCollection() {
     try {
+        wizardLogger.info('Starting collection creation', wizardData);
         showToast('Creating collection...', 'info');
+        
+        // Validate wizard data
+        if (!wizardData.collectionName || !wizardData.channelName || !wizardData.selectedFolder) {
+            throw new Error('Missing required wizard data');
+        }
         
         // Create collection file structure
         const collectionData = {
@@ -392,9 +540,16 @@ async function createCollection() {
             metadata: {
                 total_videos: wizardData.videoFiles.length,
                 total_duration: "Unknown", // Could be calculated
-                formats: ["mp4", "mkv", "avi"] // Could be detected
+                formats: [...new Set(wizardData.videoFiles.map(v => v.format || v.name.split('.').pop().toUpperCase()))]
             }
         };
+        
+        wizardLogger.info('Calling collection creation API', {
+            collection_name: wizardData.collectionName,
+            channel_name: wizardData.channelName,
+            channel_type: wizardData.channelType,
+            folder_path: wizardData.selectedFolder
+        });
         
         // Call API to create collection
         const result = await apiCall('/api/wizard/collection/create', 'POST', {
@@ -404,6 +559,8 @@ async function createCollection() {
             folder_path: wizardData.selectedFolder,
             collection_data: collectionData
         });
+        
+        wizardLogger.info('Collection creation API response', result);
         
         if (result.success) {
             showToast(
@@ -419,12 +576,34 @@ async function createCollection() {
             
             // Refresh channels to show new collection
             await loadChannels();
+            
+            wizardLogger.info('Collection created successfully', result.data);
         } else {
-            throw new Error(result.error || 'Unknown error');
+            // Handle API error response
+            const errorMsg = result.error || result.detail || result.message || 'Unknown error from API';
+            wizardLogger.error('API returned error', result);
+            throw new Error(errorMsg);
         }
         
     } catch (error) {
-        showToast('Failed to create collection: ' + error.message, 'error');
+        wizardLogger.error('Collection creation failed', { 
+            error: error.message,
+            stack: error.stack,
+            wizardData: wizardData
+        });
+        
+        let errorMessage = error.message;
+        
+        // Try to extract more specific error information
+        if (error.message.includes('Channel') && error.message.includes('already exists')) {
+            errorMessage = `Channel name '${wizardData.channelName}' already exists. Please choose a different name.`;
+        } else if (error.message.includes('permission')) {
+            errorMessage = `Permission denied. Please check folder permissions for: ${wizardData.selectedFolder}`;
+        } else if (error.message.includes('not found')) {
+            errorMessage = `Folder not found: ${wizardData.selectedFolder}`;
+        }
+        
+        showToast(`Failed to create collection: ${errorMessage}`, 'error');
     }
 }
 
@@ -792,40 +971,63 @@ async function createSchedule() {
 // UTILITY FUNCTIONS
 // ========================================
 
-function browseFolderForCollection() {
-    // Since we can't open folder dialogs from web, show instructions
-    showToast(
-        'Enter the full path to your video folder in the text field.\n\n' +
-        'Examples:\n' +
-        'Windows: C:\\Videos\\Movies\n' +
-        'Linux/Mac: /home/user/videos/movies\n\n' +
-        'After entering the path, the wizard will scan for video files automatically.',
-        'info'
-    );
-    
-    // Focus the input field
-    document.getElementById('folderPath').focus();
+function tryFolderPath(suggestedPath) {
+    const folderInput = document.getElementById('wizardFolderPath');
+    if (folderInput) {
+        folderInput.value = suggestedPath;
+        wizardLogger.info('Trying suggested folder path', { suggestedPath });
+        scanFolderForVideos(suggestedPath);
+    }
 }
 
 // Add event listener for folder path input
 function setupFolderPathInput() {
-    const folderInput = document.getElementById('folderPath');
+    const folderInput = document.getElementById('wizardFolderPath');
     if (folderInput) {
-        folderInput.addEventListener('blur', function() {
-            const path = this.value.trim();
-            if (path && path !== wizardData.selectedFolder) {
-                scanFolderForVideos(path);
-            }
-        });
+        // Remove any existing listeners to prevent duplicates
+        folderInput.removeEventListener('blur', handleFolderPathBlur);
+        folderInput.removeEventListener('keypress', handleFolderPathKeypress);
+        folderInput.removeEventListener('input', handleFolderPathInput);
         
-        folderInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const path = this.value.trim();
-                if (path) {
-                    scanFolderForVideos(path);
-                }
-            }
-        });
+        // Add event listeners
+        folderInput.addEventListener('blur', handleFolderPathBlur);
+        folderInput.addEventListener('keypress', handleFolderPathKeypress);
+        folderInput.addEventListener('input', handleFolderPathInput);
+        
+        console.log('📁 Folder path input listeners setup complete for wizardFolderPath');
+    } else {
+        console.warn('⚠️ Wizard folder path input not found (wizardFolderPath)');
+    }
+}
+
+function handleFolderPathBlur() {
+    const path = this.value.trim();
+    if (path && path !== wizardData.selectedFolder) {
+        console.log('📁 Scanning folder on blur:', path);
+        scanFolderForVideos(path);
+    }
+}
+
+function handleFolderPathKeypress(e) {
+    if (e.key === 'Enter') {
+        const path = this.value.trim();
+        if (path) {
+            console.log('📁 Scanning folder on Enter:', path);
+            scanFolderForVideos(path);
+        }
+    }
+}
+
+function handleFolderPathInput() {
+    // Trigger scan after user stops typing for 1 second
+    clearTimeout(this.scanTimeout);
+    const path = this.value.trim();
+    
+    if (path && path !== wizardData.selectedFolder) {
+        this.scanTimeout = setTimeout(() => {
+            console.log('📁 Scanning folder on input delay:', path);
+            scanFolderForVideos(path);
+        }, 1000);
     }
 }
 

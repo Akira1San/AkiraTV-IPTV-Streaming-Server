@@ -130,6 +130,20 @@
       "transcoding": {
         "enabled": false
       }
+    },
+    "test_wizard": {
+      "enabled": true,
+      "type": "vod",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "anime_test": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
     }
   },
   "worker": {
