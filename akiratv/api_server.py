@@ -721,6 +721,113 @@ def get_tv_guide():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get TV guide: {str(e)}")
 
+@app.get("/api/guide/weekly")
+def get_weekly_tv_guide():
+    """Get full weekly TV guide for all channels"""
+    try:
+        import json
+        from datetime import datetime
+        from pathlib import Path
+        
+        # Get current time for highlighting current program
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        current_day = now.strftime("%A").lower()
+        current_minutes = time_to_minutes(current_time)
+        
+        # Get all channels
+        api = get_core_api()
+        channels = api.get_channels()
+        
+        weekly_guide = {}
+        days_order = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        
+        for channel in channels:
+            if not channel.enabled:
+                continue
+                
+            channel_name = channel.name
+            schedule_file = Path(f"user/schedules/schedule_{channel_name}.json")
+            
+            if not schedule_file.exists():
+                # No schedule file
+                weekly_guide[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "weekly_schedule": {},
+                    "error": "No schedule file found"
+                }
+                continue
+            
+            try:
+                with open(schedule_file, 'r', encoding='utf-8') as f:
+                    schedule_data = json.load(f)
+                
+                weekly_schedule = {}
+                
+                # Process each day of the week
+                for day in days_order:
+                    day_schedule = schedule_data.get("weekly", {}).get(day, [])
+                    
+                    # Sort programs by time
+                    sorted_programs = sorted(day_schedule, key=lambda x: time_to_minutes(x["time"]))
+                    
+                    # Format programs for display
+                    formatted_programs = []
+                    for i, program in enumerate(sorted_programs):
+                        formatted_program = program.copy()
+                        formatted_program["display_name"] = Path(program["file"]).stem
+                        formatted_program["duration_estimate"] = "~90 min"
+                        
+                        # Mark current program if it's today and currently playing
+                        if day == current_day:
+                            program_minutes = time_to_minutes(program["time"])
+                            if i < len(sorted_programs) - 1:
+                                next_program_minutes = time_to_minutes(sorted_programs[i + 1]["time"])
+                                formatted_program["is_current"] = program_minutes <= current_minutes < next_program_minutes
+                            else:
+                                # Last program of the day
+                                formatted_program["is_current"] = program_minutes <= current_minutes
+                        else:
+                            formatted_program["is_current"] = False
+                        
+                        formatted_programs.append(formatted_program)
+                    
+                    weekly_schedule[day] = {
+                        "day_name": day.capitalize(),
+                        "programs": formatted_programs,
+                        "program_count": len(formatted_programs),
+                        "is_today": day == current_day
+                    }
+                
+                weekly_guide[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "weekly_schedule": weekly_schedule
+                }
+                
+            except Exception as e:
+                weekly_guide[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "weekly_schedule": {},
+                    "error": f"Error reading schedule: {str(e)}"
+                }
+        
+        return {
+            "weekly_guide": weekly_guide,
+            "current_time": current_time,
+            "current_day": current_day,
+            "days_order": days_order,
+            "timestamp": now.isoformat()
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get weekly TV guide: {str(e)}")
+
 def time_to_minutes(time_str):
     """Convert HH:MM:SS to minutes since midnight"""
     try:

@@ -1110,10 +1110,18 @@ function hideLoading(btnId) {
 }
 
 // TV Guide Functions
+let currentGuideView = 'daily'; // 'daily' or 'weekly'
+
 async function loadTVGuide() {
     try {
-        const guideData = await apiCall('/api/guide');
-        displayTVGuide(guideData);
+        let guideData;
+        if (currentGuideView === 'weekly') {
+            guideData = await apiCall('/api/guide/weekly');
+            displayWeeklyTVGuide(guideData);
+        } else {
+            guideData = await apiCall('/api/guide');
+            displayTVGuide(guideData);
+        }
         
         // Update guide time
         const now = new Date();
@@ -1125,6 +1133,17 @@ async function loadTVGuide() {
         document.getElementById('guideContainer').innerHTML = 
             '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load TV Guide</div>';
     }
+}
+
+function switchGuideView(view) {
+    currentGuideView = view;
+    
+    // Update button states
+    document.getElementById('dailyViewBtn').classList.toggle('active', view === 'daily');
+    document.getElementById('weeklyViewBtn').classList.toggle('active', view === 'weekly');
+    
+    // Load the appropriate view
+    loadTVGuide();
 }
 
 function displayTVGuide(guideData) {
@@ -1197,6 +1216,75 @@ function displayTVGuide(guideData) {
                         </div>
                     </div>
                 ` : ''}
+            </div>
+        `;
+    }
+    
+    guideHtml += '</div>';
+    container.innerHTML = guideHtml;
+}
+
+function displayWeeklyTVGuide(weeklyData) {
+    const container = document.getElementById('guideContainer');
+    const weeklyGuide = weeklyData.weekly_guide;
+    const daysOrder = weeklyData.days_order;
+    
+    if (!weeklyGuide || Object.keys(weeklyGuide).length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">No channels with schedules found</div>';
+        return;
+    }
+    
+    let guideHtml = '<div class="weekly-guide-container">';
+    
+    // Sort channels by name
+    const sortedChannels = Object.keys(weeklyGuide).sort();
+    
+    for (const channelName of sortedChannels) {
+        const channelData = weeklyGuide[channelName];
+        
+        guideHtml += `
+            <div class="weekly-channel-section">
+                <div class="weekly-channel-header">
+                    <div class="weekly-channel-info">
+                        <div class="weekly-channel-name">${channelName}</div>
+                        <div class="weekly-channel-meta">
+                            <span class="guide-channel-type ${channelData.type}">${channelData.type}</span>
+                            <span class="guide-channel-status ${channelData.status === 'running' ? 'running' : 'stopped'}">
+                                ${channelData.status}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                ${channelData.error ? `
+                    <div class="guide-error">⚠️ ${channelData.error}</div>
+                ` : `
+                    <div class="weekly-schedule-grid">
+                        ${daysOrder.map(day => {
+                            const dayData = channelData.weekly_schedule[day];
+                            if (!dayData) return '';
+                            
+                            return `
+                                <div class="weekly-day-column ${dayData.is_today ? 'today' : ''}">
+                                    <div class="weekly-day-header">
+                                        <div class="weekly-day-name">${dayData.day_name}</div>
+                                        <div class="weekly-day-count">${dayData.program_count} programs</div>
+                                        ${dayData.is_today ? '<div class="today-indicator">TODAY</div>' : ''}
+                                    </div>
+                                    <div class="weekly-day-programs">
+                                        ${dayData.programs.map(program => `
+                                            <div class="weekly-program-item ${program.is_current ? 'current' : ''}">
+                                                <div class="weekly-program-time">${program.time}</div>
+                                                <div class="weekly-program-title">${program.display_name}</div>
+                                                ${program.is_current ? '<div class="current-indicator">NOW</div>' : ''}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `}
             </div>
         `;
     }
