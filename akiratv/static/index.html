@@ -157,22 +157,33 @@
 
         <!-- Channels Section -->
         <div class="section">
-            <div class="section-title">📺 Channels</div>
+            <div class="section-title" data-i18n="channels.title">📺 Channels</div>
+            
+            <!-- Channel Search -->
+            <div class="channel-search-container">
+                <div class="search-input-wrapper">
+                    <input type="text" class="search-input" id="channelSearch" placeholder="Search channels..." data-i18n-placeholder="channels.searchPlaceholder">
+                    <button class="search-clear-btn" id="searchClearBtn" onclick="clearChannelSearch()" style="display: none;">✕</button>
+                </div>
+                <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
+            </div>
             
             <!-- Add Channel Form -->
             <div class="add-channel-form">
                 <div class="add-channel-input">
-                    <input type="text" class="input" id="newChannelName" placeholder="Enter channel name..." maxlength="50">
-                    <button class="btn btn-primary" onclick="showAddChannelModal()">+ Add Channel</button>
+                    <input type="text" class="input" id="newChannelName" placeholder="Enter channel name..." maxlength="50" data-i18n-placeholder="channels.enterChannelName">
+                    <button class="btn btn-primary" onclick="showAddChannelModal()">
+                        <span data-i18n="channels.addChannel">+ Add Channel</span>
+                    </button>
                 </div>
-                <div class="add-channel-help">
+                <div class="add-channel-help" data-i18n="channels.addChannelHelp">
                     Use only letters, numbers, hyphens (-), and underscores (_)
                 </div>
             </div>
             
             <div class="channels-grid" id="channelsGrid">
                 <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                    <div class="loading"></div> Loading channels...
+                    <div class="loading"></div> <span data-i18n="channels.loading">Loading channels...</span>
                 </div>
             </div>
         </div>

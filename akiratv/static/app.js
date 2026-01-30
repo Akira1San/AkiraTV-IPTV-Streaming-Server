@@ -56,6 +56,11 @@ const translations = {
         
         // Channels
         'channels.title': '📺 Channels',
+        'channels.searchPlaceholder': 'Search channels...',
+        'channels.enterChannelName': 'Enter channel name...',
+        'channels.addChannel': '+ Add Channel',
+        'channels.addChannelHelp': 'Use only letters, numbers, hyphens (-), and underscores (_)',
+        'channels.loading': 'Loading channels...',
         'channels.enabled': 'Enabled',
         'channels.disabled': 'Disabled',
         'channels.status': 'Status',
@@ -76,6 +81,9 @@ const translations = {
         'channels.ngrokStream': '🌍 Ngrok Stream',
         'channels.copy': 'Copy',
         'channels.channelDisabled': 'Channel disabled - enable to access streaming URL',
+        'channels.searchResults': 'channels found',
+        'channels.noResults': 'No channels match your search',
+        'channels.showingAll': 'Showing all channels',
         
         // Messages
         'messages.urlCopied': 'URL copied!',
@@ -142,6 +150,11 @@ const translations = {
         
         // Channels
         'channels.title': '📺 Канали',
+        'channels.searchPlaceholder': 'Търсене на канали...',
+        'channels.enterChannelName': 'Въведете име на канал...',
+        'channels.addChannel': '+ Добави канал',
+        'channels.addChannelHelp': 'Използвайте само букви, цифри, тирета (-) и долни черти (_)',
+        'channels.loading': 'Зареждат се каналите...',
         'channels.enabled': 'Включен',
         'channels.disabled': 'Изключен',
         'channels.status': 'Статус',
@@ -162,6 +175,9 @@ const translations = {
         'channels.ngrokStream': '🌍 Ngrok Стрийм',
         'channels.copy': 'Копирай',
         'channels.channelDisabled': 'Каналът е изключен - включете го за достъп до стрийминг URL',
+        'channels.searchResults': 'канала намерени',
+        'channels.noResults': 'Няма канали, които да съответстват на търсенето',
+        'channels.showingAll': 'Показват се всички канали',
         
         // Messages
         'messages.urlCopied': 'URL копиран!',
@@ -210,6 +226,12 @@ function updateTranslations() {
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         element.textContent = t(key);
+    });
+    
+    // Update placeholder attributes
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        element.placeholder = t(key);
     });
     
     // Update status text if it's a known status
@@ -306,6 +328,8 @@ async function updateStatus() {
 }
 
 // Load Channels
+let allChannelsData = []; // Store all channels for search
+
 async function loadChannels() {
     try {
         // Load channels and config first
@@ -316,7 +340,7 @@ async function loadChannels() {
         
         globalConfig = configData;
         const channels = channelsData.channels;
-        const grid = document.getElementById('channelsGrid');
+        allChannelsData = channels; // Store for search
         
         console.log('📺 Loaded channels:', channels);
         
@@ -336,95 +360,11 @@ async function loadChannels() {
         
         document.getElementById('channelsCount').textContent = channels.length;
 
-        if (channels.length === 0) {
-            grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">No channels configured</div>';
-            return;
-        }
-
-        grid.innerHTML = channels.map(ch => {
-            const statusColor = ch.status === 'running' ? 'var(--success)' : 'var(--text-secondary)';
-            
-            // Get current transcoding and subtitle settings
-            const transcodingSetting = getChannelTranscodingSetting(ch.name);
-            const subtitlesSetting = getChannelSubtitlesSetting(ch.name);
-            
-            // Get proper URLs for this channel (with fallback)
-            const urls = channelUrls[ch.name] || {};
-            
-            return `
-                <div class="channel-card" style="${ch.enabled ? '' : 'opacity: 0.6;'}">
-                    <div class="channel-header">
-                        <div class="channel-name">${ch.name}</div>
-                        <div class="channel-type ${ch.type}">${ch.type}</div>
-                        <div class="channel-toggle">
-                            <label class="toggle-switch">
-                                <input type="checkbox" ${ch.enabled ? 'checked' : ''} 
-                                       onchange="toggleChannel('${ch.name}', this.checked)">
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <span class="toggle-label">${ch.enabled ? 'Enabled' : 'Disabled'}</span>
-                        </div>
-                    </div>
-                    <div class="channel-info">
-                        Status: <strong style="color: ${statusColor}">${ch.status}</strong><br>
-                        Type: ${ch.type.toUpperCase()}
-                    </div>
-                    
-                    <!-- Channel Settings -->
-                    <div class="channel-settings">
-                        <div class="setting-row">
-                            <label class="setting-label">Transcoding:</label>
-                            <select class="setting-select" onchange="updateChannelSetting('${ch.name}', 'transcoding', this.value)">
-                                <option value="global" ${transcodingSetting === 'global' ? 'selected' : ''}>Global</option>
-                                <option value="enabled" ${transcodingSetting === 'enabled' ? 'selected' : ''}>Enabled</option>
-                                <option value="disabled" ${transcodingSetting === 'disabled' ? 'selected' : ''}>Disabled</option>
-                            </select>
-                        </div>
-                        <div class="setting-row">
-                            <label class="setting-label">Subtitles:</label>
-                            <select class="setting-select" onchange="updateChannelSetting('${ch.name}', 'subtitles', this.value)">
-                                <option value="global" ${subtitlesSetting === 'global' ? 'selected' : ''}>Global</option>
-                                <option value="enabled" ${subtitlesSetting === 'enabled' ? 'selected' : ''}>Enabled</option>
-                                <option value="disabled" ${subtitlesSetting === 'disabled' ? 'selected' : ''}>Disabled</option>
-                            </select>
-                        </div>
-                        <div class="setting-row">
-                            <button class="btn-small btn-secondary" onclick="reloadChannelSchedule('${ch.name}')">
-                                📅 Reload Schedule
-                            </button>
-                            <button class="btn-small btn-danger" onclick="confirmDeleteChannel('${ch.name}')">
-                                🗑️ Delete
-                            </button>
-                        </div>
-                        ${ch.enabled ? `
-                            <div class="setting-row">
-                                <button class="btn-small btn-warning" onclick="stopChannelWorker('${ch.name}')" 
-                                        ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
-                                    ⏹️ Stop Channel
-                                </button>
-                                <button class="btn-small btn-primary" onclick="restartChannel('${ch.name}')"
-                                        ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
-                                    🔄 Restart Channel
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                    
-                    ${ch.enabled ? `
-                        ${generateChannelUrls(ch.name, urls)}
-                        ${ch.type !== 'linear' ? `
-                            <div class="channel-controls">
-                                <button class="btn btn-danger btn-small" onclick="stopChannel('${ch.name}')">⏹️ Stop Current Video</button>
-                            </div>
-                        ` : ''}
-                    ` : `
-                        <div style="text-align: center; padding: 10px; color: var(--text-secondary); font-size: 12px;">
-                            Channel disabled - enable to access streaming URL
-                        </div>
-                    `}
-                </div>
-            `;
-        }).join('');
+        // Display channels (filtered if search is active)
+        displayChannels(channels, channelUrls);
+        
+        // Setup search functionality
+        setupChannelSearch();
         
         // Refresh channel dropdown for playlist controls
         await loadChannelDropdown();
@@ -432,6 +372,216 @@ async function loadChannels() {
         console.error('Failed to load channels:', error);
         showToast('Failed to load channels', 'error');
     }
+}
+
+function displayChannels(channels, channelUrls) {
+    const grid = document.getElementById('channelsGrid');
+    
+    if (channels.length === 0) {
+        const searchTerm = document.getElementById('channelSearch').value.trim();
+        if (searchTerm) {
+            grid.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);">${t('channels.noResults')}</div>`;
+        } else {
+            grid.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);">${t('messages.noChannelsConfigured')}</div>`;
+        }
+        return;
+    }
+
+    grid.innerHTML = channels.map(ch => {
+        const statusColor = ch.status === 'running' ? 'var(--success)' : 'var(--text-secondary)';
+        
+        // Get current transcoding and subtitle settings
+        const transcodingSetting = getChannelTranscodingSetting(ch.name);
+        const subtitlesSetting = getChannelSubtitlesSetting(ch.name);
+        
+        // Get proper URLs for this channel (with fallback)
+        const urls = channelUrls[ch.name] || {};
+        
+        // Highlight search term in channel name
+        const searchTerm = document.getElementById('channelSearch').value.trim();
+        let displayName = ch.name;
+        if (searchTerm) {
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            displayName = ch.name.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+        
+        return `
+            <div class="channel-card" style="${ch.enabled ? '' : 'opacity: 0.6;'}">
+                <div class="channel-header">
+                    <div class="channel-name">${displayName}</div>
+                    <div class="channel-type ${ch.type}">${ch.type}</div>
+                    <div class="channel-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${ch.enabled ? 'checked' : ''} 
+                                   onchange="toggleChannel('${ch.name}', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">${ch.enabled ? t('channels.enabled') : t('channels.disabled')}</span>
+                    </div>
+                </div>
+                <div class="channel-info">
+                    ${t('channels.status')}: <strong style="color: ${statusColor}">${ch.status}</strong><br>
+                    ${t('channels.type')}: ${ch.type.toUpperCase()}
+                </div>
+                
+                <!-- Channel Settings -->
+                <div class="channel-settings">
+                    <div class="setting-row">
+                        <label class="setting-label">${t('channels.transcoding')}:</label>
+                        <select class="setting-select" onchange="updateChannelSetting('${ch.name}', 'transcoding', this.value)">
+                            <option value="global" ${transcodingSetting === 'global' ? 'selected' : ''}>${t('channels.global')}</option>
+                            <option value="enabled" ${transcodingSetting === 'enabled' ? 'selected' : ''}>${t('channels.enabled_setting')}</option>
+                            <option value="disabled" ${transcodingSetting === 'disabled' ? 'selected' : ''}>${t('channels.disabled_setting')}</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <label class="setting-label">${t('channels.subtitles')}:</label>
+                        <select class="setting-select" onchange="updateChannelSetting('${ch.name}', 'subtitles', this.value)">
+                            <option value="global" ${subtitlesSetting === 'global' ? 'selected' : ''}>${t('channels.global')}</option>
+                            <option value="enabled" ${subtitlesSetting === 'enabled' ? 'selected' : ''}>${t('channels.enabled_setting')}</option>
+                            <option value="disabled" ${subtitlesSetting === 'disabled' ? 'selected' : ''}>${t('channels.disabled_setting')}</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <button class="btn-small btn-secondary" onclick="reloadChannelSchedule('${ch.name}')">
+                            ${t('channels.reloadSchedule')}
+                        </button>
+                        <button class="btn-small btn-danger" onclick="confirmDeleteChannel('${ch.name}')">
+                            ${t('channels.delete')}
+                        </button>
+                    </div>
+                    ${ch.enabled ? `
+                        <div class="setting-row">
+                            <button class="btn-small btn-warning" onclick="stopChannelWorker('${ch.name}')" 
+                                    ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
+                                ${t('channels.stopChannel')}
+                            </button>
+                            <button class="btn-small btn-primary" onclick="restartChannel('${ch.name}')"
+                                    ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
+                                ${t('channels.restartChannel')}
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                ${ch.enabled ? `
+                    ${generateChannelUrls(ch.name, urls)}
+                    ${ch.type !== 'linear' ? `
+                        <div class="channel-controls">
+                            <button class="btn btn-danger btn-small" onclick="stopChannel('${ch.name}')">${t('channels.stopCurrentVideo')}</button>
+                        </div>
+                    ` : ''}
+                ` : `
+                    <div style="text-align: center; padding: 10px; color: var(--text-secondary); font-size: 12px;">
+                        ${t('channels.channelDisabled')}
+                    </div>
+                `}
+            </div>
+        `;
+    }).join('');
+}
+
+// Channel Search Functionality
+function setupChannelSearch() {
+    const searchInput = document.getElementById('channelSearch');
+    const clearBtn = document.getElementById('searchClearBtn');
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    
+    // Search input event
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+        
+        // Show/hide clear button
+        clearBtn.style.display = searchTerm ? 'flex' : 'none';
+        
+        // Filter channels
+        filterChannels(searchTerm);
+    });
+    
+    // Clear search
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        resultsInfo.style.display = 'none';
+        filterChannels('');
+    });
+    
+    // Enter key to focus first result
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const firstChannel = document.querySelector('.channel-card');
+            if (firstChannel) {
+                firstChannel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstChannel.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    firstChannel.style.transform = '';
+                }, 300);
+            }
+        }
+    });
+}
+
+function filterChannels(searchTerm) {
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    
+    if (!searchTerm) {
+        // Show all channels
+        const channelUrls = {};
+        allChannelsData.forEach(ch => {
+            if (ch.enabled) {
+                channelUrls[ch.name] = {
+                    lan: {
+                        stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`,
+                        epg: `http://192.168.50.183:8081/xmltv.xml`
+                    }
+                };
+            }
+        });
+        displayChannels(allChannelsData, channelUrls);
+        resultsInfo.style.display = 'none';
+        return;
+    }
+    
+    // Filter channels by name (case insensitive)
+    const filteredChannels = allChannelsData.filter(channel => 
+        channel.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    // Generate URLs for filtered channels
+    const channelUrls = {};
+    filteredChannels.forEach(ch => {
+        if (ch.enabled) {
+            channelUrls[ch.name] = {
+                lan: {
+                    stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`,
+                    epg: `http://192.168.50.183:8081/xmltv.xml`
+                }
+            };
+        }
+    });
+    
+    // Display filtered channels
+    displayChannels(filteredChannels, channelUrls);
+    
+    // Show search results info
+    if (filteredChannels.length > 0) {
+        resultsInfo.innerHTML = `<span class="search-icon">🔍</span> ${filteredChannels.length} ${t('channels.searchResults')}`;
+        resultsInfo.style.display = 'flex';
+    } else {
+        resultsInfo.innerHTML = `<span class="search-icon">🔍</span> ${t('channels.noResults')}`;
+        resultsInfo.style.display = 'flex';
+    }
+}
+
+function clearChannelSearch() {
+    const searchInput = document.getElementById('channelSearch');
+    const clearBtn = document.getElementById('searchClearBtn');
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    
+    searchInput.value = '';
+    clearBtn.style.display = 'none';
+    resultsInfo.style.display = 'none';
+    filterChannels('');
 }
 
 function generateChannelUrls(channelName, urls) {
