@@ -4,8 +4,238 @@ const API_BASE = window.location.origin;
 let ws = null;
 let isRunning = false;
 
+// Internationalization
+let currentLanguage = 'en';
+
+const translations = {
+    en: {
+        // Status and stats
+        'status.checking': 'Checking...',
+        'status.streaming': 'Streaming',
+        'status.stopped': 'Stopped',
+        'stats.channels': 'Channels',
+        'stats.viewers': 'Viewers',
+        'stats.uptime': 'Uptime',
+        'stats.status': 'Status',
+        
+        // Now Playing
+        'nowPlaying.title': 'NOW PLAYING',
+        'nowPlaying.noInfo': 'No program info',
+        
+        // Control Panel
+        'control.title': '🎮 Control Panel',
+        'control.start': '▶️ Start Streaming',
+        'control.stop': '⏹️ Stop Streaming',
+        'control.restart': '🔄 Restart',
+        'control.clearCache': '🗑️ Clear Cache',
+        'control.reloadSchedule': '📅 Reload Schedule',
+        'control.configuration': '⚙️ Configuration',
+        'control.generateXMLTV': '📺 Generate XMLTV for Kodi',
+        'control.openConfig': '📝 Open Config',
+        'control.openLogs': '📋 Open Logs',
+        
+        // TV Guide
+        'guide.title': '📺 TV Guide',
+        'guide.today': '📅 Today',
+        'guide.weekly': '📆 Weekly',
+        'guide.refresh': '🔄 Refresh Guide',
+        'guide.loading': 'Loading...',
+        'guide.loadingText': 'Loading TV Guide...',
+        'guide.currentTime': 'Current Time',
+        'guide.nowPlaying': '🔴 NOW PLAYING',
+        'guide.upNext': '⏭️ UP NEXT',
+        'guide.noSchedule': '⏸️ NO SCHEDULE',
+        'guide.noProgram': 'No current program',
+        'guide.todaySchedule': '📅 TODAY\'S SCHEDULE',
+        'guide.started': 'Started',
+        'guide.starts': 'Starts',
+        'guide.programs': 'programs',
+        'guide.today_indicator': 'TODAY',
+        'guide.now_indicator': 'NOW',
+        'guide.morePrograms': 'more programs',
+        
+        // Channels
+        'channels.title': '📺 Channels',
+        'channels.enabled': 'Enabled',
+        'channels.disabled': 'Disabled',
+        'channels.status': 'Status',
+        'channels.type': 'Type',
+        'channels.transcoding': 'Transcoding',
+        'channels.subtitles': 'Subtitles',
+        'channels.global': 'Global',
+        'channels.enabled_setting': 'Enabled',
+        'channels.disabled_setting': 'Disabled',
+        'channels.reloadSchedule': '📅 Reload Schedule',
+        'channels.delete': '🗑️ Delete',
+        'channels.stopChannel': '⏹️ Stop Channel',
+        'channels.restartChannel': '🔄 Restart Channel',
+        'channels.stopCurrentVideo': '⏹️ Stop Current Video',
+        'channels.stream': '📺 Stream',
+        'channels.lanStream': '📺 LAN Stream',
+        'channels.tailscaleStream': '🌐 Tailscale Stream',
+        'channels.ngrokStream': '🌍 Ngrok Stream',
+        'channels.copy': 'Copy',
+        'channels.channelDisabled': 'Channel disabled - enable to access streaming URL',
+        
+        // Messages
+        'messages.urlCopied': 'URL copied!',
+        'messages.engineStarted': 'Engine started successfully',
+        'messages.engineStopped': 'Engine stopped',
+        'messages.engineRestarting': 'Engine restarting...',
+        'messages.cacheCleared': 'files cleared',
+        'messages.schedulesReloaded': 'All schedules reloaded',
+        'messages.guideRefreshed': 'TV Guide refreshed',
+        'messages.failedToStart': 'Failed to start engine',
+        'messages.failedToStop': 'Failed to stop engine',
+        'messages.failedToRestart': 'Failed to restart engine',
+        'messages.failedToClearCache': 'Failed to clear cache',
+        'messages.failedToReloadSchedules': 'Failed to reload schedules',
+        'messages.failedToLoadGuide': 'Failed to load TV Guide',
+        'messages.noChannelsFound': 'No channels with schedules found',
+        'messages.noChannelsConfigured': 'No channels configured'
+    },
+    bg: {
+        // Status and stats
+        'status.checking': 'Проверява...',
+        'status.streaming': 'Стрийминг',
+        'status.stopped': 'Спрян',
+        'stats.channels': 'Канали',
+        'stats.viewers': 'Зрители',
+        'stats.uptime': 'Време работа',
+        'stats.status': 'Статус',
+        
+        // Now Playing
+        'nowPlaying.title': 'СЕГА СЕ ИЗЛЪЧВА',
+        'nowPlaying.noInfo': 'Няма информация за програмата',
+        
+        // Control Panel
+        'control.title': '🎮 Контролен панел',
+        'control.start': '▶️ Стартирай стрийминг',
+        'control.stop': '⏹️ Спри стрийминг',
+        'control.restart': '🔄 Рестартирай',
+        'control.clearCache': '🗑️ Изчисти кеша',
+        'control.reloadSchedule': '📅 Презареди програмата',
+        'control.configuration': '⚙️ Конфигурация',
+        'control.generateXMLTV': '📺 Генерирай XMLTV за Kodi',
+        'control.openConfig': '📝 Отвори конфигурацията',
+        'control.openLogs': '📋 Отвори логовете',
+        
+        // TV Guide
+        'guide.title': '📺 Телевизионна програма',
+        'guide.today': '📅 Днес',
+        'guide.weekly': '📆 Седмично',
+        'guide.refresh': '🔄 Обнови програмата',
+        'guide.loading': 'Зарежда...',
+        'guide.loadingText': 'Зарежда телевизионната програма...',
+        'guide.currentTime': 'Текущо време',
+        'guide.nowPlaying': '🔴 СЕГА СЕ ИЗЛЪЧВА',
+        'guide.upNext': '⏭️ СЛЕДВА',
+        'guide.noSchedule': '⏸️ НЯМА ПРОГРАМА',
+        'guide.noProgram': 'Няма текуща програма',
+        'guide.todaySchedule': '📅 ДНЕШНА ПРОГРАМА',
+        'guide.started': 'Започна',
+        'guide.starts': 'Започва',
+        'guide.programs': 'програми',
+        'guide.today_indicator': 'ДНЕС',
+        'guide.now_indicator': 'СЕГА',
+        'guide.morePrograms': 'още програми',
+        
+        // Channels
+        'channels.title': '📺 Канали',
+        'channels.enabled': 'Включен',
+        'channels.disabled': 'Изключен',
+        'channels.status': 'Статус',
+        'channels.type': 'Тип',
+        'channels.transcoding': 'Транскодиране',
+        'channels.subtitles': 'Субтитри',
+        'channels.global': 'Глобално',
+        'channels.enabled_setting': 'Включено',
+        'channels.disabled_setting': 'Изключено',
+        'channels.reloadSchedule': '📅 Презареди програмата',
+        'channels.delete': '🗑️ Изтрий',
+        'channels.stopChannel': '⏹️ Спри канала',
+        'channels.restartChannel': '🔄 Рестартирай канала',
+        'channels.stopCurrentVideo': '⏹️ Спри текущото видео',
+        'channels.stream': '📺 Стрийм',
+        'channels.lanStream': '📺 LAN Стрийм',
+        'channels.tailscaleStream': '🌐 Tailscale Стрийм',
+        'channels.ngrokStream': '🌍 Ngrok Стрийм',
+        'channels.copy': 'Копирай',
+        'channels.channelDisabled': 'Каналът е изключен - включете го за достъп до стрийминг URL',
+        
+        // Messages
+        'messages.urlCopied': 'URL копиран!',
+        'messages.engineStarted': 'Двигателят стартира успешно',
+        'messages.engineStopped': 'Двигателят е спрян',
+        'messages.engineRestarting': 'Двигателят се рестартира...',
+        'messages.cacheCleared': 'файла изчистени',
+        'messages.schedulesReloaded': 'Всички програми презаредени',
+        'messages.guideRefreshed': 'Телевизионната програма е обновена',
+        'messages.failedToStart': 'Неуспешно стартиране на двигателя',
+        'messages.failedToStop': 'Неуспешно спиране на двигателя',
+        'messages.failedToRestart': 'Неуспешно рестартиране на двигателя',
+        'messages.failedToClearCache': 'Неуспешно изчистване на кеша',
+        'messages.failedToReloadSchedules': 'Неуспешно презареждане на програмите',
+        'messages.failedToLoadGuide': 'Неуспешно зареждане на телевизионната програма',
+        'messages.noChannelsFound': 'Не са намерени канали с програми',
+        'messages.noChannelsConfigured': 'Няма конфигурирани канали'
+    }
+};
+
+// Translation functions
+function t(key) {
+    return translations[currentLanguage][key] || translations['en'][key] || key;
+}
+
+function switchLanguage(lang) {
+    currentLanguage = lang;
+    
+    // Update button states
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    document.getElementById('langBg').classList.toggle('active', lang === 'bg');
+    
+    // Save language preference
+    localStorage.setItem('akiratv_language', lang);
+    
+    // Update all translated elements
+    updateTranslations();
+    
+    // Reload dynamic content with new language
+    loadTVGuide();
+    loadChannels();
+}
+
+function updateTranslations() {
+    // Update all elements with data-i18n attributes
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        element.textContent = t(key);
+    });
+    
+    // Update status text if it's a known status
+    const statusText = document.getElementById('statusText');
+    if (statusText) {
+        const currentStatus = statusText.textContent;
+        if (currentStatus === 'Checking...' || currentStatus === 'Проверява...') {
+            statusText.textContent = t('status.checking');
+        } else if (currentStatus === 'Streaming' || currentStatus === 'Стрийминг') {
+            statusText.textContent = t('status.streaming');
+        } else if (currentStatus === 'Stopped' || currentStatus === 'Спрян') {
+            statusText.textContent = t('status.stopped');
+        }
+    }
+}
+
+// Initialize language on page load
+function initializeLanguage() {
+    // Load saved language preference or default to English
+    const savedLang = localStorage.getItem('akiratv_language') || 'en';
+    switchLanguage(savedLang);
+}
+
 // Initialize
 async function init() {
+    initializeLanguage();
     await updateStatus();
     await loadChannels();
     await loadChannelDropdown();
@@ -48,12 +278,12 @@ async function updateStatus() {
         
         if (isRunning) {
             badge.className = 'status-badge running';
-            text.textContent = 'Streaming';
+            text.textContent = t('status.streaming');
             document.getElementById('startBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
         } else {
             badge.className = 'status-badge stopped';
-            text.textContent = 'Stopped';
+            text.textContent = t('status.stopped');
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
         }
@@ -62,9 +292,16 @@ async function updateStatus() {
         document.getElementById('viewersCount').textContent = data.stats.viewers || 0;
         document.getElementById('uptimeValue').textContent = formatUptime(data.uptime);
         document.getElementById('statusValue').textContent = data.stats.status || 'N/A';
-        document.getElementById('nowPlaying').textContent = data.stats.now_playing || 'No program info';
+        
+        const nowPlayingElement = document.getElementById('nowPlaying');
+        if (data.stats.now_playing) {
+            nowPlayingElement.textContent = data.stats.now_playing;
+        } else {
+            nowPlayingElement.textContent = t('nowPlaying.noInfo');
+        }
     } catch (error) {
         console.error('Failed to update status:', error);
+        document.getElementById('statusText').textContent = t('status.checking');
     }
 }
 
@@ -270,14 +507,14 @@ async function startEngine() {
     try {
         const result = await apiCall('/api/start', 'POST');
         if (result.success) {
-            showToast('Engine started successfully', 'success');
+            showToast(t('messages.engineStarted'), 'success');
             await updateStatus();
             await loadChannels();
         } else {
-            showToast(result.error || 'Failed to start', 'error');
+            showToast(result.error || t('messages.failedToStart'), 'error');
         }
     } catch (error) {
-        showToast('Failed to start engine', 'error');
+        showToast(t('messages.failedToStart'), 'error');
     }
     hideLoading('start');
 }
@@ -287,13 +524,13 @@ async function stopEngine() {
     try {
         const result = await apiCall('/api/stop', 'POST');
         if (result.success) {
-            showToast('Engine stopped', 'success');
+            showToast(t('messages.engineStopped'), 'success');
             await updateStatus();
         } else {
-            showToast(result.error || 'Failed to stop', 'error');
+            showToast(result.error || t('messages.failedToStop'), 'error');
         }
     } catch (error) {
-        showToast('Failed to stop engine', 'error');
+        showToast(t('messages.failedToStop'), 'error');
     }
     hideLoading('stop');
 }
@@ -304,16 +541,16 @@ async function restartEngine() {
     try {
         const result = await apiCall('/api/restart', 'POST');
         if (result.success) {
-            showToast('Engine restarting...', 'info');
+            showToast(t('messages.engineRestarting'), 'info');
             setTimeout(async () => {
                 await updateStatus();
                 await loadChannels();
             }, 3000);
         } else {
-            showToast(result.error || 'Failed to restart', 'error');
+            showToast(result.error || t('messages.failedToRestart'), 'error');
         }
     } catch (error) {
-        showToast('Failed to restart engine', 'error');
+        showToast(t('messages.failedToRestart'), 'error');
     }
 }
 
@@ -321,12 +558,12 @@ async function clearCache() {
     try {
         const result = await apiCall('/api/cache/clear', 'POST');
         if (result.success) {
-            showToast(`Cleared ${result.data.deleted} files`, 'success');
+            showToast(`${result.data.deleted} ${t('messages.cacheCleared')}`, 'success');
         } else {
-            showToast(result.error || 'Failed to clear cache', 'error');
+            showToast(result.error || t('messages.failedToClearCache'), 'error');
         }
     } catch (error) {
-        showToast('Failed to clear cache', 'error');
+        showToast(t('messages.failedToClearCache'), 'error');
     }
 }
 
@@ -334,12 +571,12 @@ async function reloadSchedule() {
     try {
         const result = await apiCall('/api/schedule/reload', 'POST');
         if (result.success) {
-            showToast('All schedules reloaded', 'success');
+            showToast(t('messages.schedulesReloaded'), 'success');
         } else {
-            showToast(result.error || 'Failed to reload schedules', 'error');
+            showToast(result.error || t('messages.failedToReloadSchedules'), 'error');
         }
     } catch (error) {
-        showToast('Failed to reload schedules', 'error');
+        showToast(t('messages.failedToReloadSchedules'), 'error');
     }
 }
 
@@ -1068,7 +1305,7 @@ function formatUptime(seconds) {
 
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text);
-    showToast('URL copied!', 'success');
+    showToast(t('messages.urlCopied'), 'success');
 }
 
 function showToast(message, type = 'info') {
@@ -1103,9 +1340,9 @@ function showLoading(btnId) {
 function hideLoading(btnId) {
     const btn = document.getElementById(`${btnId}Btn`);
     if (btnId === 'start') {
-        btn.innerHTML = '▶️ Start Streaming';
+        btn.innerHTML = `<span data-i18n="control.start">${t('control.start')}</span>`;
     } else {
-        btn.innerHTML = '⏹️ Stop Streaming';
+        btn.innerHTML = `<span data-i18n="control.stop">${t('control.stop')}</span>`;
     }
 }
 
@@ -1126,12 +1363,12 @@ async function loadTVGuide() {
         // Update guide time
         const now = new Date();
         document.getElementById('guideTime').textContent = 
-            `Current Time: ${now.toLocaleTimeString()} - ${now.toLocaleDateString()}`;
+            `${t('guide.currentTime')}: ${now.toLocaleTimeString()} - ${now.toLocaleDateString()}`;
             
     } catch (error) {
         console.error('Failed to load TV guide:', error);
         document.getElementById('guideContainer').innerHTML = 
-            '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load TV Guide</div>';
+            `<div style="text-align: center; padding: 40px; color: var(--error);">${t('messages.failedToLoadGuide')}</div>`;
     }
 }
 
@@ -1151,7 +1388,7 @@ function displayTVGuide(guideData) {
     const guide = guideData.guide;
     
     if (!guide || Object.keys(guide).length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">No channels with schedules found</div>';
+        container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);">${t('messages.noChannelsFound')}</div>`;
         return;
     }
     
@@ -1179,30 +1416,30 @@ function displayTVGuide(guideData) {
                 
                 ${channelGuide.current_program ? `
                     <div class="guide-current-program">
-                        <div class="guide-program-label">🔴 NOW PLAYING</div>
+                        <div class="guide-program-label">${t('guide.nowPlaying')}</div>
                         <div class="guide-program-title">${channelGuide.current_program.display_name}</div>
-                        <div class="guide-program-time">Started: ${channelGuide.current_program.time}</div>
+                        <div class="guide-program-time">${t('guide.started')}: ${channelGuide.current_program.time}</div>
                         <div class="guide-program-duration">${channelGuide.current_program.duration_estimate}</div>
                     </div>
                 ` : `
                     <div class="guide-no-program">
-                        <div class="guide-program-label">⏸️ NO SCHEDULE</div>
-                        <div class="guide-program-title">No current program</div>
+                        <div class="guide-program-label">${t('guide.noSchedule')}</div>
+                        <div class="guide-program-title">${t('guide.noProgram')}</div>
                     </div>
                 `}
                 
                 ${channelGuide.next_program ? `
                     <div class="guide-next-program">
-                        <div class="guide-program-label">⏭️ UP NEXT</div>
+                        <div class="guide-program-label">${t('guide.upNext')}</div>
                         <div class="guide-program-title">${channelGuide.next_program.display_name}</div>
-                        <div class="guide-program-time">Starts: ${channelGuide.next_program.time}</div>
+                        <div class="guide-program-time">${t('guide.starts')}: ${channelGuide.next_program.time}</div>
                         <div class="guide-program-duration">${channelGuide.next_program.duration_estimate}</div>
                     </div>
                 ` : ''}
                 
                 ${channelGuide.schedule && channelGuide.schedule.length > 0 ? `
                     <div class="guide-schedule">
-                        <div class="guide-schedule-label">📅 TODAY'S SCHEDULE</div>
+                        <div class="guide-schedule-label">${t('guide.todaySchedule')}</div>
                         <div class="guide-schedule-list">
                             ${channelGuide.schedule.slice(0, 5).map(program => `
                                 <div class="guide-schedule-item ${program.is_current ? 'current' : ''}">
@@ -1211,7 +1448,7 @@ function displayTVGuide(guideData) {
                                 </div>
                             `).join('')}
                             ${channelGuide.schedule.length > 5 ? `
-                                <div class="guide-schedule-more">... and ${channelGuide.schedule.length - 5} more programs</div>
+                                <div class="guide-schedule-more">... ${t('guide.morePrograms').replace('more programs', `${channelGuide.schedule.length - 5} ${t('guide.morePrograms')}`)}</div>
                             ` : ''}
                         </div>
                     </div>
@@ -1230,7 +1467,7 @@ function displayWeeklyTVGuide(weeklyData) {
     const daysOrder = weeklyData.days_order;
     
     if (!weeklyGuide || Object.keys(weeklyGuide).length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">No channels with schedules found</div>';
+        container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);">${t('messages.noChannelsFound')}</div>`;
         return;
     }
     
@@ -1268,15 +1505,15 @@ function displayWeeklyTVGuide(weeklyData) {
                                 <div class="weekly-day-column ${dayData.is_today ? 'today' : ''}">
                                     <div class="weekly-day-header">
                                         <div class="weekly-day-name">${dayData.day_name}</div>
-                                        <div class="weekly-day-count">${dayData.program_count} programs</div>
-                                        ${dayData.is_today ? '<div class="today-indicator">TODAY</div>' : ''}
+                                        <div class="weekly-day-count">${dayData.program_count} ${t('guide.programs')}</div>
+                                        ${dayData.is_today ? `<div class="today-indicator">${t('guide.today_indicator')}</div>` : ''}
                                     </div>
                                     <div class="weekly-day-programs">
                                         ${dayData.programs.map(program => `
                                             <div class="weekly-program-item ${program.is_current ? 'current' : ''}">
                                                 <div class="weekly-program-time">${program.time}</div>
                                                 <div class="weekly-program-title">${program.display_name}</div>
-                                                ${program.is_current ? '<div class="current-indicator">NOW</div>' : ''}
+                                                ${program.is_current ? `<div class="current-indicator">${t('guide.now_indicator')}</div>` : ''}
                                             </div>
                                         `).join('')}
                                     </div>
@@ -1295,9 +1532,9 @@ function displayWeeklyTVGuide(weeklyData) {
 
 async function refreshGuide() {
     document.getElementById('guideContainer').innerHTML = 
-        '<div style="text-align: center; padding: 40px; color: var(--text-secondary);"><div class="loading"></div> Refreshing TV Guide...</div>';
+        `<div style="text-align: center; padding: 40px; color: var(--text-secondary);"><div class="loading"></div> ${t('guide.loadingText')}</div>`;
     await loadTVGuide();
-    showToast('TV Guide refreshed', 'success');
+    showToast(t('messages.guideRefreshed'), 'success');
 }
 
 // Initialize on load

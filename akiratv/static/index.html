@@ -11,9 +11,15 @@
     <div class="header">
         <div class="header-content">
             <div class="logo">AkiraTV</div>
-            <div class="status-badge" id="statusBadge">
-                <span class="status-dot"></span>
-                <span id="statusText">Checking...</span>
+            <div class="header-controls">
+                <div class="language-switcher">
+                    <button class="lang-btn active" id="langEn" onclick="switchLanguage('en')">EN</button>
+                    <button class="lang-btn" id="langBg" onclick="switchLanguage('bg')">БГ</button>
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Checking...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -22,59 +28,59 @@
         <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Channels</div>
+                <div class="stat-label" data-i18n="stats.channels">Channels</div>
                 <div class="stat-value" id="channelsCount">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Viewers</div>
+                <div class="stat-label" data-i18n="stats.viewers">Viewers</div>
                 <div class="stat-value" id="viewersCount">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Uptime</div>
+                <div class="stat-label" data-i18n="stats.uptime">Uptime</div>
                 <div class="stat-value" id="uptimeValue">-</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Status</div>
+                <div class="stat-label" data-i18n="stats.status">Status</div>
                 <div class="stat-value" id="statusValue">-</div>
             </div>
         </div>
 
         <!-- Now Playing -->
         <div class="now-playing">
-            <div class="now-playing-title">NOW PLAYING</div>
-            <div class="now-playing-content" id="nowPlaying">No program info</div>
+            <div class="now-playing-title" data-i18n="nowPlaying.title">NOW PLAYING</div>
+            <div class="now-playing-content" id="nowPlaying" data-i18n="nowPlaying.noInfo">No program info</div>
         </div>
 
         <!-- Control Panel -->
         <div class="control-panel">
-            <div class="section-title">🎮 Control Panel</div>
+            <div class="section-title" data-i18n="control.title">🎮 Control Panel</div>
             <div class="control-buttons">
                 <button class="btn btn-primary" id="startBtn" onclick="startEngine()">
-                    ▶️ Start Streaming
+                    <span data-i18n="control.start">▶️ Start Streaming</span>
                 </button>
                 <button class="btn btn-danger" id="stopBtn" onclick="stopEngine()" disabled>
-                    ⏹️ Stop Streaming
+                    <span data-i18n="control.stop">⏹️ Stop Streaming</span>
                 </button>
                 <button class="btn btn-secondary" onclick="restartEngine()">
-                    🔄 Restart
+                    <span data-i18n="control.restart">🔄 Restart</span>
                 </button>
                 <button class="btn btn-secondary" onclick="clearCache()">
-                    🗑️ Clear Cache
+                    <span data-i18n="control.clearCache">🗑️ Clear Cache</span>
                 </button>
                 <button class="btn btn-secondary" onclick="reloadSchedule()">
-                    📅 Reload Schedule
+                    <span data-i18n="control.reloadSchedule">📅 Reload Schedule</span>
                 </button>
                 <button class="btn btn-secondary" onclick="showConfigModal()">
-                    ⚙️ Configuration
+                    <span data-i18n="control.configuration">⚙️ Configuration</span>
                 </button>
                 <button class="btn btn-secondary" onclick="generateXMLTV()">
-                    📺 Generate XMLTV for Kodi
+                    <span data-i18n="control.generateXMLTV">📺 Generate XMLTV for Kodi</span>
                 </button>
                 <button class="btn btn-secondary" onclick="openConfigFile()">
-                    📝 Open Config
+                    <span data-i18n="control.openConfig">📝 Open Config</span>
                 </button>
                 <button class="btn btn-secondary" onclick="openLogs()">
-                    📋 Open Logs
+                    <span data-i18n="control.openLogs">📋 Open Logs</span>
                 </button>
             </div>
         </div>
@@ -125,20 +131,26 @@
 
         <!-- TV Guide Section -->
         <div class="section">
-            <div class="section-title">📺 TV Guide</div>
+            <div class="section-title" data-i18n="guide.title">📺 TV Guide</div>
             
             <div class="guide-controls">
                 <div class="guide-view-toggle">
-                    <button class="btn btn-secondary guide-view-btn active" id="dailyViewBtn" onclick="switchGuideView('daily')">📅 Today</button>
-                    <button class="btn btn-secondary guide-view-btn" id="weeklyViewBtn" onclick="switchGuideView('weekly')">📆 Weekly</button>
+                    <button class="btn btn-secondary guide-view-btn active" id="dailyViewBtn" onclick="switchGuideView('daily')">
+                        <span data-i18n="guide.today">📅 Today</span>
+                    </button>
+                    <button class="btn btn-secondary guide-view-btn" id="weeklyViewBtn" onclick="switchGuideView('weekly')">
+                        <span data-i18n="guide.weekly">📆 Weekly</span>
+                    </button>
                 </div>
-                <button class="btn btn-secondary" onclick="refreshGuide()">🔄 Refresh Guide</button>
-                <div class="guide-time" id="guideTime">Loading...</div>
+                <button class="btn btn-secondary" onclick="refreshGuide()">
+                    <span data-i18n="guide.refresh">🔄 Refresh Guide</span>
+                </button>
+                <div class="guide-time" id="guideTime" data-i18n="guide.loading">Loading...</div>
             </div>
             
             <div class="guide-container" id="guideContainer">
                 <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                    <div class="loading"></div> Loading TV Guide...
+                    <div class="loading"></div> <span data-i18n="guide.loadingText">Loading TV Guide...</span>
                 </div>
             </div>
         </div>
