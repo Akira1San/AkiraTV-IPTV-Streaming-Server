@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV Codebase Explorer</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #7ee787;
+            --accent-warning: #f0883e;
+            --accent-danger: #f85149;
+            --accent-purple: #d2a8ff;
+            --accent-cyan: #56d4dd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 120px;
+            z-index: 99;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-tab:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Architecture Diagram */
+        .architecture-diagram {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 800px;
+        }
+
+        .diagram-layer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .diagram-node {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .diagram-node:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .diagram-node.core {
+            border-color: var(--accent-warning);
+        }
+
+        .diagram-node.worker {
+            border-color: var(--accent-secondary);
+        }
+
+        .diagram-node.api {
+            border-color: var(--accent-purple);
+        }
+
+        .diagram-node.ui {
+            border-color: var(--accent-cyan);
+        }
+
+        .diagram-arrow {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1a1f29;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-filename {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .code-lang {
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .code-content {
+            color: var(--text-primary);
+        }
+
+        .code-content .keyword { color: #ff7b72; }
+        .code-content .string { color: #a5d6ff; }
+        .code-content .comment { color: #8b949e; font-style: italic; }
+        .code-content .function { color: #d2a8ff; }
+        .code-content .class { color: #f0883e; }
+
+        /* Function List */
+        .function-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .function-item {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent-primary);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .function-item:hover {
+            background: var(--border-color);
+        }
+
+        .function-name {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .function-signature {
+            color: var(--accent-primary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .function-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Module Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .module-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-3px);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .module-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .module-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+        }
+
+        .module-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Flow Diagram */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: stretch;
+            position: relative;
+        }
+
+        .flow-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            z-index: 2;
+        }
+
+        .flow-line {
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .flow-step:last-child .flow-line {
+            display: none;
+        }
+
+        .flow-content {
+            margin-left: 1rem;
+            padding-bottom: 2rem;
+            flex: 1;
+        }
+
+        .flow-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-desc {
+            color: var(--text-secondary);
+        }
+
+        .flow-code {
+            background: var(--bg-tertiary);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Data Flow Visualization */
+        .dataflow-viz {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .dataflow-path {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .dataflow-node {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+
+        .dataflow-arrow {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+        }
+
+        /* Interactive Elements */
+        .expandable {
+            cursor: pointer;
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .expandable-content.expanded {
+            max-height: 2000px;
+        }
+
+        .expand-icon {
+            transition: transform 0.2s;
+        }
+
+        .expandable.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Search */
+        .search-container {
+            margin: 2rem 0;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        /* Highlight */
+        .highlight {
+            background: rgba(88, 166, 255, 0.2);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-container {
+                top: 100px;
+            }
+
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .diagram-container {
+                min-width: unset;
+            }
+
+            .diagram-layer {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📺 AkiraTV Codebase Explorer</h1>
+        <p>Interactive documentation for the AkiraTV streaming platform</p>
+    </header>
+
+    <nav class="nav-container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="overview">Overview</button>
+            <button class="nav-tab" data-section="architecture">Architecture</button>
+            <button class="nav-tab" data-section="modules">Modules</button>
+            <button class="nav-tab" data-section="workers">Workers</button>
+            <button class="nav-tab" data-section="api">API</button>
+            <button class="nav-tab" data-section="ui">UI</button>
+            <button class="nav-tab" data-section="dataflow">Data Flow</button>
+            <button class="nav-tab" data-section="config">Configuration</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Overview Section -->
+        <section id="overview" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: rgba(88, 166, 255, 0.2);">📺</div>
+                    <div>
+                        <h2 class="card-title">What is AkiraTV?</h2>
+                        <p class="card-subtitle">A Python-based local IPTV streaming platform</p>
+                    </div>
+                </div>
+                <p>AkiraTV is a comprehensive streaming solution that transforms your video collection into a personalized TV experience. It supports multiple channel types including linear (24/7 scheduled programming), VOD (on-demand), and dynamic channels.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">25+</div>
+                    <div class="stat-label">Python Modules</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Channel Types</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Worker Types</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">UI Options</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Key Features</h3>
+                <ul style="margin-top: 1rem; padding-left: 1.5rem; color: var(--text-secondary);">
+                    <li><strong>Linear Channels:</strong> 24/7 scheduled programming with seamless transitions</li>
+                    <li><strong>VOD Channels:</strong> On-demand video playback with queue support</li>
+                    <li><strong>Dynamic Channels:</strong> Auto-generated content based on collections and tags</li>
+                    <li><strong>HLS Streaming:</strong> HTTP Live Streaming for broad compatibility</li>
+                    <li><strong>Hardware Transcoding:</strong> CUDA/NVENC support for efficient encoding</li>
+                    <li><strong>Web UI:</strong> Browser-based control interface</li>
+                    <li><strong>REST API:</strong> Full programmatic control via FastAPI</li>
+                    <li><strong>XMLTV Support:</strong> EPG generation for Kodi and other players</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Quick Start</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <span class="code-lang">bash</span>
+                    </div>
+                    <div class="code-content">
+<span class="comment"># Start with GUI</span>
+python -m akiratv
+
+<span class="comment"># Start API server</span>
+uvicorn akiratv.api_server:app --reload --port 8000
+
+<span class="comment"># Start web UI only</span>
+python launch_web.py
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="section">
+            <div class="card">
+                <h2>🏗️ System Architecture</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">High-level overview of how AkiraTV components interact</p>
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="diagram-container">
+                    <div class="diagram-layer">
+                        <div class="diagram-node ui" onclick="showDetail('ui-layer')">
+                            <div>🖥️</div>
+                            <div><strong>UI Layer</strong></div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Tkinter / Web / API</div>
+                        </div>
+                    </div>
+                    <div class="diagram-arrow">⬇️</div>
+                    <div class="diagram-layer">
+                        <div class="diagram-node api" onclick="showDetail('api-layer')">
+                            <div>🔌</div>
+                            <div><strong>CoreAPI</strong></div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Thread-safe Interface</div>
+                        </div>
+                    </div>
+                    <div class="diagram-arrow">⬇️</div>
+                    <div class="diagram-layer">
+                        <div class="diagram-node core" onclick="showDetail('core-layer')">
+                            <div>⚙️</div>
+                            <div><strong>AkiraTV Core</strong></div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Orchestrator</div>
+                        </div>
+                    </div>
+                    <div class="diagram-arrow">⬇️</div>
+                    <div class="diagram-layer">
+                        <div class="diagram-node worker" onclick="showDetail('linear-worker')">
+                            <div>📡</div>
+                            <div><strong>LinearWorker</strong></div>
+                        </div>
+                        <div class="diagram-node worker" onclick="showDetail('vod-worker')">
+                            <div>🎬</div>
+                            <div><strong>VODWorker</strong></div>
+                        </div>
+                        <div class="diagram-node worker" onclick="showDetail('dynamic-worker')">
+                            <div>⚡</div>
+                            <div><strong>DynamicWorker</strong></div>
+                        </div>
+                    </div>
+                    <div class="diagram-arrow">⬇️</div>
+                    <div class="diagram-layer">
+                        <div class="diagram-node" onclick="showDetail('ffmpeg')">
+                            <div>🎞️</div>
+                            <div><strong>FFmpeg</strong></div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">HLS Generation</div>
+                        </div>
+                        <div class="diagram-node" onclick="showDetail('http-server')">
+                            <div>🌐</div>
+                            <div><strong>HTTP Server</strong></div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">HLS Delivery</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="detail-panel">
+                <h3>📋 Component Details</h3>
+                <p style="color: var(--text-secondary);">Click on any node in the diagram above to see details</p>
+            </div>
+        </section>
+
+        <!-- Modules Section -->
+        <section id="modules" class="section">
+            <div class="card">
+                <h2>📦 Core Modules</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Explore each module's purpose and functionality</p>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(240, 136, 62, 0.2);">⚙️</div>
+                        <div class="module-name">core.py</div>
+                    </div>
+                    <code class="module-path">akiratv/core.py</code>
+                    <p class="module-desc">Main orchestrator class that manages the entire streaming engine. Initializes workers, HTTP server, and handles lifecycle.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-header">
+                                <span class="code-filename">Key Classes</span>
+                            </div>
+                            <div class="code-content">
+<span class="class">class</span> <span class="function">AkiraTV</span>:
+    - __init__()          <span class="comment"># Initialize config, inventory, transcoding</span>
+    - start()             <span class="comment"># Main entry point</span>
+    - stop()              <span class="comment"># Graceful shutdown</span>
+    - initialize_workers() <span class="comment"># Start channel workers</span>
+    - initialize_http_server() <span class="comment"># Start HLS server</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(210, 168, 255, 0.2);">🔌</div>
+                        <div class="module-name">core_api.py</div>
+                    </div>
+                    <code class="module-path">akiratv/core_api.py</code>
+                    <p class="module-desc">Thread-safe public API interface. Singleton pattern for UI-agnostic control. Provides event system for real-time updates.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="class">class</span> <span class="function">CoreAPI</span>:
+    - start()             <span class="comment"># Start engine thread</span>
+    - stop()              <span class="comment"># Stop engine</span>
+    - restart()           <span class="comment"># Full restart</span>
+    - get_channels()      <span class="comment"># List all channels</span>
+    - play_now()          <span class="comment"># Immediate playback</span>
+    - on() / off()        <span class="comment"># Event handlers</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(86, 212, 221, 0.2);">🔧</div>
+                        <div class="module-name">config.py</div>
+                    </div>
+                    <code class="module-path">akiratv/config.py</code>
+                    <p class="module-desc">Configuration management with defaults, validation, and hot-reload support. Handles storage paths and channel settings.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="class">class</span> <span class="function">Config</span>:
+    - load_or_create()    <span class="comment"># Load or init config</span>
+    - get_output_root()   <span class="comment"># Get output directory</span>
+    - get_hls_output_path() <span class="comment"># HLS folder path</span>
+    - save()              <span class="comment"># Persist changes</span>
+
+DEFAULT_CONFIG = {
+    "ffmpeg": {...},
+    "storage": {...},
+    "channels": {...}
+}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(126, 231, 135, 0.2);">📅</div>
+                        <div class="module-name">scheduler.py</div>
+                    </div>
+                    <code class="module-path">akiratv/scheduler.py</code>
+                    <p class="module-desc">Schedule management for linear channels. Supports calendar-specific and weekly recurring entries with time calculations.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="function">get_full_todays_schedule()</span>
+  <span class="comment"># Load current + future entries</span>
+  <span class="comment"># Handles overnight wrap</span>
+
+<span class="function">get_current_schedule_for_channel(channel)</span>
+  <span class="comment"># Channel-specific schedule</span>
+
+<span class="function">calculate_seek_time(entry)</span>
+  <span class="comment"># Time offset for mid-entry joins</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(248, 81, 73, 0.2);">📦</div>
+                        <div class="module-name">inventory.py</div>
+                    </div>
+                    <code class="module-path">akiratv/inventory.py</code>
+                    <p class="module-desc">Video metadata management. Fast lookups via path normalization. Stores ffprobe data to avoid re-scanning.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="class">class</span> <span class="function">InventoryManager</span>:
+    - get_metadata(path)     <span class="comment"># Video metadata lookup</span>
+    - get_source_bitrate()   <span class="comment"># Source bitrate</span>
+    - get_source_fps()       <span class="comment"># Source framerate</span>
+    - get_source_resolution() <span class="comment"># Video dimensions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(255, 123, 114, 0.2);">🎞️</div>
+                        <div class="module-name">transcoding.py</div>
+                    </div>
+                    <code class="module-path">akiratv/workers/transcoding.py</code>
+                    <p class="module-desc">FFmpeg command generation with hardware acceleration support. Handles bitrate calculation and quality presets.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="class">class</span> <span class="function">TranscodingService</span>:
+    - build_ffmpeg_args()    <span class="comment"># Generate FFmpeg cmd</span>
+    - get_encoder()          <span class="comment"># Select hw encoder</span>
+    - calculate_bitrate()    <span class="comment"># Adaptive bitrate</span>
+    - should_transcode()     <span class="comment"># Transcode decision</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workers Section -->
+        <section id="workers" class="section">
+            <div class="card">
+                <h2>👷 Worker System</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Worker classes handle actual video streaming</p>
+            </div>
+
+            <div class="card">
+                <h3>BaseWorker (Abstract Base)</h3>
+                <code class="module-path">akiratv/workers/base_worker.py</code>
+                <p style="margin-top: 1rem; color: var(--text-secondary);">All workers inherit from BaseWorker which provides:</p>
+                <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: var(--text-secondary);">
+                    <li>FFmpeg process management</li>
+                    <li>Watchdog for frozen process detection</li>
+                    <li>Graceful shutdown handling</li>
+                    <li>HLS directory initialization</li>
+                </ul>
+                <div class="code-block" style="margin-top: 1rem;">
+                    <div class="code-content">
+<span class="class">class</span> <span class="function">BaseWorker</span>:
+    - initialize_worker()    <span class="comment"># Setup HLS directory</span>
+    - stop()                 <span class="comment"># Graceful shutdown</span>
+    - _execute_ffmpeg()      <span class="comment"># Run FFmpeg with watchdog</span>
+
+<span class="class">class</span> <span class="function">Watchdog</span>(threading.Thread):
+    - ping()                 <span class="comment"># Reset timeout</span>
+    - run()                  <span class="comment"># Monitor process</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>LinearWorker</h3>
+                <code class="module-path">akiratv/workers/linear_worker.py</code>
+                <p style="margin-top: 1rem;">Handles 24/7 linear channels with scheduled programming.</p>
+                
+                <div class="flow-container" style="margin-top: 1.5rem;">
+                    <div class="flow-step">
+                        <div class="flow-number">1</div>
+                        <div class="flow-line"></div>
+                        <div class="flow-content">
+                            <div class="flow-title">Validate Prerequisites</div>
+                            <div class="flow-desc">Check schedule entries exist and initialize worker</div>
+                            <div class="flow-code">_validate_prerequisites()</div>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">2</div>
+                        <div class="flow-line"></div>
+                        <div class="flow-content">
+                            <div class="flow-title">Setup Phase</div>
+                            <div class="flow-desc">Create temp directory and build concat playlist</div>
+                            <div class="flow-code">_setup_phase() → _build_concat_playlist()</div>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">3</div>
+                        <div class="flow-line"></div>
+                        <div class="flow-content">
+                            <div class="flow-title">Process First Entry</div>
+                            <div class="flow-desc">Calculate seek time and trim video if needed</div>
+                            <div class="flow-code">_process_first_entry() → _trim_video()</div>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">4</div>
+                        <div class="flow-line"></div>
+                        <div class="flow-content">
+                            <div class="flow-title">Streaming Phase</div>
+                            <div class="flow-desc">Start FFmpeg with concat demuxer</div>
+                            <div class="flow-code">_streaming_phase() → _execute_ffmpeg()</div>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">5</div>
+                        <div class="flow-content">
+                            <div class="flow-title">Monitoring & Cleanup</div>
+                            <div class="flow-desc">Watch process and cleanup on exit</div>
+                            <div class="flow-code">_monitoring_phase() → _cleanup_phase()</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>VODWorker</h3>
+                <code class="module-path">akiratv/workers/vod_worker.py</code>
+                <p style="margin-top: 1rem;">On-demand video playback with command queue support.</p>
+                <div class="code-block" style="margin-top: 1rem;">
+                    <div class="code-content">
+<span class="class">class</span> <span class="function">VODWorker</span>(BaseWorker):
+    - run()                  <span class="comment"># Main loop with queue check</span>
+    - _play_video(path)      <span class="comment"># Play specific video</span>
+    - command_queue          <span class="comment"># Thread-safe command queue</span>
+
+<span class="comment"># Commands:</span>
+<span class="string">"play_now"</span> → Immediate video switch
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>DynamicWorker</h3>
+                <code class="module-path">akiratv/workers/dynamic_worker.py</code>
+                <p style="margin-top: 1rem;">Auto-generates playlists based on collections and time slots.</p>
+                <div class="code-block" style="margin-top: 1rem;">
+                    <div class="code-content">
+<span class="class">class</span> <span class="function">DynamicWorker</span>(BaseWorker):
+    - load_collections()     <span class="comment"># Load video collections</span>
+    - generate_playlist()    <span class="comment"># Auto-generate schedule</span>
+    - apply_time_slots()     <span class="comment"># Filter by time of day</span>
+    - apply_tags()           <span class="comment"># Filter by tags</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Section -->
+        <section id="api" class="section">
+            <div class="card">
+                <h2>🔌 REST API</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">FastAPI-based HTTP interface</p>
+            </div>
+
+            <div class="card">
+                <h3>API Server</h3>
+                <code class="module-path">akiratv/api_server.py</code>
+                <p style="margin-top: 1rem;">Provides REST endpoints and WebSocket support for real-time updates.</p>
+                
+                <div class="function-list" style="margin-top: 1.5rem;">
+                    <div class="function-item">
+                        <div class="function-name">POST /api/start</div>
+                        <div class="function-signature">Response: {success: bool, message: string}</div>
+                        <div class="function-desc">Start the AkiraTV engine</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">POST /api/stop</div>
+                        <div class="function-signature">Response: {success: bool, message: string}</div>
+                        <div class="function-desc">Stop the AkiraTV engine</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">POST /api/restart</div>
+                        <div class="function-signature">Response: {success: bool, message: string}</div>
+                        <div class="function-desc">Restart the engine</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">GET /api/status</div>
+                        <div class="function-signature">Response: {running: bool, channels: int, ...}</div>
+                        <div class="function-desc">Get current engine status</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">GET /api/channels</div>
+                        <div class="function-signature">Response: ChannelStatus[]</div>
+                        <div class="function-desc">List all channels with status</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">POST /api/channels/{name}/play</div>
+                        <div class="function-signature">Body: {video_path: string}</div>
+                        <div class="function-desc">Play video immediately on channel</div>
+                    </div>
+                    <div class="function-item">
+                        <div class="function-name">WS /ws</div>
+                        <div class="function-signature">WebSocket connection</div>
+                        <div class="function-desc">Real-time status updates</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Data Models</h3>
+                <div class="code-block">
+                    <div class="code-content">
+<span class="class">@dataclass</span>
+<span class="class">class</span> <span class="function">ChannelStatus</span>:
+    name: <span class="keyword">str</span>
+    type: <span class="keyword">str</span>          <span class="comment"># "linear" | "vod" | "dynamic"</span>
+    enabled: <span class="keyword">bool</span>
+    status: <span class="keyword">str</span>         <span class="comment"># "running" | "stopped" | "error"</span>
+    now_playing: <span class="keyword">str</span>
+    next_program: <span class="keyword">str</span>
+    viewers: <span class="keyword">int</span>
+    uptime: <span class="keyword">float</span>
+
+<span class="class">@dataclass</span>
+<span class="class">class</span> <span class="function">LibraryStats</span>:
+    total_videos: <span class="keyword">int</span>
+    total_duration: <span class="keyword">float</span>
+    total_size: <span class="keyword">int</span>
+    resolutions: List[<span class="keyword">str</span>]
+    codecs: Dict[<span class="keyword">str</span>, <span class="keyword">int</span>]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UI Section -->
+        <section id="ui" class="section">
+            <div class="card">
+                <h2>🖥️ User Interfaces</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Multiple UI options for different use cases</p>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(88, 166, 255, 0.2);">🖥️</div>
+                        <div class="module-name">Tkinter GUI</div>
+                    </div>
+                    <code class="module-path">akiratv/ui/main.py</code>
+                    <p class="module-desc">Desktop application with real-time stats, configuration editor, and control buttons.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="class">class</span> <span class="function">AkiraTVApp</span>:
+    - create_widgets()       <span class="comment"># Build UI</span>
+    - toggle_streaming()     <span class="comment"># Start/Stop</span>
+    - update_stats_loop()    <span class="comment"># Real-time updates</span>
+    - open_wizard()          <span class="comment"># Schedule wizard</span>
+    - open_collection_wizard() <span class="comment"># Collections</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(126, 231, 135, 0.2);">🌐</div>
+                        <div class="module-name">Web UI</div>
+                    </div>
+                    <code class="module-path">akiratv/static/index.html</code>
+                    <p class="module-desc">Browser-based interface served by the API server. Modern responsive design.</p>
+                    <div class="expandable-content">
+                        <div class="code-block" style="margin-top: 1rem;">
+                            <div class="code-content">
+<span class="comment">// Web UI Features:</span>
+- Real-time WebSocket updates
+- Channel status dashboard
+- Play Now controls
+- Configuration editor
+- Dark/Light mode
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="toggleExpand(this)">
+                    <div class="module-header">
+                        <div class="module-icon" style="background: rgba(240, 136, 62, 0.2);">📊</div>
+                        <div class="module-name">Dashboard</div>
+                    </div>
+                    <code class="module-path">akiratv/server/dashboard.py</code>
+                    <p class="module-desc">Real-time streaming dashboard showing all channels, current programs, and viewer stats.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Flow Section -->
+        <section id="dataflow" class="section">
+            <div class="card">
+                <h2>🌊 Data Flow</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">How data moves through the system</p>
+            </div>
+
+            <div class="card">
+                <h3>Video Streaming Flow</h3>
+                <div class="dataflow-viz">
+                    <div class="dataflow-path">
+                        <div class="dataflow-node">Video File</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Inventory</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Worker</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Transcoding</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">FFmpeg</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">HLS Segments</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">HTTP Server</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Client</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Configuration Flow</h3>
+                <div class="dataflow-viz">
+                    <div class="dataflow-path">
+                        <div class="dataflow-node">config.json</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Config Class</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">AkiraTV Core</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Workers</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">FFmpeg Args</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Schedule Flow (Linear Channel)</h3>
+                <div class="dataflow-viz">
+                    <div class="dataflow-path">
+                        <div class="dataflow-node">schedule.json</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Scheduler</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">LinearWorker</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">Concat Playlist</div>
+                        <div class="dataflow-arrow">→</div>
+                        <div class="dataflow-node">FFmpeg</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration Section -->
+        <section id="config" class="section">
+            <div class="card">
+                <h2>⚙️ Configuration</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Understanding the config.json structure</p>
+            </div>
+
+            <div class="card">
+                <h3>Default Configuration</h3>
+                <div class="code-block">
+                    <div class="code-content">
+{
+    <span class="string">"ffmpeg"</span>: {
+        <span class="string">"hwaccel"</span>: <span class="string">"cuda"</span>,           <span class="comment">// Hardware acceleration</span>
+        <span class="string">"enable_subtitles"</span>: <span class="keyword">false</span>,
+        <span class="string">"transcoding"</span>: {
+            <span class="string">"enabled"</span>: <span class="keyword">false</span>,        <span class="comment">// Enable transcoding</span>
+            <span class="string">"bitrate"</span>: <span class="string">"auto"</span>,       <span class="comment">// auto | custom</span>
+            <span class="string">"custom_bitrate"</span>: <span class="string">"1500k"</span>,
+            <span class="string">"video_quality"</span>: <span class="string">"source"</span>, <span class="comment">// source | 1080p | 720p</span>
+            <span class="string">"encoder"</span>: <span class="string">"auto"</span>,         <span class="comment">// auto | h264_nvenc | libx264</span>
+            <span class="string">"audio_quality"</span>: <span class="string">"copy"</span>,   <span class="comment">// copy | aac</span>
+            <span class="string">"fps"</span>: <span class="string">"auto"</span>,
+            <span class="string">"threads"</span>: <span class="string">"2"</span>
+        }
+    },
+    <span class="string">"storage"</span>: {
+        <span class="string">"type"</span>: <span class="string">"ram"</span>,              <span class="comment">// ram | disk</span>
+        <span class="string">"ram_path"</span>: <span class="string">"R:/akiratv"</span>,
+        <span class="string">"disk_path"</span>: <span class="string">"./output"</span>
+    },
+    <span class="string">"output"</span>: {
+        <span class="string">"mode"</span>: <span class="string">"http_hls"</span>,        <span class="comment">// http_hls | file</span>
+        <span class="string">"http"</span>: {
+            <span class="string">"port"</span>: 8081,
+            <span class="string">"bind"</span>: <span class="string">"0.0.0.0"</span>
+        },
+        <span class="string">"hls"</span>: {
+            <span class="string">"segment_time"</span>: 6,       <span class="comment">// Seconds per segment</span>
+            <span class="string">"playlist_size"</span>: 4       <span class="comment">// Segments in playlist</span>
+        }
+    },
+    <span class="string">"channels"</span>: {
+        <span class="string">"myAkiraTV"</span>: {
+            <span class="string">"enabled"</span>: <span class="keyword">true</span>,
+            <span class="string">"type"</span>: <span class="string">"linear"</span>         <span class="comment">// linear | vod | dynamic</span>
+        }
+    }
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>File Structure</h3>
+                <div class="code-block">
+                    <div class="code-content">
+AkiraTV/
+├── akiratv/              <span class="comment"># Main package</span>
+│   ├── core.py           <span class="comment"># Main orchestrator</span>
+│   ├── core_api.py       <span class="comment"># Public API</span>
+│   ├── api_server.py     <span class="comment"># FastAPI server</span>
+│   ├── config.py         <span class="comment"># Configuration</span>
+│   ├── scheduler.py      <span class="comment"># Schedule management</span>
+│   ├── inventory.py      <span class="comment"># Video metadata</span>
+│   ├── workers/          <span class="comment"># Worker classes</span>
+│   │   ├── base_worker.py
+│   │   ├── linear_worker.py
+│   │   ├── vod_worker.py
+│   │   ├── dynamic_worker.py
+│   │   └── transcoding.py
+│   ├── server/           <span class="comment"># HTTP server</span>
+│   │   ├── http_server.py
+│   │   └── dashboard.py
+│   ├── ui/               <span class="comment"># Tkinter GUI</span>
+│   │   └── main.py
+│   └── static/           <span class="comment"># Web UI assets</span>
+├── user/                 <span class="comment"># User data</span>
+│   ├── channels/         <span class="comment"># Channel logos</span>
+│   ├── collections/      <span class="comment"># Video collections</span>
+│   └── schedules/        <span class="comment"># Schedule files</span>
+├── videos/               <span class="comment"># Video source files</span>
+├── output/               <span class="comment"># HLS output</span>
+└── logs/                 <span class="comment"># Log files</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>AkiraTV Codebase Explorer | Generated Documentation</p>
+    </footer>
+
+    <script>
+        // Tab Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active from all tabs
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                // Add active to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = tab.dataset.section;
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Expandable Cards
+        function toggleExpand(card) {
+            const content = card.querySelector('.expandable-content');
+            content.classList.toggle('expanded');
+        }
+
+        // Show Detail Panel
+        function showDetail(component) {
+            const panel = document.getElementById('detail-panel');
+            const details = {
+                'ui-layer': {
+                    title: 'UI Layer',
+                    content: `
+                        <p><strong>Components:</strong></p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Tkinter Desktop App (akiratv/ui/main.py)</li>
+                            <li>Web UI (akiratv/static/index.html)</li>
+                            <li>REST API (akiratv/api_server.py)</li>
+                        </ul>
+                        <p>All UIs communicate through CoreAPI for thread-safe operations.</p>
+                    `
+                },
+                'api-layer': {
+                    title: 'CoreAPI Layer',
+                    content: `
+                        <p><strong>Purpose:</strong> Thread-safe public interface</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Singleton pattern ensures single instance</li>
+                            <li>Event system for real-time updates</li>
+                            <li>RLock for reentrant thread safety</li>
+                            <li>Lifecycle management (start/stop/restart)</li>
+                        </ul>
+                    `
+                },
+                'core-layer': {
+                    title: 'AkiraTV Core',
+                    content: `
+                        <p><strong>Purpose:</strong> Main orchestrator</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Loads configuration</li>
+                            <li>Initializes inventory manager</li>
+                            <li>Creates transcoding service</li>
+                            <li>Manages worker threads</li>
+                            <li>Starts HTTP server</li>
+                        </ul>
+                    `
+                },
+                'linear-worker': {
+                    title: 'LinearWorker',
+                    content: `
+                        <p><strong>Type:</strong> 24/7 Scheduled Channel</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Uses FFmpeg concat demuxer</li>
+                            <li>Supports mid-entry seeking</li>
+                            <li>Handles schedule transitions</li>
+                            <li>Creates temp trimmed videos</li>
+                        </ul>
+                    `
+                },
+                'vod-worker': {
+                    title: 'VODWorker',
+                    content: `
+                        <p><strong>Type:</strong> On-Demand Channel</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Command queue for play requests</li>
+                            <li>Immediate video switching</li>
+                            <li>Queue-based architecture</li>
+                        </ul>
+                    `
+                },
+                'dynamic-worker': {
+                    title: 'DynamicWorker',
+                    content: `
+                        <p><strong>Type:</strong> Auto-Generated Channel</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Collection-based playlists</li>
+                            <li>Time slot filtering</li>
+                            <li>Tag-based selection</li>
+                        </ul>
+                    `
+                },
+                'ffmpeg': {
+                    title: 'FFmpeg',
+                    content: `
+                        <p><strong>Role:</strong> Video Processing</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>HLS segment generation</li>
+                            <li>Hardware acceleration (CUDA/NVENC)</li>
+                            <li>Video transcoding</li>
+                            <li>Concatenation for linear channels</li>
+                        </ul>
+                    `
+                },
+                'http-server': {
+                    title: 'HTTP Server',
+                    content: `
+                        <p><strong>Role:</strong> HLS Delivery</p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>Serves .m3u8 playlists</li>
+                            <li>Serves .ts segments</li>
+                            <li>CORS headers for cross-origin</li>
+                            <li>Dashboard endpoint</li>
+                        </ul>
+                    `
+                }
+            };
+
+            const detail = details[component];
+            if (detail) {
+                panel.innerHTML = `
+                    <h3>${detail.title}</h3>
+                    <div style="margin-top: 1rem; color: var(--text-secondary);">
+                        ${detail.content}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

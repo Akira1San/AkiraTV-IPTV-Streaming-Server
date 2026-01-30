@@ -406,6 +406,36 @@ input:checked + .toggle-slider:before {
     border-color: var(--error);
 }
 
+.btn-small.btn-warning {
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--warning);
+    border: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+.btn-small.btn-warning:hover {
+    background: var(--warning);
+    color: white;
+    border-color: var(--warning);
+}
+
+.btn-small.btn-primary {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.btn-small.btn-primary:hover {
+    background: var(--accent);
+    color: black;
+    border-color: var(--accent);
+}
+
+.btn-small:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Adjust setting row for multiple buttons */
 .setting-row:has(.btn-small) {
     justify-content: flex-start;

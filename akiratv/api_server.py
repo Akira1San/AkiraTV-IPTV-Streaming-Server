@@ -322,6 +322,26 @@ def stop_channel(channel: str):
     else:
         raise HTTPException(status_code=400, detail=result["error"])
 
+@app.post("/api/channels/{channel}/stop-worker", response_model=Response)
+def stop_channel_worker(channel: str):
+    """Stop channel worker completely"""
+    api = get_core_api()
+    result = api.stop_channel_worker(channel)
+    if result["success"]:
+        return Response(success=True, message=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["error"])
+
+@app.post("/api/channels/{channel}/restart", response_model=Response)
+def restart_channel(channel: str):
+    """Restart a specific channel worker"""
+    api = get_core_api()
+    result = api.restart_channel(channel)
+    if result["success"]:
+        return Response(success=True, message=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["error"])
+
 # ========================================
 # CONFIGURATION ENDPOINTS
 # ========================================

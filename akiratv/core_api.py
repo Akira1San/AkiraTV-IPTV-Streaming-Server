@@ -485,6 +485,105 @@ class CoreAPI:
             logger.error(f"CoreAPI: {error_msg}")
             return {"success": False, "error": error_msg}
 
+    def stop_channel_worker(self, channel: str) -> Dict[str, Any]:
+        """
+        Stop a running channel worker completely
+        
+        Args:
+            channel: Channel name
+            
+        Returns:
+            {"success": bool, "message": str} or {"success": False, "error": str}
+        """
+        if not self._running:
+            return {"success": False, "error": "Engine not running"}
+        
+        if not self._engine:
+            return {"success": False, "error": "Engine not initialized"}
+        
+        # Check if channel exists
+        channel_status = self.get_channel(channel)
+        if not channel_status:
+            return {"success": False, "error": f"Channel '{channel}' not found"}
+        
+        try:
+            # Check if worker exists and is running
+            if hasattr(self._engine, 'workers') and channel in self._engine.workers:
+                worker, thread = self._engine.workers[channel]
+                if worker:
+                    logger.info(f"CoreAPI: Stopping worker for channel '{channel}'")
+                    worker.stop()  # Stop the worker
+                    thread.join(timeout=5)  # Wait for thread to finish
+                    
+                    # Remove from workers dict
+                    del self._engine.workers[channel]
+                    
+                    self._emit("channel_stopped", {"channel": channel})
+                    logger.info(f"CoreAPI: Channel '{channel}' worker stopped")
+                    return {"success": True, "message": f"Channel '{channel}' stopped"}
+                else:
+                    return {"success": False, "error": f"Channel '{channel}' worker not available"}
+            else:
+                return {"success": True, "message": f"Channel '{channel}' is not running"}
+        except Exception as e:
+            error_msg = f"Failed to stop channel worker: {str(e)}"
+            logger.error(f"CoreAPI: {error_msg}")
+            return {"success": False, "error": error_msg}
+
+    def restart_channel(self, channel: str) -> Dict[str, Any]:
+        """
+        Restart a specific channel worker
+        
+        Args:
+            channel: Channel name
+            
+        Returns:
+            {"success": bool, "message": str} or {"success": False, "error": str}
+        """
+        if not self._running:
+            return {"success": False, "error": "Engine not running"}
+        
+        if not self._engine:
+            return {"success": False, "error": "Engine not initialized"}
+        
+        # Check if channel exists and is enabled
+        channel_status = self.get_channel(channel)
+        if not channel_status:
+            return {"success": False, "error": f"Channel '{channel}' not found"}
+        
+        if not channel_status.enabled:
+            return {"success": False, "error": f"Channel '{channel}' is disabled"}
+        
+        try:
+            # First stop the channel if it's running
+            if hasattr(self._engine, 'workers') and channel in self._engine.workers:
+                stop_result = self.stop_channel_worker(channel)
+                if not stop_result["success"]:
+                    logger.warning(f"CoreAPI: Failed to stop channel '{channel}' before restart: {stop_result.get('error')}")
+                else:
+                    logger.info(f"CoreAPI: Stopped channel '{channel}' for restart")
+            
+            # Brief pause to ensure clean shutdown
+            import time
+            time.sleep(1)
+            
+            # Restart the channel by calling the engine's start method for this specific channel
+            if hasattr(self._engine, '_start_channel_worker'):
+                success = self._engine._start_channel_worker(channel)
+                if success:
+                    self._emit("channel_restarted", {"channel": channel})
+                    logger.info(f"CoreAPI: Channel '{channel}' restarted successfully")
+                    return {"success": True, "message": f"Channel '{channel}' restarted successfully"}
+                else:
+                    return {"success": False, "error": f"Failed to restart channel '{channel}'"}
+            else:
+                return {"success": False, "error": "Channel restart not supported by engine"}
+                
+        except Exception as e:
+            error_msg = f"Failed to restart channel: {str(e)}"
+            logger.error(f"CoreAPI: {error_msg}")
+            return {"success": False, "error": error_msg}
+
     # ========================================
     # SCHEDULING
     # ========================================

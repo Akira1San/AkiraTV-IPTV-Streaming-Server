@@ -81,25 +81,19 @@ async function loadChannels() {
         
         console.log('📺 Loaded channels:', channels);
         
-        // Try to load proper URLs, but don't fail if it doesn't work
+        // Use fallback URL generation with the actual streaming server
         let channelUrls = {};
-        try {
-            const urlsData = await apiCall('/api/channels/urls');
-            channelUrls = urlsData.channels || {};
-            console.log('🔗 Channel URLs:', channelUrls);
-        } catch (error) {
-            console.warn('Could not load channel URLs, using fallback:', error);
-            // Use fallback URL generation
-            channels.forEach(ch => {
-                if (ch.enabled) {
-                    channelUrls[ch.name] = {
-                        lan: {
-                            stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`
-                        }
-                    };
-                }
-            });
-        }
+        channels.forEach(ch => {
+            if (ch.enabled) {
+                channelUrls[ch.name] = {
+                    lan: {
+                        stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`,
+                        epg: `http://192.168.50.183:8081/xmltv.xml`
+                    }
+                };
+            }
+        });
+        console.log('🔗 Using fallback channel URLs:', channelUrls);
         
         document.getElementById('channelsCount').textContent = channels.length;
 
@@ -163,6 +157,18 @@ async function loadChannels() {
                                 🗑️ Delete
                             </button>
                         </div>
+                        ${ch.enabled ? `
+                            <div class="setting-row">
+                                <button class="btn-small btn-warning" onclick="stopChannelWorker('${ch.name}')" 
+                                        ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
+                                    ⏹️ Stop Channel
+                                </button>
+                                <button class="btn-small btn-primary" onclick="restartChannel('${ch.name}')"
+                                        ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
+                                    🔄 Restart Channel
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                     
                     ${ch.enabled ? `
@@ -191,7 +197,7 @@ async function loadChannels() {
 
 function generateChannelUrls(channelName, urls) {
     if (!urls || Object.keys(urls).length === 0) {
-        // Fallback to a basic URL
+        // Fallback to a basic URL with your actual streaming server
         const fallbackUrl = `http://192.168.50.183:8081/hls/${channelName}/index.m3u8`;
         return `<div class="channel-url">
             <div class="url-label">📺 Stream:</div>
@@ -235,9 +241,17 @@ function generateChannelUrls(channelName, urls) {
         `;
     }
     
-    return urlsHtml || `<div class="channel-url">
-        <span style="color: var(--text-secondary);">URLs not available</span>
-    </div>`;
+    // If we have URLs but none of the expected ones, show fallback
+    if (!urlsHtml) {
+        const fallbackUrl = `http://192.168.50.183:8081/hls/${channelName}/index.m3u8`;
+        return `<div class="channel-url">
+            <div class="url-label">📺 Stream:</div>
+            <span style="overflow: hidden; text-overflow: ellipsis;">${fallbackUrl}</span>
+            <button class="copy-btn" onclick="copyToClipboard('${fallbackUrl}')">Copy</button>
+        </div>`;
+    }
+    
+    return urlsHtml;
 }
 
 // Get Channel URL
@@ -606,6 +620,59 @@ async function stopSelectedChannel() {
         }
     } catch (error) {
         showToast('Failed to stop channel', 'error');
+    }
+}
+
+async function stopChannelWorker(channel) {
+    const confirmed = confirm(
+        `Stop channel '${channel}' completely?\n\n` +
+        `This will:\n` +
+        `• Stop the channel worker\n` +
+        `• Disconnect viewers\n` +
+        `• Channel will need to be restarted manually\n\n` +
+        `Click OK to stop or Cancel to keep running.`
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        const result = await apiCall(`/api/channels/${channel}/stop-worker`, 'POST');
+        if (result.success) {
+            showToast(result.message, 'success');
+            // Reload channels to update status
+            await loadChannels();
+        } else {
+            showToast(result.error || 'Failed to stop channel', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to stop channel', 'error');
+    }
+}
+
+async function restartChannel(channel) {
+    const confirmed = confirm(
+        `Restart channel '${channel}'?\n\n` +
+        `This will:\n` +
+        `• Stop the current channel worker\n` +
+        `• Start a fresh worker instance\n` +
+        `• Briefly disconnect viewers during restart\n\n` +
+        `Click OK to restart or Cancel to keep current state.`
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        showToast(`Restarting channel '${channel}'...`, 'info');
+        const result = await apiCall(`/api/channels/${channel}/restart`, 'POST');
+        if (result.success) {
+            showToast(result.message, 'success');
+            // Reload channels to update status
+            await loadChannels();
+        } else {
+            showToast(result.error || 'Failed to restart channel', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to restart channel', 'error');
     }
 }
 
