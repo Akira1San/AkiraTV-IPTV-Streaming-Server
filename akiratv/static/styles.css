@@ -2014,6 +2014,93 @@ input:checked + .toggle-slider:before {
     display: block;
 }
 
+/* Warning message styles */
+.warning-message {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Radio option styles */
+.radio-option {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 6px;
+}
+
+.channel-options {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+/* Input group spacing */
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Collection preview styles */
+.collection-preview {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 16px;
+}
+
+.collection-preview h5 {
+    color: var(--accent);
+    margin: 0 0 8px 0;
+    font-size: 14px;
+}
+
+.preview-item {
+    margin: 4px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.preview-item strong {
+    color: var(--text-primary);
+}
+
+/* Channel helper styles */
+.channel-helper {
+    margin-top: 8px;
+    padding: 8px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.channel-helper label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.channel-helper .wizard-select {
+    margin-top: 4px;
+}
+
 .folder-help {
     margin-top: 10px;
     text-align: center;

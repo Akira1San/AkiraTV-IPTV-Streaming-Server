@@ -151,7 +151,8 @@
     "max_ram_usage_percent": 80
   },
   "ui": {
-    "dark_mode": false
+    "dark_mode": false,
+    "test_mode": true
   },
   "channel": "critters"
 }

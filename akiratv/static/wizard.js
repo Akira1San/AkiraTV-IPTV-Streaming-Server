@@ -137,37 +137,153 @@ function addManualScanButton() {
 }
 
 function setupCollectionStep2() {
-    const collectionInput = document.getElementById('collectionName');
-    const channelInput = document.getElementById('channelName');
+    const channelSelect = document.getElementById('wizardChannelSelect');
     
-    if (collectionInput && channelInput) {
-        // Auto-generate channel name from collection name
-        collectionInput.addEventListener('input', function() {
-            const collectionName = this.value.trim();
-            if (collectionName && !channelInput.value.trim()) {
-                // Convert to valid channel name
-                const channelName = collectionName
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]/g, '_')
-                    .replace(/_+/g, '_')
-                    .replace(/^_|_$/g, '');
-                channelInput.value = channelName;
-            }
+    // Load existing channels for the dropdown
+    loadChannelsForWizard();
+    
+    // Auto-generate collection name from folder path
+    generateCollectionNameFromFolder();
+    
+    if (channelSelect) {
+        // Validate when user selects from dropdown
+        channelSelect.addEventListener('change', function() {
+            updateCollectionPreview();
             validateStep2Inputs();
         });
         
-        channelInput.addEventListener('input', validateStep2Inputs);
-        document.getElementById('channelType').addEventListener('change', validateStep2Inputs);
+        // Initial validation
+        validateStep2Inputs();
     }
 }
 
+function generateCollectionNameFromFolder() {
+    if (wizardData.selectedFolder) {
+        // Extract folder name from path
+        const folderPath = wizardData.selectedFolder;
+        const folderName = folderPath.split(/[/\\]/).pop() || 'collection';
+        
+        // Clean up folder name to make a nice collection name
+        const collectionName = folderName
+            .replace(/[_-]/g, ' ')  // Replace underscores and hyphens with spaces
+            .replace(/\b\w/g, l => l.toUpperCase())  // Capitalize first letter of each word
+            .trim();
+        
+        // Store in wizard data
+        wizardData.collectionName = collectionName;
+        
+        console.log(`📁 Auto-generated collection name: "${collectionName}" from folder: "${folderPath}"`);
+    }
+}
+
+function updateCollectionPreview() {
+    const channelSelect = document.getElementById('wizardChannelSelect');
+    const preview = document.getElementById('collectionPreview');
+    const previewCollectionName = document.getElementById('previewCollectionName');
+    const previewChannelName = document.getElementById('previewChannelName');
+    const previewFolderPath = document.getElementById('previewFolderPath');
+    
+    if (channelSelect && channelSelect.value && preview) {
+        // Show preview
+        preview.style.display = 'block';
+        
+        // Update preview content
+        if (previewCollectionName) previewCollectionName.textContent = wizardData.collectionName || 'Auto-generated';
+        if (previewChannelName) previewChannelName.textContent = channelSelect.value;
+        if (previewFolderPath) previewFolderPath.textContent = wizardData.selectedFolder || 'Not set';
+    } else if (preview) {
+        // Hide preview
+        preview.style.display = 'none';
+    }
+}
+
+async function loadChannelsForWizard() {
+    try {
+        const response = await apiCall('/api/channels');
+        const channels = response.channels || [];
+        
+        const channelSelect = document.getElementById('wizardChannelSelect');
+        if (!channelSelect) return;
+        
+        // Clear existing options
+        channelSelect.innerHTML = '<option value="">-- Select a channel --</option>';
+        
+        if (channels.length === 0) {
+            channelSelect.innerHTML = '<option value="">No existing channels found</option>';
+            wizardLogger.info('No channels found for wizard dropdown');
+            return;
+        }
+        
+        // Add channels to dropdown
+        channels.forEach(channel => {
+            const option = document.createElement('option');
+            option.value = channel.name;
+            option.textContent = `${channel.name} (${channel.type})`;
+            channelSelect.appendChild(option);
+        });
+        
+        wizardLogger.info(`Loaded ${channels.length} channels for wizard dropdown`);
+        
+        // Trigger validation after loading channels
+        validateStep2Inputs();
+        
+    } catch (error) {
+        wizardLogger.error('Failed to load channels for wizard', error);
+        const channelSelect = document.getElementById('wizardChannelSelect');
+        if (channelSelect) {
+            channelSelect.innerHTML = '<option value="">Failed to load channels</option>';
+        }
+    }
+}
+
+async function checkCollectionExists(collectionName) {
+    const collectionWarning = document.getElementById('collectionExistsWarning');
+    if (!collectionWarning || !collectionName.trim()) {
+        if (collectionWarning) collectionWarning.style.display = 'none';
+        return false;
+    }
+    
+    try {
+        // Check if collection file exists by trying to scan collections directory
+        const response = await fetch('/api/wizard/collection/check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ collection_name: collectionName })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const exists = result.exists || false;
+            
+            if (exists) {
+                collectionWarning.style.display = 'block';
+                wizardLogger.warn(`Collection '${collectionName}' already exists`);
+            } else {
+                collectionWarning.style.display = 'none';
+            }
+            
+            return exists;
+        }
+    } catch (error) {
+        // If API call fails, hide warning (don't block user)
+        collectionWarning.style.display = 'none';
+        wizardLogger.debug('Collection existence check failed', error);
+    }
+    
+    return false;
+}
+
 function validateStep2Inputs() {
-    const collectionName = document.getElementById('collectionName').value.trim();
-    const channelName = document.getElementById('channelName').value.trim();
+    const channelSelect = document.getElementById('wizardChannelSelect');
     const nextBtn = document.getElementById('collectionWizardNext');
     
-    const isValid = collectionName && channelName && channelName.match(/^[a-zA-Z0-9_-]+$/);
-    nextBtn.disabled = !isValid;
+    // Simple validation: only need channel selection (collection name is auto-generated)
+    const channelName = channelSelect ? channelSelect.value.trim() : '';
+    const isValid = channelName.length > 0;
+    
+    if (nextBtn) {
+        nextBtn.disabled = !isValid;
+    }
 }
 
 function getCollectionStep1HTML() {
@@ -226,37 +342,38 @@ function getCollectionStep2HTML() {
             </div>
             <div class="wizard-step active">
                 <div class="wizard-step-number">2</div>
-                <span>Configure</span>
+                <span>Select Channel</span>
             </div>
             <div class="wizard-step">
                 <div class="wizard-step-number">3</div>
-                <span>Review</span>
+                <span>Create Collection</span>
             </div>
         </div>
         
         <div class="wizard-content">
-            <h4>⚙️ Configure Collection</h4>
-            <p>Set up your collection name and channel settings.</p>
+            <h4>📺 Select Channel</h4>
+            <p>Choose which channel this collection will belong to.</p>
             
             <div class="config-section">
                 <div class="input-group">
-                    <label>Collection Name:</label>
-                    <input type="text" id="collectionName" class="wizard-input" placeholder="e.g., Action Movies" />
-                </div>
-                
-                <div class="input-group">
-                    <label>Channel Name:</label>
-                    <input type="text" id="channelName" class="wizard-input" placeholder="e.g., action_movies" />
-                    <small>Use only letters, numbers, hyphens (-), and underscores (_)</small>
-                </div>
-                
-                <div class="input-group">
-                    <label>Channel Type:</label>
-                    <select id="channelType" class="wizard-select">
-                        <option value="linear">Linear (Scheduled Programming)</option>
-                        <option value="vod">VOD (On-Demand)</option>
-                        <option value="dynamic">Dynamic (Standby + VOD)</option>
+                    <label>Channel:</label>
+                    <select id="wizardChannelSelect" class="wizard-select">
+                        <option value="">Loading existing channels...</option>
                     </select>
+                    <small>Select the channel where this collection will be available.</small>
+                </div>
+                
+                <div class="collection-preview" id="collectionPreview" style="display: none;">
+                    <h5>📁 Collection Preview:</h5>
+                    <div class="preview-item">
+                        <strong>Collection Name:</strong> <span id="previewCollectionName">-</span>
+                    </div>
+                    <div class="preview-item">
+                        <strong>Channel:</strong> <span id="previewChannelName">-</span>
+                    </div>
+                    <div class="preview-item">
+                        <strong>Folder:</strong> <span id="previewFolderPath">-</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -342,26 +459,26 @@ function validateCollectionStep() {
             return true;
             
         case 1:
-            const collectionName = document.getElementById('collectionName').value.trim();
-            const channelName = document.getElementById('channelName').value.trim();
-            const channelType = document.getElementById('channelType').value;
+            const channelSelect = document.getElementById('wizardChannelSelect');
+            const channelName = channelSelect ? channelSelect.value.trim() : '';
             
-            if (!collectionName) {
-                showToast('Please enter a collection name', 'error');
-                return false;
-            }
             if (!channelName) {
-                showToast('Please enter a channel name', 'error');
-                return false;
-            }
-            if (!channelName.match(/^[a-zA-Z0-9_-]+$/)) {
-                showToast('Channel name can only contain letters, numbers, hyphens, and underscores', 'error');
+                showToast('Please select a channel', 'error');
                 return false;
             }
             
-            wizardData.collectionName = collectionName;
+            // Collection name is auto-generated from folder
+            if (!wizardData.collectionName) {
+                generateCollectionNameFromFolder();
+            }
+            
+            if (!wizardData.collectionName) {
+                showToast('Unable to generate collection name from folder', 'error');
+                return false;
+            }
+            
             wizardData.channelName = channelName;
-            wizardData.channelType = channelType;
+            wizardData.isNewChannel = false;
             return true;
     }
     return false;
@@ -555,9 +672,10 @@ async function createCollection() {
         const result = await apiCall('/api/wizard/collection/create', 'POST', {
             collection_name: wizardData.collectionName,
             channel_name: wizardData.channelName,
-            channel_type: wizardData.channelType,
             folder_path: wizardData.selectedFolder,
-            collection_data: collectionData
+            collection_data: collectionData,
+            is_new_channel: false, // Always false - only creating collection files
+            overwrite_existing: wizardData.overwriteExisting || false
         });
         
         wizardLogger.info('Collection creation API response', result);
@@ -567,9 +685,8 @@ async function createCollection() {
                 `✅ Collection Created Successfully!\n\n` +
                 `Collection: ${wizardData.collectionName}\n` +
                 `Channel: ${wizardData.channelName}\n` +
-                `Type: ${wizardData.channelType}\n` +
                 `Videos: ${wizardData.videoFiles.length} files\n\n` +
-                `The channel is now available in your channels list.`,
+                `Collection file has been created and is ready to use.`,
                 'success'
             );
             hideCollectionWizard();
@@ -594,8 +711,68 @@ async function createCollection() {
         
         let errorMessage = error.message;
         
+        // Handle collection already exists error with overwrite confirmation
+        if (error.message.includes('Collection file already exists') || error.message.includes('409')) {
+            const confirmOverwrite = confirm(
+                `⚠️ Collection Already Exists\n\n` +
+                `A collection file for "${wizardData.collectionName}" already exists.\n\n` +
+                `Do you want to overwrite the existing collection?\n\n` +
+                `⚠️ This will permanently replace the existing collection file.`
+            );
+            
+            if (confirmOverwrite) {
+                wizardLogger.info('User confirmed overwrite, retrying collection creation');
+                wizardData.overwriteExisting = true;
+                
+                try {
+                    // Retry with overwrite flag
+                    const retryResult = await apiCall('/api/wizard/collection/create', 'POST', {
+                        collection_name: wizardData.collectionName,
+                        channel_name: wizardData.channelName,
+                        folder_path: wizardData.selectedFolder,
+                        collection_data: {
+                            name: wizardData.collectionName,
+                            channel: wizardData.channelName,
+                            folder: wizardData.selectedFolder,
+                            videos: wizardData.videoFiles,
+                            created: new Date().toISOString(),
+                            metadata: {
+                                total_videos: wizardData.videoFiles.length,
+                                total_duration: "Unknown",
+                                formats: [...new Set(wizardData.videoFiles.map(v => v.format || v.name.split('.').pop().toUpperCase()))]
+                            }
+                        },
+                        is_new_channel: false,
+                        overwrite_existing: true
+                    });
+                    
+                    if (retryResult.success) {
+                        showToast(
+                            `✅ Collection Overwritten Successfully!\n\n` +
+                            `Collection: ${wizardData.collectionName}\n` +
+                            `Channel: ${wizardData.channelName}\n` +
+                            `Videos: ${wizardData.videoFiles.length} files\n\n` +
+                            `The existing collection has been replaced.`,
+                            'success'
+                        );
+                        hideCollectionWizard();
+                        await loadChannels();
+                        wizardLogger.info('Collection overwritten successfully', retryResult.data);
+                        return; // Exit successfully
+                    } else {
+                        throw new Error(retryResult.error || retryResult.detail || 'Failed to overwrite collection');
+                    }
+                } catch (retryError) {
+                    errorMessage = `Failed to overwrite collection: ${retryError.message}`;
+                }
+            } else {
+                wizardLogger.info('User cancelled overwrite');
+                showToast('Collection creation cancelled', 'info');
+                return; // Exit without error
+            }
+        }
         // Try to extract more specific error information
-        if (error.message.includes('Channel') && error.message.includes('already exists')) {
+        else if (error.message.includes('Channel') && error.message.includes('already exists')) {
             errorMessage = `Channel name '${wizardData.channelName}' already exists. Please choose a different name.`;
         } else if (error.message.includes('permission')) {
             errorMessage = `Permission denied. Please check folder permissions for: ${wizardData.selectedFolder}`;

@@ -1169,9 +1169,49 @@ def scan_folder_for_videos(request: dict):
         print(f"❌ Folder scan error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to scan folder: {str(e)}")
 
+@app.post("/api/wizard/collection/check", response_model=Response)
+def check_collection_exists(request: dict):
+    """Check if a collection already exists"""
+    try:
+        from pathlib import Path
+        
+        collection_name = request.get("collection_name", "").strip()
+        if not collection_name:
+            return Response(success=True, data={"exists": False})
+        
+        # Convert collection name to potential channel names and check for existing files
+        potential_channel_name = collection_name.lower().replace(' ', '_').replace('-', '_')
+        potential_channel_name = ''.join(c if c.isalnum() or c == '_' else '_' for c in potential_channel_name)
+        potential_channel_name = '_'.join(potential_channel_name.split('_'))  # Clean up multiple underscores
+        
+        collections_dir = Path("user/collections")
+        
+        # Check for various possible collection file names
+        possible_files = [
+            collections_dir / f"collections_{potential_channel_name}.json",
+            collections_dir / f"collections_{collection_name.lower().replace(' ', '_')}.json",
+            collections_dir / f"collections_{collection_name.lower()}.json"
+        ]
+        
+        exists = any(file.exists() for file in possible_files)
+        
+        return Response(
+            success=True,
+            data={
+                "exists": exists,
+                "collection_name": collection_name,
+                "potential_files": [str(f) for f in possible_files if f.exists()]
+            }
+        )
+        
+    except Exception as e:
+        print(f"❌ Collection check error: {str(e)}")
+        return Response(success=True, data={"exists": False})  # Fail gracefully
+
+
 @app.post("/api/wizard/collection/create", response_model=Response)
 def create_collection_wizard(request: dict):
-    """Create collection and channel from wizard"""
+    """Create collection file from wizard (collections only, no channel creation)"""
     try:
         from pathlib import Path
         import json
@@ -1179,15 +1219,15 @@ def create_collection_wizard(request: dict):
         # Extract data from request
         collection_name = request.get("collection_name")
         channel_name = request.get("channel_name")
-        channel_type = request.get("channel_type")
         folder_path = request.get("folder_path")
         collection_data = request.get("collection_data", {})
+        overwrite_existing = request.get("overwrite_existing", False)
         
         print(f"🧙‍♂️ Creating collection via wizard:")
         print(f"   Collection: {collection_name}")
         print(f"   Channel: {channel_name}")
-        print(f"   Type: {channel_type}")
         print(f"   Folder: {folder_path}")
+        print(f"   Overwrite: {overwrite_existing}")
         
         # Validate inputs
         if not collection_name or not collection_name.strip():
@@ -1196,8 +1236,18 @@ def create_collection_wizard(request: dict):
         if not channel_name or not channel_name.strip():
             raise HTTPException(status_code=400, detail="Channel name is required")
         
-        if channel_type not in ['linear', 'vod', 'dynamic']:
-            raise HTTPException(status_code=400, detail="Invalid channel type")
+        # Verify channel exists
+        api = get_core_api()
+        existing_channels = api.get_channels()
+        channel_names = [ch.name for ch in existing_channels]
+        
+        if channel_name not in channel_names:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Channel '{channel_name}' does not exist. Available channels: {', '.join(channel_names) if channel_names else 'None'}. Please create the channel first using 'Add Channel'."
+            )
+        
+        print(f"✅ Channel '{channel_name}' exists and is available.")
         
         # Create collections directory
         collections_dir = Path("user/collections")
@@ -1205,6 +1255,13 @@ def create_collection_wizard(request: dict):
         
         # Create collection file
         collection_file = collections_dir / f"collections_{channel_name}.json"
+        
+        # Check if collection file already exists
+        if collection_file.exists() and not overwrite_existing:
+            raise HTTPException(
+                status_code=409, 
+                detail=f"Collection file already exists: {collection_file.name}. Use overwrite_existing=true to replace it."
+            )
         
         # Prepare collection data in the correct AkiraTV format
         collections = []
@@ -1262,40 +1319,15 @@ def create_collection_wizard(request: dict):
         
         print(f"✅ Collection file created successfully")
         
-        # Add channel to config
-        api = get_core_api()
-        print(f"🔧 Adding channel to config...")
-        print(f"   API instance: {api}")
-        print(f"   Channel name: '{channel_name}'")
-        print(f"   Channel type: '{channel_type}'")
-        
-        # Check if channel already exists
-        existing_channels = api.get_channels()
-        print(f"   Existing channels: {[ch.name for ch in existing_channels]}")
-        
-        result = api.add_channel(channel_name, channel_type)
-        
-        print(f"📊 Channel creation result: {result}")
-        
-        if not result.get("success", False):
-            error_msg = result.get("error", "Unknown error adding channel")
-            print(f"❌ Failed to add channel: {error_msg}")
-            # Clean up collection file if channel creation failed
-            if collection_file.exists():
-                collection_file.unlink()
-            raise HTTPException(status_code=400, detail=error_msg)
-        
-        print(f"✅ Channel added to config successfully")
-        
         return Response(
             success=True,
-            message=f"Collection '{collection_name}' and channel '{channel_name}' created successfully",
+            message=f"Collection '{collection_name}' created successfully for channel '{channel_name}'",
             data={
                 "collection_file": str(collection_file),
                 "channel_name": channel_name,
-                "channel_type": channel_type,
                 "collections_count": len(collections),
-                "video_count": sum(len(c["videos"]) for c in collections)
+                "video_count": sum(len(c["videos"]) for c in collections),
+                "overwrite_existing": overwrite_existing
             }
         )
         
@@ -1505,3 +1537,22 @@ def root():
             "websocket": "/ws",
             "note": "Web UI not found. Create 'static' directory with index.html, styles.css, and app.js"
         }
+
+# ========================================
+# MAIN ENTRY POINT
+# ========================================
+
+if __name__ == "__main__":
+    import uvicorn
+    print("🚀 Starting AkiraTV API Server")
+    print("📖 API docs: http://localhost:8001/docs")
+    print("🌐 Web UI: http://localhost:8001")
+    print("🔌 WebSocket: ws://localhost:8001/ws")
+    
+    uvicorn.run(
+        "akiratv.api_server:app",
+        host="0.0.0.0",
+        port=8001,
+        reload=False,
+        log_level="info"
+    )

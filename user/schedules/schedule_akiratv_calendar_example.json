@@ -1,0 +1,144 @@
+{
+  "calendar": {
+    "2026-02-14_friday": {
+      "date": "2026-02-14",
+      "day": "Friday",
+      "description": "Valentine's Day Special Programming",
+      "entries": [
+        {
+          "time": "19:00:00",
+          "file": "C:/Videos/Romance/Casablanca.1942.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "21:30:00",
+          "file": "C:/Videos/Romance/The.Princess.Bride.1987.mp4",
+          "channel": "akiratv"
+        }
+      ]
+    },
+    "2026-12-25_thursday": {
+      "date": "2026-12-25",
+      "day": "Thursday",
+      "description": "Christmas Day Marathon",
+      "entries": [
+        {
+          "time": "08:00:00",
+          "file": "C:/Videos/Christmas/Home.Alone.1990.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "10:30:00",
+          "file": "C:/Videos/Christmas/Elf.2003.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "12:30:00",
+          "file": "C:/Videos/Christmas/Die.Hard.1988.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "15:00:00",
+          "file": "C:/Videos/Christmas/Its.A.Wonderful.Life.1946.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "17:30:00",
+          "file": "C:/Videos/Christmas/White.Christmas.1954.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "20:00:00",
+          "file": "C:/Videos/Christmas/A.Christmas.Story.1983.mp4",
+          "channel": "akiratv"
+        }
+      ]
+    },
+    "2026-07-04_saturday": {
+      "date": "2026-07-04",
+      "day": "Saturday",
+      "description": "Independence Day Action Marathon",
+      "entries": [
+        {
+          "time": "14:00:00",
+          "file": "C:/Videos/Action/Independence.Day.1996.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "17:00:00",
+          "file": "C:/Videos/Action/Top.Gun.1986.mp4",
+          "channel": "akiratv"
+        },
+        {
+          "time": "19:30:00",
+          "file": "C:/Videos/Action/Air.Force.One.1997.mp4",
+          "channel": "akiratv"
+        }
+      ]
+    }
+  },
+  "weekly": {
+    "monday": [
+      {
+        "time": "00:00:00",
+        "file": "C:/Videos/Akiratv/Aliens 2.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      },
+      {
+        "time": "02:17:14",
+        "file": "C:/Videos/Akiratv/Big.Trouble.in.Little.China.1986.1080p.BDRip.AV1-DiN.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ],
+    "tuesday": [
+      {
+        "time": "02:07:18",
+        "file": "C:/Videos/Akiratv/Superman III 1983 DD5.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ],
+    "wednesday": [
+      {
+        "time": "00:39:28",
+        "file": "C:/Videos/Akiratv/Aliens 2.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ],
+    "thursday": [
+      {
+        "time": "00:46:59",
+        "file": "C:/Videos/Akiratv/Virus.1999.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ],
+    "friday": [
+      {
+        "time": "00:56:02",
+        "file": "C:/Videos/Akiratv/Virus.1999.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ],
+    "saturday": [
+      {
+        "time": "00:19:36",
+        "file": "C:/Videos/Akiratv/Aliens 2.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ],
+    "sunday": [
+      {
+        "time": "01:43:59",
+        "file": "C:/Videos/Akiratv/Legion.mp4",
+        "channel": "akiratv",
+        "source": "random"
+      }
+    ]
+  }
+}

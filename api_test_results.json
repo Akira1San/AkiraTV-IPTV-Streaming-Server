@@ -1,0 +1,2225 @@
+{
+  "timestamp": "2026-01-31 01:14:20",
+  "total_tests": 27,
+  "passed": 22,
+  "failed": 5,
+  "results": [
+    {
+      "name": "Health Check",
+      "status": "PASSED",
+      "response": {
+        "status": "healthy",
+        "server": "running"
+      }
+    },
+    {
+      "name": "Get Status",
+      "status": "PASSED",
+      "response": {
+        "is_running": false,
+        "uptime": 0.0,
+        "stats": {
+          "status": "Stopped",
+          "channels": 0,
+          "viewers": 0,
+          "storage": "Disk",
+          "uptime": 0.0,
+          "config": {},
+          "is_running": false
+        }
+      }
+    },
+    {
+      "name": "Get Stats",
+      "status": "PASSED",
+      "response": {
+        "status": "Stopped",
+        "channels": 0,
+        "viewers": 0,
+        "storage": "Disk",
+        "uptime": 0.0,
+        "config": {},
+        "is_running": false
+      }
+    },
+    {
+      "name": "Get Config",
+      "status": "PASSED",
+      "response": {
+        "ffmpeg": {
+          "hwaccel": "nvenc",
+          "enable_subtitles": false,
+          "transcoding": {
+            "enabled": false,
+            "bitrate": "auto",
+            "custom_bitrate": "1500k",
+            "video_quality": "720p",
+            "encoder": "auto",
+            "audio_quality": "copy",
+            "fps": "auto",
+            "threads": "2",
+            "subtitle_font_size": "28"
+          }
+        },
+        "storage": {
+          "type": "ram",
+          "ram_path": "R:/akiratv",
+          "disk_path": "./output"
+        },
+        "output": {
+          "mode": "ram_http",
+          "http": {
+            "port": 8081,
+            "bind": "0.0.0.0"
+          },
+          "hls": {
+            "segment_time": 6,
+            "playlist_size": 4
+          }
+        },
+        "streaming": {
+          "strategy": "concat",
+          "mode": "",
+          "pre_gen": true
+        },
+        "channels": {
+          "myAkiraTV": {
+            "enabled": false,
+            "type": "linear"
+          },
+          "live": {
+            "enabled": false,
+            "type": "vod",
+            "transcoding": {
+              "enabled": true
+            },
+            "enable_subtitles": true
+          },
+          "akiratv": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            }
+          },
+          "AnimeTV": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            },
+            "enable_subtitles": false
+          },
+          "horror": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            }
+          },
+          "don_dragon": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            },
+            "enable_subtitles": false
+          },
+          "TatkoTV": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            },
+            "enable_subtitles": false
+          },
+          "fma": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            }
+          },
+          "superman_cartoonTV": {
+            "enabled": false,
+            "type": "linear"
+          },
+          "asian_vids": {
+            "enabled": false,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            },
+            "enable_subtitles": false
+          },
+          "dynamic": {
+            "enabled": false,
+            "type": "dynamic",
+            "transcoding": {
+              "enabled": false
+            }
+          },
+          "test_channel": {
+            "enabled": false,
+            "type": "vod",
+            "transcoding": {
+              "enabled": true,
+              "bitrate": "1500k"
+            },
+            "enable_subtitles": false
+          },
+          "critters": {
+            "enabled": false
+          },
+          "Sasho": {
+            "enabled": true,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            }
+          },
+          "test_wizard": {
+            "enabled": true,
+            "type": "vod",
+            "transcoding": {
+              "enabled": false
+            }
+          },
+          "anime_test": {
+            "enabled": true,
+            "type": "linear",
+            "transcoding": {
+              "enabled": false
+            }
+          }
+        },
+        "worker": {
+          "auto_restart_ffmpeg": true,
+          "max_ram_usage_percent": 80
+        },
+        "ui": {
+          "dark_mode": false
+        },
+        "channel": "critters"
+      }
+    },
+    {
+      "name": "Get Default Config",
+      "status": "PASSED",
+      "response": {
+        "ffmpeg": {
+          "hwaccel": "cuda",
+          "enable_subtitles": false,
+          "transcoding": {
+            "enabled": false,
+            "bitrate": "auto",
+            "custom_bitrate": "1500k",
+            "video_quality": "source",
+            "encoder": "auto",
+            "audio_quality": "copy",
+            "fps": "auto",
+            "threads": "2",
+            "subtitle_font_size": "28"
+          }
+        },
+        "storage": {
+          "type": "ram",
+          "ram_path": "R:/akiratv",
+          "disk_path": "./output"
+        },
+        "output": {
+          "mode": "http_hls",
+          "http": {
+            "port": 8081,
+            "bind": "0.0.0.0"
+          },
+          "hls": {
+            "segment_time": 6,
+            "playlist_size": 4
+          }
+        },
+        "streaming": {
+          "strategy": "concat",
+          "mode": "static",
+          "pre_gen": true
+        },
+        "channels": {
+          "myAkiraTV": {
+            "enabled": true,
+            "type": "linear"
+          },
+          "live": {
+            "enabled": true,
+            "type": "vod"
+          }
+        },
+        "worker": {
+          "auto_restart_ffmpeg": true,
+          "max_ram_usage_percent": 80
+        },
+        "ui": {
+          "dark_mode": false
+        }
+      }
+    },
+    {
+      "name": "Get Config File Info",
+      "status": "PASSED",
+      "response": {
+        "path": "C:\\AkiraTV\\AkiraTV_NEW - zai - git - core api\\config.json",
+        "exists": true,
+        "message": "Config file location: C:\\AkiraTV\\AkiraTV_NEW - zai - git - core api\\config.json"
+      }
+    },
+    {
+      "name": "Get Channels",
+      "status": "PASSED",
+      "response": {
+        "channels": [
+          {
+            "name": "myAkiraTV",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "live",
+            "type": "vod",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "akiratv",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "AnimeTV",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "horror",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "don_dragon",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "TatkoTV",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "fma",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "superman_cartoonTV",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "asian_vids",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "dynamic",
+            "type": "dynamic",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "test_channel",
+            "type": "vod",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "critters",
+            "type": "linear",
+            "enabled": false,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "Sasho",
+            "type": "linear",
+            "enabled": true,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "test_wizard",
+            "type": "vod",
+            "enabled": true,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          },
+          {
+            "name": "anime_test",
+            "type": "linear",
+            "enabled": true,
+            "status": "stopped",
+            "now_playing": "",
+            "next_program": "",
+            "viewers": 0,
+            "uptime": 0.0
+          }
+        ],
+        "total": 16
+      }
+    },
+    {
+      "name": "Get Channel URLs",
+      "status": "FAILED",
+      "response": {
+        "detail": "Channel 'urls' not found"
+      }
+    },
+    {
+      "name": "Add Test Channel",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Channel 'api_test_channel' added successfully",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Get Specific Channel",
+      "status": "PASSED",
+      "response": {
+        "name": "api_test_channel",
+        "type": "vod",
+        "enabled": true,
+        "status": "stopped",
+        "now_playing": "",
+        "next_program": "",
+        "viewers": 0,
+        "uptime": 0.0
+      }
+    },
+    {
+      "name": "Enable Channel",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Channel 'api_test_channel' updated",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Disable Channel",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Channel 'api_test_channel' updated",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Update Channel Settings",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Channel 'api_test_channel' settings updated",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Reload Channel Schedule",
+      "status": "FAILED",
+      "response": {
+        "detail": "Engine not running"
+      }
+    },
+    {
+      "name": "Delete Test Channel",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Channel 'api_test_channel' deleted successfully",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Clear Cache",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Deleted 35 files",
+        "error": null,
+        "data": {
+          "deleted": 35
+        }
+      }
+    },
+    {
+      "name": "Reload All Schedules",
+      "status": "FAILED",
+      "response": {
+        "detail": "Engine not running"
+      }
+    },
+    {
+      "name": "Generate XMLTV",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "XMLTV and M3U files generated successfully",
+        "error": null,
+        "data": {
+          "xmltv_path": "R:\\akiratv\\xmltv.xml",
+          "m3u_path": "R:\\akiratv\\channels.m3u",
+          "xmltv_url": "http://YOUR_IP:8081/xmltv.xml",
+          "m3u_url": "http://YOUR_IP:8081/channels.m3u"
+        }
+      }
+    },
+    {
+      "name": "Get Logs Info",
+      "status": "PASSED",
+      "response": {
+        "logs": [
+          "2026-01-31 00:51:53,937 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,770 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,773 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,773 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,777 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,777 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,779 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,782 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,791 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:51:55,797 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:35,408 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:35,409 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:35,410 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:35,410 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 00:52:35,410 [INFO] CoreAPI: Added channel 'anime_test' with type 'linear'\n",
+          "2026-01-31 00:52:35,422 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:35,422 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:35,427 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:52:55,813 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:53:56,188 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:54:56,190 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:55:56,190 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:56:56,194 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 00:57:56,183 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,856 [INFO] CoreAPI initialized\n",
+          "2026-01-31 01:01:38,857 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,858 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,858 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,861 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,861 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,866 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,908 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,917 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:38,924 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,413 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,413 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,414 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,421 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,421 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,423 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,425 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,435 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:40,441 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:59,628 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:01:59,629 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:38,159 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:38,160 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:40,454 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:56,651 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:56,652 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 01:02:56,664 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:56,664 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:56,671 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:58,934 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:58,938 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:58,938 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:02:58,944 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:12,352 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:12,352 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:12,353 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:12,354 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 01:03:12,354 [INFO] CoreAPI: Added channel 'anime_test' with type 'linear'\n",
+          "2026-01-31 01:03:12,358 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:12,358 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:12,363 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:03:40,453 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:04:20,915 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:04:40,447 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:05:40,452 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:06:41,193 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:07:41,185 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:08:53,194 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:09:54,188 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:13:49,537 [INFO] CoreAPI initialized\n",
+          "2026-01-31 01:13:51,582 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:13:53,640 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:13:55,684 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:13:56,619 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:13:58,664 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:00,693 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,823 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,828 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,830 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,833 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,834 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,835 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 01:14:18,835 [INFO] CoreAPI: Added channel 'api_test_channel' with type 'vod'\n",
+          "2026-01-31 01:14:18,845 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,848 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,849 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 01:14:18,851 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,852 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 01:14:18,867 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,868 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,868 [INFO] ✅ Config saved to config.json\n",
+          "2026-01-31 01:14:18,868 [INFO] CoreAPI: Config updated successfully\n",
+          "2026-01-31 01:14:18,880 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,884 [INFO] ✅ Loaded config from config.json\n",
+          "2026-01-31 01:14:18,891 [INFO] CoreAPI: Cleared 35 cache files\n",
+          "2026-01-31 01:14:18,968 [INFO] ✅ Loaded config from config.json\n"
+        ],
+        "count": 100
+      }
+    },
+    {
+      "name": "Get TV Guide",
+      "status": "PASSED",
+      "response": {
+        "guide": {
+          "Sasho": {
+            "channel": "Sasho",
+            "type": "linear",
+            "status": "stopped",
+            "current_program": null,
+            "next_program": null,
+            "schedule": [
+              {
+                "time": "01:18:51",
+                "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                "channel": "Sasho",
+                "source": "random",
+                "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                "is_current": false
+              },
+              {
+                "time": "02:42:01",
+                "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                "channel": "Sasho",
+                "source": "random",
+                "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                "is_current": false
+              },
+              {
+                "time": "04:05:11",
+                "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                "channel": "Sasho",
+                "source": "random",
+                "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                "is_current": false
+              },
+              {
+                "time": "05:44:22",
+                "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                "channel": "Sasho",
+                "source": "random",
+                "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                "is_current": false
+              },
+              {
+                "time": "07:48:46",
+                "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                "channel": "Sasho",
+                "source": "random",
+                "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                "is_current": false
+              }
+            ]
+          },
+          "test_wizard": {
+            "channel": "test_wizard",
+            "type": "vod",
+            "status": "stopped",
+            "current_program": null,
+            "next_program": null,
+            "schedule": []
+          },
+          "anime_test": {
+            "channel": "anime_test",
+            "type": "linear",
+            "status": "stopped",
+            "current_program": null,
+            "next_program": null,
+            "schedule": []
+          }
+        },
+        "current_time": "01:14:20",
+        "current_day": "saturday",
+        "timestamp": "2026-01-31T01:14:20.117015"
+      }
+    },
+    {
+      "name": "Get Weekly TV Guide",
+      "status": "PASSED",
+      "response": {
+        "weekly_guide": {
+          "Sasho": {
+            "channel": "Sasho",
+            "type": "linear",
+            "status": "stopped",
+            "weekly_schedule": {
+              "monday": {
+                "day_name": "Monday",
+                "programs": [
+                  {
+                    "time": "00:00:00",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "01:39:10",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "03:43:35",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "05:06:45",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "06:45:55",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "08:09:05",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "10:13:30",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "11:52:40",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "13:15:50",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "15:20:15",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "16:43:25",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "18:22:35",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "20:27:00",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "21:50:10",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "23:29:20",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 15,
+                "is_today": false
+              },
+              "tuesday": {
+                "day_name": "Tuesday",
+                "programs": [
+                  {
+                    "time": "01:33:45",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "02:56:55",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "04:36:05",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "06:40:30",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "08:44:54",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "10:24:05",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "11:47:15",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "13:51:40",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "15:14:50",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "16:54:00",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "18:17:10",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "20:21:35",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "22:00:45",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 13,
+                "is_today": false
+              },
+              "wednesday": {
+                "day_name": "Wednesday",
+                "programs": [
+                  {
+                    "time": "00:05:10",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "01:44:20",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "03:07:30",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "04:46:41",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "06:09:51",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "08:14:15",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "09:37:25",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "11:41:50",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "13:21:00",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "14:44:10",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "16:23:21",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "18:27:45",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "20:32:10",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "21:55:20",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "23:34:31",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 15,
+                "is_today": false
+              },
+              "thursday": {
+                "day_name": "Thursday",
+                "programs": [
+                  {
+                    "time": "01:13:41",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "03:18:06",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "04:41:16",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "06:04:26",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "07:43:36",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "09:48:01",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "11:27:11",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "12:50:21",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "14:54:46",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "16:59:10",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "18:38:21",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "20:01:31",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "21:40:41",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "23:45:06",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 14,
+                "is_today": false
+              },
+              "friday": {
+                "day_name": "Friday",
+                "programs": [
+                  {
+                    "time": "01:08:16",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "03:12:40",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "04:35:50",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "06:15:01",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "07:38:11",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "09:17:22",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "11:21:46",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "13:00:57",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "15:05:21",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "16:28:31",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "18:32:56",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "20:12:06",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "21:35:16",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "23:39:41",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 14,
+                "is_today": false
+              },
+              "saturday": {
+                "day_name": "Saturday",
+                "programs": [
+                  {
+                    "time": "01:18:51",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "02:42:01",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "04:05:11",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "05:44:22",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "07:48:46",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "09:27:57",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "10:51:07",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "12:55:31",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "14:18:42",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "15:57:52",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "18:02:17",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "19:41:27",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "21:45:52",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "23:09:02",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 14,
+                "is_today": true
+              },
+              "sunday": {
+                "day_name": "Sunday",
+                "programs": [
+                  {
+                    "time": "00:32:12",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "02:36:36",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "04:15:47",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "05:38:57",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "07:43:21",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "09:22:32",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "11:01:42",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "13:06:07",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "14:29:17",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "15:52:27",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "17:31:37",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "19:36:02",
+                    "file": "C:/Videos/anime/encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Ghost.in.the.Shell.1995.720p.BluRay.x264.DTS-ES-THORA",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "20:59:12",
+                    "file": "C:/Videos/anime/encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_The.Venus.Wars.v3.DVDRip AC3 Animegod",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  },
+                  {
+                    "time": "22:38:22",
+                    "file": "C:/Videos/anime/encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR.mp4",
+                    "channel": "Sasho",
+                    "source": "random",
+                    "display_name": "encoded_Akira.1988.1080p.Bluray.x265.DD5.1-WAR",
+                    "duration_estimate": "~90 min",
+                    "is_current": false
+                  }
+                ],
+                "program_count": 14,
+                "is_today": false
+              }
+            }
+          },
+          "test_wizard": {
+            "channel": "test_wizard",
+            "type": "vod",
+            "status": "stopped",
+            "weekly_schedule": {},
+            "error": "No schedule file found"
+          },
+          "anime_test": {
+            "channel": "anime_test",
+            "type": "linear",
+            "status": "stopped",
+            "weekly_schedule": {},
+            "error": "No schedule file found"
+          }
+        },
+        "current_time": "01:14:20",
+        "current_day": "saturday",
+        "days_order": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday"
+        ],
+        "timestamp": "2026-01-31T01:14:20.120016"
+      }
+    },
+    {
+      "name": "Get Playlist Videos",
+      "status": "PASSED",
+      "response": {
+        "videos": [
+          {
+            "name": "10000 bc",
+            "path": "C:\\Videos\\akiratv\\10000 bc.mp4"
+          },
+          {
+            "name": "Armour of God 2 Operation Condor 1991",
+            "path": "C:\\Videos\\akiratv\\Armour of God 2 Operation Condor 1991.mp4"
+          },
+          {
+            "name": "barb wire",
+            "path": "C:\\Videos\\akiratv\\barb wire.mp4"
+          },
+          {
+            "name": "Conan the Barbarian",
+            "path": "C:\\Videos\\akiratv\\Conan the Barbarian.mp4"
+          },
+          {
+            "name": "Conan the Destroyer.1984",
+            "path": "C:\\Videos\\akiratv\\Conan the Destroyer.1984.mp4"
+          },
+          {
+            "name": "Drive Angry 2011 BDRip.x264.AAC.BGAudio-REFLUX_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Drive Angry 2011 BDRip.x264.AAC.BGAudio-REFLUX_gpu_720x404.mp4"
+          },
+          {
+            "name": "Full Eclipse (1993) BG Audio_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Full Eclipse (1993) BG Audio_gpu_720x404.mp4"
+          },
+          {
+            "name": "Ghosts.of.Mars.2001.1080p.BluRay.DUAL.AUDiO.H.265-WAR_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\Ghosts.of.Mars.2001.1080p.BluRay.DUAL.AUDiO.H.265-WAR_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "Hackers.1995.REMASTERED.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\Hackers.1995.REMASTERED.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "Highlander.1986.BDRip.1080p.BG.Audio-AbI&SR_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Highlander.1986.BDRip.1080p.BG.Audio-AbI&SR_gpu_720x404.mp4"
+          },
+          {
+            "name": "Highlander.2.The Quickening.1991.BDRip.x264.AAC.BGAUDiO-SiSO_fmp4_tv_gpu",
+            "path": "C:\\Videos\\akiratv\\Highlander.2.The Quickening.1991.BDRip.x264.AAC.BGAUDiO-SiSO_fmp4_tv_gpu.mp4"
+          },
+          {
+            "name": "Independence Day 1996 TC.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\Independence Day 1996 TC.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "Johnny Mnemonic 1995 BDRip.BG.Audio-AbI&SR_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Johnny Mnemonic 1995 BDRip.BG.Audio-AbI&SR_gpu_720x404.mp4"
+          },
+          {
+            "name": "Mad Max 2 1981.Unrated.BDRip.BG.Audio.LoveJesus_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Mad Max 2 1981.Unrated.BDRip.BG.Audio.LoveJesus_gpu_720x404.mp4"
+          },
+          {
+            "name": "Mad Max 3 Beyond Thunderdome 1985 1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\Mad Max 3 Beyond Thunderdome 1985 1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "Maze Runner 1 .2014._tv_gpu",
+            "path": "C:\\Videos\\akiratv\\Maze Runner 1 .2014._tv_gpu.mp4"
+          },
+          {
+            "name": "Maze Runner 2 The.Scorch.Trials.2015_tv_gpu",
+            "path": "C:\\Videos\\akiratv\\Maze Runner 2 The.Scorch.Trials.2015_tv_gpu.mp4"
+          },
+          {
+            "name": "Maze Runner 3 The.Death.Cure.2018.BDRip.x264.AC3.BGAUDiO-SiSO_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Maze Runner 3 The.Death.Cure.2018.BDRip.x264.AC3.BGAUDiO-SiSO_gpu_720x404.mp4"
+          },
+          {
+            "name": "Men At Work (1990) BG Audio_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Men At Work (1990) BG Audio_gpu_720x404.mp4"
+          },
+          {
+            "name": "No Escape",
+            "path": "C:\\Videos\\akiratv\\No Escape.mp4"
+          },
+          {
+            "name": "Outlander.2008.BDRip.XviD.AC3.BGAUDiO-SiSO_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Outlander.2008.BDRip.XviD.AC3.BGAUDiO-SiSO_gpu_720x404.mp4"
+          },
+          {
+            "name": "Planet.of.the.Apes.2001.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\Planet.of.the.Apes.2001.1080p.BluRay.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "Police.Story 1 1985.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined",
+            "path": "C:\\Videos\\akiratv\\Police.Story 1 1985.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4"
+          },
+          {
+            "name": "Police.Story 2.1988.EXT.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined",
+            "path": "C:\\Videos\\akiratv\\Police.Story 2.1988.EXT.REMASTERED.1080p.BDRip.AV1-DiN_part01_gpu_720x404_subs_joined.mp4"
+          },
+          {
+            "name": "Police.Story 3 1992.REMASTERED.1080p.BDRip.AV1-DiN_remux_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\Police.Story 3 1992.REMASTERED.1080p.BDRip.AV1-DiN_remux_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "Red Sonja 1985.BDRip.XviD.DUAL-REFLUX_tv",
+            "path": "C:\\Videos\\akiratv\\Red Sonja 1985.BDRip.XviD.DUAL-REFLUX_tv.mp4"
+          },
+          {
+            "name": "Reign of Fire 2002. 480p.BRRip.x264.BG.audio-SDDS_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\Reign of Fire 2002. 480p.BRRip.x264.BG.audio-SDDS_gpu_720x404.mp4"
+          },
+          {
+            "name": "Screamers 1",
+            "path": "C:\\Videos\\akiratv\\Screamers 1.mp4"
+          },
+          {
+            "name": "Screamers 2 The Hunting",
+            "path": "C:\\Videos\\akiratv\\Screamers 2 The Hunting.mp4"
+          },
+          {
+            "name": "split second",
+            "path": "C:\\Videos\\akiratv\\split second.mp4"
+          },
+          {
+            "name": "Star Trek First Contact 1996",
+            "path": "C:\\Videos\\akiratv\\Star Trek First Contact 1996.mp4"
+          },
+          {
+            "name": "Terminator 1 1984_tv_gpu",
+            "path": "C:\\Videos\\akiratv\\Terminator 1 1984_tv_gpu.mp4"
+          },
+          {
+            "name": "Terminator 2 1991.TC.1080p.BluRay.x265.Dual-DiN_tv_gpu",
+            "path": "C:\\Videos\\akiratv\\Terminator 2 1991.TC.1080p.BluRay.x265.Dual-DiN_tv_gpu.mp4"
+          },
+          {
+            "name": "Terminator 3 Rise Of the Machines 2003",
+            "path": "C:\\Videos\\akiratv\\Terminator 3 Rise Of the Machines 2003.mp4"
+          },
+          {
+            "name": "The 13th Warrior 1999.1080p.BluRay.AV1-DiN_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\The 13th Warrior 1999.1080p.BluRay.AV1-DiN_gpu_720x404.mp4"
+          },
+          {
+            "name": "The Fifth Element 1997 1080p.BluRay.x265-DiN_Part1_joined",
+            "path": "C:\\Videos\\akiratv\\The Fifth Element 1997 1080p.BluRay.x265-DiN_Part1_joined.mp4"
+          },
+          {
+            "name": "The Mutant Chronicles[2008]DvDrip-aXXo_fmp4_burned_tv_gpu",
+            "path": "C:\\Videos\\akiratv\\The Mutant Chronicles[2008]DvDrip-aXXo_fmp4_burned_tv_gpu.mp4"
+          },
+          {
+            "name": "The Running Man 1987.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined",
+            "path": "C:\\Videos\\akiratv\\The Running Man 1987.1080p.BluRay.AV1-DiN_part01_gpu_720x404_joined.mp4"
+          },
+          {
+            "name": "The.Frighteners.1996.TC.Open.Matte.WEB-DLRip.BG.Audio-Atany & Stezarai & charmedssss_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\The.Frighteners.1996.TC.Open.Matte.WEB-DLRip.BG.Audio-Atany & Stezarai & charmedssss_gpu_720x404.mp4"
+          },
+          {
+            "name": "The.Hard.Way.1991.1080p.BluRay.AV1-DiN_gpu_720x404",
+            "path": "C:\\Videos\\akiratv\\The.Hard.Way.1991.1080p.BluRay.AV1-DiN_gpu_720x404.mp4"
+          },
+          {
+            "name": "The.Postman.1997.BDRip.x264.AAC-HUD_fmp4_burned_tv_gpu",
+            "path": "C:\\Videos\\akiratv\\The.Postman.1997.BDRip.x264.AAC-HUD_fmp4_burned_tv_gpu.mp4"
+          },
+          {
+            "name": "Total Recall 1990",
+            "path": "C:\\Videos\\akiratv\\Total Recall 1990.mp4"
+          },
+          {
+            "name": "Van Helsing 2004",
+            "path": "C:\\Videos\\akiratv\\Van Helsing 2004.mp4"
+          },
+          {
+            "name": "avatar episode 1",
+            "path": "C:\\Videos\\anime\\avatar episode 1.mp4"
+          },
+          {
+            "name": "encoded_encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4"
+          },
+          {
+            "name": "encoded_encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4"
+          },
+          {
+            "name": "encoded_encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4"
+          },
+          {
+            "name": "encoded_Екзекуторът (1994) БГ Аудио [N95JkUhDJnM]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Екзекуторът (1994) БГ Аудио [N95JkUhDJnM].mp4"
+          },
+          {
+            "name": "encoded_Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc].mp4"
+          },
+          {
+            "name": "encoded_Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I].mp4"
+          },
+          {
+            "name": "encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4"
+          },
+          {
+            "name": "encoded_Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw]_Part1_joined",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw]_Part1_joined.mp4"
+          },
+          {
+            "name": "encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4"
+          },
+          {
+            "name": "encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA]",
+            "path": "C:\\Videos\\don dragon_encoded\\encoded_Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4"
+          },
+          {
+            "name": "Екзекуторът (1994) БГ Аудио [N95JkUhDJnM]",
+            "path": "C:\\Videos\\don dragon_videos\\Екзекуторът (1994) БГ Аудио [N95JkUhDJnM].mp4"
+          },
+          {
+            "name": "Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY]",
+            "path": "C:\\Videos\\don dragon_videos\\Екзекуторът 2 (1995) БГ Аудио [Uu3z6hSHlrY].mp4"
+          },
+          {
+            "name": "Жаден за Кръв (1992) БГ Аудио [Gr4taTL-UMU]",
+            "path": "C:\\Videos\\don dragon_videos\\Жаден за Кръв (1992) БГ Аудио [Gr4taTL-UMU].mp4"
+          },
+          {
+            "name": "Железни Бойци (1995) БГ Аудио [BPx4O1kyIKI]",
+            "path": "C:\\Videos\\don dragon_videos\\Железни Бойци (1995) БГ Аудио [BPx4O1kyIKI].mp4"
+          },
+          {
+            "name": "Изкупление (2002) БГ Субтитри [TIFmIJi8VAU]",
+            "path": "C:\\Videos\\don dragon_videos\\Изкупление (2002) БГ Субтитри [TIFmIJi8VAU].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 2 (1990) БГ Аудио [nMcuQ-u_WOk].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 3 Принуден Да Се Бие (1991) БГ Аудио [DwjjMTDaLUs].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 4 Да Умреш Или Да Спечелиш (1992) БГ Аудио [j4CXdD03cok].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 5 Човешка Мишена (1994) БГ Аудио [r_LvmbtMHVk].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 6 Обратен Удар (1994) БГ Аудио [e41tmFTOT-s].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 7 Лов на Хора (1995) БГ Аудио [t9voTZn6LLc].mp4"
+          },
+          {
+            "name": "Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I]",
+            "path": "C:\\Videos\\don dragon_videos\\Кървав Юмрук 8 Труден Изход (1996) БГ Субтитри [OMs5NNdIP6I].mp4"
+          },
+          {
+            "name": "Огнен Ад (1997) БГ Аудио [IzuwbLyFY_o]",
+            "path": "C:\\Videos\\don dragon_videos\\Огнен Ад (1997) БГ Аудио [IzuwbLyFY_o].mp4"
+          },
+          {
+            "name": "Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA]",
+            "path": "C:\\Videos\\don dragon_videos\\Огнен Обръч (1991) БГ Аудио [qg43i9rq-XA].mp4"
+          },
+          {
+            "name": "Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw]",
+            "path": "C:\\Videos\\don dragon_videos\\Огнен Обръч 2 Кръв и Стомана (1993) БГ Аудио [-Z5u2vrPoBw].mp4"
+          },
+          {
+            "name": "Предсказателят (1998) БГ Аудио [AHxZuHtj_DU]",
+            "path": "C:\\Videos\\don dragon_videos\\Предсказателят (1998) БГ Аудио [AHxZuHtj_DU].mp4"
+          },
+          {
+            "name": "Удар в Бъдещето (1991) БГ Аудио [e40M15m2yxE]",
+            "path": "C:\\Videos\\don dragon_videos\\Удар в Бъдещето (1991) БГ Аудио [e40M15m2yxE].mp4"
+          },
+          {
+            "name": "Черен Колан (1992) БГ Аудио [w23Y0lV-ofw]",
+            "path": "C:\\Videos\\don dragon_videos\\Черен Колан (1992) БГ Аудио [w23Y0lV-ofw].mp4"
+          },
+          {
+            "name": "Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA]",
+            "path": "C:\\Videos\\don dragon_videos\\Японски Изгрев Над Лос Анджелис (1994) БГ Аудио [0Ur3-gjhimA].mp4"
+          },
+          {
+            "name": "A Nightmare on Elm Street 2010_gpu_720x404",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A Nightmare on Elm Street 2010_gpu_720x404.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.Street 1 1984.BDRip.BG.Audio-AtanyStezarai_part01_fmp4_burned_joined_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street 1 1984.BDRip.BG.Audio-AtanyStezarai_part01_fmp4_burned_joined_gpu.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.Street.II.Freddys.Revenge.1985_part01_joined_fmp4_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.II.Freddys.Revenge.1985_part01_joined_fmp4_gpu.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.Street.III.Dream. Warriors.1987 fmp4_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.III.Dream. Warriors.1987 fmp4_gpu.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.Street.IV.The_Dream.Master.1988.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.IV.The_Dream.Master.1988.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.Street.V.The.Dream.Child.1989.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.V.The.Dream.Child.1989.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.Street.VI.The.Final.Nightmare.1991.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.Street.VI.The.Final.Nightmare.1991.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "A.Nightmare.on.Elm.street.VII.New.Nightmare.1994.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\A Nightmare on Elm Street\\A.Nightmare.on.Elm.street.VII.New.Nightmare.1994.BDRip.XviD.AC3-WAR_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "Critters 1 1986._fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\critters\\Critters 1 1986._fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "Critters 2 1988_part01_fmp4_joined_gpu",
+            "path": "C:\\Videos\\horrors2\\critters\\Critters 2 1988_part01_fmp4_joined_gpu.mp4"
+          },
+          {
+            "name": "Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\critters\\Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\critters\\Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "Freddy.vs.Jason.2003.BDRip.x264.AAC-WAR_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\Freddy.vs.Jason.2003.BDRip.x264.AAC-WAR_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "House on Haunted Hill_gpu_720x404",
+            "path": "C:\\Videos\\horrors2\\House on Haunted Hill_gpu_720x404.mp4"
+          },
+          {
+            "name": "Howl 2015_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\Howl 2015_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "John.Carpenters.Vampires_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\John.Carpenters.Vampires_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "Mimic.1997.1080p.BluRay.x265-DiN",
+            "path": "C:\\Videos\\horrors2\\Mimic.1997.1080p.BluRay.x265-DiN.mp4"
+          },
+          {
+            "name": "Phantoms.1998.BRRip.x264.AAC-WAR_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\Phantoms.1998.BRRip.x264.AAC-WAR_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "The.Blob.1988.BDRip.x264.AC3-TuKCo_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\The.Blob.1988.BDRip.x264.AC3-TuKCo_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "The.Cabin.in.the.Woods_fmp4_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\The.Cabin.in.the.Woods_fmp4_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "The.Evil.Dead.III.Army.of.Darkness.1992_part01_joined_fmp4_gpu",
+            "path": "C:\\Videos\\horrors2\\The.Evil.Dead.III.Army.of.Darkness.1992_part01_joined_fmp4_gpu.mp4"
+          },
+          {
+            "name": "Train.to.Busan_fmp4_burned_gpu",
+            "path": "C:\\Videos\\horrors2\\Train.to.Busan_fmp4_burned_gpu.mp4"
+          },
+          {
+            "name": "Warlock II - The Armageddon.J.1993.HDRip.BG Audio.Mad Max & Goredolo_fmp4_gpu",
+            "path": "C:\\Videos\\horrors2\\Warlock II - The Armageddon.J.1993.HDRip.BG Audio.Mad Max & Goredolo_fmp4_gpu.mp4"
+          },
+          {
+            "name": "Last.Man.Standing.1996.1080p.BluRay.x265-DiN_gpu",
+            "path": "C:\\Videos\\TatkoTV\\Last.Man.Standing.1996.1080p.BluRay.x265-DiN\\Last.Man.Standing.1996.1080p.BluRay.x265-DiN_gpu.mp4"
+          },
+          {
+            "name": "Only the Strong 1993",
+            "path": "C:\\Videos\\TatkoTV\\Only the Strong 1993.mp4"
+          }
+        ],
+        "count": 104
+      }
+    },
+    {
+      "name": "Wizard Folder Scan (Invalid Path)",
+      "status": "PASSED",
+      "response": {
+        "detail": "Failed to scan folder: 400: Folder does not exist: /nonexistent/path"
+      }
+    },
+    {
+      "name": "Wizard Logging",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Log entry written",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Update Config",
+      "status": "PASSED",
+      "response": {
+        "success": true,
+        "message": "Config updated",
+        "error": null,
+        "data": null
+      }
+    },
+    {
+      "name": "Invalid Endpoint",
+      "status": "FAILED",
+      "response": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "name": "Invalid Channel",
+      "status": "FAILED",
+      "response": {
+        "detail": "Channel 'nonexistent_channel' not found"
+      }
+    }
+  ],
+  "failed_tests": [
+    {
+      "name": "Get Channel URLs",
+      "status": 404,
+      "response": {
+        "detail": "Channel 'urls' not found"
+      }
+    },
+    {
+      "name": "Reload Channel Schedule",
+      "status": 400,
+      "response": {
+        "detail": "Engine not running"
+      }
+    },
+    {
+      "name": "Reload All Schedules",
+      "status": 400,
+      "response": {
+        "detail": "Engine not running"
+      }
+    },
+    {
+      "name": "Invalid Endpoint",
+      "status": 404,
+      "response": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "name": "Invalid Channel",
+      "status": 404,
+      "response": {
+        "detail": "Channel 'nonexistent_channel' not found"
+      }
+    }
+  ]
+}

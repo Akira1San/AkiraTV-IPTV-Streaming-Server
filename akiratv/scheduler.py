@@ -17,6 +17,11 @@ def get_full_todays_schedule() -> List[Dict[str, Any]]:
     """
     Load today's schedule entries and return only the current + future entries.
     
+    Supports both calendar-specific entries and weekly recurring entries:
+    - Calendar entries override weekly programming for special dates
+    - Calendar format: "2026-12-25_wednesday" with date, day, and entries
+    - Weekly format: standard day-of-week scheduling
+    
     For 24/7 linear channels, this ensures:
     - At 14:10, plays the movie scheduled for 13:52 (if it's still running)
     - At 15:30, seamlessly switches to next scheduled movie
@@ -40,24 +45,44 @@ def get_full_todays_schedule() -> List[Dict[str, Any]]:
         logger.error(f"Invalid JSON in schedule.json: {e}")
         raise ValueError(f"schedule.json is invalid: {e}")
 
-    # Load all entries for today (both calendar and weekly)
+    # Load all entries for today (calendar takes priority over weekly)
     entries = []
+    calendar_found = False
 
-    # 1. Calendar-specific entries
-    if today_date in full_schedule:
+    # 1. Check for enhanced calendar entries (new format)
+    calendar_section = full_schedule.get("calendar", {})
+    if calendar_section:
+        # Look for calendar entry matching today's date
+        for calendar_key, calendar_data in calendar_section.items():
+            if isinstance(calendar_data, dict) and calendar_data.get("date") == today_date:
+                calendar_entries = calendar_data.get("entries", [])
+                logger.info(f"📅 Found enhanced calendar entry for {today_date} ({calendar_data.get('day', 'Unknown')}) - {calendar_data.get('description', 'No description')}")
+                logger.info(f"📅 Loaded {len(calendar_entries)} calendar entry(ies), overriding weekly schedule")
+                entries.extend(_validate_entries(calendar_entries, source=f"calendar:{calendar_key}"))
+                calendar_found = True
+                break
+
+    # 2. Check for legacy calendar entries (old format: direct date keys)
+    if not calendar_found and today_date in full_schedule:
         date_entries = full_schedule[today_date]
-        logger.info(f"Loaded {len(date_entries)} calendar entry(ies) for {today_date}")
-        entries.extend(_validate_entries(date_entries, source=f"date:{today_date}"))
+        logger.info(f"📅 Found legacy calendar entry for {today_date}")
+        logger.info(f"📅 Loaded {len(date_entries)} legacy calendar entry(ies)")
+        entries.extend(_validate_entries(date_entries, source=f"legacy_date:{today_date}"))
+        calendar_found = True
 
-    # 2. Weekly recurring entries
-    weekly = full_schedule.get("weekly", {})
-    if today_dow in weekly:
-        weekly_entries = weekly[today_dow]
-        logger.info(f"Loaded {len(weekly_entries)} weekly entry(ies) for {today_dow}")
-        entries.extend(_validate_entries(weekly_entries, source=f"weekly:{today_dow}"))
+    # 3. Weekly recurring entries (only if no calendar entry found)
+    if not calendar_found:
+        weekly = full_schedule.get("weekly", {})
+        if today_dow in weekly:
+            weekly_entries = weekly[today_dow]
+            logger.info(f"📆 Using weekly schedule for {today_dow}")
+            logger.info(f"📆 Loaded {len(weekly_entries)} weekly entry(ies) for {today_dow}")
+            entries.extend(_validate_entries(weekly_entries, source=f"weekly:{today_dow}"))
+        else:
+            logger.warning(f"📆 No weekly schedule found for {today_dow}")
 
     if not entries:
-        logger.warning(f"No schedule entries found for {today_date} ({today_dow})")
+        logger.warning(f"❌ No schedule entries found for {today_date} ({today_dow})")
         return []
 
     # Sort all entries by time
@@ -85,17 +110,25 @@ def get_full_todays_schedule() -> List[Dict[str, Any]]:
     # Return from current entry to end
     if current_entry_index >= 0:
         result = entries[current_entry_index:]
-        logger.info(f"Found current entry at index {current_entry_index}, returning {len(result)} entries")
+        logger.info(f"✅ Found current entry at index {current_entry_index}, returning {len(result)} entries")
     else:
         # No entries started yet - return all (start from first)
         result = entries
-        logger.info(f"No current entry found, returning all {len(result)} entries")
+        logger.info(f"✅ No current entry found, returning all {len(result)} entries")
 
     return result
 
 def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
-    """Load only current + future entries for a specific channel."""
+    """
+    Load only current + future entries for a specific channel.
+    
+    Supports both calendar-specific entries and weekly recurring entries:
+    - Calendar entries override weekly programming for special dates
+    - Calendar format: "2026-12-25_wednesday" with date, day, and entries
+    - Weekly format: standard day-of-week scheduling
+    """
     current_dt = datetime.now()
+    today_date = current_dt.strftime("%Y-%m-%d")
     today_dow = current_dt.strftime("%A").lower()
     
     # Load per-channel schedule
@@ -108,14 +141,48 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     try:
         with open(schedule_file, "r", encoding="utf-8") as f:
             sched = json.load(f)
-        weekly = sched.get("weekly", {})
-        entries = weekly.get(today_dow, [])
-        # Ensure channel field
-        for entry in entries:
-            entry["channel"] = channel
     except Exception as e:
         logger.warning(f"Failed to load {schedule_file}: {e}")
         return []
+
+    entries = []
+    calendar_found = False
+
+    # 1. Check for enhanced calendar entries (new format)
+    calendar_section = sched.get("calendar", {})
+    if calendar_section:
+        # Look for calendar entry matching today's date
+        for calendar_key, calendar_data in calendar_section.items():
+            if isinstance(calendar_data, dict) and calendar_data.get("date") == today_date:
+                calendar_entries = calendar_data.get("entries", [])
+                logger.info(f"📅 Found calendar entry for {channel} on {today_date} ({calendar_data.get('day', 'Unknown')})")
+                # Ensure channel field
+                for entry in calendar_entries:
+                    entry["channel"] = channel
+                entries.extend(calendar_entries)
+                calendar_found = True
+                break
+
+    # 2. Check for legacy calendar entries (old format: direct date keys)
+    if not calendar_found and today_date in sched:
+        date_entries = sched[today_date]
+        logger.info(f"📅 Found legacy calendar entry for {channel} on {today_date}")
+        # Ensure channel field
+        for entry in date_entries:
+            entry["channel"] = channel
+        entries.extend(date_entries)
+        calendar_found = True
+
+    # 3. Weekly recurring entries (only if no calendar entry found)
+    if not calendar_found:
+        weekly = sched.get("weekly", {})
+        weekly_entries = weekly.get(today_dow, [])
+        if weekly_entries:
+            logger.info(f"📆 Using weekly schedule for {channel} on {today_dow}")
+            # Ensure channel field
+            for entry in weekly_entries:
+                entry["channel"] = channel
+            entries.extend(weekly_entries)
 
     if not entries:
         return []
@@ -129,9 +196,6 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
         entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
         entry_dt = datetime.combine(current_dt.date(), entry_time)
         
-        # Handle overnight
-        # if entry_time > current_dt.time():
-        #     entry_dt = datetime.combine(current_dt.date() - timedelta(days=1), entry_time)
         # Handle overnight: if entry time is > 2 hours ahead, it's yesterday
         if (datetime.combine(datetime.min, entry_time) - datetime.combine(datetime.min, current_dt.time())).total_seconds() > 7200:
             # Entry time is more than 2 hours ahead → treat as yesterday
@@ -168,3 +232,89 @@ def _validate_entries(entries: List[Dict], source: str) -> List[Dict]:
         except Exception as e:
             logger.warning(f"Skipping invalid entry in {source}[{i}]: {e}")
     return valid
+
+
+def create_calendar_entry(date_str: str, description: str, entries: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Create a properly formatted calendar entry.
+    
+    Args:
+        date_str: Date in YYYY-MM-DD format
+        description: Human-readable description of the event
+        entries: List of schedule entries with time, file, channel
+    
+    Returns:
+        Dictionary with calendar entry format
+    
+    Example:
+        create_calendar_entry(
+            "2026-12-25", 
+            "Christmas Day Marathon",
+            [{"time": "08:00:00", "file": "Christmas_Movie.mp4", "channel": "akiratv"}]
+        )
+    """
+    try:
+        # Parse date and get day name
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        day_name = date_obj.strftime("%A").lower()
+        
+        # Create calendar key with date and day
+        calendar_key = f"{date_str}_{day_name}"
+        
+        # Validate entries
+        validated_entries = _validate_entries(entries, source=f"calendar:{calendar_key}")
+        
+        return {
+            calendar_key: {
+                "date": date_str,
+                "day": date_obj.strftime("%A"),
+                "description": description,
+                "entries": validated_entries
+            }
+        }
+    except ValueError as e:
+        logger.error(f"Invalid date format '{date_str}': {e}")
+        raise ValueError(f"Date must be in YYYY-MM-DD format: {e}")
+
+
+def get_calendar_entries_for_date_range(start_date: str, end_date: str, schedule_file: str = None) -> Dict[str, Any]:
+    """
+    Get all calendar entries within a date range.
+    
+    Args:
+        start_date: Start date in YYYY-MM-DD format
+        end_date: End date in YYYY-MM-DD format  
+        schedule_file: Optional specific schedule file path
+    
+    Returns:
+        Dictionary of calendar entries within the date range
+    """
+    if schedule_file is None:
+        schedule_file = SCHEDULE_DIR / "schedule.json"
+        if not schedule_file.exists():
+            schedule_file = Path("schedule.json")
+    
+    try:
+        with open(schedule_file, "r", encoding="utf-8") as f:
+            full_schedule = json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to load schedule file: {e}")
+        return {}
+    
+    calendar_section = full_schedule.get("calendar", {})
+    if not calendar_section:
+        return {}
+    
+    # Parse date range
+    start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+    end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+    
+    # Filter calendar entries within date range
+    filtered_entries = {}
+    for calendar_key, calendar_data in calendar_section.items():
+        if isinstance(calendar_data, dict) and "date" in calendar_data:
+            entry_date = datetime.strptime(calendar_data["date"], "%Y-%m-%d")
+            if start_dt <= entry_date <= end_dt:
+                filtered_entries[calendar_key] = calendar_data
+    
+    return filtered_entries
