@@ -37,7 +37,7 @@
   },
   "channels": {
     "myAkiraTV": {
-      "enabled": false,
+      "enabled": true,
       "type": "linear"
     },
     "live": {
@@ -125,20 +125,6 @@
       "enabled": false
     },
     "Sasho": {
-      "enabled": true,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
-      }
-    },
-    "test_wizard": {
-      "enabled": true,
-      "type": "vod",
-      "transcoding": {
-        "enabled": false
-      }
-    },
-    "anime_test": {
       "enabled": true,
       "type": "linear",
       "transcoding": {
