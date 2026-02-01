@@ -30,6 +30,7 @@ class ChannelUpdateRequest(BaseModel):
     enabled: Optional[bool] = None
     transcoding: Optional[str] = None  # "global" | "enabled" | "disabled"
     subtitles: Optional[str] = None    # "global" | "enabled" | "disabled"
+    type: Optional[str] = None         # "linear" | "vod" | "dynamic"
 
 class Response(BaseModel):
     success: bool
@@ -174,7 +175,7 @@ def disable_channel(channel: str):
 
 @app.patch("/api/channels/{channel}", response_model=Response)
 def update_channel_settings(channel: str, request: ChannelUpdateRequest):
-    """Update channel-specific settings (transcoding, subtitles)"""
+    """Update channel-specific settings (transcoding, subtitles, type)"""
     api = get_core_api()
     
     # Get current config
@@ -187,6 +188,16 @@ def update_channel_settings(channel: str, request: ChannelUpdateRequest):
     # Prepare updates
     updates = {}
     channel_updates = {}
+    
+    # Handle type change
+    if request.type is not None:
+        if request.type not in ["linear", "vod", "dynamic"]:
+            raise HTTPException(status_code=400, detail="Channel type must be 'linear', 'vod', or 'dynamic'")
+        
+        current_type = channels_config[channel].get("type", "linear")
+        if request.type != current_type:
+            channel_updates["type"] = request.type
+            print(f"🔄 Changing channel '{channel}' type from '{current_type}' to '{request.type}'")
     
     if request.transcoding is not None:
         if request.transcoding == "global":
@@ -215,7 +226,10 @@ def update_channel_settings(channel: str, request: ChannelUpdateRequest):
     result = api.update_config(updates)
     
     if result["success"]:
-        return Response(success=True, message=f"Channel '{channel}' settings updated")
+        message = f"Channel '{channel}' settings updated"
+        if request.type is not None:
+            message += f" (type changed to {request.type})"
+        return Response(success=True, message=message)
     else:
         raise HTTPException(status_code=400, detail=result["error"])
 

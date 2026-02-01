@@ -41,7 +41,7 @@
       "type": "linear"
     },
     "live": {
-      "enabled": false,
+      "enabled": true,
       "type": "vod",
       "transcoding": {
         "enabled": true
@@ -112,21 +112,12 @@
         "enabled": false
       }
     },
-    "test_channel": {
-      "enabled": false,
-      "type": "vod",
-      "transcoding": {
-        "enabled": true,
-        "bitrate": "1500k"
-      },
-      "enable_subtitles": false
-    },
     "critters": {
       "enabled": false
     },
     "Sasho": {
       "enabled": true,
-      "type": "linear",
+      "type": "vod",
       "transcoding": {
         "enabled": false
       }
