@@ -118,6 +118,41 @@ def get_full_todays_schedule() -> List[Dict[str, Any]]:
 
     return result
 
+def get_current_fast_schedule_entry(channel: str) -> Dict[str, Any]:
+    """
+    Get the current entry that should be playing for a Fast Scheduler channel.
+    Returns entry with resume position for crash recovery.
+    """
+    try:
+        from .fast_scheduler import FastScheduler
+        
+        fast_scheduler = FastScheduler(channel)
+        checkpoint_result = fast_scheduler.load_checkpoint()
+        
+        if checkpoint_result["success"] and fast_scheduler.state.schedule_entries:
+            current_entry = fast_scheduler.get_current_entry()
+            if current_entry:
+                resume_position = fast_scheduler.get_resume_position(current_entry)
+                
+                return {
+                    "success": True,
+                    "entry": {
+                        "time": current_entry.time,
+                        "video": current_entry.video_path,
+                        "display_name": current_entry.video_name,
+                        "duration": current_entry.duration,
+                        "type": current_entry.entry_type,
+                        "metadata": current_entry.metadata or {}
+                    },
+                    "resume_position": resume_position,
+                    "message": f"Fast Scheduler entry for {channel}"
+                }
+        
+        return {"success": False, "error": "No current Fast Scheduler entry"}
+        
+    except Exception as e:
+        return {"success": False, "error": f"Fast Scheduler error: {str(e)}"}
+
 def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     """
     Load only current + future entries for a specific channel.
@@ -126,7 +161,85 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     - Calendar entries override weekly programming for special dates
     - Calendar format: "2026-12-25_wednesday" with date, day, and entries
     - Weekly format: standard day-of-week scheduling
+    - Fast Scheduler: Dynamic in-memory schedules (checked first)
     """
+    # First, check if there's a Fast Scheduler for this channel
+    try:
+        from .fast_scheduler import FastScheduler
+        
+        # Check if there's a fast schedule checkpoint for this channel
+        fast_scheduler = FastScheduler(channel)
+        checkpoint_result = fast_scheduler.load_checkpoint()
+        
+        if checkpoint_result["success"] and fast_scheduler.state.schedule_entries:
+            current_entry = fast_scheduler.get_current_entry()
+            logger.info(f"Using Fast Scheduler for channel '{channel}' with {len(fast_scheduler.state.schedule_entries)} entries")
+            if current_entry:
+                resume_position = fast_scheduler.get_resume_position(current_entry)
+                logger.info(f"Current Fast Scheduler entry: {current_entry.video_name} (scheduled: {current_entry.time}, resume: {resume_position:.1f}s)")
+            else:
+                logger.info(f"No current Fast Scheduler entry found for channel '{channel}'")
+            
+            # Convert Fast Scheduler entries to the format expected by the worker
+            current_time = datetime.now().strftime("%H:%M")
+            fast_entries = []
+            
+            # Find the current entry (the one that should be playing now)
+            current_entry = fast_scheduler.get_current_entry()
+            if current_entry:
+                # Include the current entry first with resume position
+                resume_position = fast_scheduler.get_resume_position(current_entry)
+                fast_entry = {
+                    "time": current_entry.time,
+                    "file": current_entry.video_path,  # Use "file" for compatibility with linear worker
+                    "video": current_entry.video_path,
+                    "display_name": current_entry.video_name,
+                    "duration": current_entry.duration,
+                    "type": current_entry.entry_type,
+                    "metadata": current_entry.metadata or {},
+                    "resume_position": resume_position  # Add resume position for crash recovery
+                }
+                fast_entries.append(fast_entry)
+                
+                # Then add future entries
+                for entry in fast_scheduler.state.schedule_entries:
+                    # Only include future entries (after current)
+                    if entry.time > current_entry.time:
+                        fast_entry = {
+                            "time": entry.time,
+                            "file": entry.video_path,  # Use "file" for compatibility with linear worker
+                            "video": entry.video_path,
+                            "display_name": entry.video_name,
+                            "duration": entry.duration,
+                            "type": entry.entry_type,
+                            "metadata": entry.metadata or {}
+                        }
+                        fast_entries.append(fast_entry)
+            else:
+                # No current entry, just include future entries
+                for entry in fast_scheduler.state.schedule_entries:
+                    if entry.time >= current_time:
+                        fast_entry = {
+                            "time": entry.time,
+                            "file": entry.video_path,  # Use "file" for compatibility with linear worker
+                            "video": entry.video_path,
+                            "display_name": entry.video_name,
+                            "duration": entry.duration,
+                            "type": entry.entry_type,
+                            "metadata": entry.metadata or {}
+                        }
+                        fast_entries.append(fast_entry)
+            
+            if fast_entries:
+                logger.info(f"Fast Scheduler provided {len(fast_entries)} entries for channel '{channel}'")
+                return fast_entries
+            else:
+                logger.info(f"Fast Scheduler has no future entries for channel '{channel}', falling back to JSON")
+                
+    except Exception as e:
+        logger.debug(f"Fast Scheduler not available for channel '{channel}': {e}")
+    
+    # Fallback to traditional JSON schedule loading
     current_dt = datetime.now()
     today_date = current_dt.strftime("%Y-%m-%d")
     today_dow = current_dt.strftime("%A").lower()

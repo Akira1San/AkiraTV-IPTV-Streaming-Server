@@ -5,10 +5,12 @@ import json
 import random
 from datetime import datetime, timedelta
 from pathlib import Path
+from PIL import Image, ImageTk
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 USER_DIR = BASE_DIR / "user"
 SCHEDULE_DIR = USER_DIR / "schedules"
+COVERS_DIR = USER_DIR / "covers"
 SCHEDULE_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_collections(profile_name="collections"):
@@ -48,132 +50,192 @@ class SimpleSchedulerWizard:
     def __init__(self, root):
         self.root = root
         self.root.title("AkiraTV — Simple Random Scheduler")
-        self.root.geometry("1200x700")
+        self.root.geometry("1600x800")
         
+        # Data structures
         self.collections = []
-        self.selected_collections = set()
         self.current_profile = "collections"  # Default profile
         self.current_schedule = None  # Store generated schedule for preview
+        self.current_channel = None
+        self.current_mode = None
+        
+        # New data structures for the redesigned UI
+        self.added_videos = []  # List of video objects user has added
+        self.video_to_collection_map = {}  # Map video path -> collection object
+        self.selected_video = None  # Currently selected video for info panel
+        self.selected_collection = None  # Currently selected collection (for info panel)
+        self.selected_collections = []  # List of selected collections (for multiselect)
         
         self.create_widgets()
 
     def create_widgets(self):
-        # Main container with left and right panels
+        # Main container
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
-        # Left panel for controls
-        left_frame = ttk.Frame(main_frame)
-        left_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
+        # Create horizontal PanedWindow for main layout (info/collection/added/preview)
+        self.main_paned = ttk.PanedWindow(main_frame, orient=tk.HORIZONTAL)
+        self.main_paned.pack(fill="both", expand=True, pady=(0, 10))
         
-        # Right panel for preview
-        right_frame = ttk.Frame(main_frame)
-        right_frame.pack(side="right", fill="both", expand=True)
+        # === LEFT PANE: INFO PANEL ===
+        info_frame = ttk.Frame(self.main_paned)
+        self.main_paned.add(info_frame, weight=1)
+        self.create_info_panel(info_frame)
         
-        # === LEFT PANEL CONTROLS ===
+        # === SECOND PANE: COLLECTION PANEL ===
+        collection_frame = ttk.Frame(self.main_paned)
+        self.main_paned.add(collection_frame, weight=1)
+        self.create_collection_panel(collection_frame)
         
-        # Profile selection at the top
-        profile_frame = ttk.Frame(left_frame)
+        # === THIRD PANE: ADDED PANEL ===
+        added_frame = ttk.Frame(self.main_paned)
+        self.main_paned.add(added_frame, weight=1)
+        self.create_added_panel(added_frame)
+        
+        # === FOURTH PANE: PREVIEW PANEL ===
+        preview_frame = ttk.Frame(self.main_paned)
+        self.main_paned.add(preview_frame, weight=1)
+        self.create_preview_panel(preview_frame)
+        
+        # === BOTTOM CONTROL BAR ===
+        self.create_bottom_controls(main_frame)
+
+    def create_info_panel(self, parent):
+        """Create the Info panel for displaying video metadata"""
+        # Main container for info panel
+        info_container = ttk.Frame(parent)
+        info_container.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        ttk.Label(info_container, text="Video Info", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        
+        # Cover image - use tk.Label for image support with fixed size
+        cover_frame = ttk.Frame(info_container)
+        cover_frame.pack(pady=5, fill="x")
+        self.cover_label = tk.Label(cover_frame, text="No video selected", 
+                                   font=("TkDefaultFont", 9), foreground="gray",
+                                   relief="solid", borderwidth=1)
+        self.cover_label.pack()
+        
+        # Metadata labels
+        metadata_frame = ttk.Frame(info_container)
+        metadata_frame.pack(fill="both", expand=True)
+        
+        self.info_name = ttk.Label(metadata_frame, text="Name: -", font=("TkDefaultFont", 10, "bold"))
+        self.info_name.pack(anchor="w", pady=2)
+        
+        self.info_description = ttk.Label(metadata_frame, text="Description: -", 
+                                         font=("TkDefaultFont", 9), wraplength=400)
+        self.info_description.pack(anchor="w", pady=2)
+        
+        self.info_genre = ttk.Label(metadata_frame, text="Genre: -", font=("TkDefaultFont", 9))
+        self.info_genre.pack(anchor="w", pady=2)
+        
+        self.info_rating = ttk.Label(metadata_frame, text="Rating: -", font=("TkDefaultFont", 9))
+        self.info_rating.pack(anchor="w", pady=2)
+        
+        self.info_year = ttk.Label(metadata_frame, text="Year: -", font=("TkDefaultFont", 9))
+        self.info_year.pack(anchor="w", pady=2)
+        
+        ttk.Separator(metadata_frame, orient="horizontal").pack(fill="x", pady=10)
+        
+        self.info_path = ttk.Label(metadata_frame, text="Path: -", font=("TkDefaultFont", 9), 
+                                   wraplength=400, foreground="gray")
+        self.info_path.pack(anchor="w", pady=2)
+        
+        self.info_duration = ttk.Label(metadata_frame, text="Duration: -", font=("TkDefaultFont", 9))
+        self.info_duration.pack(anchor="w", pady=2)
+
+    def create_collection_panel(self, parent):
+        """Create the Collection panel for profile selection and collection selection"""
+        # Main container for collection panel
+        collection_container = ttk.Frame(parent)
+        collection_container.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        ttk.Label(collection_container, text="Collection", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        
+        # Profile selection
+        profile_frame = ttk.Frame(collection_container)
         profile_frame.pack(fill="x", pady=(0, 10))
         
         # First row: Collection Profile dropdown
         profile_row1 = ttk.Frame(profile_frame)
         profile_row1.pack(fill="x", pady=(0, 5))
-        ttk.Label(profile_row1, text="Quick Select:").pack(side="left")
+        ttk.Label(profile_row1, text="Profile:").pack(side="left")
         self.quick_profile_var = tk.StringVar(value="")
         self.profile_dropdown = ttk.Combobox(profile_row1, textvariable=self.quick_profile_var, 
                                            values=self.get_available_collections(), 
-                                           state="readonly", width=25)
+                                           state="readonly", width=15)
         self.profile_dropdown.pack(side="left", padx=5)
         self.profile_dropdown.bind("<<ComboboxSelected>>", self.on_quick_profile_select)
-        ttk.Button(profile_row1, text="Refresh", command=self.refresh_collections_dropdown).pack(side="left", padx=5)
-        ttk.Button(profile_row1, text="📁 Collection Wizard", command=self.launch_collection_wizard).pack(side="left", padx=5)
+        ttk.Button(profile_row1, text="🔄", command=self.refresh_collections_dropdown, width=3).pack(side="left")
         
-        # Second row: Manual entry and theme selector
+        # Second row: Manual entry
         profile_row2 = ttk.Frame(profile_frame)
         profile_row2.pack(fill="x")
-        ttk.Label(profile_row2, text="Or type name:").pack(side="left")
+        ttk.Label(profile_row2, text="Or type:").pack(side="left")
         self.profile_var = tk.StringVar(value=self.current_profile)
-        profile_entry = ttk.Entry(profile_row2, textvariable=self.profile_var, width=20)
+        profile_entry = ttk.Entry(profile_row2, textvariable=self.profile_var, width=12)
         profile_entry.pack(side="left", padx=5)
-        ttk.Button(profile_row2, text="Load Profile", command=self.load_profile).pack(side="left", padx=5)
+        ttk.Button(profile_row2, text="Load", command=self.load_profile, width=5).pack(side="left")
         
-        # Theme selector on the right
-        ttk.Label(profile_row2, text="Theme:").pack(side="right", padx=(20, 5))
-        self.theme_var = tk.StringVar(value="clam")
-        theme_combo = ttk.Combobox(profile_row2, textvariable=self.theme_var, 
-                                  values=self.get_themes(), 
-                                  state="readonly", width=12)
-        theme_combo.pack(side="right")
-        theme_combo.bind("<<ComboboxSelected>>", self.apply_theme)
+        # Collections list frame (horizontal)
+        ttk.Label(collection_container, text="Collections:").pack(anchor="w")
+        collection_list_frame = ttk.Frame(collection_container)
+        collection_list_frame.pack(fill="both", expand=True, pady=5)
         
-        # Title
-        ttk.Label(left_frame, text="Simple Random Scheduler", 
-                 font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 5))
-        ttk.Label(left_frame, text="Creates a continuous 7-day random schedule").pack(pady=(0, 10))
-        
-        # Collections list
-        ttk.Label(left_frame, text="Select Collections to Include:").pack(anchor="w")
-        list_frame = ttk.Frame(left_frame)
-        list_frame.pack(fill="both", expand=True, pady=5)
-        
-        self.collection_list = tk.Listbox(list_frame, selectmode=tk.EXTENDED, height=12, font=("TkDefaultFont", 10))
+        self.collection_list = tk.Listbox(collection_list_frame, selectmode=tk.EXTENDED, font=("TkDefaultFont", 11))
         self.collection_list.pack(side="left", fill="both", expand=True)
-        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.collection_list.yview)
-        scrollbar.pack(side="right", fill="y")
-        self.collection_list.configure(yscrollcommand=scrollbar.set)
+        collection_scrollbar = ttk.Scrollbar(collection_list_frame, orient="vertical", command=self.collection_list.yview)
+        collection_scrollbar.pack(side="right", fill="y")
+        self.collection_list.configure(yscrollcommand=collection_scrollbar.set)
+        self.collection_list.bind("<<ListboxSelect>>", self.on_collection_select)
+        
+        # Buttons frame (separate from list)
+        btn_frame = ttk.Frame(collection_container)
+        btn_frame.pack(fill="x", pady=5)
+        ttk.Button(btn_frame, text="Add Selected Collections", command=self.add_selected_collection).pack(side="left", padx=2)
         
         # Populate collections (from default profile initially)
         self.load_collections_from_profile()
-        
-        # Buttons
-        btn_frame = ttk.Frame(left_frame)
-        btn_frame.pack(pady=5)
-        ttk.Button(btn_frame, text="Select All", command=self.select_all).pack(side="left", padx=5)
-        ttk.Button(btn_frame, text="Clear Selection", command=self.clear_selection).pack(side="left", padx=5)
-        
-        # Channel selection
-        chan_frame = ttk.Frame(left_frame)
-        chan_frame.pack(pady=5)
-        ttk.Label(chan_frame, text="Assign to channel:").pack(side="left")
-        self.channel_var = tk.StringVar(value="critters")
-        chan_combo = ttk.Combobox(chan_frame, textvariable=self.channel_var, 
-                                 values=self.get_known_channels(), width=18)
-        chan_combo.set("critters")
-        chan_combo.pack(side="left", padx=5)
-        
-        # Episodic content handling
-        episodic_frame = ttk.Frame(left_frame)
-        episodic_frame.pack(pady=5)
-        self.episodic_var = tk.BooleanVar(value=False)
-        ttk.Checkbutton(episodic_frame, text="Auto-detect and sequence episodic content", 
-                       variable=self.episodic_var).pack()
 
-        # Action buttons
-        action_frame = ttk.Frame(left_frame)
-        action_frame.pack(pady=10)
+    def create_added_panel(self, parent):
+        """Create the Added panel for user-selected videos"""
+        # Main container for added panel
+        added_container = ttk.Frame(parent)
+        added_container.pack(fill="both", expand=True, padx=10, pady=10)
         
-        ttk.Button(action_frame, text="🎲 Preview Random Week", 
-                  command=lambda: self.preview_schedule(mode="random")).pack(pady=2, fill="x")
+        ttk.Label(added_container, text="Added Videos", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        
+        # Added videos list frame (horizontal)
+        added_list_frame = ttk.Frame(added_container)
+        added_list_frame.pack(fill="both", expand=True, pady=5)
+        
+        self.added_list = tk.Listbox(added_list_frame, selectmode=tk.EXTENDED, font=("TkDefaultFont", 11))
+        self.added_list.pack(side="left", fill="both", expand=True)
+        added_scrollbar = ttk.Scrollbar(added_list_frame, orient="vertical", command=self.added_list.yview)
+        added_scrollbar.pack(side="right", fill="y")
+        self.added_list.configure(yscrollcommand=added_scrollbar.set)
+        
+        # Count display
+        self.added_count_label = ttk.Label(added_container, text="Total: 0 videos", font=("TkDefaultFont", 9))
+        self.added_count_label.pack(pady=5)
+        
+        # Buttons frame (separate from list)
+        btn_frame = ttk.Frame(added_container)
+        btn_frame.pack(fill="x", pady=5)
+        ttk.Button(btn_frame, text="Remove Selected", command=self.remove_selected_videos).pack(side="left", padx=2)
+        ttk.Button(btn_frame, text="Remove All", command=self.remove_all_videos).pack(side="left", padx=2)
 
-        ttk.Button(action_frame, text="▶ Preview Sequential Week", 
-                  command=lambda: self.preview_schedule(mode="sequential")).pack(pady=2, fill="x")
+    def create_preview_panel(self, parent):
+        """Create the Preview panel for schedule preview"""
+        # Main container for preview panel
+        preview_container = ttk.Frame(parent)
+        preview_container.pack(fill="both", expand=True, padx=10, pady=10)
         
-        ttk.Separator(action_frame, orient="horizontal").pack(fill="x", pady=10)
+        ttk.Label(preview_container, text="Schedule Preview", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
         
-        ttk.Button(action_frame, text="💾 Save Current Schedule", 
-                  command=self.save_current_schedule, state="disabled").pack(pady=2, fill="x")
-        self.save_button = action_frame.winfo_children()[-1]  # Store reference to enable/disable
-        
-        ttk.Button(action_frame, text="Cancel", command=self.root.destroy).pack(pady=2, fill="x")
-        
-        # === RIGHT PANEL PREVIEW ===
-        
-        ttk.Label(right_frame, text="Schedule Preview", 
-                 font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 5))
-        
-        # Day selector
-        day_frame = ttk.Frame(right_frame)
+        # Day selector frame (separate from list)
+        day_frame = ttk.Frame(preview_container)
         day_frame.pack(fill="x", pady=(0, 5))
         ttk.Label(day_frame, text="View day:").pack(side="left")
         self.day_var = tk.StringVar(value="monday")
@@ -183,8 +245,8 @@ class SimpleSchedulerWizard:
         day_combo.pack(side="left", padx=5)
         day_combo.bind("<<ComboboxSelected>>", self.update_preview_display)
         
-        # Preview listbox
-        preview_frame = ttk.Frame(right_frame)
+        # Preview listbox frame (horizontal)
+        preview_frame = ttk.Frame(preview_container)
         preview_frame.pack(fill="both", expand=True)
         
         self.preview_list = tk.Listbox(preview_frame, font=("Consolas", 11))
@@ -193,254 +255,230 @@ class SimpleSchedulerWizard:
         preview_scrollbar.pack(side="right", fill="y")
         self.preview_list.configure(yscrollcommand=preview_scrollbar.set)
         
-        # Preview info
-        info_frame = ttk.Frame(right_frame)
+        # Preview info frame (separate from list)
+        info_frame = ttk.Frame(preview_container)
         info_frame.pack(fill="x", pady=(5, 0))
         self.preview_info = ttk.Label(info_frame, text="Generate a schedule to see preview", 
                                      font=("TkDefaultFont", 9), foreground="gray")
         self.preview_info.pack()
 
+    def create_bottom_controls(self, parent):
+        """Create bottom control bar with channel selection and action buttons"""
+        bottom_frame = ttk.Frame(parent)
+        bottom_frame.pack(fill="x", pady=(10, 0))
+        
+        # Channel selection and episodic checkbox on one line
+        chan_episodic_frame = ttk.Frame(bottom_frame)
+        chan_episodic_frame.pack(fill="x", pady=(0, 5))
+        
+        ttk.Label(chan_episodic_frame, text="Channel:").pack(side="left")
+        self.channel_var = tk.StringVar(value="critters")
+        chan_combo = ttk.Combobox(chan_episodic_frame, textvariable=self.channel_var, 
+                                 values=self.get_known_channels(), width=12)
+        chan_combo.set("critters")
+        chan_combo.pack(side="left", padx=5)
+        
+        self.episodic_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(chan_episodic_frame, text="Auto-detect episodic content", 
+                       variable=self.episodic_var).pack(side="left", padx=10)
+        
+        # Preview buttons and save button on one line
+        preview_frame = ttk.Frame(bottom_frame)
+        preview_frame.pack(fill="x")
+        
+        ttk.Button(preview_frame, text="🎲 Preview Random", 
+                  command=lambda: self.preview_schedule(mode="random")).pack(side="left", padx=5)
+        
+        ttk.Button(preview_frame, text="▶ Preview Sequential", 
+                  command=lambda: self.preview_schedule(mode="sequential")).pack(side="left", padx=5)
+        
+        ttk.Separator(preview_frame, orient="vertical").pack(side="left", fill="y", padx=10)
+        
+        self.save_button = ttk.Button(preview_frame, text="💾 Save Schedule", 
+                  command=self.save_current_schedule, state="disabled")
+        self.save_button.pack(side="left")
 
-    def get_themes(self):
-        """Get available ttk themes"""
-        try:
-            style = ttk.Style()
-            available_themes = style.theme_names()
-            return sorted(available_themes)
-        except:
-            return ["default", "clam", "alt", "classic"]
+    # === INFO PANEL METHODS ===
+    
+    def update_info_panel(self, video_data):
+        """Update info panel with selected video data"""
+        if not video_data:
+            self.clear_info_panel()
+            return
+        
+        collection = video_data.get("collection", {})
+        
+        # Update cover image
+        self.load_cover_image(collection.get("id"))
+        
+        # Update metadata labels
+        self.info_name.configure(text=f"Name: {collection.get('name', '-')}")
+        self.info_description.configure(text=f"Description: {collection.get('description', '-')}")
+        
+        genre = collection.get('genre', [])
+        genre_str = ', '.join(genre) if genre else '-'
+        self.info_genre.configure(text=f"Genre: {genre_str}")
+        
+        self.info_rating.configure(text=f"Rating: {collection.get('rating', '-')}")
+        self.info_year.configure(text=f"Year: {collection.get('year', '-')}")
+        
+        self.info_path.configure(text=f"Path: {video_data.get('path', '-')}")
+        
+        duration = video_data.get('duration', 0)
+        self.info_duration.configure(text=f"Duration: {self.format_duration(duration)}")
+    
+    def clear_info_panel(self):
+        """Clear the info panel"""
+        self.cover_label.configure(image="", text="No video selected")
+        self.info_name.configure(text="Name: -")
+        self.info_description.configure(text="Description: -")
+        self.info_genre.configure(text="Genre: -")
+        self.info_rating.configure(text="Rating: -")
+        self.info_year.configure(text="Year: -")
+        self.info_path.configure(text="Path: -")
+        self.info_duration.configure(text="Duration: -")
+    
+    def load_cover_image(self, collection_id):
+        """Load cover image from user/covers directory"""
+        if not collection_id:
+            self.cover_label.configure(image="", text="No cover")
+            return
+        
+        # Try to find cover image
+        cover_path = None
+        for ext in ['.jpg', '.jpeg', '.png']:
+            potential_path = COVERS_DIR / f"{collection_id}{ext}"
+            if potential_path.exists():
+                cover_path = potential_path
+                break
+        
+        if cover_path:
+            try:
+                # Load and resize image
+                img = Image.open(cover_path)
+                img = img.resize((300, 420), Image.Resampling.LANCZOS)
+                photo = ImageTk.PhotoImage(img)
+                self.cover_label.configure(image=photo, text="")
+                self.cover_label.image = photo  # Keep reference
+            except Exception as e:
+                print(f"Error loading cover image: {e}")
+                self.cover_label.configure(image="", text="No cover")
+        else:
+            self.cover_label.configure(image="", text="No cover")
+    
+    def format_duration(self, seconds):
+        """Format duration in seconds to HH:MM:SS"""
+        if not seconds:
+            return "-"
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
-    def apply_theme(self, event=None):
-        """Apply the selected ttk theme"""
-        theme_name = self.theme_var.get()
-        try:
-            style = ttk.Style()
-            style.theme_use(theme_name)
-        except Exception as e:
-            print(f"Error applying theme {theme_name}: {e}")
-
-    def launch_collection_wizard(self):
-        """Launch the collection wizard in a new window"""
-        try:
-            # Import here to avoid circular imports
-            from .collection_wizard import launch_collection_wizard
-            launch_collection_wizard()
-        except ImportError as e:
-            messagebox.showerror("Error", f"Could not import collection wizard: {e}")
-        except Exception as e:
-            messagebox.showerror("Error", f"Could not launch collection wizard: {e}")
-
-    def get_available_collections(self):
-        """Scan collections directory and return available collection files"""
-        collections = [""]  # Start with empty option
-        try:
-            script_dir = Path(__file__).resolve().parent
-            base_dir = script_dir.parent
-            collections_dir = base_dir / "user" / "collections"
-            
-            if collections_dir.exists():
-                # Find all .json files in collections directory
-                for json_file in collections_dir.glob("*.json"):
-                    filename = json_file.stem
-                    # Remove "collections_" prefix if present for cleaner display
-                    if filename.startswith("collections_"):
-                        display_name = filename[12:]  # Remove "collections_" prefix
-                    else:
-                        display_name = filename
-                    collections.append(display_name)
+    # === COLLECTION PANEL METHODS ===
+    
+    def on_collection_select(self, event):
+        """Handle collection selection - update info panel with first video"""
+        selection = self.collection_list.curselection()
+        if not selection:
+            self.clear_info_panel()
+            self.selected_collection = None
+            return
+        
+        # Store all selected collections
+        self.selected_collections = [self.collections[idx] for idx in selection]
+        # Use first selected collection for info panel
+        self.selected_collection = self.selected_collections[0]
+        
+        # Update info panel with first video from first selected collection
+        videos = self.selected_collection.get("videos", [])
+        if videos:
+            video = videos[0]
+            video_data = {
+                "path": video.get("path", ""),
+                "duration": video.get("duration", 0),
+                "name": Path(video.get("path", "")).name,
+                "collection": self.selected_collection
+            }
+            self.selected_video = video_data
+            self.update_info_panel(video_data)
+        else:
+            self.clear_info_panel()
+    
+    def add_selected_collection(self):
+        """Add all videos from selected collections to added list"""
+        if not self.selected_collections:
+            messagebox.showwarning("No Collection", "Select a collection first!")
+            return
+        
+        added_count = 0
+        for collection in self.selected_collections:
+            for video in collection.get("videos", []):
+                video_path = video.get("path", "")
                 
-                # Sort alphabetically (keeping empty option first)
-                collections = [""] + sorted(collections[1:])
-        except Exception as e:
-            print(f"Error scanning collections directory: {e}")
+                # Check if already added
+                if video_path not in [v["path"] for v in self.added_videos]:
+                    video_data = {
+                        "path": video_path,
+                        "duration": video.get("duration", 0),
+                        "name": Path(video_path).name,
+                        "collection": collection
+                    }
+                    self.added_videos.append(video_data)
+                    self.video_to_collection_map[video_path] = collection
+                    added_count += 1
         
-        return collections
+        if added_count > 0:
+            self.update_added_list_display()
+            messagebox.showinfo("Success", f"Added {added_count} video(s) from {len(self.selected_collections)} collection(s)!")
+        else:
+            messagebox.showinfo("Info", "All videos from selected collections are already in the added list.")
 
-    def refresh_collections_dropdown(self):
-        """Refresh the collections dropdown with current files"""
-        available_collections = self.get_available_collections()
-        self.profile_dropdown.configure(values=available_collections)
-        # Reset selection to empty
-        self.quick_profile_var.set("")
-
-    def on_quick_profile_select(self, event=None):
-        """Handle selection from the quick profile dropdown"""
-        selected = self.quick_profile_var.get().strip()
-        if selected:
-            # Update the manual entry field and load the profile
-            self.profile_var.set(selected)
-            self.load_profile()
-        # Note: We don't reset the dropdown selection so user can see what's selected
-        """Scan collections directory and return available collection files"""
-        collections = [""]  # Start with empty option
-        try:
-            script_dir = Path(__file__).resolve().parent
-            base_dir = script_dir.parent
-            collections_dir = base_dir / "user" / "collections"
-            
-            if collections_dir.exists():
-                # Find all .json files in collections directory
-                for json_file in collections_dir.glob("*.json"):
-                    filename = json_file.stem
-                    # Remove "collections_" prefix if present for cleaner display
-                    if filename.startswith("collections_"):
-                        display_name = filename[12:]  # Remove "collections_" prefix
-                    else:
-                        display_name = filename
-                    collections.append(display_name)
-                
-                # Sort alphabetically (keeping empty option first)
-                collections = [""] + sorted(collections[1:])
-        except Exception as e:
-            print(f"Error scanning collections directory: {e}")
+    # === ADDED PANEL METHODS ===
+    
+    def update_added_list_display(self):
+        """Update added videos listbox"""
+        self.added_list.delete(0, tk.END)
+        for video in self.added_videos:
+            collection_name = video.get("collection", {}).get("name", "Unknown")
+            video_name = video.get("name", "Unknown")
+            display_text = f"{collection_name} - {video_name}"
+            self.added_list.insert(tk.END, display_text)
         
-        return collections
-
-    def refresh_collections_dropdown(self):
-        """Refresh the collections dropdown with current files"""
-        available_collections = self.get_available_collections()
-        self.profile_dropdown.configure(values=available_collections)
-        # Reset selection to empty
-        self.quick_profile_var.set("")
-
-    def on_quick_profile_select(self, event=None):
-        """Handle selection from the quick profile dropdown"""
-        selected = self.quick_profile_var.get().strip()
-        if selected:
-            # Update the manual entry field and load the profile
-            self.profile_var.set(selected)
-            self.load_profile()
-        # Note: We don't reset the dropdown selection so user can see what's selected
-
-    def load_profile(self):
-        """Load collections from specified profile"""
-        profile_name = self.profile_var.get().strip()
-        if not profile_name:
-            messagebox.showwarning("Warning", "Please enter a profile name!")
+        self.added_count_label.configure(text=f"Total: {len(self.added_videos)} videos")
+    
+    def remove_selected_videos(self):
+        """Remove selected videos from added list"""
+        selection = self.added_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Select at least one video to remove!")
             return
-            
-        # Remove .json extension if provided
-        if profile_name.endswith(".json"):
-            profile_name = profile_name[:-5]
-            
-        self.current_profile = profile_name
-        self.load_collections_from_profile()
-        messagebox.showinfo("Success", f"Loaded profile: {self.current_profile}.json")
-
-    def load_collections_from_profile(self):
-        """Load collections from current profile and update UI"""
-        self.collections = load_collections(self.current_profile)
-        self.collection_list.delete(0, tk.END)
-        for col in self.collections:
-            self.collection_list.insert(tk.END, col["name"])
-
-    def select_all(self):
-        self.collection_list.select_set(0, tk.END)
-
-    def clear_selection(self):
-        self.collection_list.selection_clear(0, tk.END)
-
-    def detect_episodic_content(self, all_videos):
-        """Detect and group episodic/sequential content"""
-        episodic_groups = {}
-        standalone_videos = []
         
-        # Group videos by potential series name (remove episode indicators)
-        for video in all_videos:
-            name = Path(video["path"]).stem.lower()
-            
-            # Common episode patterns to detect
-            import re
-            patterns = [
-                r'(.+?)\s*[s]\d+[e]\d+',  # S01E01 format
-                r'(.+?)\s*season\s*\d+.*episode\s*\d+',  # Season X Episode Y
-                r'(.+?)\s*\d+x\d+',  # 1x01 format
-                r'(.+?)\s*ep\s*\d+',  # Ep 01
-                r'(.+?)\s*episode\s*\d+',  # Episode 01
-                r'(.+?)\s*part\s*\d+',  # Part 1
-                r'(.+?)\s*\d{2,3}$',  # Ends with 2-3 digits (episode number)
-            ]
-            
-            series_name = None
-            for pattern in patterns:
-                match = re.search(pattern, name, re.IGNORECASE)
-                if match:
-                    series_name = match.group(1).strip()
-                    break
-            
-            if series_name:
-                if series_name not in episodic_groups:
-                    episodic_groups[series_name] = []
-                episodic_groups[series_name].append(video)
-            else:
-                standalone_videos.append(video)
+        # Remove in reverse order to maintain indices
+        for idx in sorted(selection, reverse=True):
+            video = self.added_videos[idx]
+            video_path = video.get("path", "")
+            if video_path in self.video_to_collection_map:
+                del self.video_to_collection_map[video_path]
+            del self.added_videos[idx]
         
-        # Only keep groups with 2+ episodes
-        final_groups = {k: sorted(v, key=lambda x: Path(x["path"]).stem) 
-                       for k, v in episodic_groups.items() if len(v) >= 2}
-        
-        # Add single-episode "series" back to standalone
-        for k, v in episodic_groups.items():
-            if len(v) == 1:
-                standalone_videos.extend(v)
-        
-        return final_groups, standalone_videos
-    def preview_schedule(self, mode="random"):
-        """Generate schedule preview without saving"""
-        # Get selected collections
-        selected_indices = self.collection_list.curselection()
-        if not selected_indices:
-            messagebox.showwarning("No Selection", "Select at least one collection!")
+        self.update_added_list_display()
+        messagebox.showinfo("Success", f"Removed {len(selection)} video(s)!")
+    
+    def remove_all_videos(self):
+        """Clear entire added list"""
+        if not self.added_videos:
+            messagebox.showinfo("Info", "Added list is already empty.")
             return
-
-        target_channel = self.channel_var.get().strip()
-        if not target_channel:
-            messagebox.showerror("Error", "Please enter a channel name!")
-            return
-
-        selected_collections = []
-        for idx in selected_indices:
-            selected_collections.append(self.collections[idx])
-
-        # Build video list
-        all_videos = []
-        for collection in selected_collections:
-            for video in collection["videos"]:
-                all_videos.append({
-                    "path": video["path"],
-                    "duration": video.get("duration", 5400),
-                    "name": Path(video["path"]).name
-                })
-
-        if not all_videos:
-            messagebox.showerror("No Videos", "Selected collections have no videos!")
-            return
-
-        # Generate schedule preview
-        total_duration_needed = 7 * 24 * 3600
-        new_schedule = {day: [] for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
         
-        current_time = datetime(2023, 1, 2, 0, 0)  # Monday 00:00
-        
-        if mode == "random":
-            self._generate_random_schedule(all_videos, new_schedule, current_time, total_duration_needed, target_channel)
-        else:  # sequential
-            self._generate_sequential_schedule(all_videos, new_schedule, current_time, total_duration_needed, target_channel)
-        
-        # Store the schedule and update preview
-        self.current_schedule = new_schedule
-        self.current_channel = target_channel
-        self.current_mode = mode
-        self.update_preview_display()
-        
-        # Enable save button
-        self.save_button.configure(state="normal")
-        
-        # Update info
-        episodic_status = " (with episodic sequencing)" if self.episodic_var.get() else ""
-        total_entries = sum(len(entries) for entries in new_schedule.values())
-        self.preview_info.configure(text=f"{mode.title()} schedule generated: {total_entries} entries{episodic_status}")
+        if messagebox.askyesno("Confirm", "Remove all videos from the added list?"):
+            self.added_videos.clear()
+            self.video_to_collection_map.clear()
+            self.update_added_list_display()
+            messagebox.showinfo("Success", "All videos removed!")
 
+    # === PREVIEW PANEL METHODS ===
+    
     def update_preview_display(self, event=None):
         """Update the preview listbox with the selected day's schedule"""
         if not self.current_schedule:
@@ -467,8 +505,8 @@ class SimpleSchedulerWizard:
             file_name = Path(file_path).name
             
             # Truncate long filenames for display
-            if len(file_name) > 50:
-                display_name = file_name[:47] + "..."
+            if len(file_name) > 40:
+                display_name = file_name[:37] + "..."
             else:
                 display_name = file_name
             
@@ -478,23 +516,12 @@ class SimpleSchedulerWizard:
         self.preview_list.insert(tk.END, "")
         self.preview_list.insert(tk.END, f"Total entries: {len(day_schedule)}")
 
-    def save_current_schedule(self):
-        """Save the currently previewed schedule"""
-        if not self.current_schedule:
-            messagebox.showwarning("No Schedule", "Generate a preview first!")
-            return
-        
-        self._save_schedule(self.current_schedule, self.current_channel)
-
-    def generate_schedule(self, mode="random"):
-        """Legacy method - now just calls preview and save"""
-        self.preview_schedule(mode)
-        if self.current_schedule:
-            self.save_current_schedule()
-        # Get selected collections
-        selected_indices = self.collection_list.curselection()
-        if not selected_indices:
-            messagebox.showwarning("No Selection", "Select at least one collection!")
+    # === SCHEDULE GENERATION METHODS ===
+    
+    def preview_schedule(self, mode="random"):
+        """Generate schedule preview without saving"""
+        if not self.added_videos:
+            messagebox.showwarning("No Videos", "Add videos to the added list first!")
             return
 
         target_channel = self.channel_var.get().strip()
@@ -502,37 +529,38 @@ class SimpleSchedulerWizard:
             messagebox.showerror("Error", "Please enter a channel name!")
             return
 
-        selected_collections = []
-        for idx in selected_indices:
-            selected_collections.append(self.collections[idx])
-
-        # Build video list
-        all_videos = []
-        for collection in selected_collections:
-            for video in collection["videos"]:
-                all_videos.append({
-                    "path": video["path"],
-                    "duration": video.get("duration", 5400),
-                    "name": Path(video["path"]).name
-                })
-
-        if not all_videos:
-            messagebox.showerror("No Videos", "Selected collections have no videos!")
-            return
-
-        # Generate 7-day schedule for target channel
+        # Generate schedule preview
         total_duration_needed = 7 * 24 * 3600
         new_schedule = {day: [] for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
         
         current_time = datetime(2023, 1, 2, 0, 0)  # Monday 00:00
         
         if mode == "random":
-            self._generate_random_schedule(all_videos, new_schedule, current_time, total_duration_needed, target_channel)
+            self._generate_random_schedule(self.added_videos, new_schedule, current_time, total_duration_needed, target_channel)
         else:  # sequential
-            self._generate_sequential_schedule(all_videos, new_schedule, current_time, total_duration_needed, target_channel)
+            self._generate_sequential_schedule(self.added_videos, new_schedule, current_time, total_duration_needed, target_channel)
         
-        # Save schedule
-        self._save_schedule(new_schedule, target_channel)
+        # Store the schedule and update preview
+        self.current_schedule = new_schedule
+        self.current_channel = target_channel
+        self.current_mode = mode
+        self.update_preview_display()
+        
+        # Enable save button
+        self.save_button.configure(state="normal")
+        
+        # Update info
+        episodic_status = " (with episodic sequencing)" if self.episodic_var.get() else ""
+        total_entries = sum(len(entries) for entries in new_schedule.values())
+        self.preview_info.configure(text=f"{mode.title()} schedule generated: {total_entries} entries{episodic_status}")
+
+    def save_current_schedule(self):
+        """Save the currently previewed schedule"""
+        if not self.current_schedule:
+            messagebox.showwarning("No Schedule", "Generate a preview first!")
+            return
+        
+        self._save_schedule(self.current_schedule, self.current_channel)
 
     def _generate_random_schedule(self, all_videos, new_schedule, current_time, total_duration_needed, target_channel):
         """Generate random schedule with 12-hour no-repeat rule and episodic handling"""
@@ -662,6 +690,137 @@ class SimpleSchedulerWizard:
         
         # Disable save button after saving
         self.save_button.configure(state="disabled")
+
+    def detect_episodic_content(self, all_videos):
+        """Detect and group episodic/sequential content"""
+        episodic_groups = {}
+        standalone_videos = []
+        
+        # Group videos by potential series name (remove episode indicators)
+        for video in all_videos:
+            name = Path(video["path"]).stem.lower()
+            
+            # Common episode patterns to detect
+            import re
+            patterns = [
+                r'(.+?)\s*[s]\d+[e]\d+',  # S01E01 format
+                r'(.+?)\s*season\s*\d+.*episode\s*\d+',  # Season X Episode Y
+                r'(.+?)\s*\d+x\d+',  # 1x01 format
+                r'(.+?)\s*ep\s*\d+',  # Ep 01
+                r'(.+?)\s*episode\s*\d+',  # Episode 01
+                r'(.+?)\s*part\s*\d+',  # Part 1
+                r'(.+?)\s*\d{2,3}$',  # Ends with 2-3 digits (episode number)
+            ]
+            
+            series_name = None
+            for pattern in patterns:
+                match = re.search(pattern, name, re.IGNORECASE)
+                if match:
+                    series_name = match.group(1).strip()
+                    break
+            
+            if series_name:
+                if series_name not in episodic_groups:
+                    episodic_groups[series_name] = []
+                episodic_groups[series_name].append(video)
+            else:
+                standalone_videos.append(video)
+        
+        # Only keep groups with 2+ episodes
+        final_groups = {k: sorted(v, key=lambda x: Path(x["path"]).stem) 
+                       for k, v in episodic_groups.items() if len(v) >= 2}
+        
+        # Add single-episode "series" back to standalone
+        for k, v in episodic_groups.items():
+            if len(v) == 1:
+                standalone_videos.extend(v)
+        
+        return final_groups, standalone_videos
+
+    # === UTILITY METHODS ===
+    
+    def get_themes(self):
+        """Get available ttk themes"""
+        try:
+            style = ttk.Style()
+            available_themes = style.theme_names()
+            return sorted(available_themes)
+        except:
+            return ["default", "clam", "alt", "classic"]
+
+    def launch_collection_wizard(self):
+        """Launch the collection wizard in a new window"""
+        try:
+            # Import here to avoid circular imports
+            from .collection_wizard import launch_collection_wizard
+            launch_collection_wizard()
+        except ImportError as e:
+            messagebox.showerror("Error", f"Could not import collection wizard: {e}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not launch collection wizard: {e}")
+
+    def get_available_collections(self):
+        """Scan collections directory and return available collection files"""
+        collections = [""]  # Start with empty option
+        try:
+            script_dir = Path(__file__).resolve().parent
+            base_dir = script_dir.parent
+            collections_dir = base_dir / "user" / "collections"
+            
+            if collections_dir.exists():
+                # Find all .json files in collections directory
+                for json_file in collections_dir.glob("*.json"):
+                    filename = json_file.stem
+                    # Remove "collections_" prefix if present for cleaner display
+                    if filename.startswith("collections_"):
+                        display_name = filename[12:]  # Remove "collections_" prefix
+                    else:
+                        display_name = filename
+                    collections.append(display_name)
+                
+                # Sort alphabetically (keeping empty option first)
+                collections = [""] + sorted(collections[1:])
+        except Exception as e:
+            print(f"Error scanning collections directory: {e}")
+        
+        return collections
+
+    def refresh_collections_dropdown(self):
+        """Refresh the collections dropdown with current files"""
+        available_collections = self.get_available_collections()
+        self.profile_dropdown.configure(values=available_collections)
+        # Reset selection to empty
+        self.quick_profile_var.set("")
+
+    def on_quick_profile_select(self, event=None):
+        """Handle selection from the quick profile dropdown"""
+        selected = self.quick_profile_var.get().strip()
+        if selected:
+            # Update the manual entry field and load the profile
+            self.profile_var.set(selected)
+            self.load_profile()
+
+    def load_profile(self):
+        """Load collections from specified profile"""
+        profile_name = self.profile_var.get().strip()
+        if not profile_name:
+            messagebox.showwarning("Warning", "Please enter a profile name!")
+            return
+            
+        # Remove .json extension if provided
+        if profile_name.endswith(".json"):
+            profile_name = profile_name[:-5]
+            
+        self.current_profile = profile_name
+        self.load_collections_from_profile()
+        messagebox.showinfo("Success", f"Loaded profile: {self.current_profile}.json")
+
+    def load_collections_from_profile(self):
+        """Load collections from current profile and update UI"""
+        self.collections = load_collections(self.current_profile)
+        self.collection_list.delete(0, tk.END)
+        for col in self.collections:
+            self.collection_list.insert(tk.END, col["name"])
 
     def get_known_channels(self):
         channels = {"critters", "default"}

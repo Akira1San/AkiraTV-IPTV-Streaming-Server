@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV Fast Scheduler Documentation</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-code: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav {
+            background: var(--bg-secondary);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .content {
+            padding: 40px 0;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin: 30px 0 15px 0;
+        }
+
+        .section h4 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin: 20px 0 10px 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-card li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .feature-card li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+
+        .architecture-diagram {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .flow-step {
+            background: var(--bg-primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0 10px;
+        }
+
+        .code-block {
+            background: var(--bg-code);
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .code-block .keyword {
+            color: #60a5fa;
+        }
+
+        .code-block .string {
+            color: #34d399;
+        }
+
+        .code-block .comment {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .api-endpoint {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .api-endpoint .method {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .api-endpoint .url {
+            font-family: monospace;
+            background: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .settings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .settings-table th,
+        .settings-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .settings-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-color: var(--primary);
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-color: var(--warning);
+            color: #92400e;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border-color: var(--error);
+            color: #991b1b;
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin: 15px 0;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            background: var(--primary);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-step {
+                display: block;
+                margin: 20px 0;
+            }
+
+            .flow-arrow {
+                display: block;
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>⚡ AkiraTV Fast Scheduler</h1>
+            <p>Revolutionary dynamic scheduling system that creates TV schedules on-the-fly from your video collections</p>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="container">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#usage">Usage Guide</a></li>
+                <li><a href="#api">API Reference</a></li>
+                <li><a href="#configuration">Configuration</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="container">
+            <section id="overview" class="section">
+                <h2>🎯 Overview</h2>
+                <p>The Fast Scheduler eliminates the complexity of creating and managing JSON schedule files by generating dynamic TV schedules directly from your video collections. It provides intelligent crash recovery, automatic content insertion, and seamless integration with existing AkiraTV workers.</p>
+                
+                <div class="alert alert-success">
+                    <strong>Key Innovation:</strong> No more manual JSON editing! The Fast Scheduler creates schedules automatically from your existing video collections, making channel setup effortless and dynamic.
+                </div>
+            </section>
+
+            <section id="features" class="section">
+                <h2>🚀 Key Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🚀 Dynamic Scheduling</h4>
+                        <ul>
+                            <li>No JSON files required</li>
+                            <li>On-the-fly schedule generation</li>
+                            <li>Flexible duration (1-168 hours)</li>
+                            <li>Smart content shuffling</li>
+                            <li>Multi-collection support</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>💾 Intelligent Storage</h4>
+                        <ul>
+                            <li>Dictionary-based entries</li>
+                            <li>In-memory performance</li>
+                            <li>Automatic checkpoints</li>
+                            <li>State management</li>
+                            <li>Crash-safe persistence</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔄 Crash Recovery</h4>
+                        <ul>
+                            <li>Resume position calculation</li>
+                            <li>Time-based recovery</li>
+                            <li>Seamless restart</li>
+                            <li>State preservation</li>
+                            <li>No manual intervention</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎬 Advanced Features</h4>
+                        <ul>
+                            <li>Automatic bumpers</li>
+                            <li>Dynamic trailers</li>
+                            <li>Rich metadata support</li>
+                            <li>Configurable insertion</li>
+                            <li>Content variety optimization</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture" class="section">
+                <h2>🏗️ Architecture</h2>
+                <div class="architecture-diagram">
+                    <div class="flow-step">
+                        <strong>Web Interface</strong><br>
+                        Channel Setup<br>
+                        Collection Selection<br>
+                        Settings Configuration
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <strong>Fast Scheduler</strong><br>
+                        Schedule Generation<br>
+                        Entry Storage<br>
+                        Resume Logic<br>
+                        Checkpoints
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <strong>Linear Worker</strong><br>
+                        Video Playback<br>
+                        Stream Output<br>
+                        HLS Generation
+                    </div>
+                </div>
+
+                <h3>Integration Flow</h3>
+                <ol class="step-list">
+                    <li><strong>Schedule Creation:</strong> User creates Fast Schedule via web interface with selected collections and settings</li>
+                    <li><strong>Entry Generation:</strong> Fast Scheduler loads videos and generates timestamped schedule entries</li>
+                    <li><strong>Checkpoint Save:</strong> Schedule automatically saved to checkpoint file for persistence</li>
+                    <li><strong>Worker Request:</strong> Linear worker requests schedule from scheduler.py integration layer</li>
+                    <li><strong>Schedule Delivery:</strong> scheduler.py checks Fast Scheduler first, then falls back to JSON files</li>
+                    <li><strong>Playback Start:</strong> Worker receives schedule entries and begins video playback</li>
+                    <li><strong>Crash Recovery:</strong> On restart, resume position calculated and playback continues seamlessly</li>
+                </ol>
+            </section>
+
+            <section id="usage" class="section">
+                <h2>📖 Usage Guide</h2>
+                
+                <h3>Creating a Fast Schedule</h3>
+                <ol class="step-list">
+                    <li><strong>Access Interface:</strong> Open AkiraTV web UI and navigate to "Collection & Scheduler Wizard"</li>
+                    <li><strong>Launch Fast Scheduler:</strong> Click the "⚡ Fast Schedule" button to open the configuration modal</li>
+                    <li><strong>Select Channel:</strong> Choose the target channel from your enabled channels list</li>
+                    <li><strong>Choose Collections:</strong> Select which video collections to include in the schedule</li>
+                    <li><strong>Configure Settings:</strong> Set start time, duration, bumper frequency, and trailer probability</li>
+                    <li><strong>Generate Schedule:</strong> Click "Generate Schedule" to create and save the dynamic schedule</li>
+                </ol>
+
+                <div class="alert alert-info">
+                    <strong>Pro Tip:</strong> The Fast Scheduler automatically detects your collection format and loads videos accordingly. It supports both legacy and new AkiraTV collection formats.
+                </div>
+
+                <h3>Starting a Fast Scheduled Channel</h3>
+                <ol class="step-list">
+                    <li><strong>Verify Setup:</strong> Ensure channel type is set to "Linear" and Fast Schedule exists</li>
+                    <li><strong>Start Channel:</strong> Use normal AkiraTV channel start procedures</li>
+                    <li><strong>Automatic Detection:</strong> Worker automatically detects and uses Fast Schedule</li>
+                    <li><strong>Resume Playback:</strong> System calculates correct resume position if restarting</li>
+                </ol>
+
+                <div class="alert alert-success">
+                    <strong>Success Indicator:</strong> Instead of "No schedule found" errors, you'll see "Using Fast Scheduler for channel" in the logs, indicating successful integration.
+                </div>
+            </section>
+
+            <section id="api" class="section">
+                <h2>🔌 API Reference</h2>
+                
+                <h3>Schedule Management</h3>
+                <div class="api-endpoint">
+                    <span class="method">POST</span>
+                    <span class="url">/api/fast-schedule/{channel}/generate</span>
+                    <p>Generate a new Fast Schedule for the specified channel</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="url">/api/fast-schedule/{channel}/info</span>
+                    <p>Get comprehensive schedule information and statistics</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="url">/api/fast-schedule/{channel}/current</span>
+                    <p>Get current playing entry with resume position</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="url">/api/fast-schedule/{channel}/upcoming</span>
+                    <p>Get upcoming schedule entries (default: 5 entries)</p>
+                </div>
+
+                <h3>Checkpoint Management</h3>
+                <div class="api-endpoint">
+                    <span class="method">POST</span>
+                    <span class="url">/api/fast-schedule/{channel}/save-checkpoint</span>
+                    <p>Manually save current schedule state to checkpoint</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="method">POST</span>
+                    <span class="url">/api/fast-schedule/{channel}/load-checkpoint</span>
+                    <p>Load schedule state from existing checkpoint file</p>
+                </div>
+
+                <h3>Collection Management</h3>
+                <div class="api-endpoint">
+                    <span class="method">POST</span>
+                    <span class="url">/api/fast-schedule/{channel}/load-collections</span>
+                    <p>Load videos from specified collection files</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="method">GET</span>
+                    <span class="url">/api/fast-schedule/collections</span>
+                    <p>Get list of available collection files with video counts</p>
+                </div>
+
+                <h3>Example Request</h3>
+                <div class="code-block">
+<span class="comment">// Generate Fast Schedule</span>
+<span class="keyword">POST</span> /api/fast-schedule/MyChannel/generate
+{
+  <span class="string">"collections"</span>: [<span class="string">"movies"</span>, <span class="string">"tv_shows"</span>],
+  <span class="string">"start_time"</span>: <span class="string">"09:00"</span>,
+  <span class="string">"schedule_hours"</span>: 24,
+  <span class="string">"bumper_frequency"</span>: 3,
+  <span class="string">"trailer_probability"</span>: 0.3
+}
+                </div>
+            </section>
+
+            <section id="configuration" class="section">
+                <h2>⚙️ Configuration</h2>
+                
+                <h3>Schedule Settings</h3>
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th>Setting</th>
+                            <th>Description</th>
+                            <th>Default</th>
+                            <th>Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Start Time</strong></td>
+                            <td>When the schedule begins (HH:MM format)</td>
+                            <td>00:00</td>
+                            <td>00:00-23:59</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Schedule Hours</strong></td>
+                            <td>Duration of generated content in hours</td>
+                            <td>24</td>
+                            <td>1-168</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bumper Frequency</strong></td>
+                            <td>Insert bumper every N videos</td>
+                            <td>3</td>
+                            <td>1-10</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trailer Probability</strong></td>
+                            <td>Chance of showing trailers before content</td>
+                            <td>30%</td>
+                            <td>0-100%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Collection Format Support</h3>
+                <p>The Fast Scheduler automatically detects and supports both collection formats:</p>
+
+                <h4>New AkiraTV Format</h4>
+                <div class="code-block">
+{
+  <span class="string">"collections"</span>: [
+    {
+      <span class="string">"id"</span>: <span class="string">"movie_id"</span>,
+      <span class="string">"name"</span>: <span class="string">"Movie Title"</span>,
+      <span class="string">"description"</span>: <span class="string">"Movie description"</span>,
+      <span class="string">"genre"</span>: [<span class="string">"Action"</span>, <span class="string">"Drama"</span>],
+      <span class="string">"rating"</span>: <span class="string">"PG-13"</span>,
+      <span class="string">"year"</span>: 2023,
+      <span class="string">"videos"</span>: [
+        {
+          <span class="string">"path"</span>: <span class="string">"/path/to/movie.mp4"</span>,
+          <span class="string">"duration"</span>: 7200.5
+        }
+      ]
+    }
+  ]
+}
+                </div>
+
+                <h4>Legacy Format</h4>
+                <div class="code-block">
+{
+  <span class="string">"movie_name"</span>: {
+    <span class="string">"path"</span>: <span class="string">"/path/to/movie.mp4"</span>,
+    <span class="string">"duration"</span>: 7200.5,
+    <span class="string">"metadata"</span>: { <span class="comment">/* additional info */</span> }
+  }
+}
+                </div>
+            </section>
+
+            <section id="troubleshooting" class="section">
+                <h2>🔧 Troubleshooting</h2>
+                
+                <h3>Common Issues</h3>
+                
+                <h4>❌ No Videos Loaded</h4>
+                <div class="alert alert-error">
+                    <strong>Symptoms:</strong> "Loaded 0 videos" message when creating schedule<br>
+                    <strong>Causes:</strong> Collection files not found, invalid JSON format, or empty collections<br>
+                    <strong>Solutions:</strong> Verify collection file paths, check JSON syntax, ensure collections contain videos
+                </div>
+
+                <h4>❌ Schedule Not Found by Worker</h4>
+                <div class="alert alert-error">
+                    <strong>Symptoms:</strong> "No schedule found for linear channel" in worker logs<br>
+                    <strong>Causes:</strong> Checkpoint not saved, Fast Scheduler integration not working<br>
+                    <strong>Solutions:</strong> Regenerate schedule, verify checkpoint file exists, check scheduler.py integration
+                </div>
+
+                <h4>❌ Incorrect Resume Position</h4>
+                <div class="alert alert-warning">
+                    <strong>Symptoms:</strong> Video starts from beginning instead of correct position<br>
+                    <strong>Causes:</strong> System time issues, incorrect entry time format<br>
+                    <strong>Solutions:</strong> Verify system time accuracy, check entry time format (HH:MM)
+                </div>
+
+                <h4>❌ Bumpers/Trailers Not Playing</h4>
+                <div class="alert alert-info">
+                    <strong>Symptoms:</strong> Only main content plays, no bumpers or trailers<br>
+                    <strong>Causes:</strong> No bumper/trailer files configured in Fast Scheduler<br>
+                    <strong>Solutions:</strong> Add bumper and trailer video files to Fast Scheduler configuration
+                </div>
+
+                <h3>Debug Information</h3>
+                <p>Check these locations for troubleshooting:</p>
+                <ul>
+                    <li><strong>Checkpoint Files:</strong> <code>user/fast_schedules/fast_schedule_{channel_name}.json</code></li>
+                    <li><strong>Worker Logs:</strong> Look for "Using Fast Scheduler" or "No schedule found" messages</li>
+                    <li><strong>API Logs:</strong> Check Fast Scheduler API endpoint responses</li>
+                    <li><strong>Collection Files:</strong> Verify <code>user/collections/collections_*.json</code> files</li>
+                </ul>
+
+                <div class="code-block">
+<span class="comment"># Enable debug logging</span>
+<span class="keyword">import</span> logging
+logging.getLogger(<span class="string">'akiratv.fast_scheduler'</span>).setLevel(logging.DEBUG)
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>🎯 Performance & Scalability</h2>
+                
+                <h3>Performance Characteristics</h3>
+                <ul>
+                    <li><strong>Memory Usage:</strong> Schedule entries stored in memory for fast access</li>
+                    <li><strong>Generation Speed:</strong> Near-instantaneous for most collections (O(n) complexity)</li>
+                    <li><strong>Checkpoint Operations:</strong> Save/load operations complete in under 1 second</li>
+                    <li><strong>Scalability:</strong> Supports multiple independent channel schedules</li>
+                </ul>
+
+                <div class="alert alert-info">
+                    <strong>Recommendation:</strong> For collections with 1000+ videos, ensure adequate RAM is available. Each schedule entry uses approximately 1KB of memory.
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>🚀 Future Enhancements</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎯 Smart Scheduling</h4>
+                        <ul>
+                            <li>Time-based content rules</li>
+                            <li>Genre-based scheduling</li>
+                            <li>Audience-appropriate content</li>
+                            <li>Seasonal programming</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Analytics Integration</h4>
+                        <ul>
+                            <li>Viewing pattern analysis</li>
+                            <li>Content performance metrics</li>
+                            <li>Schedule optimization</li>
+                            <li>Audience insights</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔧 Advanced Management</h4>
+                        <ul>
+                            <li>Schedule templates</li>
+                            <li>Bulk operations</li>
+                            <li>Real-time updates</li>
+                            <li>Export/import functionality</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎬 Content Enhancement</h4>
+                        <ul>
+                            <li>Auto-generated bumpers</li>
+                            <li>Dynamic content insertion</li>
+                            <li>Multi-day patterns</li>
+                            <li>Content filtering</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2026 AkiraTV Fast Scheduler Documentation</p>
+            <p>Revolutionary dynamic scheduling for modern IPTV streaming</p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight current section in navigation
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.background = '';
+                link.style.color = '';
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.style.background = 'var(--primary)';
+                    link.style.color = 'white';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

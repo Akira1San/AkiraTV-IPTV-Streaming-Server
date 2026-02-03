@@ -1,0 +1,668 @@
+{
+  "collections": [
+    {
+      "id": "above_the_law",
+      "name": "Above the Law",
+      "cover": "user/covers/above_the_law.jpg",
+      "description": "A former Special Operations Vietnam vet works as a Chicago cop, and uncovers C.I.A. wrongdoing.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Above the Law.mp4",
+          "duration": 5956.158542
+        }
+      ]
+    },
+    {
+      "id": "belly_of_the_beast",
+      "name": "Belly of the Beast",
+      "cover": "user/covers/belly_of_the_beast.png",
+      "description": "The timely story of the unlikely friendship between notorious literary titan Norman Mailer and his protégé, Jack Henry Abbott.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Belly of the Beast.mp4",
+          "duration": 5478.22275
+        }
+      ]
+    },
+    {
+      "id": "bloodsport",
+      "name": "Bloodsport",
+      "cover": "user/covers/bloodsport.jpg",
+      "description": "&quot;Bloodsport&quot; follows Frank Dux, an American martial artist serving in the military, who decides to leave the army to compete in a martial arts tournament in Hong Kong where fights to the death can occur.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "duration": 5533.569708
+        }
+      ]
+    },
+    {
+      "id": "con_air",
+      "name": "Con Air",
+      "cover": "user/covers/con_air.jpg",
+      "description": "Former US Army Ranger, Cameron Poe, has just been paroled for manslaughter, but must stop a group of violent and deadly criminals from escaping the country after they seize control of the prison transport plane he is on.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Con Air.mp4",
+          "duration": 6926.92
+        }
+      ]
+    },
+    {
+      "id": "cyborg_cop_ii",
+      "name": "Cyborg Cop II",
+      "cover": "user/covers/cyborg_cop_ii.jpg",
+      "description": "",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
+          "duration": 5604.34875
+        }
+      ]
+    },
+    {
+      "id": "cyborg_cop_iii",
+      "name": "Cyborg Cop III",
+      "cover": "user/covers/cyborg_cop_iii.jpg",
+      "description": "A cop tries to stop a scientist&#x27;s experiments to turn students into cyborg-mercenaries. Contains violence and strong language.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Cyborg Cop III.mp4",
+          "duration": 5412.490417
+        }
+      ]
+    },
+    {
+      "id": "cyborg_cop",
+      "name": "Cyborg Cop",
+      "cover": "user/covers/cyborg_cop.jpg",
+      "description": "Ex-D.E.A. Agent Jack receives an emergency message from his brother Phillip, whose team was ambushed on the Caribbean island of St. Keith. Jack goes to St. Keith to find his brother, who has been turned into a cyborg by the drug runner he was after.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Cyborg Cop.mp4",
+          "duration": 5537.698833
+        }
+      ]
+    },
+    {
+      "id": "death_wish_1",
+      "name": "Death Wish",
+      "cover": "user/covers/death_wish_3.jpg",
+      "description": "A New York City architect becomes a one-man vigilante squad after his wife is murdered by street punks. In self-defense, the vengeful man kills muggers on the mean streets after dark.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Death Wish 1.mp4",
+          "duration": 5610.535011
+        }
+      ]
+    },
+    {
+      "id": "death_wish_2",
+      "name": "Death Wish II",
+      "cover": "user/covers/death_wish_3.jpg",
+      "description": "Architect Paul Kersey once again becomes a vigilante when he tries to find the five street punks who murdered his daughter and housekeeper, this time on the dark streets of Los Angeles.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Death Wish 2.mp4",
+          "duration": 5276.7715
+        }
+      ]
+    },
+    {
+      "id": "death_wish_3",
+      "name": "Death Wish 3",
+      "cover": "user/covers/death_wish_3.jpg",
+      "description": "Architect/vigilante Paul Kersey arrives back in New York City and immediately witnesses a friend getting killed. After being arrested, he&#x27;s recruited by a crooked police chief to fight a large gang terrorizing a dilapidated neighborhood.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Death Wish 3.mp4",
+          "duration": 5419.831083
+        }
+      ]
+    },
+    {
+      "id": "death_wish",
+      "name": "Death Wish",
+      "cover": "user/covers/death_wish.jpg",
+      "description": "Dr. Paul Kersey is an experienced trauma surgeon, a man who has spent his life saving lives. After an attack on his family, Paul embarks on his own mission for justice.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Death Wish.mp4",
+          "duration": 6475.488005
+        }
+      ]
+    },
+    {
+      "id": "escape_from_l_a",
+      "name": "Sammy&apos;s avonturen 2",
+      "cover": "user/covers/escape_from_new_york.jpg",
+      "description": "",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Escape from L.A.mp4",
+          "duration": 5794.079958
+        }
+      ]
+    },
+    {
+      "id": "escape_from_new_york",
+      "name": "Escape from New York",
+      "cover": "user/covers/escape_from_new_york.jpg",
+      "description": "In a dystopian 1997, a soldier-turned-bank robber is tasked with rescuing the U.S. President after he crashes into Manhattan, which has been turned into a giant maximum security prison.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Escape.from.New.York.mp4",
+          "duration": 5707.368333
+        }
+      ]
+    },
+    {
+      "id": "face_off",
+      "name": "Lat Mat",
+      "cover": null,
+      "description": "When he discovers a fortune in diamonds in the jungle, a man must flee the criminal gang with the help of a chance acquaintance.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Face.Off.mp4",
+          "duration": 8336.369708
+        }
+      ]
+    },
+    {
+      "id": "fire_down_below",
+      "name": "Fire Down Below",
+      "cover": "user/covers/fire_down_below.jpg",
+      "description": "A federal agent uncovers lucrative toxic waste dumps in Appalachia and must deal with the locals who want to keep their &#x27;gold mine&#x27; secret.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Fire Down Below.mp4",
+          "duration": 6271.723792
+        }
+      ]
+    },
+    {
+      "id": "firepower",
+      "name": "Firepower",
+      "cover": "user/covers/firepower.jpg",
+      "description": "A merc is hired by the F.B.I. to track down a powerful recluse criminal. A woman is also trying to track him down for her own personal vendetta.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Firepower.mp4",
+          "duration": 5731.67
+        }
+      ]
+    },
+    {
+      "id": "gone_in_sixty_seconds",
+      "name": "Gone in Sixty Seconds",
+      "cover": "user/covers/gone_in_sixty_seconds.jpg",
+      "description": "To save his brother, ex-thief Memphis must steal 50 luxury cars in 3 days for a crime boss. He reunites his old crew, including his mentor Otto and ex-girlfriend Sway, while police track them.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Gone.in.Sixty.Seconds.mp4",
+          "duration": 7077.028292
+        }
+      ]
+    },
+    {
+      "id": "half_past_dead",
+      "name": "Half Past Dead",
+      "cover": "user/covers/half_past_dead.jpg",
+      "description": "FBI agent Sasha Petrosevitch goes undercover in the newly reopened Alcatraz prison to find out who killed his wife. While there he stumbles onto a plot involving a death-row inmate and his $200 million stash of gold.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Half Past Dead.mp4",
+          "duration": 5913.365792
+        }
+      ]
+    },
+    {
+      "id": "hard_target",
+      "name": "Hard Target",
+      "cover": "user/covers/hard_target.jpg",
+      "description": "A woman hires a drifter as her guide through New Orleans in search of her missing father. In the process, they discover a deadly game of cat and mouse behind his disappearance.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Hard Target.mp4",
+          "duration": 5764.58
+        }
+      ]
+    },
+    {
+      "id": "hard_to_kill",
+      "name": "Hard to Kill",
+      "cover": "user/covers/hard_to_kill.jpg",
+      "description": "Targeted by the mob and its political supporters, hired assassins leave LAPD Detective Mason Storm for dead. Seven years later, he recovers from a deep coma, demanding justice and the opportunity to get even.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Hard To Kill.mp4",
+          "duration": 5518.346167
+        }
+      ]
+    },
+    {
+      "id": "hummingbird",
+      "name": "Hummingbird",
+      "cover": "user/covers/hummingbird.png",
+      "description": "A a black-ops assassin begins to question her skills and training when she&#x27;s placed on a questionable assignment.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Hummingbird.mp4",
+          "duration": 6036.329206
+        }
+      ]
+    },
+    {
+      "id": "into_the_sun",
+      "name": "Into the Sun",
+      "cover": "user/covers/into_the_sun.jpg",
+      "description": "When a government official is killed, an American operative with experience in the Yakuza culture is brought in to investigate.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Into The Sun.mp4",
+          "duration": 5811.07825
+        }
+      ]
+    },
+    {
+      "id": "kickboxer_1",
+      "name": "Kickboxer 1",
+      "cover": null,
+      "description": "A 2026 film.",
+      "genre": [
+        "Drama"
+      ],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Kickboxer 1.mp4",
+          "duration": 5857.142958
+        }
+      ]
+    },
+    {
+      "id": "marked_for_death",
+      "name": "Marked for Death",
+      "cover": "user/covers/marked_for_death.jpg",
+      "description": "A retired DEA agent is out to hunt down and take out a Jamaican drug posse that has targeted his family and him for murder.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Marked.For.Death.mp4",
+          "duration": 5369.61425
+        }
+      ]
+    },
+    {
+      "id": "on_deadly_ground",
+      "name": "On Deadly Ground",
+      "cover": "user/covers/on_deadly_ground.jpg",
+      "description": "A blowout firefighter takes on an environmentally destructive oil corporation by causing many deaths and explosions in Alaska.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+          "duration": 6103.806042
+        }
+      ]
+    },
+    {
+      "id": "out_of_reach",
+      "name": "Out of Reach",
+      "cover": "user/covers/out_of_reach.jpg",
+      "description": "A woman struggles to cut the ties between her family and her husband&#x27;s powerful new friends before it&#x27;s too late.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Out of Reach.mp4",
+          "duration": 4924.794875
+        }
+      ]
+    },
+    {
+      "id": "predator",
+      "name": "Predator",
+      "cover": "user/covers/predator.jpg",
+      "description": "A team of commandos on a mission in a Central American jungle find themselves hunted by an extraterrestrial warrior.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Predator.mp4",
+          "duration": 6395.764375
+        }
+      ]
+    },
+    {
+      "id": "savage_dog",
+      "name": "Savage Dog",
+      "cover": "user/covers/savage_dog.jpg",
+      "description": "A story set in Indochina in 1959, a land beyond rule and a time without mercy and the birth of a legend.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Savage.Dog.mp4",
+          "duration": 5710.621583
+        }
+      ]
+    },
+    {
+      "id": "soldier",
+      "name": "Soldier",
+      "cover": "user/covers/soldier.jpg",
+      "description": "A soldier trained from birth is deemed obsolete and dumped on a waste planet where he is reluctantly taken in by a community of defenseless, stranded wayfarers.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Soldier.mp4",
+          "duration": 5916.752993
+        }
+      ]
+    },
+    {
+      "id": "swordfish",
+      "name": "Swordfish",
+      "cover": "user/covers/swordfish.jpg",
+      "description": "A covert counter-terrorist unit called Black Cell led by Gabriel Shear wants the money to help finance their war against international terrorism, but it&#x27;s all locked away. Gabriel brings in convicted hacker Stanley Jobson to help him.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Swordfish.mp4",
+          "duration": 5955.658042
+        }
+      ]
+    },
+    {
+      "id": "the_beastmaster",
+      "name": "The Beastmaster",
+      "cover": "user/covers/the_beastmaster.jpg",
+      "description": "A sword-and-sorcery fantasy about a young man&#x27;s search for revenge. Armed with supernatural powers, the handsome hero and his animal allies wage war against marauding forces.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The Beastmaster.mp4",
+          "duration": 7107.141708
+        }
+      ]
+    },
+    {
+      "id": "the_mechanic_1",
+      "name": "The Mechanic",
+      "cover": "user/covers/the_mechanic.jpg",
+      "description": "An elite hitman teaches his trade to an apprentice who has a connection to one of his previous victims.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
+          "duration": 5564.607007
+        }
+      ]
+    },
+    {
+      "id": "the_mechanic_2_resurrection",
+      "name": "The Resurrection of the Christ: Part Two",
+      "cover": "user/covers/the_mechanic.jpg",
+      "description": "Plot unknown. Second part to the &#x27;The Passion of the Christ: Resurrection&#x27;.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
+          "duration": 5918.996417
+        }
+      ]
+    },
+    {
+      "id": "the_mechanic",
+      "name": "The Mechanic",
+      "cover": "user/covers/the_mechanic.jpg",
+      "description": "An elite hitman teaches his trade to an apprentice who has a connection to one of his previous victims.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The Mechanic.mp4",
+          "duration": 6005.165833
+        }
+      ]
+    },
+    {
+      "id": "the_quest",
+      "name": "The Quest",
+      "cover": "user/covers/the_quest.jpg",
+      "description": "A group of gentlemen of fortune visits a legendary &quot;Lost City&quot;, located in Tibet. They plan to steal a priceless statue &quot;Golden Dragon&quot; during the martial arts tournament.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The quest.mp4",
+          "duration": 5675.015011
+        }
+      ]
+    },
+    {
+      "id": "the_rock",
+      "name": "The Rock",
+      "cover": "user/covers/the_rock.jpg",
+      "description": "An FBI chemical weapons expert, and a former SAS soldier turned political prisoner, must break into Alcatraz prison when a rogue military group, led by a renegade general, take it over and threaten a nerve gas attack on San Francisco.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The Rock.mp4",
+          "duration": 7854.09625
+        }
+      ]
+    },
+    {
+      "id": "the_tournament",
+      "name": "The Tournament",
+      "cover": "user/covers/the_tournament.jpg",
+      "description": "A tournament is watched by dozens of wealthy men betting on which one of the 30 assassins will survive the next 24 hours &quot;kill or die&quot; and claim the USD10,000,000 prize. It takes place in an English town with plenty of CCTVs.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The Tournament..mp4",
+          "duration": 5534.529
+        }
+      ]
+    },
+    {
+      "id": "the_glimmer_man",
+      "name": "The Glimmer Man",
+      "cover": "user/covers/the_glimmer_man.jpg",
+      "description": "Two cops are forced to work together to solve a chain of mysterious killings by a killer nicknamed &quot;The Family Man&quot;.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
+          "duration": 5481.503991
+        }
+      ]
+    },
+    {
+      "id": "timecop",
+      "name": "Timecop",
+      "cover": "user/covers/timecop.jpg",
+      "description": "Max Walker, an officer for a security agency that regulates time travel, must fend for his life against a shady politician who&#x27;s intent on changing the past to control the future.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Timecop.mp4",
+          "duration": 5874.952417
+        }
+      ]
+    },
+    {
+      "id": "transporter_1",
+      "name": "Transporter 1",
+      "cover": "user/covers/transporter_2.jpg",
+      "description": "A 2026 film.",
+      "genre": [
+        "Drama"
+      ],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Transporter 1.mp4",
+          "duration": 5529.232042
+        }
+      ]
+    },
+    {
+      "id": "transporter_2",
+      "name": "Transporter 2",
+      "cover": "user/covers/transporter_2.jpg",
+      "description": "Transporter Frank Martin, surfaces in Miami, Florida and is implicated in the kidnapping of the young son of a powerful USA official.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Transporter 2.mp4",
+          "duration": 5293.265079
+        }
+      ]
+    },
+    {
+      "id": "transporter_3",
+      "name": "Transporter 3",
+      "cover": "user/covers/transporter_3.jpg",
+      "description": "Frank Martin is forced to deliver Valentina, the kidnapped daughter of a Ukrainian government official, from Marseilles to Odessa on the Black Sea. En route, he has to contend with thugs who want to intercept Valentina&#x27;s safe delivery.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Transporter 3.mp4",
+          "duration": 6238.315417
+        }
+      ]
+    },
+    {
+      "id": "universal_soldier_day_of_reckoning",
+      "name": "Universal Soldier: Day of Reckoning",
+      "cover": "user/covers/universal_soldier_day_of_reckoning.jpg",
+      "description": "John looks to take down Luc Deveraux after a home invasion claims his wife and daughter. The fight pits John against Andrew Scott and an army of genetically enhanced warriors; meanwhile, he must contend with a UniSol in relentless pursuit.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Universal.Soldier.Day.of.Reckoning.mp4",
+          "duration": 6538.615417
+        }
+      ]
+    },
+    {
+      "id": "universal_soldier",
+      "name": "Universal Soldier",
+      "cover": "user/covers/universal_soldier.jpg",
+      "description": "Soldiers who were killed in action are brought back to life in a top secret military experiment that creates superhuman warriors.",
+      "genre": [],
+      "rating": "NR",
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Videos/tatkotv3/Universal.Soldier.mp4",
+          "duration": 5968.295667
+        }
+      ]
+    }
+  ]
+}

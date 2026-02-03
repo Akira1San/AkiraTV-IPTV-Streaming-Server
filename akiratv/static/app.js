@@ -1550,5 +1550,189 @@ async function refreshGuide() {
     showToast(t('messages.guideRefreshed'), 'success');
 }
 
+// ========================================
+// FAST SCHEDULER FUNCTIONS
+// ========================================
+
+let fastSchedulerData = {
+    selectedChannel: '',
+    selectedCollections: [],
+    settings: {
+        startTime: '00:00',
+        scheduleHours: 24,
+        bumperFrequency: 3,
+        trailerProbability: 0.3
+    }
+};
+
+async function showFastSchedulerWizard() {
+    document.getElementById('fastSchedulerModal').style.display = 'block';
+    await loadFastSchedulerInterface();
+}
+
+function hideFastScheduler() {
+    document.getElementById('fastSchedulerModal').style.display = 'none';
+}
+
+async function loadFastSchedulerInterface() {
+    try {
+        // Load available channels and collections
+        const [channelsData, collectionsData] = await Promise.all([
+            apiCall('/api/channels'),
+            apiCall('/api/fast-schedule/collections')
+        ]);
+        
+        const channels = channelsData.channels.filter(ch => ch.enabled);
+        const collections = collectionsData.data.collections;
+        
+        const html = `
+            <div class="fast-scheduler-container">
+                <div class="fast-scheduler-step">
+                    <h4>⚡ Fast Scheduler Setup</h4>
+                    <p>Create dynamic schedules on-the-fly from your collections without JSON files.</p>
+                </div>
+                
+                <div class="fast-scheduler-step">
+                    <label class="setting-label">📺 Select Channel:</label>
+                    <select id="fastSchedulerChannel" class="setting-select" onchange="updateFastSchedulerChannel()">
+                        <option value="">Choose a channel...</option>
+                        ${channels.map(ch => `<option value="${ch.name}">${ch.name} (${ch.type})</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div class="fast-scheduler-step">
+                    <label class="setting-label">📁 Select Collections:</label>
+                    <div class="collections-grid">
+                        ${collections.map(col => `
+                            <label class="collection-checkbox">
+                                <input type="checkbox" value="${col.name}" onchange="updateFastSchedulerCollections()">
+                                <span>${col.name} (${col.video_count} videos)</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="fast-scheduler-step">
+                    <h5>⚙️ Schedule Settings</h5>
+                    <div class="settings-grid">
+                        <div class="setting-row">
+                            <label class="setting-label">🕐 Start Time:</label>
+                            <input type="time" id="fastSchedulerStartTime" value="00:00" class="setting-input">
+                        </div>
+                        <div class="setting-row">
+                            <label class="setting-label">⏰ Schedule Hours:</label>
+                            <input type="number" id="fastSchedulerHours" value="24" min="1" max="168" class="setting-input">
+                        </div>
+                        <div class="setting-row">
+                            <label class="setting-label">🎬 Bumper Frequency:</label>
+                            <input type="number" id="fastSchedulerBumpers" value="3" min="1" max="10" class="setting-input">
+                            <small>Insert bumper every N videos</small>
+                        </div>
+                        <div class="setting-row">
+                            <label class="setting-label">🎭 Trailer Probability:</label>
+                            <input type="range" id="fastSchedulerTrailers" value="30" min="0" max="100" class="setting-range">
+                            <span id="trailerPercentage">30%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fast-scheduler-preview" id="fastSchedulerPreview" style="display: none;">
+                    <h5>📋 Schedule Preview</h5>
+                    <div id="schedulePreviewContent"></div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('fastSchedulerBody').innerHTML = html;
+        
+        // Setup trailer percentage display
+        document.getElementById('fastSchedulerTrailers').addEventListener('input', function() {
+            document.getElementById('trailerPercentage').textContent = this.value + '%';
+        });
+        
+    } catch (error) {
+        console.error('Failed to load Fast Scheduler interface:', error);
+        document.getElementById('fastSchedulerBody').innerHTML = 
+            '<div style="color: var(--error); text-align: center; padding: 20px;">Failed to load Fast Scheduler interface</div>';
+    }
+}
+
+function updateFastSchedulerChannel() {
+    const channel = document.getElementById('fastSchedulerChannel').value;
+    fastSchedulerData.selectedChannel = channel;
+    updateFastSchedulerButton();
+}
+
+function updateFastSchedulerCollections() {
+    const checkboxes = document.querySelectorAll('.collection-checkbox input[type="checkbox"]:checked');
+    fastSchedulerData.selectedCollections = Array.from(checkboxes).map(cb => cb.value);
+    updateFastSchedulerButton();
+}
+
+function updateFastSchedulerButton() {
+    const button = document.getElementById('fastSchedulerAction');
+    const canGenerate = fastSchedulerData.selectedChannel && fastSchedulerData.selectedCollections.length > 0;
+    button.disabled = !canGenerate;
+}
+
+async function executeFastScheduler() {
+    try {
+        const button = document.getElementById('fastSchedulerAction');
+        button.disabled = true;
+        button.textContent = 'Generating...';
+        
+        // Get settings
+        const settings = {
+            collections: fastSchedulerData.selectedCollections,
+            start_time: document.getElementById('fastSchedulerStartTime').value,
+            schedule_hours: parseInt(document.getElementById('fastSchedulerHours').value),
+            bumper_frequency: parseInt(document.getElementById('fastSchedulerBumpers').value),
+            trailer_probability: parseFloat(document.getElementById('fastSchedulerTrailers').value) / 100
+        };
+        
+        const channel = fastSchedulerData.selectedChannel;
+        
+        // Step 1: Load collections
+        showToast('Loading collections...', 'info');
+        const loadResult = await apiCall(`/api/fast-schedule/${channel}/load-collections`, 'POST', settings);
+        
+        if (!loadResult.success) {
+            throw new Error(loadResult.error || 'Failed to load collections');
+        }
+        
+        // Step 2: Generate schedule
+        showToast('Generating schedule...', 'info');
+        const generateResult = await apiCall(`/api/fast-schedule/${channel}/generate`, 'POST', settings);
+        
+        if (!generateResult.success) {
+            throw new Error(generateResult.error || 'Failed to generate schedule');
+        }
+        
+        // Success!
+        showToast(
+            `✅ Fast Schedule Created!\n\n` +
+            `Channel: ${channel}\n` +
+            `Entries: ${generateResult.data.entries}\n` +
+            `Videos: ${generateResult.data.videos}\n` +
+            `Bumpers: ${generateResult.data.bumpers}\n\n` +
+            `Schedule is now active and saved as checkpoint.`,
+            'success'
+        );
+        
+        hideFastScheduler();
+        
+        // Refresh channels to show updated status
+        await loadChannels();
+        
+    } catch (error) {
+        console.error('Fast Scheduler error:', error);
+        showToast(`Failed to create fast schedule: ${error.message}`, 'error');
+    } finally {
+        const button = document.getElementById('fastSchedulerAction');
+        button.disabled = false;
+        button.textContent = 'Generate Schedule';
+    }
+}
+
 // Initialize on load
 init();

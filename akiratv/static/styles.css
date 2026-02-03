@@ -2831,3 +2831,106 @@ input:checked + .toggle-slider:before {
     line-height: 1.6;
     margin: 0;
 }
+
+/* ========================================
+   FAST SCHEDULER STYLES
+   ======================================== */
+
+.fast-scheduler-container {
+    padding: 20px;
+}
+
+.fast-scheduler-step {
+    margin-bottom: 25px;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+}
+
+.fast-scheduler-step h4 {
+    margin: 0 0 10px 0;
+    color: var(--accent);
+}
+
+.fast-scheduler-step h5 {
+    margin: 0 0 15px 0;
+    color: var(--text-primary);
+}
+
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.collection-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.collection-checkbox:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent);
+}
+
+.collection-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.collection-checkbox input[type="checkbox"]:checked + span {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.settings-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.setting-input {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.setting-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.setting-range {
+    width: 100%;
+    margin: 0 10px;
+}
+
+.fast-scheduler-preview {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+}
+
+.fast-scheduler-preview h5 {
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+}
+
+#schedulePreviewContent {
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.4;
+}

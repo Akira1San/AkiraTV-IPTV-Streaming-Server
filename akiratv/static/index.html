@@ -185,6 +185,17 @@
                         </button>
                     </div>
                 </div>
+                
+                <div class="wizard-card">
+                    <div class="wizard-card-icon">⚡</div>
+                    <div class="wizard-card-content">
+                        <h3>Fast Scheduler</h3>
+                        <p>Create dynamic, on-the-fly schedules from your collections without JSON files. Perfect for quick channel setup with automatic bumpers and trailers.</p>
+                        <button class="btn btn-primary wizard-btn" onclick="showFastSchedulerWizard()">
+                            <span>⚡ Fast Schedule</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -484,6 +495,28 @@
                     </button>
                     <button class="btn btn-primary" id="schedulerWizardNext" onclick="schedulerWizardNext()" disabled>
                         <span data-i18n="wizard.next">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fast Scheduler Modal -->
+        <div class="modal wizard-modal" id="fastSchedulerModal">
+            <div class="modal-content wizard-modal-content">
+                <div class="modal-header">
+                    <h3>⚡ Fast Scheduler</h3>
+                    <button class="modal-close" onclick="hideFastScheduler()">&times;</button>
+                </div>
+                <div class="modal-body wizard-modal-body" id="fastSchedulerBody">
+                    <div class="wizard-loading">
+                        <div class="loading"></div>
+                        <span>Loading Fast Scheduler...</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="hideFastScheduler()">Cancel</button>
+                    <button class="btn btn-primary" id="fastSchedulerAction" onclick="executeFastScheduler()" disabled>
+                        Generate Schedule
                     </button>
                 </div>
             </div>

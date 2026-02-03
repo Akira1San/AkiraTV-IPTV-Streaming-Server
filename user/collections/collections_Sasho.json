@@ -1,8 +1,8 @@
 {
   "collections": [
     {
-      "id": "encoded_akira_1988_1080p_bluray_x265_dd5_1_war",
-      "name": "Akira.1988.1080p.bluray.x265.dd5.1-war",
+      "id": "akira_1988",
+      "name": "Akira",
       "cover": null,
       "description": "",
       "genre": [],
@@ -16,8 +16,8 @@
       ]
     },
     {
-      "id": "encoded_ghost_in_the_shell_1995_720p_bluray_x264_dts_es_thora",
-      "name": "Ghost.in.the.shell.1995.720p.bluray.x264.dts-es-thora",
+      "id": "ghost_in_the_shell_1995",
+      "name": "Ghost in the shell 1995",
       "cover": null,
       "description": "",
       "genre": [],
@@ -31,8 +31,8 @@
       ]
     },
     {
-      "id": "encoded_the_venus_wars_v3_dvdrip_ac3_animegod",
-      "name": "The.venus.wars.v3.dvdrip Ac3 Animegod",
+      "id": "the_venus_wars",
+      "name": "The venus wars",
       "cover": null,
       "description": "",
       "genre": [],

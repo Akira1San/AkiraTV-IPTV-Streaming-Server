@@ -37,7 +37,7 @@
   },
   "channels": {
     "myAkiraTV": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear"
     },
     "live": {
@@ -49,7 +49,7 @@
       "enable_subtitles": true
     },
     "akiratv": {
-      "enabled": false,
+      "enabled": true,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -64,7 +64,7 @@
       "enable_subtitles": false
     },
     "horror": {
-      "enabled": false,
+      "enabled": true,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -79,7 +79,7 @@
       "enable_subtitles": false
     },
     "TatkoTV": {
-      "enabled": false,
+      "enabled": true,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -98,7 +98,7 @@
       "type": "linear"
     },
     "asian_vids": {
-      "enabled": false,
+      "enabled": true,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -117,7 +117,17 @@
     },
     "Sasho": {
       "enabled": true,
-      "type": "vod",
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "akiratv_calendar_example": {
+      "enabled": false
+    },
+    "Fast": {
+      "enabled": true,
+      "type": "linear",
       "transcoding": {
         "enabled": false
       }

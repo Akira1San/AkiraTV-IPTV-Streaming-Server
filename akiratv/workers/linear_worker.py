@@ -204,6 +204,13 @@ class LinearWorker(BaseWorker):
     def calculate_seek_time(self, entry: Dict) -> float:
         """Calculate how many seconds into the video we should start."""
         try:
+            # Check if this is a Fast Scheduler entry with pre-calculated resume position
+            if "resume_position" in entry:
+                resume_pos = float(entry["resume_position"])
+                self.logger.info(f"Using Fast Scheduler resume position: {resume_pos:.2f}s")
+                return max(0, resume_pos)
+            
+            # Traditional schedule entry - calculate based on time
             scheduled_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             scheduled_dt = datetime.combine(date.today(), scheduled_time)
             current_dt = datetime.now()
