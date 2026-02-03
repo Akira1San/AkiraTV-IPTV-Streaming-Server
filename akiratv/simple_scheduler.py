@@ -215,6 +215,7 @@ class SimpleSchedulerWizard:
         added_scrollbar = ttk.Scrollbar(added_list_frame, orient="vertical", command=self.added_list.yview)
         added_scrollbar.pack(side="right", fill="y")
         self.added_list.configure(yscrollcommand=added_scrollbar.set)
+        self.added_list.bind("<<ListboxSelect>>", self.on_added_video_select)
         
         # Count display
         self.added_count_label = ttk.Label(added_container, text="Total: 0 videos", font=("TkDefaultFont", 9))
@@ -476,6 +477,22 @@ class SimpleSchedulerWizard:
             self.video_to_collection_map.clear()
             self.update_added_list_display()
             messagebox.showinfo("Success", "All videos removed!")
+    
+    def on_added_video_select(self, event):
+        """Handle added video selection - update info panel with selected video"""
+        selection = self.added_list.curselection()
+        if not selection:
+            self.clear_info_panel()
+            self.selected_video = None
+            return
+        
+        # Use first selected video for info panel
+        idx = selection[0]
+        video = self.added_videos[idx]
+        self.selected_video = video
+        
+        # Update info panel with selected video data
+        self.update_info_panel(video)
 
     # === PREVIEW PANEL METHODS ===
     
@@ -563,9 +580,9 @@ class SimpleSchedulerWizard:
         self._save_schedule(self.current_schedule, self.current_channel)
 
     def _generate_random_schedule(self, all_videos, new_schedule, current_time, total_duration_needed, target_channel):
-        """Generate random schedule with 12-hour no-repeat rule and episodic handling"""
-        recent_videos = []  # Track videos played in last 12 hours
-        twelve_hours = 12 * 3600  # 12 hours in seconds
+        """Generate random schedule with 24-hour no-repeat rule and episodic handling"""
+        recent_videos = []  # Track videos played in last 24 hours
+        no_repeat_hours = 24 * 3600  # 24 hours in seconds
         
         # Detect episodic content if enabled
         if self.episodic_var.get():
@@ -577,10 +594,10 @@ class SimpleSchedulerWizard:
             episode_trackers = {}
         
         while (current_time - datetime(2023, 1, 2, 0, 0)).total_seconds() < total_duration_needed:
-            # Clean up recent_videos (remove entries older than 12 hours)
+            # Clean up recent_videos (remove entries older than 24 hours)
             current_seconds = (current_time - datetime(2023, 1, 2, 0, 0)).total_seconds()
             recent_videos = [(path, time) for path, time in recent_videos 
-                           if current_seconds - time < twelve_hours]
+                           if current_seconds - time < no_repeat_hours]
             
             recent_paths = {path for path, _ in recent_videos}
             
@@ -620,7 +637,7 @@ class SimpleSchedulerWizard:
                     # Pick random standalone video
                     video = random.choice(available_standalone if available_standalone else standalone_videos)
             else:
-                # Standard random selection with 12-hour rule
+                # Standard random selection with 24-hour rule
                 available_videos = [v for v in all_videos if v["path"] not in recent_paths]
                 if not available_videos:
                     # Reset if no videos available (emergency fallback)
