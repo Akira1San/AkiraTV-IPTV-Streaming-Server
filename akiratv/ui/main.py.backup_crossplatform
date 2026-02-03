@@ -770,7 +770,7 @@ class AkiraTVApp:
         try:
             storage = self.config_data.get("storage", {})
             if storage.get("type") == "ram":
-                output_root = Path(storage.get("ram_path", "./output"))
+                output_root = Path(storage.get("ram_path", "R:/akiratv"))
             else:
                 output_root = Path(storage.get("disk_path", "./output"))
             if not output_root.exists():
@@ -839,7 +839,7 @@ class AkiraTVApp:
             # Determine output root based on storage mode
             storage = self.config_data.get("storage", {})
             if storage.get("type") == "ram":
-                hls_root = Path(storage.get("ram_path", "./output"))
+                hls_root = Path(storage.get("ram_path", "R:/akiratv"))
             else:
                 hls_root = Path(storage.get("disk_path", "./output"))
             

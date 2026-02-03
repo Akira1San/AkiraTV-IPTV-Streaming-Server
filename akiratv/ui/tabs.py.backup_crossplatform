@@ -256,7 +256,7 @@ class SettingsTab(ttk.Frame):
         storage_combo.bind("<<ComboboxSelected>>", self.on_storage_mode_change)
 
         self.app.disk_path = tk.StringVar(value=self.app.config_data.get("storage", {}).get("disk_path", "./output"))
-        self.app.ram_path = tk.StringVar(value=self.app.config_data.get("storage", {}).get("ram_path", "./output"))
+        self.app.ram_path = tk.StringVar(value=self.app.config_data.get("storage", {}).get("ram_path", "R:/akiratv"))
         
         self.app.disk_path_label = ttk.Label(storage_frame, text="Disk Path:")
         self.app.disk_path_entry = ttk.Entry(storage_frame, textvariable=self.app.disk_path, width=40)

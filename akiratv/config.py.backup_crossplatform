@@ -27,8 +27,8 @@ DEFAULT_CONFIG = {
         }
     },
     "storage": {
-        "type": "disk",
-        "ram_path": "./output",
+        "type": "ram",
+        "ram_path": "R:/akiratv",
         "disk_path": "./output"
     },
     "output": {

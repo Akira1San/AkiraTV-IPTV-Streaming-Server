@@ -397,7 +397,7 @@
                                 </div>
                                 <div class="config-item" id="ramPathItem" style="display: none;">
                                     <label>RAM Path:</label>
-                                    <input type="text" id="ramPath" class="config-input" value="./output">
+                                    <input type="text" id="ramPath" class="config-input" value="R:/akiratv">
                                 </div>
                             </div>
                         </div>

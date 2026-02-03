@@ -528,7 +528,7 @@ def generate_xmltv():
         # Determine output directory based on storage config
         storage = config.get("storage", {})
         if storage.get("type") == "ram":
-            output_dir = Path(storage.get("ram_path", "./output"))
+            output_dir = Path(storage.get("ram_path", "R:/akiratv"))
         else:
             output_dir = Path(storage.get("disk_path", "./output"))
         

@@ -15,12 +15,12 @@
     }
   },
   "storage": {
-    "type": "ram",
-    "ram_path": "R:/akiratv",
+    "type": "disk",
+    "ram_path": "./output",
     "disk_path": "./output"
   },
   "output": {
-    "mode": "ram_http",
+    "mode": "http_hls",
     "http": {
       "port": 8081,
       "bind": "0.0.0.0"

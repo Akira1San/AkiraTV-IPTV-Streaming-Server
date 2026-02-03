@@ -40,7 +40,7 @@ class HttpServer:
             print(f"[DEBUG] No storage config found, using defaults")
         
         if storage.get("type") == "ram":
-            ram_path = storage.get("ram_path", "./output")
+            ram_path = storage.get("ram_path", "R:/akiratv")
             #print(f"[DEBUG] RAM storage base path: {ram_path}")
             base_path = Path(ram_path)
         else:
@@ -93,7 +93,7 @@ class HttpServer:
         """Serve static files like xmltv.xml and channels.m3u"""
         storage = self.stats.get("config", {}).get("storage", {})
         if storage.get("type") == "ram":
-            base_path = Path(storage.get("ram_path", "./output"))
+            base_path = Path(storage.get("ram_path", "R:/akiratv"))
         else:
             base_path = Path(storage.get("disk_path", "./output"))
             
@@ -192,7 +192,7 @@ class HttpServer:
         # Determine the base storage path
         storage = self.stats.get("config", {}).get("storage", {})
         if storage.get("type") == "ram":
-            base_path = Path(storage.get("ram_path", "./output"))
+            base_path = Path(storage.get("ram_path", "R:/akiratv"))
         else:
             base_path = Path(storage.get("disk_path", "./output"))
             

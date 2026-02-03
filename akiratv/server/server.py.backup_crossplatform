@@ -108,7 +108,7 @@ def serve_hls(channel, filename):
 
     storage = akiratv_instance.config.data.get("storage", {})
     if storage.get("type") == "ram":
-        output_root = Path(storage.get("ram_path", "./output"))
+        output_root = Path(storage.get("ram_path", "R:/akiratv"))
     else:
         output_root = Path(storage.get("disk_path", "./output"))
 

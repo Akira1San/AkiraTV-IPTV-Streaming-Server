@@ -1182,7 +1182,7 @@ async function loadConfigurationData() {
         const storage = config.storage || {};
         document.getElementById('storageMode').value = storage.type || 'disk';
         document.getElementById('diskPath').value = storage.disk_path || './output';
-        document.getElementById('ramPath').value = storage.ram_path || './output';
+        document.getElementById('ramPath').value = storage.ram_path || 'R:/akiratv';
         toggleStoragePath();
         
         // Output settings
