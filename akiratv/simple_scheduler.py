@@ -277,23 +277,52 @@ class SimpleSchedulerWizard:
         
         ttk.Label(chan_episodic_frame, text="Channel:").pack(side="left")
         self.channel_var = tk.StringVar(value="critters")
-        chan_combo = ttk.Combobox(chan_episodic_frame, textvariable=self.channel_var, 
+        chan_combo = ttk.Combobox(chan_episodic_frame, textvariable=self.channel_var,
                                  values=self.get_known_channels(), width=12)
         chan_combo.set("critters")
         chan_combo.pack(side="left", padx=5)
-        
+
         self.episodic_var = tk.BooleanVar(value=False)
-        episodic_check = ttk.Checkbutton(chan_episodic_frame, text="Auto-detect episodic content", 
+        episodic_check = ttk.Checkbutton(chan_episodic_frame, text="Auto-detect episodic content",
                                         variable=self.episodic_var)
         episodic_check.pack(side="left", padx=10)
         self.create_tooltip(episodic_check, "Groups videos into series (e.g., MySeries S01E01, S01E02) and treats them as episodic content.")
-        
+
         self.sequential_var = tk.BooleanVar(value=False)
-        sequential_check = ttk.Checkbutton(chan_episodic_frame, text="Sequential Episode Tracking", 
+        sequential_check = ttk.Checkbutton(chan_episodic_frame, text="Sequential Episode Tracking",
                                           variable=self.sequential_var)
         sequential_check.pack(side="left", padx=10)
         self.create_tooltip(sequential_check, "When the same series is picked multiple times, plays episodes in order (1→2→3→loop). Session-based only.")
-        
+
+        # Schedule mode selection (Weekly/Calendar)
+        mode_frame = ttk.Frame(chan_episodic_frame)
+        mode_frame.pack(side="left", padx=20)
+
+        ttk.Label(mode_frame, text="Mode:").pack(side="left")
+        self.schedule_mode_var = tk.StringVar(value="weekly")
+        ttk.Radiobutton(mode_frame, text="Weekly", variable=self.schedule_mode_var,
+                        value="weekly", command=self.on_schedule_mode_change).pack(side="left", padx=2)
+        ttk.Radiobutton(mode_frame, text="Calendar", variable=self.schedule_mode_var,
+                        value="calendar", command=self.on_schedule_mode_change).pack(side="left", padx=2)
+
+        # Calendar date range (hidden by default)
+        calendar_frame = ttk.Frame(chan_episodic_frame)
+        calendar_frame.pack(side="left", padx=10)
+        self.calendar_frame = calendar_frame
+
+        ttk.Label(calendar_frame, text="From:").pack(side="left")
+        self.start_date_var = tk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
+        start_date_entry = ttk.Entry(calendar_frame, textvariable=self.start_date_var, width=10)
+        start_date_entry.pack(side="left", padx=2)
+
+        ttk.Label(calendar_frame, text="To:").pack(side="left")
+        self.end_date_var = tk.StringVar(value=(datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d"))
+        end_date_entry = ttk.Entry(calendar_frame, textvariable=self.end_date_var, width=10)
+        end_date_entry.pack(side="left", padx=2)
+
+        # Hide calendar frame initially
+        calendar_frame.pack_forget()
+
         # Preview buttons and save button on one line
         preview_frame = ttk.Frame(bottom_frame)
         preview_frame.pack(fill="x")
@@ -512,37 +541,71 @@ class SimpleSchedulerWizard:
         if not self.current_schedule:
             self.preview_list.delete(0, tk.END)
             return
-        
+
         selected_day = self.day_var.get()
-        day_schedule = self.current_schedule.get(selected_day, [])
-        
-        self.preview_list.delete(0, tk.END)
-        
-        if not day_schedule:
-            self.preview_list.insert(tk.END, f"No entries for {selected_day.title()}")
-            return
-        
-        # Add day header
-        self.preview_list.insert(tk.END, f"=== {selected_day.upper()} ===")
-        self.preview_list.insert(tk.END, "")
-        
-        # Add schedule entries
-        for entry in day_schedule:
-            time_str = entry["time"]
-            file_path = entry["file"]
-            file_name = Path(file_path).name
-            
-            # Truncate long filenames for display
-            if len(file_name) > 40:
-                display_name = file_name[:37] + "..."
+
+        # Check if this is calendar mode
+        if hasattr(self, 'current_schedule_mode') and self.current_schedule_mode == "calendar":
+            calendar = self.current_schedule.get("calendar", {})
+            # Look for calendar entry matching selected day
+            calendar_key = None
+            for key in calendar.keys():
+                if key.endswith(f"_{selected_day}"):
+                    calendar_key = key
+                    break
+
+            self.preview_list.delete(0, tk.END)
+
+            if calendar_key:
+                data = calendar[calendar_key]
+                self.preview_list.insert(tk.END, f"=== {data['date']} ({data['day']}) ===")
+                self.preview_list.insert(tk.END, "")
+
+                for entry in data.get("entries", []):
+                    time_str = entry["time"]
+                    file_path = entry["file"]
+                    file_name = Path(file_path).name
+                    if len(file_name) > 40:
+                        display_name = file_name[:37] + "..."
+                    else:
+                        display_name = file_name
+                    self.preview_list.insert(tk.END, f"{time_str} - {display_name}")
+
+                self.preview_list.insert(tk.END, "")
+                self.preview_list.insert(tk.END, f"Calendar entries: {len(data.get('entries', []))}")
             else:
-                display_name = file_name
-            
-            self.preview_list.insert(tk.END, f"{time_str} - {display_name}")
-        
-        # Add summary
-        self.preview_list.insert(tk.END, "")
-        self.preview_list.insert(tk.END, f"Total entries: {len(day_schedule)}")
+                self.preview_list.insert(tk.END, f"No calendar entries for {selected_day.title()}")
+        else:
+            # Weekly mode
+            day_schedule = self.current_schedule.get(selected_day, [])
+
+            self.preview_list.delete(0, tk.END)
+
+            if not day_schedule:
+                self.preview_list.insert(tk.END, f"No entries for {selected_day.title()}")
+                return
+
+            # Add day header
+            self.preview_list.insert(tk.END, f"=== {selected_day.upper()} ===")
+            self.preview_list.insert(tk.END, "")
+
+            # Add schedule entries
+            for entry in day_schedule:
+                time_str = entry["time"]
+                file_path = entry["file"]
+                file_name = Path(file_path).name
+
+                # Truncate long filenames for display
+                if len(file_name) > 40:
+                    display_name = file_name[:37] + "..."
+                else:
+                    display_name = file_name
+
+                self.preview_list.insert(tk.END, f"{time_str} - {display_name}")
+
+            # Add summary
+            self.preview_list.insert(tk.END, "")
+            self.preview_list.insert(tk.END, f"Total entries: {len(day_schedule)}")
     
     def copy_schedule(self):
         """Copy the current schedule preview to clipboard"""
@@ -568,14 +631,176 @@ class SimpleSchedulerWizard:
             else:
                 schedule_text += "No entries\n"
             schedule_text += "\n"
-        
+
+        # If calendar mode, add calendar entries
+        if hasattr(self, 'current_schedule_mode') and self.current_schedule_mode == "calendar":
+            calendar = self.current_schedule.get("calendar", {})
+            if calendar:
+                schedule_text += "=" * 50 + "\n"
+                schedule_text += "CALENDAR ENTRIES\n"
+                schedule_text += "=" * 50 + "\n\n"
+                for date_key in sorted(calendar.keys()):
+                    data = calendar[date_key]
+                    schedule_text += f"=== {data['date']} ({data['day']}) ===\n"
+                    for entry in data.get("entries", []):
+                        time_str = entry["time"]
+                        file_path = entry["file"]
+                        file_name = Path(file_path).name
+                        schedule_text += f"{time_str} - {file_name}\n"
+                    schedule_text += "\n"
+
         # Copy to clipboard
         self.root.clipboard_clear()
         self.root.clipboard_append(schedule_text)
         messagebox.showinfo("Copied", "Schedule copied to clipboard!")
-    
+
+    def on_schedule_mode_change(self):
+        """Handle schedule mode change (Weekly/Calendar)"""
+        if self.schedule_mode_var.get() == "calendar":
+            self.calendar_frame.pack(side="left", padx=10)
+        else:
+            self.calendar_frame.pack_forget()
+
     # === SCHEDULE GENERATION METHODS ===
-    
+
+    def _generate_calendar_schedule(self, mode, start_date, end_date, target_channel):
+        """Generate calendar schedule for a date range (using same timing logic as weekly)"""
+        calendar = {}
+
+        # Calculate total days and duration needed
+        total_days = (end_date - start_date).days + 1
+        total_duration_needed = total_days * 24 * 3600
+
+        # Generate schedule entries directly using calendar dates
+        current_time = datetime(start_date.year, start_date.month, start_date.day, 0, 0)  # Start at midnight on start date
+        total_seconds_needed = total_days * 24 * 3600
+
+        if mode == "random":
+            # Use random generation - but track dates instead of weekly
+            recent_videos = []  # Track videos played in last 24 hours
+            no_repeat_hours = 24 * 3600  # 24 hours in seconds
+
+            # Detect episodic content if enabled
+            if self.episodic_var.get():
+                episodic_groups, standalone_videos = self.detect_episodic_content(self.added_videos)
+                episode_trackers = {series: 0 for series in episodic_groups.keys()}
+            else:
+                episodic_groups = {}
+                standalone_videos = self.added_videos
+                episode_trackers = {}
+
+            while (current_time - datetime(start_date.year, start_date.month, start_date.day, 0, 0)).total_seconds() < total_seconds_needed:
+                # Clean up recent_videos
+                current_seconds = (current_time - datetime(start_date.year, start_date.month, start_date.day, 0, 0)).total_seconds()
+                recent_videos = [(path, time) for path, time in recent_videos 
+                               if current_seconds - time < no_repeat_hours]
+                
+                recent_paths = {path for path, _ in recent_videos}
+                
+                # Choose next video
+                if self.episodic_var.get() and episodic_groups:
+                    available_standalone = [v for v in standalone_videos if v["path"] not in recent_paths]
+                    available_series = [series for series in episodic_groups.keys() 
+                                      if episodic_groups[series][episode_trackers[series]]["path"] not in recent_paths]
+                    
+                    if not available_standalone and not available_series:
+                        recent_videos = []
+                        recent_paths = set()
+                        available_standalone = standalone_videos
+                        available_series = list(episodic_groups.keys())
+                    
+                    if available_standalone and available_series:
+                        choice_type = random.choice(["standalone", "series"])
+                    elif available_standalone:
+                        choice_type = "standalone"
+                    elif available_series:
+                        choice_type = "series"
+                    else:
+                        choice_type = "standalone"
+                    
+                    if choice_type == "series" and available_series:
+                        series_name = random.choice(available_series)
+                        episode_idx = episode_trackers[series_name]
+                        
+                        if self.sequential_var.get():
+                            video = episodic_groups[series_name][episode_idx]
+                        else:
+                            video = random.choice(episodic_groups[series_name])
+                            episode_idx = episodic_groups[series_name].index(video)
+                        
+                        episode_trackers[series_name] = (episode_idx + 1) % len(episodic_groups[series_name])
+                    else:
+                        video = random.choice(available_standalone if available_standalone else standalone_videos)
+                else:
+                    available_videos = [v for v in self.added_videos if v["path"] not in recent_paths]
+                    if not available_videos:
+                        recent_videos = []
+                        available_videos = self.added_videos
+                
+                    video = random.choice(available_videos)
+            
+                # Add to calendar schedule
+                day_name = current_time.strftime("%A").lower()
+                date_str = current_time.strftime("%Y-%m-%d")
+                calendar_key = f"{date_str}_{day_name}"
+                
+                time_str = current_time.strftime("%H:%M:%S")
+                
+                if calendar_key not in calendar:
+                    calendar[calendar_key] = {
+                        "date": date_str,
+                        "day": day_name.title(),
+                        "description": f"Auto-generated calendar schedule",
+                        "entries": []
+                    }
+                
+                calendar[calendar_key]["entries"].append({
+                    "time": time_str,
+                    "file": video["path"],
+                    "channel": target_channel,
+                    "source": "random"
+                })
+                
+                recent_videos.append((video["path"], current_seconds))
+                current_time += timedelta(seconds=video["duration"])
+        else:
+            # Sequential generation - track dates instead of weekly
+            seq_index = 0
+            while (current_time - datetime(start_date.year, start_date.month, start_date.day, 0, 0)).total_seconds() < total_seconds_needed:
+                video = self.added_videos[seq_index]
+                seq_index = (seq_index + 1) % len(self.added_videos)
+                
+                day_name = current_time.strftime("%A").lower()
+                date_str = current_time.strftime("%Y-%m-%d")
+                calendar_key = f"{date_str}_{day_name}"
+                
+                time_str = current_time.strftime("%H:%M:%S")
+                
+                if calendar_key not in calendar:
+                    calendar[calendar_key] = {
+                        "date": date_str,
+                        "day": day_name.title(),
+                        "description": f"Auto-generated calendar schedule",
+                        "entries": []
+                    }
+                
+                calendar[calendar_key]["entries"].append({
+                    "time": time_str,
+                    "file": video["path"],
+                    "channel": target_channel,
+                    "source": "sequential"
+                })
+                
+                current_time += timedelta(seconds=video["duration"])
+
+        # Sort entries within each day by time
+        for calendar_key in calendar:
+            calendar[calendar_key]["entries"].sort(key=lambda x: x["time"])
+
+        return {
+            "calendar": calendar
+        }
+
     def preview_schedule(self, mode="random"):
         """Generate schedule preview without saving"""
         if not self.added_videos:
@@ -587,30 +812,61 @@ class SimpleSchedulerWizard:
             messagebox.showerror("Error", "Please enter a channel name!")
             return
 
-        # Generate schedule preview
-        total_duration_needed = 7 * 24 * 3600
-        new_schedule = {day: [] for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
-        
-        current_time = datetime(2023, 1, 2, 0, 0)  # Monday 00:00
-        
-        if mode == "random":
-            self._generate_random_schedule(self.added_videos, new_schedule, current_time, total_duration_needed, target_channel)
-        else:  # sequential
-            self._generate_sequential_schedule(self.added_videos, new_schedule, current_time, total_duration_needed, target_channel)
-        
-        # Store the schedule and update preview
-        self.current_schedule = new_schedule
-        self.current_channel = target_channel
-        self.current_mode = mode
-        self.update_preview_display()
-        
-        # Enable save button
-        self.save_button.configure(state="normal")
-        
-        # Update info
-        episodic_status = " (with episodic sequencing)" if self.episodic_var.get() else ""
-        total_entries = sum(len(entries) for entries in new_schedule.values())
-        self.preview_info.configure(text=f"{mode.title()} schedule generated: {total_entries} entries{episodic_status}")
+        schedule_mode = self.schedule_mode_var.get()
+
+        if schedule_mode == "calendar":
+            # Calendar mode: generate schedule for date range
+            try:
+                start_date = datetime.strptime(self.start_date_var.get(), "%Y-%m-%d")
+                end_date = datetime.strptime(self.end_date_var.get(), "%Y-%m-%d")
+                if end_date < start_date:
+                    messagebox.showerror("Error", "End date must be after start date!")
+                    return
+            except ValueError as e:
+                messagebox.showerror("Error", f"Invalid date format: {e}")
+                return
+
+            new_schedule = self._generate_calendar_schedule(mode, start_date, end_date, target_channel)
+            self.current_schedule = new_schedule
+            self.current_channel = target_channel
+            self.current_mode = mode
+            self.current_schedule_mode = "calendar"
+            self.update_preview_display()
+
+            # Enable save button
+            self.save_button.configure(state="normal")
+
+            # Update info
+            episodic_status = " (with episodic)" if self.episodic_var.get() else ""
+            total_entries = sum(len(entries) for entries in new_schedule.get("weekly", {}).values())
+            calendar_entries = sum(len(data.get("entries", [])) for data in new_schedule.get("calendar", {}).values())
+            self.preview_info.configure(text=f"Calendar schedule: {total_entries} weekly + {calendar_entries} calendar entries{episodic_status}")
+        else:
+            # Weekly mode: generate schedule for one week
+            total_duration_needed = 7 * 24 * 3600
+            new_schedule = {day: [] for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
+
+            current_time = datetime(2023, 1, 2, 0, 0)  # Monday 00:00
+
+            if mode == "random":
+                self._generate_random_schedule(self.added_videos, new_schedule, current_time, total_duration_needed, target_channel)
+            else:  # sequential
+                self._generate_sequential_schedule(self.added_videos, new_schedule, current_time, total_duration_needed, target_channel)
+
+            # Store the schedule and update preview
+            self.current_schedule = new_schedule
+            self.current_channel = target_channel
+            self.current_mode = mode
+            self.current_schedule_mode = "weekly"
+            self.update_preview_display()
+
+            # Enable save button
+            self.save_button.configure(state="normal")
+
+            # Update info
+            episodic_status = " (with episodic)" if self.episodic_var.get() else ""
+            total_entries = sum(len(entries) for entries in new_schedule.values())
+            self.preview_info.configure(text=f"{mode.title()} schedule generated: {total_entries} entries{episodic_status}")
 
     def save_current_schedule(self):
         """Save the currently previewed schedule"""
@@ -739,23 +995,51 @@ class SimpleSchedulerWizard:
         """Save the generated schedule to file"""
         schedule_filename = SCHEDULE_DIR / f"schedule_{target_channel}.json"
 
-        # Build new weekly schedule for this channel
-        new_weekly = {day: [] for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
-        for day, entries in new_schedule.items():
-            new_weekly[day] = entries
+        # Check if this is a calendar schedule
+        if "calendar" in new_schedule:
+            # Calendar mode: save with both calendar and weekly sections
+            calendar_data = new_schedule["calendar"]
+            weekly_data = new_schedule.get("weekly", {})
 
-        # Sort each day's entries by time
-        for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
-            new_weekly[day].sort(key=lambda x: x["time"])
+            # Sort weekly entries by time
+            for day in weekly_data:
+                weekly_data[day].sort(key=lambda x: x["time"])
 
-        final_schedule = {"weekly": new_weekly}
+            # Sort calendar entries by time within each date
+            for date_key, date_data in calendar_data.items():
+                if "entries" in date_data:
+                    date_data["entries"].sort(key=lambda x: x["time"])
 
-        with open(schedule_filename, "w", encoding="utf-8") as f:
-            json.dump(final_schedule, f, indent=2, ensure_ascii=False)
-        
-        episodic_status = " (with episodic sequencing)" if self.episodic_var.get() else ""
-        messagebox.showinfo("Success", f"Schedule for '{target_channel}' saved to {schedule_filename}!{episodic_status}")
-        
+            final_schedule = {
+                "weekly": weekly_data,
+                "calendar": calendar_data
+            }
+
+            with open(schedule_filename, "w", encoding="utf-8") as f:
+                json.dump(final_schedule, f, indent=2, ensure_ascii=False)
+
+            calendar_count = sum(len(data.get("entries", [])) for data in calendar_data.values())
+            weekly_count = sum(len(entries) for entries in weekly_data.values())
+            episodic_status = " (with episodic)" if self.episodic_var.get() else ""
+            messagebox.showinfo("Success", f"Calendar schedule for '{target_channel}': {weekly_count} weekly + {calendar_count} calendar entries saved!{episodic_status}")
+        else:
+            # Weekly mode: save as before
+            new_weekly = {day: [] for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
+            for day, entries in new_schedule.items():
+                new_weekly[day] = entries
+
+            # Sort each day's entries by time
+            for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
+                new_weekly[day].sort(key=lambda x: x["time"])
+
+            final_schedule = {"weekly": new_weekly}
+
+            with open(schedule_filename, "w", encoding="utf-8") as f:
+                json.dump(final_schedule, f, indent=2, ensure_ascii=False)
+
+            episodic_status = " (with episodic)" if self.episodic_var.get() else ""
+            messagebox.showinfo("Success", f"Schedule for '{target_channel}' saved to {schedule_filename}!{episodic_status}")
+
         # Disable save button after saving
         self.save_button.configure(state="disabled")
 
