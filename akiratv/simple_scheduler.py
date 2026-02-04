@@ -246,6 +246,9 @@ class SimpleSchedulerWizard:
         day_combo.pack(side="left", padx=5)
         day_combo.bind("<<ComboboxSelected>>", self.update_preview_display)
         
+        # Copy button
+        ttk.Button(day_frame, text="📋 Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
+        
         # Preview listbox frame (horizontal)
         preview_frame = ttk.Frame(preview_container)
         preview_frame.pack(fill="both", expand=True)
@@ -540,7 +543,37 @@ class SimpleSchedulerWizard:
         # Add summary
         self.preview_list.insert(tk.END, "")
         self.preview_list.insert(tk.END, f"Total entries: {len(day_schedule)}")
-
+    
+    def copy_schedule(self):
+        """Copy the current schedule preview to clipboard"""
+        if not self.current_schedule:
+            messagebox.showinfo("Info", "No schedule to copy. Generate a preview first!")
+            return
+        
+        # Build full schedule text for all days
+        schedule_text = f"Schedule for channel: {self.current_channel}\n"
+        schedule_text += f"Mode: {self.current_mode}\n"
+        schedule_text += "=" * 50 + "\n\n"
+        
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        for day in days:
+            day_schedule = self.current_schedule.get(day, [])
+            schedule_text += f"=== {day.upper()} ===\n"
+            if day_schedule:
+                for entry in day_schedule:
+                    time_str = entry["time"]
+                    file_path = entry["file"]
+                    file_name = Path(file_path).name
+                    schedule_text += f"{time_str} - {file_name}\n"
+            else:
+                schedule_text += "No entries\n"
+            schedule_text += "\n"
+        
+        # Copy to clipboard
+        self.root.clipboard_clear()
+        self.root.clipboard_append(schedule_text)
+        messagebox.showinfo("Copied", "Schedule copied to clipboard!")
+    
     # === SCHEDULE GENERATION METHODS ===
     
     def preview_schedule(self, mode="random"):
