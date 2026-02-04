@@ -280,8 +280,16 @@ class SimpleSchedulerWizard:
         chan_combo.pack(side="left", padx=5)
         
         self.episodic_var = tk.BooleanVar(value=False)
-        ttk.Checkbutton(chan_episodic_frame, text="Auto-detect episodic content", 
-                       variable=self.episodic_var).pack(side="left", padx=10)
+        episodic_check = ttk.Checkbutton(chan_episodic_frame, text="Auto-detect episodic content", 
+                                        variable=self.episodic_var)
+        episodic_check.pack(side="left", padx=10)
+        self.create_tooltip(episodic_check, "Groups videos into series (e.g., MySeries S01E01, S01E02) and treats them as episodic content.")
+        
+        self.sequential_var = tk.BooleanVar(value=False)
+        sequential_check = ttk.Checkbutton(chan_episodic_frame, text="Sequential Episode Tracking", 
+                                          variable=self.sequential_var)
+        sequential_check.pack(side="left", padx=10)
+        self.create_tooltip(sequential_check, "When the same series is picked multiple times, plays episodes in order (1→2→3→loop). Session-based only.")
         
         # Preview buttons and save button on one line
         preview_frame = ttk.Frame(bottom_frame)
@@ -626,10 +634,20 @@ class SimpleSchedulerWizard:
                     choice_type = "standalone"  # Fallback
                 
                 if choice_type == "series" and available_series:
-                    # Pick a random series and get next episode
+                    # Pick a random series
                     series_name = random.choice(available_series)
                     episode_idx = episode_trackers[series_name]
-                    video = episodic_groups[series_name][episode_idx]
+                    
+                    # Sequential tracking: always continue from last episode
+                    # Otherwise pick random episode if sequential is disabled
+                    if self.sequential_var.get():
+                        # Continue from last played episode
+                        video = episodic_groups[series_name][episode_idx]
+                    else:
+                        # Pick random episode from series
+                        video = random.choice(episodic_groups[series_name])
+                        # Find and set the episode index for tracking
+                        episode_idx = episodic_groups[series_name].index(video)
                     
                     # Advance episode tracker (loop back to start if at end)
                     episode_trackers[series_name] = (episode_idx + 1) % len(episodic_groups[series_name])
@@ -727,6 +745,7 @@ class SimpleSchedulerWizard:
                 r'(.+?)\s*episode\s*\d+',  # Episode 01
                 r'(.+?)\s*part\s*\d+',  # Part 1
                 r'(.+?)\s*\d{2,3}$',  # Ends with 2-3 digits (episode number)
+                r'^(.+?)\s+\d+$',  # Starts with name, ends with single digit (e.g., "Death Wish 1")
             ]
             
             series_name = None
@@ -744,7 +763,7 @@ class SimpleSchedulerWizard:
                 standalone_videos.append(video)
         
         # Only keep groups with 2+ episodes
-        final_groups = {k: sorted(v, key=lambda x: Path(x["path"]).stem) 
+        final_groups = {k: sorted(v, key=lambda x: self._extract_episode_number(Path(x["path"]).stem))
                        for k, v in episodic_groups.items() if len(v) >= 2}
         
         # Add single-episode "series" back to standalone
@@ -753,6 +772,24 @@ class SimpleSchedulerWizard:
                 standalone_videos.extend(v)
         
         return final_groups, standalone_videos
+    
+    def _extract_episode_number(self, filename):
+        """Extract episode number from filename for sorting"""
+        import re
+        # Try various patterns to extract episode number
+        patterns = [
+            r'[s]\d+[e](\d+)',  # S01E01
+            r'(\d+)x\d+',  # 1x01
+            r'ep\s*(\d+)',  # Ep 01
+            r'episode\s*(\d+)',  # Episode 01
+            r'part\s*(\d+)',  # Part 1
+            r'(\d+)$',  # Ends with number
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, filename, re.IGNORECASE)
+            if match:
+                return int(match.group(1))
+        return 0  # Default if no number found
 
     # === UTILITY METHODS ===
     
@@ -764,6 +801,28 @@ class SimpleSchedulerWizard:
             return sorted(available_themes)
         except:
             return ["default", "clam", "alt", "classic"]
+
+    def create_tooltip(self, widget, text):
+        """Create a simple tooltip for a widget using Toplevel"""
+        tooltip = tk.Toplevel(self.root)
+        tooltip.overrideredirect(True)  # Remove window decorations
+        tooltip.attributes("-topmost", True)  # Always on top
+        tooltip.withdraw()  # Start hidden
+        tooltip.configure(background="#ffffcc", relief="solid", borderwidth=1)
+        
+        tk.Label(tooltip, text=text, wraplength=300,
+                font=("TkDefaultFont", 8), background="#ffffcc").pack(fill="both", expand=True, padx=5, pady=5)
+
+        def show_tooltip(event=None):
+            x, y = widget.winfo_rootx() + widget.winfo_width() + 10, widget.winfo_rooty()
+            tooltip.geometry(f"+{x}+{y}")
+            tooltip.deiconify()
+
+        def hide_tooltip(event=None):
+            tooltip.withdraw()
+
+        widget.bind("<Enter>", show_tooltip)
+        widget.bind("<Leave>", hide_tooltip)
 
     def launch_collection_wizard(self):
         """Launch the collection wizard in a new window"""
