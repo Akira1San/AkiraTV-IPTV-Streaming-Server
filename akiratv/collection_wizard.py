@@ -560,7 +560,6 @@ Your API key will be saved for future use.""")
                 config.set(section_name, "description", collection.get("description", ""))
                 config.set(section_name, "search_hints", collection.get("search_hints", ""))
                 config.set(section_name, "genre", ", ".join(collection.get("genre", [])))
-                config.set(section_name, "rating", collection.get("rating", "NR"))
                 config.set(section_name, "year", str(collection.get("year", 2026)))
                 
                 # Videos
@@ -873,7 +872,6 @@ Your API key will be saved for future use.""")
             ("Description:", "desc_var"),
             ("Search Hints (actor/director):", "search_hints_var"),
             ("Genre (comma-separated):", "genre_var"),
-            ("Rating:", "rating_var"),
             ("Year:", "year_var")
         ]
         
@@ -1204,7 +1202,6 @@ Your API key will be saved for future use.""")
                     "cover": cover,
                     "description": "",
                     "genre": [],
-                    "rating": "NR",
                     "year": datetime.now().year,
                     "videos": [{
                         "path": video_str,
@@ -1367,7 +1364,6 @@ Your API key will be saved for future use.""")
                     "description": section.get('description', ''),
                     "search_hints": section.get('search_hints', ''),
                     "genre": [g.strip() for g in section.get('genre', '').split(',') if g.strip()],
-                    "rating": section.get('rating', 'NR'),
                     "year": section.getint('year', fallback=2026),
                     "videos": []
                 }
@@ -1479,7 +1475,6 @@ Your API key will be saved for future use.""")
                 "cover": cover,
                 "description": "",  # Empty by default
                 "genre": [],       # Empty list by default
-                "rating": "NR",    # Default rating
                 "year": datetime.now().year,  # Default to current year
                 "videos": [{
                     "path": video_str,
@@ -1533,11 +1528,6 @@ Your API key will be saved for future use.""")
                 self.metadata_vars["genre_var"].set(", ".join(collection["genre"]))
             else:
                 self.metadata_vars["genre_var"].set("")
-                
-            if collection.get("rating") and collection["rating"] != "NR":
-                self.metadata_vars["rating_var"].set(collection["rating"])
-            else:
-                self.metadata_vars["rating_var"].set("")
                 
             if collection.get("year") and collection["year"] != datetime.now().year:
                 self.metadata_vars["year_var"].set(str(collection["year"]))
@@ -1646,9 +1636,6 @@ Your API key will be saved for future use.""")
                 if metadata.get("genre"):
                     collection["genre"] = metadata["genre"]
                     
-                if metadata.get("rating"):
-                    collection["rating"] = metadata["rating"]
-                    
                 if metadata.get("year"):
                     collection["year"] = metadata["year"]
                 
@@ -1714,10 +1701,6 @@ Your API key will be saved for future use.""")
                 collection["genre"] = [g.strip() for g in genre_str.split(",") if g.strip()]
             else:
                 collection["genre"] = []
-
-            rating = self.metadata_vars["rating_var"].get().strip()
-            if rating:
-                collection["rating"] = rating
 
             year_str = self.metadata_vars["year_var"].get().strip()
             if year_str:

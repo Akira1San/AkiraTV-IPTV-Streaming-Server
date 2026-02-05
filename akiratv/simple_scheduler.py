@@ -130,9 +130,6 @@ class SimpleSchedulerWizard:
         self.info_genre = ttk.Label(metadata_frame, text="Genre: -", font=("TkDefaultFont", 9))
         self.info_genre.pack(anchor="w", pady=2)
         
-        self.info_rating = ttk.Label(metadata_frame, text="Rating: -", font=("TkDefaultFont", 9))
-        self.info_rating.pack(anchor="w", pady=2)
-        
         self.info_year = ttk.Label(metadata_frame, text="Year: -", font=("TkDefaultFont", 9))
         self.info_year.pack(anchor="w", pady=2)
         
@@ -360,7 +357,6 @@ class SimpleSchedulerWizard:
         genre_str = ', '.join(genre) if genre else '-'
         self.info_genre.configure(text=f"Genre: {genre_str}")
         
-        self.info_rating.configure(text=f"Rating: {collection.get('rating', '-')}")
         self.info_year.configure(text=f"Year: {collection.get('year', '-')}")
         
         self.info_path.configure(text=f"Path: {video_data.get('path', '-')}")
@@ -374,7 +370,6 @@ class SimpleSchedulerWizard:
         self.info_name.configure(text="Name: -")
         self.info_description.configure(text="Description: -")
         self.info_genre.configure(text="Genre: -")
-        self.info_rating.configure(text="Rating: -")
         self.info_year.configure(text="Year: -")
         self.info_path.configure(text="Path: -")
         self.info_duration.configure(text="Duration: -")

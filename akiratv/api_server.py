@@ -1326,7 +1326,6 @@ def create_collection_wizard(request: dict):
                 "cover": None,
                 "description": "",
                 "genre": [],
-                "rating": "NR",
                 "year": 2026,  # Could be extracted from filename or metadata
                 "videos": [
                     {

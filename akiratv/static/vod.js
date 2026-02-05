@@ -424,7 +424,6 @@ function showVideoDetails(videoId) {
     document.getElementById('modalVideoTitle').textContent = video.name;
     document.getElementById('modalVideoDescription').textContent = video.description || 'No description available';
     document.getElementById('modalVideoYear').textContent = video.year || 'N/A';
-    document.getElementById('modalVideoRating').textContent = video.rating || 'NR';
     document.getElementById('modalVideoDuration').textContent = formatDuration(video.duration);
     document.getElementById('modalVideoCollection').textContent = video.collection;
     
