@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV - Video Library</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <a href="/static/index.html" style="text-decoration: none; color: inherit;">AkiraTV</a>
+            </div>
+            <div class="header-controls">
+                <div class="language-switcher">
+                    <button class="lang-btn active" id="langEn" onclick="switchLanguage('en')">EN</button>
+                    <button class="lang-btn" id="langBg" onclick="switchLanguage('bg')">БГ</button>
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Checking...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="vod-navigation">
+            <button class="btn btn-secondary" onclick="window.location.href='/static/index.html'">
+                <span data-i18n="vod.backToDashboard">← Back to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- VOD Controls -->
+        <div class="vod-controls">
+            <div class="vod-header">
+                <h1 class="vod-title" data-i18n="vod.title">🎬 Video Library</h1>
+                <div class="vod-stats">
+                    <span id="videoCount" class="vod-stat">Loading...</span>
+                    <span class="vod-separator">•</span>
+                    <span id="collectionCount" class="vod-stat">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="vod-filters">
+                <div class="vod-search-container">
+                    <input type="text" id="vodSearch" class="vod-search-input" placeholder="Search videos..." data-i18n-placeholder="vod.searchPlaceholder">
+                    <button class="search-clear-btn" id="vodSearchClear" onclick="clearVodSearch()" style="display: none;">✕</button>
+                </div>
+                
+                <div class="vod-filter-controls">
+                    <!-- Collection Filter -->
+                    <select id="collectionFilter" class="vod-filter-select">
+                        <option value="" data-i18n="vod.allCollections">All Collections</option>
+                    </select>
+                    
+                    <!-- Genre Filter -->
+                    <select id="genreFilter" class="vod-filter-select">
+                        <option value="" data-i18n="vod.allGenres">All Genres</option>
+                    </select>
+                    
+                    <!-- Year Filter -->
+                    <select id="yearFilter" class="vod-filter-select">
+                        <option value="" data-i18n="vod.allYears">All Years</option>
+                    </select>
+                    
+                    <!-- Sort Options -->
+                    <select id="sortBy" class="vod-filter-select">
+                        <option value="name" data-i18n="vod.sortByName">Sort by Name</option>
+                        <option value="year" data-i18n="vod.sortByYear">Sort by Year</option>
+                        <option value="duration" data-i18n="vod.sortByDuration">Sort by Duration</option>
+                        <option value="collection" data-i18n="vod.sortByCollection">Sort by Collection</option>
+                    </select>
+                    
+                    <!-- View Toggle -->
+                    <div class="vod-view-toggle">
+                        <button class="btn btn-secondary vod-view-btn active" id="gridViewBtn" onclick="switchView('grid')">
+                            <span>🔲 Grid</span>
+                        </button>
+                        <button class="btn btn-secondary vod-view-btn" id="listViewBtn" onclick="switchView('list')">
+                            <span>📋 List</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channel Selection for Playback -->
+            <div class="vod-playback-controls">
+                <label for="vodChannelSelect" data-i18n="vod.selectChannel">Select VOD Channel:</label>
+                <select id="vodChannelSelect" class="vod-channel-select">
+                    <option value="" data-i18n="vod.noChannel">No VOD channels available</option>
+                </select>
+                <button id="stopCurrentBtn" class="btn btn-danger btn-small" onclick="stopCurrentVideo()" disabled>
+                    <span data-i18n="vod.stopCurrent">⏹️ Stop Current</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Video Library -->
+        <div class="vod-library" id="vodLibrary">
+            <div class="vod-loading">
+                <div class="loading"></div>
+                <span data-i18n="vod.loading">Loading video library...</span>
+            </div>
+        </div>
+
+        <!-- Currently Playing Info -->
+        <div class="vod-now-playing" id="vodNowPlaying" style="display: none;">
+            <div class="now-playing-header">
+                <span data-i18n="vod.nowPlaying">🔴 NOW PLAYING</span>
+                <button class="btn btn-danger btn-small" onclick="stopCurrentVideo()">
+                    <span data-i18n="vod.stop">⏹️ Stop</span>
+                </button>
+            </div>
+            <div class="now-playing-info">
+                <div class="now-playing-title" id="nowPlayingTitle">-</div>
+                <div class="now-playing-channel" id="nowPlayingChannel">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Details Modal -->
+    <div class="modal" id="videoDetailsModal">
+        <div class="modal-content video-details-modal">
+            <div class="modal-header">
+                <h3 id="modalVideoTitle">Video Details</h3>
+                <button class="modal-close" onclick="hideVideoDetails()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-details-content">
+                    <div class="video-details-poster">
+                        <img id="modalVideoPoster" src="" alt="Video Poster">
+                    </div>
+                    <div class="video-details-info">
+                        <div class="video-detail-item">
+                            <strong data-i18n="vod.description">Description:</strong>
+                            <p id="modalVideoDescription">-</p>
+                        </div>
+                        <div class="video-detail-item">
+                            <strong data-i18n="vod.year">Year:</strong>
+                            <span id="modalVideoYear">-</span>
+                        </div>
+                        <div class="video-detail-item">
+                            <strong data-i18n="vod.rating">Rating:</strong>
+                            <span id="modalVideoRating">-</span>
+                        </div>
+                        <div class="video-detail-item">
+                            <strong data-i18n="vod.duration">Duration:</strong>
+                            <span id="modalVideoDuration">-</span>
+                        </div>
+                        <div class="video-detail-item">
+                            <strong data-i18n="vod.collection">Collection:</strong>
+                            <span id="modalVideoCollection">-</span>
+                        </div>
+                        <div class="video-detail-item" id="modalVideoGenreContainer" style="display: none;">
+                            <strong data-i18n="vod.genres">Genres:</strong>
+                            <div id="modalVideoGenres" class="video-genres"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideVideoDetails()">
+                    <span data-i18n="common.close">Close</span>
+                </button>
+                <button class="btn btn-primary" id="modalPlayBtn" onclick="playVideoFromModal()">
+                    <span data-i18n="vod.playVideo">▶️ Play Video</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/translations.js"></script>
+    <script src="/static/vod.js"></script>
+</body>
+</html>

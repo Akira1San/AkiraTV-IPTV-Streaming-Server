@@ -71,6 +71,17 @@ static_dir = Path(__file__).parent / "static"
 if static_dir.exists():
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
+# Mount user directory for covers, logos, etc.
+user_dir = Path(__file__).parent.parent / "user"
+if user_dir.exists():
+    app.mount("/user", StaticFiles(directory=str(user_dir)), name="user")
+    print(f"📂 Serving user assets from: {user_dir}")
+else:
+    print(f"❌ User directory not found at: {user_dir}")
+    # Create user directory if it doesn't exist
+    user_dir.mkdir(parents=True, exist_ok=True)
+    app.mount("/user", StaticFiles(directory=str(user_dir)), name="user")
+
 # Get CoreAPI instance (lazy initialization)
 api = None
 
@@ -1770,6 +1781,74 @@ def root():
             "websocket": "/ws",
             "note": "Web UI not found. Create 'static' directory with index.html, styles.css, and app.js"
         }
+
+# ========================================
+# VOD LIBRARY API
+# ========================================
+
+@app.get("/api/vod/library")
+def get_vod_library():
+    """Get video library from all collections"""
+    try:
+        import os
+        import json
+        from pathlib import Path
+        
+        collections_dir = Path("user/collections")
+        videos = []
+        collections = []
+        
+        if not collections_dir.exists():
+            return {"videos": [], "collections": []}
+        
+        # Load all collection files
+        for collection_file in collections_dir.glob("collections_*.json"):
+            try:
+                with open(collection_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    
+                collection_name = collection_file.stem.replace('collections_', '')
+                collections.append(collection_name)
+                
+                for item in data.get('collections', []):
+                    # Extract video info
+                    for video_data in item.get('videos', []):
+                        video = {
+                            'id': item['id'],
+                            'name': item['name'],
+                            'description': item.get('description', ''),
+                            'cover': item.get('cover'),
+                            'genre': item.get('genre', []),
+                            'rating': item.get('rating', 'NR'),
+                            'year': item.get('year'),
+                            'duration': video_data.get('duration'),
+                            'path': video_data['path'],
+                            'collection': collection_name
+                        }
+                        videos.append(video)
+                        
+            except Exception as e:
+                print(f"Error loading collection file {collection_file}: {e}")
+                continue
+        
+        return {
+            "success": True,
+            "videos": videos,
+            "collections": collections
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load video library: {str(e)}")
+
+@app.get("/api/vod/video/{video_id}")
+def get_video_details(video_id: str):
+    """Get detailed information about a specific video"""
+    try:
+        # This would be implemented to get specific video details
+        # For now, return basic info
+        return {"success": True, "video": {}}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get video details: {str(e)}")
 
 # ========================================
 # MAIN ENTRY POINT

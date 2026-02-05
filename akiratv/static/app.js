@@ -1361,6 +1361,11 @@ function openTVGuide() {
     window.open('/static/guide.html', '_blank');
 }
 
+// Open VOD Library in separate page
+function openVODLibrary() {
+    window.open('/static/vod.html', '_blank');
+}
+
 // ========================================
 // FAST SCHEDULER FUNCTIONS
 // ========================================
