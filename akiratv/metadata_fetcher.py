@@ -26,54 +26,162 @@ class MetadataFetcher:
         """Set the TMDB API key"""
         self.tmdb_api_key = api_key
 
-    def search_tmdb_movie(self, title, year=None):
+    def search_tmdb_movie(self, title, year=None, search_hints=None):
         """Search for movie on TMDB"""
         if not self.tmdb_api_key:
             return None
-        
+
         try:
             # Clean up the title for better search results
             clean_title = re.sub(r'\b(1080p|720p|2160p|4k|bluray|webrip|bdrip|dvdrip|x264|x265|h264|h265)\b', '', title, flags=re.IGNORECASE)
             clean_title = re.sub(r'\b(fmp4|mp4|mkv|avi|mov|webm|remux|remastered|extended|uncut)\b', '', clean_title, flags=re.IGNORECASE)
             clean_title = re.sub(r'[._\-]', ' ', clean_title)
             clean_title = re.sub(r'\s+', ' ', clean_title).strip()
-            
-            # Search for the movie
+
+            # Parse search hints to extract year and names
+            hints_year, hints_names = self._parse_search_hints(search_hints)
+
+            # Use year from hints if not provided directly
+            search_year = year if year else hints_year
+
+            # Search for the movie with clean title (no hints appended)
             search_url = f"{self.tmdb_base_url}/search/movie"
             params = {
                 "api_key": self.tmdb_api_key,
                 "query": clean_title
             }
-            
-            if year:
-                params["year"] = year
-            
+
+            if search_year:
+                params["year"] = search_year
+                print(f"DEBUG: TMDB searching for '{clean_title}' with year {search_year}")
+            else:
+                print(f"DEBUG: TMDB searching for '{clean_title}'")
+
             response = requests.get(search_url, params=params, timeout=10)
             response.raise_for_status()
-            
+
             data = response.json()
             results = data.get("results", [])
-            
+            print(f"DEBUG: TMDB found {len(results)} results")
+
             if results:
-                # Return the first (most relevant) result
-                movie = results[0]
-                
+                # If we have search hints, filter/rank results by cast matching
+                if hints_names:
+                    print(f"DEBUG: Filtering results by hints names: {hints_names}")
+                    best_match = self._find_best_match_with_hints(results, hints_names)
+                    if best_match:
+                        movie = best_match
+                        print(f"DEBUG: Selected best match based on hints: {movie.get('title', 'Unknown')}")
+                    else:
+                        movie = results[0]
+                        print(f"DEBUG: No hints match found, using first result: {movie.get('title', 'Unknown')}")
+                else:
+                    movie = results[0]
+
                 # Get detailed movie info
                 movie_id = movie["id"]
                 detail_url = f"{self.tmdb_base_url}/movie/{movie_id}"
                 detail_params = {"api_key": self.tmdb_api_key}
-                
+
                 detail_response = requests.get(detail_url, params=detail_params, timeout=10)
                 detail_response.raise_for_status()
-                
+
                 return detail_response.json()
-            
+
             return None
-            
+
         except Exception as e:
             print(f"Error searching TMDB: {e}")
             return None
-    def search_wikipedia_movie(self, title, year=None):
+
+    def _parse_search_hints(self, search_hints):
+        """Parse search hints to extract year and actor/director names"""
+        if not search_hints:
+            return None, None
+
+        hints_text = search_hints.strip()
+        extracted_year = None
+        names = []
+
+        # Try to extract year from hints (e.g., "1996", "year 1996", "(1996)")
+        year_patterns = [
+            r'\byear\s*(\d{4})\b',
+            r'\(\s*(\d{4})\s*\)',
+            r'\b(\d{4})\b'
+        ]
+
+        for pattern in year_patterns:
+            year_match = re.search(pattern, hints_text, re.IGNORECASE)
+            if year_match:
+                year = int(year_match.group(1))
+                if 1900 <= year <= 2030:  # Valid year range
+                    extracted_year = year
+                    # Remove year from hints text
+                    hints_text = re.sub(pattern, '', hints_text, count=1, flags=re.IGNORECASE)
+                    break
+
+        # Parse remaining text for names (comma-separated)
+        if hints_text:
+            # Clean up the hints text
+            names_text = re.sub(r'\s+', ' ', hints_text).strip()
+            # Split by comma
+            names = [name.strip() for name in names_text.split(',') if name.strip()]
+
+        return extracted_year, names
+
+    def _find_best_match_with_hints(self, results, hints_names):
+        """Find best matching result based on search hints (actor/director names)"""
+        # Convert single string to list for backward compatibility
+        if isinstance(hints_names, str):
+            hints_names = [hints_names]
+
+        # Convert all names to lowercase for matching
+        hints_lower_list = [name.lower() for name in hints_names]
+        best_match = None
+        best_score = 0
+
+        for movie in results:
+            score = 0
+            movie_id = movie.get("id")
+
+            try:
+                # Get credits to check cast
+                credits_url = f"{self.tmdb_base_url}/movie/{movie_id}/credits"
+                credits_params = {"api_key": self.tmdb_api_key}
+                credits_response = requests.get(credits_url, params=credits_params, timeout=10)
+                credits_response.raise_for_status()
+                credits_data = credits_response.json()
+
+                # Check cast names against each hint
+                for cast_member in credits_data.get("cast", [])[:5]:  # Top 5 cast
+                    cast_name_lower = cast_member.get("name", "").lower()
+                    for hint_lower in hints_lower_list:
+                        if hint_lower in cast_name_lower:
+                            score += 10
+                            print(f"DEBUG: Found cast match: {cast_member.get('name')} for hint: {hint_lower}")
+
+                # Check crew (director, etc.)
+                for crew_member in credits_data.get("crew", []):
+                    crew_name_lower = crew_member.get("name", "").lower()
+                    for hint_lower in hints_lower_list:
+                        if hint_lower in crew_name_lower:
+                            job = crew_member.get("job", "").lower()
+                            if "director" in job:
+                                score += 15
+                                print(f"DEBUG: Found director match: {crew_member.get('name')} for hint: {hint_lower}")
+                            else:
+                                score += 5
+
+            except Exception as e:
+                print(f"DEBUG: Error fetching credits for movie {movie_id}: {e}")
+
+            if score > best_score:
+                best_score = score
+                best_match = movie
+
+        print(f"DEBUG: Best match score: {best_score} for {best_match.get('title', 'None') if best_match else 'None'}")
+        return best_match if best_score > 0 else None
+    def search_wikipedia_movie(self, title, year=None, search_hints=None):
         """Search for movie information on Wikipedia"""
         try:
             # Clean up the title for better search results
@@ -82,30 +190,39 @@ class MetadataFetcher:
             clean_title = re.sub(r'\b(dd5\.1|aac|ac3|dts|flac)\b', '', clean_title, flags=re.IGNORECASE)
             clean_title = re.sub(r'[._\-]', ' ', clean_title)
             clean_title = re.sub(r'\s+', ' ', clean_title).strip()
-            
+
             # Remove "film" or "movie" if already in the title to avoid duplication
             if clean_title.lower().endswith(' film'):
                 clean_title = clean_title[:-5].strip()
             elif clean_title.lower().endswith(' movie'):
                 clean_title = clean_title[:-6].strip()
-            
-            # Try different search variations with better logic
+
+            # Parse search hints to extract year and names
+            hints_year, hints_names = self._parse_search_hints(search_hints)
+
+            # Use year from hints if not provided directly
+            search_year = year if year else hints_year
+
+            # Try different search variations - clean title only (no hints in search)
             search_terms = []
-            
-            if year:
+
+            if search_year:
                 # Most specific searches first
                 search_terms.extend([
-                    f"{clean_title} ({year} film)",
-                    f"{clean_title} {year} film",
-                    f"{clean_title} ({year})",
+                    f"{clean_title} ({search_year} film)",
+                    f"{clean_title} {search_year} film",
+                    f"{clean_title} ({search_year})",
                 ])
-            
+
             # General searches
             search_terms.extend([
                 f"{clean_title} film",
-                f"{clean_title} movie", 
+                f"{clean_title} movie",
                 clean_title
             ])
+
+            if hints_names:
+                print(f"DEBUG: Wikipedia will filter results by hints: {hints_names}")
             
             # Set proper headers for Wikipedia API
             headers = {
@@ -138,33 +255,70 @@ class MetadataFetcher:
                     best_match = None
                     best_score = 0
                     
+                    # Normalize clean title for matching
+                    clean_title_normalized = re.sub(r'[^\w\s]', '', clean_title.lower())
+                    clean_title_normalized = re.sub(r'\s+', ' ', clean_title_normalized).strip()
+                    
                     for result_title in titles:
                         score = 0
                         result_lower = result_title.lower()
-                        
+                        result_normalized = re.sub(r'[^\w\s]', '', result_lower)
+                        result_normalized = re.sub(r'\s+', ' ', result_normalized).strip()
+
+                        # Skip soundtrack/score albums
+                        if any(skip in result_lower for skip in ['soundtrack', 'film score', 'score album', 'original motion picture score']):
+                            print(f"DEBUG: Skipping soundtrack/score: '{result_title}'")
+                            score -= 100  # Heavy penalty
+
                         # Scoring system for better matches
-                        if year and f"({year}" in result_title:
+                        if search_year and f"({search_year}" in result_title:
                             score += 100  # Exact year match is highest priority
-                        elif year and str(year) in result_title:
+                        elif search_year and str(search_year) in result_title:
                             score += 50   # Year mentioned somewhere
-                        
+
                         if "film)" in result_lower:
                             score += 30   # Proper film disambiguation
                         elif "film" in result_lower:
                             score += 20   # Contains film
                         elif "movie" in result_lower:
                             score += 15   # Contains movie
-                        
-                        # Exact title match bonus
-                        if clean_title.lower() in result_lower:
+
+                        # Option D: Check if result starts with search title (ignoring punctuation)
+                        if result_normalized.startswith(clean_title_normalized):
+                            score += 150
+                            print(f"DEBUG: Title starts with match bonus: +150")
+
+                        # Exact title match bonus (normalized)
+                        if clean_title_normalized in result_normalized:
                             score += 25
                         
+                        # Near-exact match bonus
+                        if clean_title_normalized == result_normalized:
+                            score += 200
+                            print(f"DEBUG: Exact match bonus: +200")
+
+                        # Check for hints in the result title
+                        if hints_names:
+                            for hint in hints_names:
+                                hint_normalized = re.sub(r'[^\w\s]', '', hint.lower())
+                                if hint_normalized in result_normalized:
+                                    score += 20
+                                    print(f"DEBUG: Hint '{hint}' found in title '{result_title}': +20")
+                        
+                        # PENALTY for partial matches - if result has many extra words
+                        result_word_count = len(result_normalized.split())
+                        clean_word_count = len(clean_title_normalized.split())
+                        if result_word_count > clean_word_count + 2:
+                            penalty = (result_word_count - clean_word_count - 2) * 15
+                            score -= penalty
+                            print(f"DEBUG: Partial match penalty: -{penalty}")
+
                         # Avoid disambiguation pages unless they're film-specific
                         if result_title == clean_title and not any(keyword in result_lower for keyword in ['film', 'movie']):
                             score -= 10  # Likely a disambiguation page
-                        
+
                         print(f"DEBUG: '{result_title}' scored {score}")
-                        
+
                         if score > best_score:
                             best_score = score
                             best_match = result_title
@@ -183,6 +337,65 @@ class MetadataFetcher:
             
         except Exception as e:
             print(f"Error searching Wikipedia: {e}")
+            return None
+
+    def search_omdb_movie(self, title, year=None, api_key=None):
+        """Search for movie using OMDB API (requires API key)"""
+        if not api_key:
+            print("DEBUG: OMDB API key not provided")
+            return None
+            
+        try:
+            # Clean title
+            clean_title = re.sub(r'\b(1080p|720p|2160p|4k|bluray|webrip|bdrip|dvdrip|x264|x265|h264|h265)\b', '', title, flags=re.IGNORECASE)
+            clean_title = re.sub(r'\b(fmp4|mp4|mkv|avi|mov|webm|remux|remastered|extended|uncut)\b', '', clean_title, flags=re.IGNORECASE)
+            clean_title = re.sub(r'[._\-]', ' ', clean_title)
+            clean_title = re.sub(r'\s+', ' ', clean_title).strip()
+            
+            print(f"DEBUG: Searching OMDB for: '{clean_title}'")
+            
+            # OMDB API endpoint
+            url = "http://www.omdbapi.com/"
+            params = {
+                "t": clean_title,
+                "apikey": api_key,
+                "type": "movie",
+                "plot": "full"
+            }
+            
+            if year:
+                params["y"] = year
+            
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            if data.get("Response") == "True":
+                # Parse genres
+                genres = []
+                if data.get("Genre"):
+                    genres = [{"name": g.strip()} for g in data["Genre"].split(",") if g.strip()]
+                
+                result = {
+                    "title": data.get("Title", clean_title),
+                    "overview": data.get("Plot", ""),
+                    "release_date": data.get("Year", str(year) if year else str(datetime.now().year)),
+                    "genres": genres,
+                    "poster_path": data.get("Poster") if data.get("Poster") != "N/A" else None,
+                    "source": "OMDB",
+                    "imdb_id": data.get("imdbID"),
+                    "rating": data.get("Rated", "NR"),
+                    "director": data.get("Director", ""),
+                    "actors": data.get("Actors", "")
+                }
+                print(f"DEBUG: Found movie via OMDB: {result['title']} ({result['release_date']})")
+                return result
+            else:
+                print(f"DEBUG: OMDB returned error: {data.get('Error', 'Unknown error')}")
+                return None
+                
+        except Exception as e:
+            print(f"Error searching OMDB: {e}")
             return None
     def get_wikipedia_page_info(self, page_title):
         """Get detailed information from a Wikipedia page"""
@@ -231,6 +444,19 @@ class MetadataFetcher:
             # Extract information
             extract = page_data.get("extract", "")
             print(f"DEBUG: Wikipedia extract length: {len(extract)}")
+            
+            # Check if this is a soundtrack/score page - if so, reject it
+            if any(skip in page_title.lower() for skip in ['soundtrack', 'film score', 'score album']):
+                print(f"DEBUG: Rejecting soundtrack/score page: '{page_title}'")
+                return None
+            
+            # Check extract content for soundtrack indicators
+            extract_lower = extract.lower()
+            if any(phrase in extract_lower for phrase in ['is the soundtrack', 'is the score', 'film score album', 'soundtrack album']):
+                # Check if it's actually about a soundtrack vs the film itself
+                if 'film of the same name' in extract_lower or 'motion picture' in extract_lower and 'score' in extract_lower:
+                    print(f"DEBUG: Rejecting soundtrack page based on content: '{page_title}'")
+                    return None
             
             # Try to extract year from the text - look for release year patterns
             year = datetime.now().year  # Default
@@ -369,7 +595,7 @@ class MetadataFetcher:
         except Exception as e:
             print(f"Error getting Wikipedia page info: {e}")
             return None
-    def search_imdb_movie(self, title, year=None, language="english"):
+    def search_imdb_movie(self, title, year=None, language="english", search_hints=None):
         """Search for movie information on IMDb (web scraping)"""
         try:
             # Clean up the title for better search results
@@ -378,44 +604,73 @@ class MetadataFetcher:
             clean_title = re.sub(r'\b(dd5\.1|aac|ac3|dts|flac)\b', '', clean_title, flags=re.IGNORECASE)
             clean_title = re.sub(r'[._\-]', ' ', clean_title)
             clean_title = re.sub(r'\s+', ' ', clean_title).strip()
-            
+
+            # Search with clean title only (hints used for filtering, not in query)
+            # Parse search hints to extract year and names
+            hints_year, hints_names = self._parse_search_hints(search_hints)
+
+            # Use year from hints if not provided directly
+            search_year = year if year else hints_year
+
             print(f"DEBUG: Searching IMDb for: '{clean_title}'")
-            
+            if search_year:
+                print(f"DEBUG: Using year: {search_year}")
+            if hints_names:
+                print(f"DEBUG: Will filter results by hints: {hints_names}")
+
             # Try the free movie_db API first (no registration needed)
             try:
                 api_url = "http://theapache64.com/movie_db/search"
                 params = {"keyword": clean_title}
-                
+
                 response = requests.get(api_url, params=params, timeout=10)
                 if response.status_code == 200:
                     data = response.json()
                     if not data.get("error", True) and data.get("data"):
                         movie_data = data["data"]
                         print(f"DEBUG: Found movie via free API: {movie_data.get('name')}")
-                        
+
+                        # If we have search hints, verify the result contains the hints
+                        if hints_names:
+                            movie_name_lower = movie_data.get("name", "").lower()
+                            plot_lower = movie_data.get("plot", "").lower()
+
+                            hints_found = False
+                            for hint in hints_names:
+                                hint_lower = hint.lower()
+                                if hint_lower in movie_name_lower or hint_lower in plot_lower:
+                                    print(f"DEBUG: Search hint '{hint}' verified in result")
+                                    hints_found = True
+                                    break
+
+                            if not hints_found:
+                                print(f"DEBUG: Search hints not found in result, trying web scraping...")
+                                # Fall through to web scraping for better matching
+                                raise Exception("Hints not in result")
+
                         # Convert to our format
                         genres = movie_data.get("genre", "").split(",")
                         genres = [g.strip() for g in genres if g.strip()]
-                        
+
                         return {
                             "title": movie_data.get("name", clean_title),
                             "overview": movie_data.get("plot", ""),
-                            "release_date": str(year) if year else str(datetime.now().year),
+                            "release_date": str(search_year) if search_year else str(datetime.now().year),
                             "genres": [{"name": genre} for genre in genres],
                             "poster_path": movie_data.get("poster_url"),
                             "source": "IMDb (Free API)"
                         }
             except Exception as e:
                 print(f"DEBUG: Free API failed: {e}")
-            
+
             # Fallback to web scraping if API fails
-            return self.search_imdb_web_scraping(clean_title, year, language)
-            
+            return self.search_imdb_web_scraping(clean_title, search_year, language, hints_names)
+
         except Exception as e:
             print(f"Error searching IMDb: {e}")
             return None
 
-    def search_imdb_web_scraping(self, clean_title, year=None, language="english"):
+    def search_imdb_web_scraping(self, clean_title, year=None, language="english", search_hints=None):
         """Fallback IMDb web scraping method"""
         try:
             # Set proper headers to avoid blocking
@@ -429,10 +684,18 @@ class MetadataFetcher:
             }
             
             # Search IMDb using the find endpoint
-            search_query = urllib.parse.quote_plus(clean_title)
+            # Add year to search query if available for better results
+            if year:
+                search_query_text = f"{clean_title} {year}"
+                print(f"DEBUG: Searching IMDb with year: '{search_query_text}'")
+            else:
+                search_query_text = clean_title
+                print(f"DEBUG: Searching IMDb: '{search_query_text}'")
+            
+            search_query = urllib.parse.quote_plus(search_query_text)
             search_url = f"https://www.imdb.com/find/?q={search_query}&s=tt&ttype=ft&ref_=fn_ft"
             
-            print(f"DEBUG: Trying IMDb web scraping: {search_url}")
+            print(f"DEBUG: IMDb web scraping URL: {search_url}")
             
             response = requests.get(search_url, headers=headers, timeout=15)
             response.raise_for_status()
@@ -480,13 +743,25 @@ class MetadataFetcher:
                         break
             
             if not matches:
-                print("DEBUG: No IMDb results found in web scraping, trying fallback")
-                # Create basic metadata from title as fallback
-                return self.create_fallback_metadata(clean_title, year, language=language)
+                print("DEBUG: No IMDb results found in web scraping")
+                return None
             
             # Find the best match
             best_match = None
             best_score = 0
+            best_match_verified = False
+            
+            # Convert hints to list if needed and to lowercase
+            if isinstance(search_hints, str):
+                hints_list = [search_hints.lower()]
+            elif search_hints:
+                hints_list = [h.lower() for h in search_hints]
+            else:
+                hints_list = []
+            
+            # Normalize clean_title for better matching (remove all punctuation and extra spaces)
+            clean_title_normalized = re.sub(r'[^\w\s]', '', clean_title.lower())
+            clean_title_normalized = re.sub(r'\s+', ' ', clean_title_normalized).strip()
             
             for movie_url, movie_title in matches[:10]:  # Check first 10 results
                 score = 0
@@ -496,51 +771,142 @@ class MetadataFetcher:
                 if any(skip in movie_title_clean.lower() for skip in ['tv series', 'tv mini', 'episode', 'video game']):
                     continue
                 
+                # Skip soundtrack/score albums
+                if any(skip in movie_title_clean.lower() for skip in ['soundtrack', 'film score', 'score album', 'original motion picture score']):
+                    print(f"DEBUG: Skipping soundtrack/score: '{movie_title_clean}'")
+                    continue
+                
                 print(f"DEBUG: Evaluating: '{movie_title_clean}'")
                 
-                # Year matching - check if year appears in title
-                if year:
-                    if str(year) in movie_title_clean:
-                        score += 100
-                        print(f"DEBUG: Year match bonus: +100")
+                # Normalize movie title for comparison
+                movie_title_normalized = re.sub(r'[^\w\s]', '', movie_title_clean.lower())
+                movie_title_normalized = re.sub(r'\s+', ' ', movie_title_normalized).strip()
                 
-                # Title similarity - check if search term is in result
-                clean_title_lower = clean_title.lower()
-                movie_title_lower = movie_title_clean.lower()
+                # Create versions without spaces for acronym matching (e.g., "l a" -> "la")
+                clean_title_no_spaces = clean_title_normalized.replace(' ', '')
+                movie_title_no_spaces = movie_title_normalized.replace(' ', '')
                 
-                if clean_title_lower in movie_title_lower:
+                # Check for acronym/initial matches (e.g., "l a" matches "la")
+                if clean_title_no_spaces == movie_title_no_spaces:
+                    score += 250
+                    print(f"DEBUG: Exact match (no spaces) bonus: +250")
+                elif movie_title_no_spaces.startswith(clean_title_no_spaces):
+                    score += 180
+                    print(f"DEBUG: Title starts with (no spaces) bonus: +180")
+                
+                # Option D: Check if result starts with search title (ignoring punctuation)
+                if movie_title_normalized.startswith(clean_title_normalized):
+                    score += 150
+                    print(f"DEBUG: Title starts with match bonus: +150")
+                
+                # Title similarity - check if normalized search term is in normalized result
+                if clean_title_normalized in movie_title_normalized:
                     score += 50
                     print(f"DEBUG: Title match bonus: +50")
                 
-                # Word matching - count matching words
-                clean_words = set(clean_title_lower.split())
-                title_words = set(movie_title_lower.split())
-                matching_words = clean_words & title_words
+                # Word matching with normalization - but require ALL words to match for high score
+                clean_words = clean_title_normalized.split()
+                title_words = movie_title_normalized.split()
+                clean_words_set = set(clean_words)
+                title_words_set = set(title_words)
+                matching_words = clean_words_set & title_words_set
+                
                 if matching_words:
-                    score += len(matching_words) * 10
-                    print(f"DEBUG: Word match bonus: +{len(matching_words) * 10}")
+                    word_score = len(matching_words) * 10
+                    score += word_score
+                    print(f"DEBUG: Word match bonus: +{word_score}")
+                    
+                    # Extra bonus if ALL words match (not just some)
+                    if len(matching_words) == len(clean_words_set):
+                        score += 50
+                        print(f"DEBUG: All words match bonus: +50")
                 
-                # Exact match
-                if clean_title_lower == movie_title_lower:
-                    score += 75
-                    print(f"DEBUG: Exact match bonus: +75")
+                # Exact or near-exact match (highest priority)
+                if clean_title_normalized == movie_title_normalized:
+                    score += 200
+                    print(f"DEBUG: Exact match bonus: +200")
                 
-                print(f"DEBUG: '{movie_title_clean}' scored {score}")
+                # Check for hints in the title
+                for hint in hints_list:
+                    hint_normalized = re.sub(r'[^\w\s]', '', hint.lower())
+                    if hint_normalized in movie_title_normalized:
+                        score += 20
+                        print(f"DEBUG: Hint '{hint}' found in title: +20")
                 
-                if score > best_score:
+                # Verify by checking cast/crew on movie page if we have hints
+                verified = False
+                if hints_list and score >= 100:
+                    print(f"DEBUG: High score candidate, verifying cast/crew...")
+                    verified = self._verify_movie_cast(movie_url, hints_list)
+                    if verified:
+                        score += 100  # Big bonus for verified match
+                        print(f"DEBUG: Cast/crew verified! Bonus: +100")
+                    else:
+                        print(f"DEBUG: Cast/crew NOT verified")
+                
+                print(f"DEBUG: '{movie_title_clean}' scored {score} (verified: {verified})")
+                
+                if score > best_score or (score == best_score and verified):
                     best_score = score
                     best_match = movie_url
+                    best_match_verified = verified
             
             if best_match and best_score >= 20:  # Minimum threshold to avoid bad matches
-                print(f"DEBUG: Best match URL: {best_match} (score: {best_score})")
+                print(f"DEBUG: Best match URL: {best_match} (score: {best_score}, verified: {best_match_verified})")
                 return self.get_imdb_movie_info(best_match)
             else:
-                print(f"DEBUG: No good matches found (best score: {best_score}), using fallback")
-                return self.create_fallback_metadata(clean_title, year, language=language)
+                print(f"DEBUG: No good matches found (best score: {best_score})")
+                return None
             
         except Exception as e:
             print(f"Error in IMDb web scraping: {e}")
-            return self.create_fallback_metadata(clean_title, year, language=language)
+            return None
+
+    def _verify_movie_cast(self, movie_url, hints_list):
+        """Verify a movie by checking if hints (actor/director names) appear in cast/crew"""
+        try:
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+            }
+            
+            full_url = f"https://www.imdb.com{movie_url}"
+            response = requests.get(full_url, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            content = response.text.lower()
+            
+            # Check each hint (actor/director name)
+            for hint in hints_list:
+                hint_normalized = re.sub(r'[^\w\s]', '', hint.lower())
+                hint_parts = hint_normalized.split()
+                
+                # Check if full name appears
+                if hint_normalized in content:
+                    print(f"DEBUG: Found hint '{hint}' in movie page")
+                    return True
+                
+                # Also check for partial matches (first or last name)
+                if len(hint_parts) >= 2:
+                    for part in hint_parts:
+                        if len(part) > 2 and part in content:  # Avoid matching "a", "the", etc.
+                            # Check if it appears near "cast" or "director" keywords
+                            cast_patterns = [
+                                rf'{re.escape(part)}[^<>]*cast',
+                                rf'star[^<>]*{re.escape(part)}',
+                                rf'direct[^<>]*{re.escape(part)}',
+                            ]
+                            for pattern in cast_patterns:
+                                if re.search(pattern, content, re.IGNORECASE):
+                                    print(f"DEBUG: Found hint part '{part}' near cast/director keywords")
+                                    return True
+            
+            return False
+            
+        except Exception as e:
+            print(f"DEBUG: Error verifying cast: {e}")
+            return False
 
     def get_imdb_movie_info(self, movie_url):
         """Get movie information from IMDb page"""

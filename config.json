@@ -1,6 +1,6 @@
 {
   "ffmpeg": {
-    "hwaccel": "nvenc",
+    "hwaccel": "none",
     "enable_subtitles": false,
     "transcoding": {
       "enabled": false,

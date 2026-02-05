@@ -37,6 +37,9 @@ class CollectionWizard:
         self.tmdb_base_url = "https://api.themoviedb.org/3"
         self.tmdb_image_base_url = "https://image.tmdb.org/t/p/w500"
         
+        # OMDB API configuration
+        self.omdb_api_key = ""  # Will be loaded from config or user input
+        
         # Genre tags
         self.genre_tags = ["Action", "Adventure", "Anime", "Comedy", "Drama", "Fantasy", 
                           "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller", "Documentary"]
@@ -59,6 +62,8 @@ class CollectionWizard:
                     # Also set the API key in the metadata fetcher
                     if self.tmdb_api_key:
                         self.metadata_fetcher.set_tmdb_api_key(self.tmdb_api_key)
+                    # Load OMDB API key
+                    self.omdb_api_key = config.get("omdb_api_key", "")
         except:
             pass
         
@@ -75,6 +80,7 @@ class CollectionWizard:
                     config = json.load(f)
             
             config["tmdb_api_key"] = self.tmdb_api_key
+            config["omdb_api_key"] = self.omdb_api_key
             
             # Also set the API key in the metadata fetcher
             self.metadata_fetcher.set_tmdb_api_key(self.tmdb_api_key)
@@ -152,6 +158,62 @@ Your API key will be saved for future use.""")
         dialog.wait_window()
         return result["api_key"]
 
+    def prompt_omdb_api_key(self):
+        """Prompt user for OMDB API key"""
+        dialog = tk.Toplevel(self.root)
+        dialog.title("OMDB API Key Required")
+        dialog.geometry("500x200")
+        dialog.transient(self.root)
+        dialog.grab_set()
+        
+        # Center the dialog
+        dialog.update_idletasks()
+        x = (dialog.winfo_screenwidth() // 2) - (dialog.winfo_width() // 2)
+        y = (dialog.winfo_screenheight() // 2) - (dialog.winfo_height() // 2)
+        dialog.geometry(f"+{x}+{y}")
+        
+        ttk.Label(dialog, text="OMDB API Key Required", font=("TkDefaultFont", 14, "bold")).pack(pady=10)
+        
+        ttk.Label(dialog, text="Please enter your OMDB API key:", wraplength=450).pack(pady=5)
+        
+        key_frame = ttk.Frame(dialog)
+        key_frame.pack(fill="x", padx=20, pady=5)
+        
+        key_var = tk.StringVar(value=self.omdb_api_key)
+        key_entry = ttk.Entry(key_frame, textvariable=key_var, width=50)
+        key_entry.pack(fill="x")
+        
+        ttk.Label(dialog, text="Get your free API key at: http://www.omdbapi.com/apikey.aspx", 
+                 foreground="blue", cursor="hand2").pack(pady=5)
+        
+        btn_frame = ttk.Frame(dialog)
+        btn_frame.pack(fill="x", padx=20, pady=10)
+        
+        result = {"api_key": None}
+        
+        def save_key():
+            api_key = key_var.get().strip()
+            if api_key:
+                self.omdb_api_key = api_key
+                self.save_tmdb_config()
+                result["api_key"] = api_key
+                dialog.destroy()
+            else:
+                messagebox.showwarning("Warning", "Please enter a valid API key!")
+        
+        def cancel():
+            dialog.destroy()
+        
+        ttk.Button(btn_frame, text="Save", command=save_key).pack(side="right", padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=cancel).pack(side="right")
+        
+        # Focus on entry
+        key_entry.focus()
+        
+        # Wait for dialog to close
+        dialog.wait_window()
+        return result["api_key"]
+
     def fetch_online_metadata(self):
         """Fetch metadata for selected collections from TMDB or Wikipedia"""
         if not self.selected_indices:
@@ -193,6 +255,12 @@ Your API key will be saved for future use.""")
         ttk.Radiobutton(tmdb_frame, text="TMDB (Requires Free API Key)", 
                        variable=source_var, value="tmdb").pack(side="left")
         
+        # OMDB option
+        omdb_frame = ttk.Frame(source_dialog)
+        omdb_frame.pack(fill="x", padx=20, pady=5)
+        ttk.Radiobutton(omdb_frame, text="OMDB (Requires Free API Key - omdbapi.com)", 
+                       variable=source_var, value="omdb").pack(side="left")
+        
         # Language selection
         ttk.Separator(source_dialog, orient='horizontal').pack(fill="x", padx=20, pady=10)
         ttk.Label(source_dialog, text="Choose language:", font=("TkDefaultFont", 12)).pack(pady=5)
@@ -211,16 +279,26 @@ Your API key will be saved for future use.""")
         ttk.Radiobutton(bg_frame, text="Български (Bulgarian)", 
                        variable=language_var, value="bulgarian").pack(side="left")
         
+        # Skip existing metadata option
+        ttk.Separator(source_dialog, orient='horizontal').pack(fill="x", padx=20, pady=10)
+        skip_frame = ttk.Frame(source_dialog)
+        skip_frame.pack(fill="x", padx=20, pady=5)
+        skip_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(skip_frame, text="Skip collections with existing metadata", 
+                       variable=skip_var).pack(side="left")
+        
         # Buttons
         btn_frame = ttk.Frame(source_dialog)
         btn_frame.pack(fill="x", padx=20, pady=20)
         
         selected_source = {"value": None}
         selected_language = {"value": None}
-        
+        selected_skip = {"value": True}
+
         def proceed():
             selected_source["value"] = source_var.get()
             selected_language["value"] = language_var.get()
+            selected_skip["value"] = skip_var.get()
             source_dialog.destroy()
         
         def cancel():
@@ -238,6 +316,11 @@ Your API key will be saved for future use.""")
         # Check TMDB API key if needed
         if selected_source["value"] == "tmdb" and not self.tmdb_api_key:
             if not self.prompt_tmdb_api_key():
+                return
+        
+        # Check OMDB API key if needed
+        if selected_source["value"] == "omdb" and not self.omdb_api_key:
+            if not self.prompt_omdb_api_key():
                 return
         
         # Show progress dialog
@@ -274,7 +357,20 @@ Your API key will be saved for future use.""")
             for i, idx in enumerate(self.selected_indices):
                 collection = self.collections[idx]
                 movie_title = collection.get("name", "")
-                
+
+                # Check if collection already has metadata and skip if enabled
+                if selected_skip["value"]:
+                    has_metadata = (
+                        collection.get("description") and
+                        collection.get("genre") and
+                        collection.get("year")
+                    )
+                    if has_metadata:
+                        print(f"DEBUG: Skipping {movie_title} - metadata already exists")
+                        progress_bar.config(value=i + 1)
+                        progress_dialog.update()
+                        continue
+
                 # Update status
                 status_label.config(text=f"Processing: {movie_title}")
                 progress_dialog.update()
@@ -283,7 +379,7 @@ Your API key will be saved for future use.""")
                 original_title = collection.get("name", "")
                 year_match = re.search(r'\b(19|20)\d{2}\b', original_title)
                 year = int(year_match.group()) if year_match else None
-                
+
                 # Also check the video filename for year if not found in title
                 if not year and collection.get("videos"):
                     video_path = collection["videos"][0].get("path", "")
@@ -291,29 +387,34 @@ Your API key will be saved for future use.""")
                     if filename_year_match:
                         year = int(filename_year_match.group())
                         print(f"DEBUG: Found year {year} in video filename")
-                
+
+                # Use user-entered year from collection if available and not default (2026)
+                user_year = collection.get("year")
+                if user_year and user_year != datetime.now().year:
+                    year = user_year
+                    print(f"DEBUG: Using user-entered year: {year}")
+                elif year == datetime.now().year:
+                    # If extracted year is 2026 (default), treat as no year
+                    year = None
+                    print(f"DEBUG: No valid year found, searching without year")
+
                 print(f"DEBUG: Using year: {year} for movie: {movie_title}")
                 
+                # Get search hints if available
+                search_hints = collection.get("search_hints")
+                if search_hints:
+                    print(f"DEBUG: Using search hints: '{search_hints}' for {movie_title}")
+
                 # Search for movie data
                 movie_data = None
                 if selected_source["value"] == "tmdb":
-                    movie_data = self.metadata_fetcher.search_tmdb_movie(movie_title, year)
+                    movie_data = self.metadata_fetcher.search_tmdb_movie(movie_title, year, search_hints)
                 elif selected_source["value"] == "wikipedia":
-                    movie_data = self.metadata_fetcher.search_wikipedia_movie(movie_title, year)
+                    movie_data = self.metadata_fetcher.search_wikipedia_movie(movie_title, year, search_hints)
                 elif selected_source["value"] == "imdb":
-                    movie_data = self.metadata_fetcher.search_imdb_movie(movie_title, year, selected_language["value"])
-                
-                # If no movie data found, create fallback with original collection info
-                if not movie_data:
-                    print(f"DEBUG: No online data found for {movie_title}, creating fallback")
-                    video_path = collection.get("videos", [{}])[0].get("path", "") if collection.get("videos") else ""
-                    movie_data = self.metadata_fetcher.create_fallback_metadata(
-                        movie_title, 
-                        year, 
-                        original_title=original_title,
-                        video_path=video_path,
-                        language=selected_language["value"]
-                    )
+                    movie_data = self.metadata_fetcher.search_imdb_movie(movie_title, year, selected_language["value"], search_hints)
+                elif selected_source["value"] == "omdb":
+                    movie_data = self.metadata_fetcher.search_omdb_movie(movie_title, year, self.omdb_api_key)
                 
                 if movie_data:
                     print(f"DEBUG: Got movie data from {movie_data.get('source', 'unknown source')}")
@@ -457,6 +558,7 @@ Your API key will be saved for future use.""")
                 config.set(section_name, "name", collection.get("name", ""))
                 config.set(section_name, "cover", collection.get("cover", "") or "")
                 config.set(section_name, "description", collection.get("description", ""))
+                config.set(section_name, "search_hints", collection.get("search_hints", ""))
                 config.set(section_name, "genre", ", ".join(collection.get("genre", [])))
                 config.set(section_name, "rating", collection.get("rating", "NR"))
                 config.set(section_name, "year", str(collection.get("year", 2026)))
@@ -768,7 +870,8 @@ Your API key will be saved for future use.""")
             ("ID:", "id_var"),
             ("Name:", "name_var"),
             ("Cover:", "cover_var"),
-            ("Description:", "desc_var"), 
+            ("Description:", "desc_var"),
+            ("Search Hints (actor/director):", "search_hints_var"),
             ("Genre (comma-separated):", "genre_var"),
             ("Rating:", "rating_var"),
             ("Year:", "year_var")
@@ -795,6 +898,7 @@ Your API key will be saved for future use.""")
         # Update button
         button_frame = ttk.Frame(detail_frame)
         button_frame.grid(row=len(fields), column=0, columnspan=2, pady=10)
+        ttk.Button(button_frame, text="Save Fields", command=self.save_ui_fields_to_collection).pack(side="left", padx=5)
         ttk.Button(button_frame, text="Update Collection(s)", command=self.update_collections).pack(side="left", padx=5)
         
         detail_frame.columnconfigure(1, weight=1)
@@ -1261,6 +1365,7 @@ Your API key will be saved for future use.""")
                     "name": section.get('name', ''),
                     "cover": section.get('cover', '') or None,
                     "description": section.get('description', ''),
+                    "search_hints": section.get('search_hints', ''),
                     "genre": [g.strip() for g in section.get('genre', '').split(',') if g.strip()],
                     "rating": section.get('rating', 'NR'),
                     "year": section.getint('year', fallback=2026),
@@ -1418,7 +1523,12 @@ Your API key will be saved for future use.""")
                 self.metadata_vars["desc_var"].set(collection["description"])
             else:
                 self.metadata_vars["desc_var"].set("")
-                
+
+            if collection.get("search_hints"):
+                self.metadata_vars["search_hints_var"].set(collection["search_hints"])
+            else:
+                self.metadata_vars["search_hints_var"].set("")
+
             if collection.get("genre"):
                 self.metadata_vars["genre_var"].set(", ".join(collection["genre"]))
             else:
@@ -1575,6 +1685,61 @@ Your API key will be saved for future use.""")
             .replace(" ", "_")
             .replace("-", "_")
         )
+
+    def save_ui_fields_to_collection(self):
+        """Save UI field values back to selected collection(s)"""
+        if not self.selected_indices:
+            messagebox.showwarning("Warning", "Please select at least one collection first!")
+            return
+
+        for idx in self.selected_indices:
+            collection = self.collections[idx]
+
+            # Save editable fields
+            name = self.metadata_vars["name_var"].get().strip()
+            if name:
+                collection["name"] = name
+
+            description = self.metadata_vars["desc_var"].get().strip()
+            collection["description"] = description
+
+            search_hints = self.metadata_vars["search_hints_var"].get().strip()
+            if search_hints:
+                collection["search_hints"] = search_hints
+            elif "search_hints" in collection:
+                del collection["search_hints"]
+
+            genre_str = self.metadata_vars["genre_var"].get().strip()
+            if genre_str:
+                collection["genre"] = [g.strip() for g in genre_str.split(",") if g.strip()]
+            else:
+                collection["genre"] = []
+
+            rating = self.metadata_vars["rating_var"].get().strip()
+            if rating:
+                collection["rating"] = rating
+
+            year_str = self.metadata_vars["year_var"].get().strip()
+            if year_str:
+                try:
+                    year_val = int(year_str)
+                    # Only save year if it's not the default 2026
+                    if year_val != 2026:
+                        collection["year"] = year_val
+                    elif "year" in collection:
+                        del collection["year"]
+                except ValueError:
+                    pass
+            elif "year" in collection:
+                del collection["year"]
+
+        # Refresh the list to show any name changes
+        self.refresh_collection_list()
+
+        # Also save to JSON file
+        self.save_collections()
+
+        messagebox.showinfo("Success", f"Saved fields for {len(self.selected_indices)} collection(s)!")
 
 def launch_collection_wizard():
     root = tk.Tk()

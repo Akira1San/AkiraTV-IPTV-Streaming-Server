@@ -122,12 +122,10 @@
     },
     {
       "id": "escape_from_los_angeles",
-      "name": "Escape from L.A. (film score)",
-      "cover": null,
-      "description": "Escape from L.A.: Original Score Album From the Motion Picture  is the score by John Carpenter and Shirley Walker to the film of the same name. It was released on August 27, 1996 through Milan Records. A limited expanded edition was released in February, 2014 through La-La Land Records.",
-      "genre": [
-        "Action"
-      ],
+      "name": "Escape from L.A.",
+      "cover": "user/covers/escape_from_la.jpg",
+      "description": "In 2013, Snake Plissken is tasked by a despotic U.S. President with entering Los Angeles - now an autonomous island prison - and recovering a doomsday device stolen by his renegade daughter.",
+      "genre": [],
       "rating": "NR",
       "videos": [
         {
@@ -136,7 +134,7 @@
         }
       ],
       "search_hints": "1996, Kurt Russell, John Carpenter",
-      "year": 1996
+      "year": 2026
     },
     {
       "id": "escape_from_new_york",
