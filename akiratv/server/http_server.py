@@ -110,13 +110,66 @@ class HttpServer:
             
         return web.Response(body=content, content_type=content_type)
 
+    # async def user_assets_handler(self, request):
+    #     """Serve static assets from the project root (e.g., user/covers)."""
+    #     # Get the relative path from the request URL
+    #     # e.g. /user/covers/filename.jpg -> user/covers/filename.jpg
+    #     relative_path = request.path.lstrip("/")
+        
+    #     # Determine the project root (assuming script is in akiratv/http_server.py)
+    #     project_root = Path(__file__).parent.parent.resolve()
+        
+    #     file_path = project_root / relative_path
+        
+    #     if not file_path.exists():
+    #         raise web.HTTPNotFound(text=f"File not found: {file_path}")
+            
+    #     try:
+    #         with open(file_path, 'rb') as f:
+    #             content = f.read()
+            
+    #         # Determine content type
+    #         if relative_path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+    #             # Extract extension for content type
+    #             ext = relative_path.split('.')[-1].lower()
+    #             content_type = f"image/{ext}"
+    #         else:
+    #             content_type = 'application/octet-stream'
+
+    #         response = web.Response(body=content, content_type=content_type)
+    #         response.headers["ngrok-skip-browser-warning"] = "true"
+    #         return response
+    #     except Exception as e:
+    #         print(f"Error serving user asset {file_path}: {e}")
+    #         raise web.HTTPInternalServerError()
+
     def setup_routes(self):
         """Setup all routes for the HTTP server."""
         self.app.router.add_get('/hls/{path:.+}', self.hls_handler)
         self.app.router.add_get('/xmltv.xml', self.static_file_handler)
         self.app.router.add_get('/channels.m3u', self.static_file_handler)
         self.app.router.add_get('/channels/{channel_name}/{filename}', self.channel_assets_handler)
-        self.app.router.add_get('/{path:.*}', self.dashboard_handler)  # Dashboard last
+
+        # --- CHANGE IS HERE (Corrected Path) ---
+        # Calculate path to the root project folder
+        # We are in: akiratv/server/http_server.py
+        # parent = akiratv/server
+        # parent.parent = akiratv
+        # parent.parent.parent = "AkiraTV_NEW - zai - git - core api" (The root)
+        
+        project_root = Path(__file__).parent.parent.parent.resolve()
+        user_dir = project_root / "user"
+        
+        if user_dir.exists():
+            # This maps http://server/user/... to the physical folder
+            self.app.router.add_static('/user', user_dir, name='user_assets')
+            print(f"📂 Serving user assets from: {user_dir}")
+        else:
+            print(f"❌ User directory not found at: {user_dir}")
+        # ------------------------------
+
+        # The dashboard must remain LAST as the fallback
+        self.app.router.add_get('/{path:.*}', self.dashboard_handler)
 
     async def start_async(self, directory: str, port: int, bind: str = "127.0.0.1"):
         """Start aiohttp server asynchronously."""

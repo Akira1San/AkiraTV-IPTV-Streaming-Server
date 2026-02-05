@@ -25,11 +25,13 @@ const translations = {
         'control.reloadSchedule': '📅 Reload Schedule',
         'control.configuration': '⚙️ Configuration',
         'control.generateXMLTV': '📺 Generate XMLTV for Kodi',
+        'control.tvGuide': '📺 TV Guide',
         'control.openConfig': '📝 Open Config',
         'control.openLogs': '📋 Open Logs',
         
         // TV Guide
         'guide.title': '📺 TV Guide',
+        'guide.backToDashboard': '← Back to Dashboard',
         'guide.today': '📅 Today',
         'guide.weekly': '📆 Weekly',
         'guide.refresh': '🔄 Refresh Guide',
@@ -143,11 +145,13 @@ const translations = {
         'control.reloadSchedule': '📅 Презареди програмата',
         'control.configuration': '⚙️ Конфигурация',
         'control.generateXMLTV': '📺 Генерирай XMLTV за Kodi',
+        'control.tvGuide': '📺 Телевизионна програма',
         'control.openConfig': '📝 Отвори конфигурацията',
         'control.openLogs': '📋 Отвори логовете',
         
         // TV Guide
         'guide.title': '📺 Телевизионна програма',
+        'guide.backToDashboard': '← Назад към таблото',
         'guide.today': '📅 Днес',
         'guide.weekly': '📆 Седмично',
         'guide.refresh': '🔄 Обнови програмата',

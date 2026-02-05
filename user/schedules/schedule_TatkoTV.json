@@ -3,625 +3,637 @@
     "monday": [
       {
         "time": "00:00:00",
-        "file": "C:/Videos/tatkotv3/Fire Down Below.mp4",
+        "file": "C:/Videos/tatkotv3/Above the Law.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "01:44:31",
+        "time": "01:39:16",
+        "file": "C:/Videos/tatkotv3/Out of Reach.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "03:01:20",
+        "file": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "04:39:59",
         "file": "C:/Videos/tatkotv3/Firepower.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "03:20:03",
-        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+        "time": "06:15:31",
+        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "04:52:16",
-        "file": "C:/Videos/tatkotv3/Marked.For.Death.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "06:21:46",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:55:10",
-        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:36:54",
-        "file": "C:/Videos/tatkotv3/Escape from L.A.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:13:28",
-        "file": "C:/Videos/tatkotv3/Death Wish 3.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:43:48",
-        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:31:44",
-        "file": "C:/Videos/tatkotv3/Universal.Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:11:12",
+        "time": "07:54:47",
         "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "17:48:03",
+        "time": "09:31:38",
+        "file": "C:/Videos/tatkotv3/Con Air.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "11:27:05",
+        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "13:00:35",
+        "file": "C:/Videos/tatkotv3/Escape.from.New.York.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "14:35:43",
+        "file": "C:/Videos/tatkotv3/The Rock.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "16:46:37",
+        "file": "C:/Videos/tatkotv3/Half Past Dead.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "18:25:10",
+        "file": "C:/Videos/tatkotv3/Universal.Soldier.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "20:04:38",
         "file": "C:/Videos/tatkotv3/Predator.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "19:34:39",
-        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
+        "time": "21:51:14",
+        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "21:07:23",
-        "file": "C:/Videos/tatkotv3/Face.Off.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:26:20",
-        "file": "C:/Videos/tatkotv3/Death Wish 3.mp4",
+        "time": "23:32:58",
+        "file": "C:/Videos/tatkotv3/Savage.Dog.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }
     ],
     "tuesday": [
       {
-        "time": "00:56:40",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:30:04",
-        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:03:34",
-        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:42:50",
-        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:14:59",
-        "file": "C:/Videos/tatkotv3/Gone.in.Sixty.Seconds.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:12:56",
-        "file": "C:/Videos/tatkotv3/Death Wish 2.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:40:53",
-        "file": "C:/Videos/tatkotv3/Face.Off.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:59:50",
-        "file": "C:/Videos/tatkotv3/Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:38:26",
-        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:11:57",
-        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "17:51:12",
+        "time": "01:08:09",
         "file": "C:/Videos/tatkotv3/Belly of the Beast.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "19:22:31",
-        "file": "C:/Videos/tatkotv3/Gone.in.Sixty.Seconds.mp4",
+        "time": "02:39:27",
+        "file": "C:/Videos/tatkotv3/Hard To Kill.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "21:20:28",
-        "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
+        "time": "04:11:25",
+        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "22:57:19",
-        "file": "C:/Videos/tatkotv3/Universal.Soldier.Day.of.Reckoning.mp4",
+        "time": "05:44:50",
+        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "07:24:55",
+        "file": "C:/Videos/tatkotv3/The Beastmaster.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "09:23:22",
+        "file": "C:/Videos/tatkotv3/Escape from L.A.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "10:59:56",
+        "file": "C:/Videos/tatkotv3/Above the Law.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "12:39:12",
+        "file": "C:/Videos/tatkotv3/Kickboxer 1.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "14:16:49",
+        "file": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "15:55:28",
+        "file": "C:/Videos/tatkotv3/Soldier.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "17:34:05",
+        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "19:06:20",
+        "file": "C:/Videos/tatkotv3/Death Wish 3.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "20:36:39",
+        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "22:24:35",
+        "file": "C:/Videos/tatkotv3/Fire Down Below.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }
     ],
     "wednesday": [
       {
-        "time": "00:46:17",
-        "file": "C:/Videos/tatkotv3/Death Wish 2.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:14:14",
-        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "03:46:28",
-        "file": "C:/Videos/tatkotv3/Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:25:05",
-        "file": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "06:56:26",
-        "file": "C:/Videos/tatkotv3/Belly of the Beast.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:27:44",
-        "file": "C:/Videos/tatkotv3/Firepower.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:03:16",
-        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:43:21",
+        "time": "00:09:07",
         "file": "C:/Videos/tatkotv3/Universal.Soldier.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "13:22:49",
-        "file": "C:/Videos/tatkotv3/The quest.mp4",
+        "time": "01:48:35",
+        "file": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "14:57:24",
-        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
+        "time": "03:19:56",
+        "file": "C:/Videos/tatkotv3/The Rock.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "16:29:39",
-        "file": "C:/Videos/tatkotv3/Face.Off.mp4",
+        "time": "05:30:50",
+        "file": "C:/Videos/tatkotv3/Half Past Dead.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "18:48:35",
-        "file": "C:/Videos/tatkotv3/Savage.Dog.mp4",
+        "time": "07:09:24",
+        "file": "C:/Videos/tatkotv3/Out of Reach.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "20:23:46",
-        "file": "C:/Videos/tatkotv3/Escape.from.New.York.mp4",
+        "time": "08:31:29",
+        "file": "C:/Videos/tatkotv3/Belly of the Beast.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "21:58:53",
+        "time": "10:02:47",
         "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "23:35:44",
-        "file": "C:/Videos/tatkotv3/Hard To Kill.mp4",
+        "time": "11:39:38",
+        "file": "C:/Videos/tatkotv3/Firepower.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "13:15:10",
+        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "14:48:34",
+        "file": "C:/Videos/tatkotv3/Escape.from.New.York.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "16:23:41",
+        "file": "C:/Videos/tatkotv3/Universal.Soldier.Day.of.Reckoning.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "18:12:40",
+        "file": "C:/Videos/tatkotv3/Soldier.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "19:51:17",
+        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "21:31:22",
+        "file": "C:/Videos/tatkotv3/Death Wish 3.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "23:01:42",
+        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }
     ],
     "thursday": [
       {
-        "time": "01:07:43",
-        "file": "C:/Videos/tatkotv3/Gone.in.Sixty.Seconds.mp4",
+        "time": "00:33:51",
+        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "03:05:40",
-        "file": "C:/Videos/tatkotv3/The quest.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:40:15",
-        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "06:20:20",
-        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:53:05",
-        "file": "C:/Videos/tatkotv3/Belly of the Beast.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:24:23",
-        "file": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:55:44",
-        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:37:28",
-        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:10:59",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "15:43:16",
-        "file": "C:/Videos/tatkotv3/Fire Down Below.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "17:27:48",
+        "time": "02:06:04",
         "file": "C:/Videos/tatkotv3/Cyborg Cop III.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "18:58:00",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
+        "time": "03:36:17",
+        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "20:31:25",
-        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
+        "time": "05:09:47",
+        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "22:03:34",
+        "time": "06:42:32",
+        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "08:24:16",
+        "file": "C:/Videos/tatkotv3/Above the Law.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "10:03:32",
+        "file": "C:/Videos/tatkotv3/Fire Down Below.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "11:48:04",
+        "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "13:24:55",
+        "file": "C:/Videos/tatkotv3/Out of Reach.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "14:47:00",
         "file": "C:/Videos/tatkotv3/The quest.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "23:38:09",
-        "file": "C:/Videos/tatkotv3/Kickboxer 1.mp4",
+        "time": "16:21:35",
+        "file": "C:/Videos/tatkotv3/Savage.Dog.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "17:56:45",
+        "file": "C:/Videos/tatkotv3/The Rock.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "20:07:39",
+        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "21:46:55",
+        "file": "C:/Videos/tatkotv3/Con Air.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "23:42:22",
+        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }
     ],
     "friday": [
       {
-        "time": "01:15:46",
-        "file": "C:/Videos/tatkotv3/Marked.For.Death.mp4",
+        "time": "01:22:27",
+        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "02:45:16",
-        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+        "time": "02:54:41",
+        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "04:27:00",
-        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
+        "time": "04:28:05",
+        "file": "C:/Videos/tatkotv3/Transporter 2.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "06:07:05",
-        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
+        "time": "05:56:18",
+        "file": "C:/Videos/tatkotv3/Escape from L.A.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "07:39:19",
-        "file": "C:/Videos/tatkotv3/Savage.Dog.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:14:30",
-        "file": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:45:51",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:18:09",
-        "file": "C:/Videos/tatkotv3/Escape.from.New.York.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "13:53:17",
-        "file": "C:/Videos/tatkotv3/The Rock.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:04:11",
+        "time": "07:32:52",
         "file": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "17:42:50",
-        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
+        "time": "09:11:31",
+        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "19:14:59",
-        "file": "C:/Videos/tatkotv3/Fire Down Below.mp4",
+        "time": "10:44:16",
+        "file": "C:/Videos/tatkotv3/Predator.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "20:59:31",
-        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
+        "time": "12:30:52",
+        "file": "C:/Videos/tatkotv3/Universal.Soldier.Day.of.Reckoning.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "22:33:01",
+        "time": "14:19:50",
+        "file": "C:/Videos/tatkotv3/Cyborg Cop.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "15:52:08",
+        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "17:24:23",
+        "file": "C:/Videos/tatkotv3/The quest.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "18:58:58",
+        "file": "C:/Videos/tatkotv3/The Beastmaster.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "20:57:25",
+        "file": "C:/Videos/tatkotv3/Out of Reach.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "22:19:30",
         "file": "C:/Videos/tatkotv3/Half Past Dead.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "23:58:03",
+        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }
     ],
     "saturday": [
       {
-        "time": "00:11:34",
-        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
+        "time": "01:30:12",
+        "file": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "01:51:40",
-        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
+        "time": "03:01:34",
+        "file": "C:/Videos/tatkotv3/Con Air.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "03:24:24",
-        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:12:20",
-        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "06:44:33",
-        "file": "C:/Videos/tatkotv3/Kickboxer 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:22:10",
-        "file": "C:/Videos/tatkotv3/Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:00:47",
-        "file": "C:/Videos/tatkotv3/Firepower.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:36:19",
-        "file": "C:/Videos/tatkotv3/Predator.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "13:22:55",
-        "file": "C:/Videos/tatkotv3/Out of Reach.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:44:59",
-        "file": "C:/Videos/tatkotv3/Half Past Dead.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:23:33",
+        "time": "04:57:01",
         "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "18:05:17",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop.mp4",
+        "time": "06:38:44",
+        "file": "C:/Videos/tatkotv3/Kickboxer 1.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "19:37:34",
-        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
+        "time": "08:16:22",
+        "file": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "21:25:30",
-        "file": "C:/Videos/tatkotv3/The quest.mp4",
+        "time": "09:55:01",
+        "file": "C:/Videos/tatkotv3/Soldier.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "23:00:05",
-        "file": "C:/Videos/tatkotv3/Universal.Soldier.mp4",
+        "time": "11:33:37",
+        "file": "C:/Videos/tatkotv3/Savage.Dog.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "13:08:48",
+        "file": "C:/Videos/tatkotv3/Marked.For.Death.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "14:38:18",
+        "file": "C:/Videos/tatkotv3/Death Wish 2.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "16:06:14",
+        "file": "C:/Videos/tatkotv3/Death Wish 3.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "17:36:34",
+        "file": "C:/Videos/tatkotv3/Belly of the Beast.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "19:07:52",
+        "file": "C:/Videos/tatkotv3/Hard To Kill.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "20:39:51",
+        "file": "C:/Videos/tatkotv3/Cyborg Cop III.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "22:10:03",
+        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "23:42:48",
+        "file": "C:/Videos/tatkotv3/Transporter 2.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }
     ],
     "sunday": [
       {
-        "time": "00:39:33",
+        "time": "01:11:01",
+        "file": "C:/Videos/tatkotv3/Out of Reach.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "02:33:06",
+        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "04:06:30",
         "file": "C:/Videos/tatkotv3/Swordfish.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "02:18:49",
-        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
+        "time": "05:45:46",
+        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "03:58:54",
-        "file": "C:/Videos/tatkotv3/Con Air.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:54:21",
-        "file": "C:/Videos/tatkotv3/Face.Off.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:13:17",
-        "file": "C:/Videos/tatkotv3/Gone.in.Sixty.Seconds.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:11:14",
+        "time": "07:18:00",
         "file": "C:/Videos/tatkotv3/Firepower.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "11:46:46",
-        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "13:18:59",
-        "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:55:51",
-        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:29:21",
-        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "18:08:37",
-        "file": "C:/Videos/tatkotv3/Escape from L.A.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "19:45:11",
-        "file": "C:/Videos/tatkotv3/Savage.Dog.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:20:21",
+        "time": "08:53:32",
         "file": "C:/Videos/tatkotv3/The.Glimmer.Man.mp4",
         "channel": "TatkoTV",
         "source": "random"
       },
       {
-        "time": "22:51:43",
-        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
+        "time": "10:24:54",
+        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "11:57:07",
+        "file": "C:/Videos/tatkotv3/Escape from L.A.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "13:33:41",
+        "file": "C:/Videos/tatkotv3/Death Wish 1.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "15:07:12",
+        "file": "C:/Videos/tatkotv3/Con Air.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "17:02:39",
+        "file": "C:/Videos/tatkotv3/Above the Law.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "18:41:55",
+        "file": "C:/Videos/tatkotv3/Death Wish 3.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "20:12:15",
+        "file": "C:/Videos/tatkotv3/Marked.For.Death.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "21:41:44",
+        "file": "C:/Videos/tatkotv3/The quest.mp4",
+        "channel": "TatkoTV",
+        "source": "random"
+      },
+      {
+        "time": "23:16:19",
+        "file": "C:/Videos/tatkotv3/Fire Down Below.mp4",
         "channel": "TatkoTV",
         "source": "random"
       }

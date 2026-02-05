@@ -45,11 +45,7 @@
             </div>
         </div>
 
-        <!-- Now Playing -->
-        <div class="now-playing">
-            <div class="now-playing-title" data-i18n="nowPlaying.title">NOW PLAYING</div>
-            <div class="now-playing-content" id="nowPlaying" data-i18n="nowPlaying.noInfo">No program info</div>
-        </div>
+
 
         <!-- Control Panel -->
         <div class="control-panel">
@@ -72,6 +68,9 @@
                 </button>
                 <button class="btn btn-secondary" onclick="showConfigModal()">
                     <span data-i18n="control.configuration">⚙️ Configuration</span>
+                </button>
+                <button class="btn btn-secondary" onclick="openTVGuide()">
+                    <span data-i18n="control.tvGuide">📺 TV Guide</span>
                 </button>
                 <button class="btn btn-secondary" onclick="generateXMLTV()">
                     <span data-i18n="control.generateXMLTV">📺 Generate XMLTV for Kodi</span>
@@ -129,31 +128,7 @@
             </div>
         </div>
 
-        <!-- TV Guide Section -->
-        <div class="section">
-            <div class="section-title" data-i18n="guide.title">📺 TV Guide</div>
-            
-            <div class="guide-controls">
-                <div class="guide-view-toggle">
-                    <button class="btn btn-secondary guide-view-btn active" id="dailyViewBtn" onclick="switchGuideView('daily')">
-                        <span data-i18n="guide.today">📅 Today</span>
-                    </button>
-                    <button class="btn btn-secondary guide-view-btn" id="weeklyViewBtn" onclick="switchGuideView('weekly')">
-                        <span data-i18n="guide.weekly">📆 Weekly</span>
-                    </button>
-                </div>
-                <button class="btn btn-secondary" onclick="refreshGuide()">
-                    <span data-i18n="guide.refresh">🔄 Refresh Guide</span>
-                </button>
-                <div class="guide-time" id="guideTime" data-i18n="guide.loading">Loading...</div>
-            </div>
-            
-            <div class="guide-container" id="guideContainer">
-                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                    <div class="loading"></div> <span data-i18n="guide.loadingText">Loading TV Guide...</span>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Collection & Scheduler Panel -->
         <div class="section">

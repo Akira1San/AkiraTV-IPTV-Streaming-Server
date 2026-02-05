@@ -1133,8 +1133,8 @@ async function createSchedule() {
             );
             hideSchedulerWizard();
             
-            // Refresh TV guide to show new schedule
-            await loadTVGuide();
+            // Show success message
+            showToast('Schedule created successfully!', 'success');
         } else {
             throw new Error(result.error || 'Unknown error');
         }

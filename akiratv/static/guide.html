@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV - TV Guide</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <a href="/static/index.html" style="text-decoration: none; color: inherit;">AkiraTV</a>
+            </div>
+            <div class="header-controls">
+                <div class="language-switcher">
+                    <button class="lang-btn active" id="langEn" onclick="switchLanguage('en')">EN</button>
+                    <button class="lang-btn" id="langBg" onclick="switchLanguage('bg')">БГ</button>
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Checking...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="guide-navigation">
+            <button class="btn btn-secondary" onclick="window.location.href='/static/index.html'">
+                <span data-i18n="guide.backToDashboard">← Back to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- TV Guide Section -->
+        <div class="section">
+            <div class="section-title" data-i18n="guide.title">📺 TV Guide</div>
+            
+            <div class="guide-controls">
+                <div class="guide-view-toggle">
+                    <button class="btn btn-secondary guide-view-btn active" id="dailyViewBtn" onclick="switchGuideView('daily')">
+                        <span data-i18n="guide.today">📅 Today</span>
+                    </button>
+                    <button class="btn btn-secondary guide-view-btn" id="weeklyViewBtn" onclick="switchGuideView('weekly')">
+                        <span data-i18n="guide.weekly">📆 Weekly</span>
+                    </button>
+                </div>
+                <button class="btn btn-secondary" onclick="refreshGuide()">
+                    <span data-i18n="guide.refresh">🔄 Refresh Guide</span>
+                </button>
+                <div class="guide-time" id="guideTime" data-i18n="guide.loading">Loading...</div>
+            </div>
+            
+            <div class="guide-container" id="guideContainer">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <div class="loading"></div> <span data-i18n="guide.loadingText">Loading TV Guide...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/translations.js"></script>
+    <script src="/static/guide.js"></script>
+</body>
+</html>

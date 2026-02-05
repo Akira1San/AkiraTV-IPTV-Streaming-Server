@@ -1205,6 +1205,12 @@ input:checked + .toggle-slider:before {
 }
 
 /* TV Guide Styles */
+.guide-navigation {
+    margin-bottom: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border);
+}
+
 .guide-controls {
     display: flex;
     justify-content: space-between;
