@@ -1213,7 +1213,9 @@ class MetadataFetcher:
                     for key, bg_title in config['bulgarian_titles'].items():
                         # Match whole words only to avoid partial matches (e.g., "it" should not match "title")
                         if re.search(r'\b' + re.escape(key) + r'\b', title_lower):
-                            return bg_title.strip()
+                            # Only return translation if it's not empty
+                            if bg_title.strip():
+                                return bg_title.strip()
             
             except Exception as e:
                 print(f"Error loading translations from {translations_file}: {e}")
