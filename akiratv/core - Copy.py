@@ -21,7 +21,6 @@ from datetime import datetime
 #from .worker import ChannelWorker
 
 from .server.app_context import app_context  # New import
-from .server.dashboard import generate_dashboard_html
 from .stats import AKIRATV_STATS, STATS_LOCK, get_active_viewers, ACTIVE_CONNECTIONS, ACTIVE_CONNECTIONS_LOCK
 
 from akiratv.assets import sync_channel_logos

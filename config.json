@@ -141,5 +141,7 @@
     "dark_mode": false,
     "test_mode": true
   },
-  "channel": "critters"
+  "channel": "critters",
+  "tmdb_api_key": "",
+  "omdb_api_key": "ebed58dc"
 }

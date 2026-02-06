@@ -123,12 +123,31 @@ body {
     color: var(--error);
 }
 
+.status-badge.checking {
+    background: rgba(255, 204, 0, 0.2);
+    color: #ffcc00;
+}
+
+.status-badge.disconnected {
+    background: rgba(142, 142, 147, 0.2);
+    color: #8e8e93;
+}
+
 .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: currentColor;
     animation: pulse 2s infinite;
+}
+
+.status-badge.checking .status-dot {
+    animation: pulse 1s infinite;
+}
+
+.status-badge.disconnected .status-dot {
+    animation: none;
+    opacity: 0.5;
 }
 
 @keyframes pulse {

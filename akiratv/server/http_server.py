@@ -3,7 +3,6 @@ import os
 import asyncio
 from pathlib import Path
 from aiohttp import web, hdrs
-from .dashboard import generate_dashboard_html
 from ..stats import AKIRATV_STATS, STATS_LOCK
 
 # === Ngrok for public sharing ===
@@ -83,11 +82,12 @@ class HttpServer:
                 print(f"Error serving {file_path}: {e}")
                 raise
 
-    async def dashboard_handler(self, request):
-        html = generate_dashboard_html()
-        response = web.Response(text=html, content_type='text/html')
-        response.headers["ngrok-skip-browser-warning"] = "true"
-        return response
+    async def root_handler(self, request):
+        """Simple root handler - redirect to FastAPI UI or return basic info."""
+        return web.Response(
+            text="AkiraTV HLS Server - Access the web UI via FastAPI (default port 8000)",
+            content_type='text/plain'
+        )
 
     async def static_file_handler(self, request):
         """Serve static files like xmltv.xml and channels.m3u"""
@@ -168,8 +168,8 @@ class HttpServer:
             print(f"❌ User directory not found at: {user_dir}")
         # ------------------------------
 
-        # The dashboard must remain LAST as the fallback
-        self.app.router.add_get('/{path:.*}', self.dashboard_handler)
+        # The root handler as fallback
+        self.app.router.add_get('/{path:.*}', self.root_handler)
 
     async def start_async(self, directory: str, port: int, bind: str = "127.0.0.1"):
         """Start aiohttp server asynchronously."""

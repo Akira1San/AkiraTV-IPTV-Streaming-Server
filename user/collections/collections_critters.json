@@ -6,7 +6,6 @@
       "cover": "user/covers/bloodsport.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -21,7 +20,6 @@
       "cover": "user/covers/broken_arrow.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -36,7 +34,6 @@
       "cover": "user/covers/con_air.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -51,7 +48,6 @@
       "cover": "user/covers/cyborg_cop_ii.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -66,7 +62,6 @@
       "cover": "user/covers/cyborg_cop_ii.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -81,7 +76,6 @@
       "cover": "user/covers/cyborg_cop_iii.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -96,7 +90,6 @@
       "cover": "user/covers/death_warrant.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -111,7 +104,6 @@
       "cover": "user/covers/death_wish.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -122,19 +114,17 @@
     },
     {
       "id": "escape_from_los_angeles",
-      "name": "Escape from L.A.",
+      "name": "Escape from los angeles",
       "cover": "user/covers/escape_from_la.jpg",
-      "description": "In 2013, Snake Plissken is tasked by a despotic U.S. President with entering Los Angeles - now an autonomous island prison - and recovering a doomsday device stolen by his renegade daughter.",
+      "description": "",
       "genre": [],
-      "rating": "NR",
+      "year": 2026,
       "videos": [
         {
           "path": "C:/Videos/tatkotv3/Escape from los angeles.mp4",
           "duration": 5794.079958
         }
-      ],
-      "search_hints": "1996, Kurt Russell, John Carpenter",
-      "year": 2026
+      ]
     },
     {
       "id": "escape_from_new_york",
@@ -142,7 +132,6 @@
       "cover": "user/covers/escape_from_new_york.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -157,7 +146,6 @@
       "cover": null,
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -172,7 +160,6 @@
       "cover": "user/covers/firepower.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -187,7 +174,6 @@
       "cover": "user/covers/gone_in_sixty_seconds.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -202,7 +188,6 @@
       "cover": "user/covers/hard_target.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -217,7 +202,6 @@
       "cover": "user/covers/hummingbird.png",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -232,7 +216,6 @@
       "cover": "user/covers/kickboxer.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -247,7 +230,6 @@
       "cover": "user/covers/on_deadly_ground.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -262,7 +244,6 @@
       "cover": "user/covers/predator.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -277,7 +258,6 @@
       "cover": "user/covers/savage_dog.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -292,7 +272,6 @@
       "cover": "user/covers/soldier.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -307,7 +286,6 @@
       "cover": "user/covers/swordfish.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -322,7 +300,6 @@
       "cover": "user/covers/the_beastmaster.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -337,7 +314,6 @@
       "cover": "user/covers/the_mechanic.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -352,7 +328,6 @@
       "cover": "user/covers/the_mechanic.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -367,7 +342,6 @@
       "cover": "user/covers/the_mechanic.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -382,7 +356,6 @@
       "cover": "user/covers/the_quest.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -397,7 +370,6 @@
       "cover": "user/covers/the_rock.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -412,7 +384,6 @@
       "cover": "user/covers/the_tournament.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -427,7 +398,6 @@
       "cover": "user/covers/timecop.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -442,14 +412,13 @@
       "cover": "user/covers/transporter_2.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
-      "year": 2026,
       "videos": [
         {
           "path": "C:/Videos/tatkotv3/Transporter 1.mp4",
           "duration": 5529.232042
         }
-      ]
+      ],
+      "search_hints": "2002, Jason Statham, Shu Qi"
     },
     {
       "id": "transporter_2",
@@ -457,7 +426,6 @@
       "cover": "user/covers/transporter_2.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -472,7 +440,6 @@
       "cover": "user/covers/transporter_3.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -487,7 +454,6 @@
       "cover": "user/covers/universal_soldier_day_of_reckoning.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -502,7 +468,6 @@
       "cover": "user/covers/universal_soldier.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -517,7 +482,6 @@
       "cover": "user/covers/death_wish_3.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -532,7 +496,6 @@
       "cover": "user/covers/death_wish_3.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -547,7 +510,6 @@
       "cover": "user/covers/death_wish_3.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -562,7 +524,6 @@
       "cover": "user/covers/death_wish_3.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -577,7 +538,6 @@
       "cover": "user/covers/above_the_law.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -592,7 +552,6 @@
       "cover": "user/covers/belly_of_the_beast.png",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -607,7 +566,6 @@
       "cover": "user/covers/exit_wounds.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -622,7 +580,6 @@
       "cover": "user/covers/fire_down_below.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -637,7 +594,6 @@
       "cover": "user/covers/half_past_dead.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -652,7 +608,6 @@
       "cover": "user/covers/hard_to_kill.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -667,7 +622,6 @@
       "cover": "user/covers/into_the_sun.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -682,7 +636,6 @@
       "cover": "user/covers/marked_for_death.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -697,7 +650,6 @@
       "cover": null,
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -712,7 +664,6 @@
       "cover": "user/covers/out_of_reach.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -727,7 +678,6 @@
       "cover": "user/covers/the_glimmer_man.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -742,7 +692,6 @@
       "cover": "user/covers/ticker.jpg",
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
@@ -757,7 +706,6 @@
       "cover": null,
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {

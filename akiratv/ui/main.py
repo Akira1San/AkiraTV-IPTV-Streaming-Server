@@ -10,7 +10,6 @@ from pathlib import Path
 
 from ..core import AkiraTV
 from ..config import Config
-from ..server import run_server
 from ..utils import find_project_root
 # Import the new tab and widget classes
 from .tabs import GeneralTab, SettingsTab, InfoTab
@@ -730,9 +729,8 @@ class AkiraTVApp:
         if hasattr(self, 'stats_labels'):
             self.stats_labels["status"].set("Streaming")
 
-        # 🔹 Start dashboard HTTP server
-        threading.Thread(target=run_server, daemon=True).start()
-        #threading.Thread(target=server.run_server, daemon=True).start()
+        # Note: FastAPI server (api_server.py) should be started separately
+        # The HTTP server for HLS streaming is started by AkiraTV core
 
         import socket
         try:

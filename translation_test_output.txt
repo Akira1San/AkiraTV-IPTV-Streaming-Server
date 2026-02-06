@@ -1,0 +1,10 @@
+Testing title translation:
+Translated: The Terminator -> Терминатор
+Translated: Alien -> Чуждиот
+Translated: The Matrix -> Матрицата
+Translated: Star Wars -> Звездни войни
+Translated: Batman -> Бетмен
+Translated: Superman -> Супермен
+No translation: Unknown Movie
+
+Test completed!

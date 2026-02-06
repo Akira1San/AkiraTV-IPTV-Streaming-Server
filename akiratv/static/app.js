@@ -70,13 +70,33 @@ async function init() {
     initializeLanguage();
     await updateStatus();
     await loadChannels();
-    await loadChannelDropdown();
-    await refreshPlaylist();
+    // Playlist controls removed - now using VOD page
     connectWebSocket();
     setInterval(updateStatus, 10000); // Update every 10s
 }
 
 // API Calls
+// Helper function to add timeout to fetch requests
+async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    
+    try {
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error('Request timeout');
+        }
+        throw error;
+    }
+}
+
 async function apiCall(endpoint, method = 'GET', body = null, params = null) {
     const options = {
         method,
@@ -93,7 +113,7 @@ async function apiCall(endpoint, method = 'GET', body = null, params = null) {
         options.body = JSON.stringify(body);
     }
 
-    const response = await fetch(url, options);
+    const response = await fetchWithTimeout(url, options, 5000);
     
     // Check if response is ok (status 200-299)
     if (!response.ok) {
@@ -114,9 +134,16 @@ async function apiCall(endpoint, method = 'GET', body = null, params = null) {
 }
 
 // Update Status
+let statusCheckFailures = 0;
+const MAX_STATUS_FAILURES = 3;
+
 async function updateStatus() {
     try {
         const data = await apiCall('/api/status');
+        
+        // Reset failure counter on success
+        statusCheckFailures = 0;
+        
         isRunning = data.is_running;
         
         const badge = document.getElementById('statusBadge');
@@ -125,29 +152,58 @@ async function updateStatus() {
         if (isRunning) {
             badge.className = 'status-badge running';
             text.textContent = t('status.streaming');
-            document.getElementById('startBtn').disabled = true;
-            document.getElementById('stopBtn').disabled = false;
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            if (startBtn) startBtn.disabled = true;
+            if (stopBtn) stopBtn.disabled = false;
         } else {
             badge.className = 'status-badge stopped';
             text.textContent = t('status.stopped');
-            document.getElementById('startBtn').disabled = false;
-            document.getElementById('stopBtn').disabled = true;
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            if (startBtn) startBtn.disabled = false;
+            if (stopBtn) stopBtn.disabled = true;
         }
 
-        // Update stats
-        document.getElementById('viewersCount').textContent = data.stats.viewers || 0;
-        document.getElementById('uptimeValue').textContent = formatUptime(data.uptime);
-        document.getElementById('statusValue').textContent = data.stats.status || 'N/A';
+        // Update stats (with null checks)
+        const viewersCount = document.getElementById('viewersCount');
+        if (viewersCount) viewersCount.textContent = data.stats.viewers || 0;
+        
+        const uptimeValue = document.getElementById('uptimeValue');
+        if (uptimeValue) uptimeValue.textContent = formatUptime(data.uptime);
+        
+        const statusValue = document.getElementById('statusValue');
+        if (statusValue) statusValue.textContent = data.stats.status || 'N/A';
+        
+        const channelsCount = document.getElementById('channelsCount');
+        if (channelsCount && data.stats.channels_count !== undefined) {
+            channelsCount.textContent = data.stats.channels_count;
+        }
         
         const nowPlayingElement = document.getElementById('nowPlaying');
-        if (data.stats.now_playing) {
-            nowPlayingElement.textContent = data.stats.now_playing;
-        } else {
-            nowPlayingElement.textContent = t('nowPlaying.noInfo');
+        if (nowPlayingElement) {
+            if (data.stats.now_playing) {
+                nowPlayingElement.textContent = data.stats.now_playing;
+            } else {
+                nowPlayingElement.textContent = t('nowPlaying.noInfo');
+            }
         }
     } catch (error) {
         console.error('Failed to update status:', error);
-        document.getElementById('statusText').textContent = t('status.checking');
+        statusCheckFailures++;
+        
+        const badge = document.getElementById('statusBadge');
+        const text = document.getElementById('statusText');
+        
+        if (statusCheckFailures >= MAX_STATUS_FAILURES) {
+            // After multiple failures, show disconnected state
+            badge.className = 'status-badge disconnected';
+            text.textContent = t('status.disconnected') || 'Disconnected';
+        } else {
+            // Still trying, show checking
+            badge.className = 'status-badge checking';
+            text.textContent = t('status.checking');
+        }
     }
 }
 
@@ -183,7 +239,8 @@ async function loadChannels() {
         });
         console.log('🔗 Using fallback channel URLs:', channelUrls);
         
-        document.getElementById('channelsCount').textContent = channels.length;
+        const channelsCount = document.getElementById('channelsCount');
+        if (channelsCount) channelsCount.textContent = channels.length;
 
         // Update filter counts
         updateFilterCounts(channels);
@@ -643,12 +700,14 @@ async function openLogs() {
     }
 }
 
-// Playlist Controls Functions
+// Playlist Controls Functions (Legacy - kept for compatibility)
 async function loadChannelDropdown() {
     try {
+        const select = document.getElementById('channelSelect');
+        if (!select) return; // Element doesn't exist on this page
+        
         const data = await apiCall('/api/channels');
         const channels = data.channels;
-        const select = document.getElementById('channelSelect');
         
         // Clear existing options
         select.innerHTML = '';
@@ -675,7 +734,8 @@ async function loadChannelDropdown() {
         
     } catch (error) {
         console.error('Failed to load channel dropdown:', error);
-        document.getElementById('channelSelect').innerHTML = '<option value="">Error loading channels</option>';
+        const select = document.getElementById('channelSelect');
+        if (select) select.innerHTML = '<option value="">Error loading channels</option>';
     }
 }
 
@@ -707,6 +767,8 @@ async function playNowFromInput() {
     const channelSelect = document.getElementById('channelSelect');
     const pathInput = document.getElementById('playNowPath');
     
+    if (!channelSelect || !pathInput) return; // Elements don't exist on this page
+    
     const channel = channelSelect.value;
     const videoPath = pathInput.value.trim();
     
@@ -735,6 +797,8 @@ async function playNowFromInput() {
 
 async function createPlaylistFromFolder() {
     const folderInput = document.getElementById('folderPath');
+    if (!folderInput) return; // Element doesn't exist on this page
+    
     const folderPath = folderInput.value.trim();
     
     if (!folderPath) {
@@ -764,15 +828,17 @@ async function createPlaylistFromFolder() {
 }
 
 async function refreshPlaylist() {
+    const playlistSelect = document.getElementById('playlistSelect');
+    if (!playlistSelect) return; // Element doesn't exist on this page
+    
     try {
         const result = await apiCall('/api/playlist/videos');
-        const select = document.getElementById('playlistSelect');
         
         // Clear existing options
-        select.innerHTML = '';
+        playlistSelect.innerHTML = '';
         
         if (result.videos.length === 0) {
-            select.innerHTML = '<option value="">No playlist loaded</option>';
+            playlistSelect.innerHTML = '<option value="">No playlist loaded</option>';
             return;
         }
         
@@ -781,23 +847,26 @@ async function refreshPlaylist() {
             const option = document.createElement('option');
             option.value = video.name;
             option.textContent = video.name;
-            select.appendChild(option);
+            playlistSelect.appendChild(option);
         });
         
         // Select first video
         if (result.videos.length > 0) {
-            select.value = result.videos[0].name;
+            playlistSelect.value = result.videos[0].name;
         }
         
     } catch (error) {
         console.error('Failed to refresh playlist:', error);
-        document.getElementById('playlistSelect').innerHTML = '<option value="">Error loading playlist</option>';
+        const select = document.getElementById('playlistSelect');
+        if (select) select.innerHTML = '<option value="">Error loading playlist</option>';
     }
 }
 
 async function playSelectedVideo() {
     const channelSelect = document.getElementById('channelSelect');
     const playlistSelect = document.getElementById('playlistSelect');
+    
+    if (!channelSelect || !playlistSelect) return; // Elements don't exist on this page
     
     const channel = channelSelect.value;
     const videoName = playlistSelect.value;
@@ -853,6 +922,8 @@ async function createStandbyLoop() {
 
 async function stopSelectedChannel() {
     const channelSelect = document.getElementById('channelSelect');
+    if (!channelSelect) return; // Element doesn't exist on this page
+    
     const channel = channelSelect.value;
     
     if (!channel) {
@@ -1289,8 +1360,11 @@ function connectWebSocket() {
         const data = JSON.parse(event.data);
         
         if (data.type === 'stats_update') {
-            document.getElementById('viewersCount').textContent = data.viewers || 0;
-            document.getElementById('nowPlaying').textContent = data.stats.now_playing || 'No program info';
+            const viewersCount = document.getElementById('viewersCount');
+            if (viewersCount) viewersCount.textContent = data.viewers || 0;
+            
+            const nowPlaying = document.getElementById('nowPlaying');
+            if (nowPlaying) nowPlaying.textContent = data.stats?.now_playing || 'No program info';
         }
         
         if (data.type === 'video_queued') {

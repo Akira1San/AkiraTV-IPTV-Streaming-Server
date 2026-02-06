@@ -87,50 +87,6 @@
             </div>
         </div>
 
-        <!-- Playlist Controls -->
-        <div class="control-panel">
-            <div class="section-title">🎵 Playlist Controls</div>
-            
-            <!-- Channel Selection and Play Now -->
-            <div class="playlist-row">
-                <label class="playlist-label">Channel:</label>
-                <select id="channelSelect" class="playlist-select">
-                    <option value="">Loading...</option>
-                </select>
-                
-                <input type="text" id="playNowPath" class="playlist-input" placeholder="Enter video path or click Browse...">
-                <button class="btn btn-secondary btn-small" onclick="browseVideo()">📁 Browse</button>
-                <button class="btn btn-primary" onclick="playNowFromInput()">▶️ Play Now</button>
-                <button class="btn btn-danger btn-small" onclick="stopSelectedChannel()">⏹️ Stop</button>
-            </div>
-            
-            <!-- Playlist Creation -->
-            <div class="playlist-row">
-                <label class="playlist-label">Create Playlist:</label>
-                <input type="text" id="folderPath" class="playlist-input" placeholder="Enter folder path or click Browse...">
-                <button class="btn btn-secondary btn-small" onclick="browseFolder()">📁 Browse</button>
-                <button class="btn btn-primary" onclick="createPlaylistFromFolder()">📝 Create Playlist</button>
-            </div>
-            
-            <!-- Playlist Selection and Play -->
-            <div class="playlist-row">
-                <label class="playlist-label">Playlist:</label>
-                <select id="playlistSelect" class="playlist-select">
-                    <option value="">No playlist loaded</option>
-                </select>
-                <button class="btn btn-secondary" onclick="refreshPlaylist()">🔄 Refresh</button>
-                <button class="btn btn-primary" onclick="playSelectedVideo()">▶️ Play Selected</button>
-                <button class="btn btn-danger btn-small" onclick="stopSelectedChannel()">⏹️ Stop</button>
-            </div>
-            
-            <!-- Standby Loop Creation -->
-            <div class="playlist-row">
-                <label class="playlist-label">Standby Loops:</label>
-                <span class="playlist-help">Generate standby videos for all resolutions in your inventory</span>
-                <button class="btn btn-secondary" onclick="createStandbyLoop()">🔄 Create Standby Loop</button>
-            </div>
-        </div>
-
 
 
         <!-- Collection & Scheduler Panel -->
