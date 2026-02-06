@@ -651,11 +651,24 @@ class MetadataFetcher:
                         # Convert to our format
                         genres = movie_data.get("genre", "").split(",")
                         genres = [g.strip() for g in genres if g.strip()]
+                        
+                        # Extract year from API response if available
+                        api_year = None
+                        if movie_data.get("year"):
+                            try:
+                                api_year = int(movie_data.get("year"))
+                            except:
+                                pass
+                        
+                        # Use API year if available, otherwise use search year
+                        release_year = api_year if api_year else (search_year if search_year else datetime.now().year)
+
+                        print(f"DEBUG: Free API returned - Genres: {genres}, Year: {release_year}")
 
                         return {
                             "title": movie_data.get("name", clean_title),
                             "overview": movie_data.get("plot", ""),
-                            "release_date": str(search_year) if search_year else str(datetime.now().year),
+                            "release_date": str(release_year),
                             "genres": [{"name": genre} for genre in genres],
                             "poster_path": movie_data.get("poster_url"),
                             "source": "IMDb (Free API)"
@@ -964,9 +977,47 @@ class MetadataFetcher:
                 if alt_title_match:
                     title = alt_title_match.group(1).strip()
             
-            # Extract year
-            year_match = re.search(r'<span[^>]*>(\d{4})</span>', content)
-            year = int(year_match.group(1)) if year_match else datetime.now().year
+            # Extract year - improved method
+            year = datetime.now().year
+            
+            # Try JSON-LD first (most reliable)
+            if json_ld_match:
+                json_content = json_ld_match.group(1)
+                # Look for release date in JSON-LD
+                date_match = re.search(r'"datePublished"\s*:\s*"([^"]+)"', json_content)
+                if date_match:
+                    try:
+                        release_date = date_match.group(1).strip()
+                        if release_date:
+                            # Extract year from date string (format: YYYY-MM-DD or YYYY)
+                            if '-' in release_date:
+                                year = int(release_date.split('-')[0])
+                            else:
+                                year = int(release_date)
+                            print(f"DEBUG: Found year from JSON-LD: {year}")
+                    except:
+                        pass
+            
+            # Try data-testid patterns for release year
+            if year == datetime.now().year:
+                year_patterns = [
+                    r'<span[^>]*data-testid="title-year"[^>]*>(\d{4})</span>',
+                    r'<a[^>]*href="/title/tt\d+/releaseinfo"[^>]*>(\d{4})</a>',
+                    r'release year[^>]*(\d{4})',
+                    r'\b(19|20)\d{2}\b'  # Fallback to any 4-digit year
+                ]
+                
+                for pattern in year_patterns:
+                    year_match = re.search(pattern, content, re.IGNORECASE)
+                    if year_match:
+                        try:
+                            year_candidate = int(year_match.group(1))
+                            if 1900 <= year_candidate <= datetime.now().year + 5:  # Allow for future releases
+                                year = year_candidate
+                                print(f"DEBUG: Found year using pattern '{pattern}': {year}")
+                                break
+                        except:
+                            continue
             
             # Extract plot/description
             plot_patterns = [
@@ -982,17 +1033,60 @@ class MetadataFetcher:
                     plot = plot_match.group(1).strip()
                     break
             
-            # Extract genres
-            genre_pattern = r'<a[^>]*href="/search/title/\?genres=([^"]+)"[^>]*>([^<]+)</a>'
-            genre_matches = re.findall(genre_pattern, content)
-            genres = [match[1] for match in genre_matches[:5]]  # Limit to 5 genres
+            # Extract genres - updated patterns for current IMDb structure
+            genres = []
+            
+            # Try JSON-LD genres first (most reliable)
+            if json_ld_match:
+                json_content = json_ld_match.group(1)
+                # Look for genres in JSON-LD
+                genre_match = re.search(r'"genre"\s*:\s*\[([^\]]+)\]', json_content)
+                if genre_match:
+                    genre_str = genre_match.group(1)
+                    # Extract genre names from JSON array
+                    genre_names = re.findall(r'"([^"]+)"', genre_str)
+                    if genre_names:
+                        genres = [g.strip() for g in genre_names if g.strip()]
+                        print(f"DEBUG: Found genres from JSON-LD: {genres}")
+            
+            # If no genres from JSON-LD, try other patterns
+            if not genres:
+                genre_patterns = [
+                    # New IMDb genre patterns
+                    r'<a[^>]*href="/search/title\?genres=([^"&]+)"[^>]*>([^<]+)</a>',
+                    r'<span[^>]*class="ipc-metadata-list-item__list-content-item"[^>]*>([^<]+)</span>',
+                    r'<a[^>]*href="/genre/[^"]+"[^>]*>([^<]+)</a>'
+                ]
+                
+                for pattern in genre_patterns:
+                    genre_matches = re.findall(pattern, content)
+                    if genre_matches:
+                        # Extract genre names from matches
+                        extracted_genres = []
+                        for match in genre_matches:
+                            if isinstance(match, tuple):
+                                genre = match[1].strip()
+                            else:
+                                genre = match.strip()
+                            
+                            # Filter out non-genre text and duplicates
+                            if genre and genre not in extracted_genres and len(genre) < 50:
+                                # Exclude common non-genre terms
+                                if not any(exclude in genre.lower() for exclude in ['see more', 'all', 'genres', 'release', 'year']):
+                                    extracted_genres.append(genre)
+                        
+                        if extracted_genres:
+                            genres = extracted_genres[:5]  # Limit to 5 genres
+                            print(f"DEBUG: Found genres using pattern '{pattern}': {genres}")
+                            break
             
             # Try to find poster image - multiple patterns
             poster_url = None
             
             # Pattern 1: Look for poster in JSON-LD
-            if not poster_url:
-                json_image_match = re.search(r'"image"\s*:\s*"([^"]+)"', content)
+            if not poster_url and json_ld_match:
+                json_content = json_ld_match.group(1)
+                json_image_match = re.search(r'"image"\s*:\s*"([^"]+)"', json_content)
                 if json_image_match:
                     poster_url = json_image_match.group(1).strip()
             
@@ -1023,6 +1117,8 @@ class MetadataFetcher:
                     # If no large image found, use the first one
                     if not poster_url:
                         poster_url = poster_matches[0]
+            
+            print(f"DEBUG: IMDb movie info extracted - Title: {title}, Year: {year}, Genres: {genres}, Poster: {bool(poster_url)}")
             
             return {
                 "title": title,
