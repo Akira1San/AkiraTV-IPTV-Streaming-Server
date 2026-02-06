@@ -339,7 +339,7 @@ class MetadataFetcher:
             print(f"Error searching Wikipedia: {e}")
             return None
 
-    def search_omdb_movie(self, title, year=None, api_key=None):
+    def search_omdb_movie(self, title, year=None, api_key=None, search_hints=None):
         """Search for movie using OMDB API (requires API key)"""
         if not api_key:
             print("DEBUG: OMDB API key not provided")
@@ -349,6 +349,8 @@ class MetadataFetcher:
             # Clean title
             clean_title = re.sub(r'\b(1080p|720p|2160p|4k|bluray|webrip|bdrip|dvdrip|x264|x265|h264|h265)\b', '', title, flags=re.IGNORECASE)
             clean_title = re.sub(r'\b(fmp4|mp4|mkv|avi|mov|webm|remux|remastered|extended|uncut)\b', '', clean_title, flags=re.IGNORECASE)
+            # Remove part numbers like "1", "2", etc. from title for better searching
+            clean_title = re.sub(r'\s*\d+$', '', clean_title).strip()
             clean_title = re.sub(r'[._\-]', ' ', clean_title)
             clean_title = re.sub(r'\s+', ' ', clean_title).strip()
             
@@ -362,6 +364,13 @@ class MetadataFetcher:
                 "type": "movie",
                 "plot": "full"
             }
+            
+            # Parse search hints to extract year
+            if search_hints:
+                hints_year, _ = self._parse_search_hints(search_hints)
+                if hints_year and not year:
+                    year = hints_year
+                    print(f"DEBUG: Using year from search hints: {year}")
             
             if year:
                 params["y"] = year
@@ -392,7 +401,49 @@ class MetadataFetcher:
                 return result
             else:
                 print(f"DEBUG: OMDB returned error: {data.get('Error', 'Unknown error')}")
-                return None
+                # If exact match failed, try search instead of title search
+                print(f"DEBUG: Trying OMDB search for: '{clean_title}'")
+                search_params = {
+                    "s": clean_title,
+                    "apikey": api_key,
+                    "type": "movie"
+                }
+                if year:
+                    search_params["y"] = year
+                search_response = requests.get(url, params=search_params, timeout=10)
+                search_response.raise_for_status()
+                search_data = search_response.json()
+                if search_data.get("Response") == "True" and search_data.get("Search"):
+                    # Get first result
+                    first_result = search_data["Search"][0]
+                    # Get detailed info for first result
+                    details_params = {
+                        "i": first_result["imdbID"],
+                        "apikey": api_key,
+                        "plot": "full"
+                    }
+                    details_response = requests.get(url, params=details_params, timeout=10)
+                    details_response.raise_for_status()
+                    details_data = details_response.json()
+                    if details_data.get("Response") == "True":
+                        genres = []
+                        if details_data.get("Genre"):
+                            genres = [{"name": g.strip()} for g in details_data["Genre"].split(",") if g.strip()]
+                        result = {
+                            "title": details_data.get("Title", clean_title),
+                            "overview": details_data.get("Plot", ""),
+                            "release_date": details_data.get("Year", str(year) if year else str(datetime.now().year)),
+                            "genres": genres,
+                            "poster_path": details_data.get("Poster") if details_data.get("Poster") != "N/A" else None,
+                            "source": "OMDB",
+                            "imdb_id": details_data.get("imdbID"),
+                            "rating": details_data.get("Rated", "NR"),
+                            "director": details_data.get("Director", ""),
+                            "actors": details_data.get("Actors", "")
+                        }
+                        print(f"DEBUG: Found movie via OMDB search: {result['title']} ({result['release_date']})")
+                        return result
+            return None
                 
         except Exception as e:
             print(f"Error searching OMDB: {e}")

@@ -404,7 +404,7 @@ Your API key will be saved for future use.""")
                 search_hints = collection.get("search_hints")
                 if search_hints:
                     print(f"DEBUG: Using search hints: '{search_hints}' for {movie_title}")
-
+ 
                 # Search for movie data
                 movie_data = None
                 if selected_source["value"] == "tmdb":
@@ -414,7 +414,7 @@ Your API key will be saved for future use.""")
                 elif selected_source["value"] == "imdb":
                     movie_data = self.metadata_fetcher.search_imdb_movie(movie_title, year, selected_language["value"], search_hints)
                 elif selected_source["value"] == "omdb":
-                    movie_data = self.metadata_fetcher.search_omdb_movie(movie_title, year, self.omdb_api_key)
+                    movie_data = self.metadata_fetcher.search_omdb_movie(movie_title, year, self.omdb_api_key, search_hints)
                 
                 if movie_data:
                     print(f"DEBUG: Got movie data from {movie_data.get('source', 'unknown source')}")
