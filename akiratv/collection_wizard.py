@@ -22,7 +22,7 @@ class CollectionWizard:
     def __init__(self, root):
         self.root = root
         self.root.title("AkiraTV — Collection Manager")
-        self.root.geometry("1000x700")  # Increased height for additional fields
+        self.root.geometry("1100x800")  # Increased height for additional fields
         
         self.collections = []
         self.video_database = {}
@@ -421,7 +421,17 @@ Your API key will be saved for future use.""")
                     print(f"DEBUG: Selected language: {selected_language['value']}")
                     
                     # Update collection with movie data
-                    collection["name"] = movie_data.get("title", movie_title)
+                    original_title = movie_data.get("title", movie_title)
+                    if selected_language["value"] == "bulgarian":
+                        # Try to get Bulgarian title from our database
+                        bulgarian_title = self.metadata_fetcher.get_known_movie_title(original_title, "bulgarian")
+                        if bulgarian_title != original_title:
+                            print(f"DEBUG: Using Bulgarian title: {bulgarian_title} instead of {original_title}")
+                            collection["name"] = bulgarian_title
+                        else:
+                            collection["name"] = original_title
+                    else:
+                        collection["name"] = original_title
                     
                     # Get description - translate if Bulgarian is selected
                     original_description = movie_data.get("overview", "")
