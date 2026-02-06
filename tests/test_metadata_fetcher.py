@@ -5,9 +5,9 @@ Simple test for the metadata fetcher module
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'akiratv'))
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from metadata_fetcher import MetadataFetcher
+from akiratv.metadata_fetcher import MetadataFetcher
 
 def test_metadata_fetcher():
     """Test the metadata fetcher functionality"""

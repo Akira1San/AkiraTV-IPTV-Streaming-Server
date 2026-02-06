@@ -1620,3 +1620,55 @@ class MetadataFetcher:
         except Exception as e:
             print(f"Error downloading IMDb image: {e}")
             return None
+    
+    def download_omdb_image(self, image_url, movie_title):
+        """Download image from OMDB"""
+        if not image_url:
+            return None
+        
+        try:
+            # Create safe filename
+            safe_title = re.sub(r'[^\w\s-]', '', movie_title)
+            safe_title = re.sub(r'[-\s]+', '_', safe_title)
+            
+            # Get file extension from URL or content type
+            ext = '.jpg'
+            if '.png' in image_url.lower():
+                ext = '.png'
+            elif '.gif' in image_url.lower():
+                ext = '.gif'
+            
+            filename = f"{safe_title.lower()}{ext}"
+            image_file_path = self.covers_dir / filename
+            
+            # Check if cover already exists
+            if image_file_path.exists():
+                print(f"DEBUG: Cover already exists: {image_file_path}")
+                return f"user/covers/{filename}"
+            
+            print(f"DEBUG: Downloading OMDB image from: {image_url}")
+            
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+            
+            response = requests.get(image_url, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            # Check content type for extension
+            content_type = response.headers.get('content-type', '')
+            if 'png' in content_type:
+                ext = '.png'
+            elif 'gif' in content_type:
+                ext = '.gif'
+            
+            with open(image_file_path, 'wb') as f:
+                f.write(response.content)
+            
+            print(f"DEBUG: OMDB image saved to: {image_file_path}")
+            # Return relative path for collection storage
+            return f"user/covers/{filename}"
+            
+        except Exception as e:
+            print(f"Error downloading OMDB image: {e}")
+            return None

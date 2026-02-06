@@ -352,7 +352,7 @@ Your API key will be saved for future use.""")
             
             updated_count = 0
             failed_count = 0
-            source_name = {"tmdb": "TMDB", "wikipedia": "Wikipedia", "imdb": "IMDb"}[selected_source["value"]]
+            source_name = {"tmdb": "TMDB", "wikipedia": "Wikipedia", "imdb": "IMDb", "omdb": "OMDB"}[selected_source["value"]]
             
             for i, idx in enumerate(self.selected_indices):
                 collection = self.collections[idx]
@@ -503,6 +503,8 @@ Your API key will be saved for future use.""")
                             cover_path = self.metadata_fetcher.download_wikipedia_image(image_path, collection["name"])
                         elif selected_source["value"] == "imdb":
                             cover_path = self.metadata_fetcher.download_imdb_image(image_path, collection["name"])
+                        elif selected_source["value"] == "omdb":
+                            cover_path = self.metadata_fetcher.download_omdb_image(image_path, collection["name"])
                         
                         if cover_path:
                             collection["cover"] = cover_path
