@@ -1201,13 +1201,13 @@ class MetadataFetcher:
         if language == "bulgarian":
             known_titles_bg = {
                 "terminator": "Терминатор",
-                "alien": "Чуждиот",
-                "predator": "Ловецът",
+                "alien": "Пришълците",
+                "predator": "Хищникът",
                 "matrix": "Матрицата",
                 "blade runner": "Блейд Рънър",
                 "star wars": "Звездни войни",
                 "indiana jones": "Индиана Джонс",
-                "die hard": "Дайхард",
+                "die hard": "Умирай трудно",
                 "rambo": "Рамбо",
                 "rocky": "Роки",
                 "godfather": "Баща",
