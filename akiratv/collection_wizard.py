@@ -790,10 +790,6 @@ Your API key will be saved for future use.""")
         load_collections_btn.pack(side="left", padx=2)
         self.create_tooltip(load_collections_btn, "Load existing collection file for editing")
         
-        load_info_btn = ttk.Button(btn_frame, text="Load Video Info", command=self.load_video_info)
-        load_info_btn.pack(side="left", padx=2)
-        self.create_tooltip(load_info_btn, "Load metadata from INI or JSON file")
-        
         rescan_btn = ttk.Button(btn_frame, text="Re-Scan Folder", command=self.rescan_folder)
         rescan_btn.pack(side="left", padx=2)
         self.create_tooltip(rescan_btn, "Scan video folder again and create new collections")
