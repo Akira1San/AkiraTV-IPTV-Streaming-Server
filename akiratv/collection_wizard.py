@@ -287,6 +287,13 @@ Your API key will be saved for future use.""")
         ttk.Checkbutton(skip_frame, text="Skip collections with existing metadata", 
                        variable=skip_var).pack(side="left")
         
+        # Redownload covers option
+        covers_frame = ttk.Frame(source_dialog)
+        covers_frame.pack(fill="x", padx=20, pady=5)
+        redownload_covers_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(covers_frame, text="Download/update cover images", 
+                       variable=redownload_covers_var).pack(side="left")
+        
         # Buttons
         btn_frame = ttk.Frame(source_dialog)
         btn_frame.pack(fill="x", padx=20, pady=20)
@@ -294,11 +301,13 @@ Your API key will be saved for future use.""")
         selected_source = {"value": None}
         selected_language = {"value": None}
         selected_skip = {"value": True}
+        selected_redownload_covers = {"value": True}
 
         def proceed():
             selected_source["value"] = source_var.get()
             selected_language["value"] = language_var.get()
             selected_skip["value"] = skip_var.get()
+            selected_redownload_covers["value"] = redownload_covers_var.get()
             source_dialog.destroy()
         
         def cancel():
@@ -494,9 +503,9 @@ Your API key will be saved for future use.""")
                     else:
                         collection["genre"] = movie_genres
                     
-                    # Download image/poster
+                    # Download image/poster if enabled
                     image_path = movie_data.get("poster_path")
-                    if image_path:
+                    if image_path and selected_redownload_covers["value"]:
                         if selected_source["value"] == "tmdb":
                             cover_path = self.metadata_fetcher.download_poster(image_path, collection["name"])
                         elif selected_source["value"] == "wikipedia":
