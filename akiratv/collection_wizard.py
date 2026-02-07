@@ -930,7 +930,6 @@ Your API key will be saved for future use.""")
         button_frame = ttk.Frame(detail_frame)
         button_frame.grid(row=len(fields), column=0, columnspan=2, pady=10)
         ttk.Button(button_frame, text="Save Fields", command=self.save_ui_fields_to_collection).pack(side="left", padx=5)
-        ttk.Button(button_frame, text="Update Collection(s)", command=self.update_collections).pack(side="left", padx=5)
         
         detail_frame.columnconfigure(1, weight=1)
         self.refresh_collection_list()
