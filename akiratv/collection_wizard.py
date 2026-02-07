@@ -94,7 +94,7 @@ class CollectionWizard:
         """Prompt user for TMDB API key"""
         dialog = tk.Toplevel(self.root)
         dialog.title("TMDB API Key Required")
-        dialog.geometry("500x300")
+        dialog.geometry("500x500")
         dialog.transient(self.root)
         dialog.grab_set()
         
@@ -162,7 +162,7 @@ Your API key will be saved for future use.""")
         """Prompt user for OMDB API key"""
         dialog = tk.Toplevel(self.root)
         dialog.title("OMDB API Key Required")
-        dialog.geometry("500x200")
+        dialog.geometry("500x500")
         dialog.transient(self.root)
         dialog.grab_set()
         
@@ -223,7 +223,7 @@ Your API key will be saved for future use.""")
         # Ask user which source to use
         source_dialog = tk.Toplevel(self.root)
         source_dialog.title("Choose Metadata Source & Language")
-        source_dialog.geometry("400x300")
+        source_dialog.geometry("500x500")
         source_dialog.transient(self.root)
         source_dialog.grab_set()
         
@@ -815,6 +815,16 @@ Your API key will be saved for future use.""")
         content_frame = ttk.Frame(main_frame)
         content_frame.pack(fill="both", expand=True)
         
+        # Cover preview frame
+        cover_frame = ttk.LabelFrame(content_frame, text="Cover Preview")
+        cover_frame.pack(side="left", fill="y", padx=(0, 10), pady=(0, 10))
+        cover_frame.configure(width=220, height=320)
+        cover_frame.pack_propagate(False)  # Prevent frame from shrinking
+        
+        # Cover preview label - will display the cover image
+        self.cover_preview = tk.Label(cover_frame, bg="black")
+        self.cover_preview.pack(padx=10, pady=10, fill="both", expand=True)
+        
         # Collections list with scrollbar
         list_frame = ttk.LabelFrame(content_frame, text="Collections")
         list_frame.pack(side="left", fill="both", expand=True, pady=(0, 10))
@@ -857,17 +867,31 @@ Your API key will be saved for future use.""")
             var = tk.BooleanVar()
             self.genre_vars[tag] = var
             cb = ttk.Checkbutton(genre_frame, text=tag, variable=var, 
-                                command=lambda t=tag: self.toggle_genre_tag(t))
+                                command=lambda t=tag: self.toggle_tag(t))
             cb.pack(anchor="w", padx=5, pady=2)
         
-        # Episodic tag
-        episodic_frame = ttk.LabelFrame(tags_frame, text="Special Tags")
-        episodic_frame.pack(fill="x", padx=5, pady=5)
+        # Actor tags
+        actor_frame = ttk.LabelFrame(tags_frame, text="Actor Tags")
+        actor_frame.pack(fill="x", padx=5, pady=5)
+        
+        self.actor_tags = ["Steven Seagal", "Jean-Claude Van Damme", "Arnold Schwarzenegger", 
+                          "Sylvester Stallone", "Bruce Willis", "Chuck Norris"]
+        self.actor_vars = {}
+        for tag in self.actor_tags:
+            var = tk.BooleanVar()
+            self.actor_vars[tag] = var
+            cb = ttk.Checkbutton(actor_frame, text=tag, variable=var, 
+                                command=lambda t=tag: self.toggle_tag(t))
+            cb.pack(anchor="w", padx=5, pady=2)
+        
+        # Special tags
+        special_frame = ttk.LabelFrame(tags_frame, text="Special Tags")
+        special_frame.pack(fill="x", padx=5, pady=5)
         
         self.episodic_var = tk.BooleanVar()
-        episodic_cb = ttk.Checkbutton(episodic_frame, text="Episodic", 
+        episodic_cb = ttk.Checkbutton(special_frame, text="Episodic", 
                                      variable=self.episodic_var,
-                                     command=self.toggle_episodic_tag)
+                                     command=lambda: self.toggle_tag("Episodic"))
         episodic_cb.pack(anchor="w", padx=5, pady=2)
         
         # Metadata details
@@ -876,7 +900,7 @@ Your API key will be saved for future use.""")
 
         self.cover_var = tk.StringVar() # cover
 
-        # Metadata fields - added ID field
+        # Metadata fields - added ID field and Tags field
         fields = [
             ("ID:", "id_var"),
             ("Name:", "name_var"),
@@ -884,6 +908,7 @@ Your API key will be saved for future use.""")
             ("Description:", "desc_var"),
             ("Search Hints (actor/director):", "search_hints_var"),
             ("Genre (comma-separated):", "genre_var"),
+            ("Tags (comma-separated):", "tags_var"),
             ("Year:", "year_var")
         ]
         
@@ -1214,6 +1239,7 @@ Your API key will be saved for future use.""")
                     "cover": cover,
                     "description": "",
                     "genre": [],
+                    "tags": [],
                     "year": datetime.now().year,
                     "videos": [{
                         "path": video_str,
@@ -1506,6 +1532,50 @@ Your API key will be saved for future use.""")
         for collection in self.collections:
             self.collection_list.insert(tk.END, collection["name"])
 
+    def display_cover_preview(self, cover_path):
+        """Display cover image in the preview widget"""
+        try:
+            if cover_path:
+                # Check if cover path is absolute or relative
+                if not Path(cover_path).is_absolute():
+                    # Try to resolve relative path (covers are usually in user/covers)
+                    cover_path = Path(__file__).parent.parent / cover_path
+                
+                if Path(cover_path).exists():
+                    # Load and display the cover image
+                    from PIL import Image, ImageTk
+                    
+                    # Open and resize the image to fit the preview (maintaining aspect ratio)
+                    image = Image.open(cover_path)
+                    max_width = 200
+                    max_height = 300
+                    
+                    # Calculate aspect ratio
+                    aspect_ratio = image.width / image.height
+                    if image.width > max_width or image.height > max_height:
+                        if aspect_ratio > 1:  # Landscape
+                            new_width = max_width
+                            new_height = int(new_width / aspect_ratio)
+                        else:  # Portrait
+                            new_height = max_height
+                            new_width = int(new_height * aspect_ratio)
+                        
+                        image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                    
+                    # Convert to PhotoImage
+                    photo = ImageTk.PhotoImage(image)
+                    self.cover_preview.configure(image=photo)
+                    self.cover_preview.image = photo  # Keep reference to prevent garbage collection
+                else:
+                    # Cover file not found, clear the preview
+                    self.cover_preview.configure(image="")
+            else:
+                # No cover path, clear the preview
+                self.cover_preview.configure(image="")
+        except Exception as e:
+            print(f"Error displaying cover: {e}")
+            self.cover_preview.configure(image="")
+    
     def on_collection_select(self, event):
         """Handle collection selection"""
         # Clear previous selection
@@ -1541,12 +1611,20 @@ Your API key will be saved for future use.""")
             else:
                 self.metadata_vars["genre_var"].set("")
                 
+            if collection.get("tags"):
+                self.metadata_vars["tags_var"].set(", ".join(collection["tags"]))
+            else:
+                self.metadata_vars["tags_var"].set("")
+                
             if collection.get("year") and collection["year"] != datetime.now().year:
                 self.metadata_vars["year_var"].set(str(collection["year"]))
             else:
                 self.metadata_vars["year_var"].set("")
             
             self.cover_var.set(collection.get("cover", ""))
+            
+            # Update cover preview
+            self.display_cover_preview(collection.get("cover", ""))
             
             # Update tag checkboxes
             self.update_tag_checkboxes(collection)
@@ -1556,6 +1634,9 @@ Your API key will be saved for future use.""")
                 var.set("")
             self.cover_var.set("")
             
+            # Clear cover preview
+            self.cover_preview.configure(image="")
+            
             # Reset tag checkboxes
             for var in self.genre_vars.values():
                 var.set(False)
@@ -1563,50 +1644,56 @@ Your API key will be saved for future use.""")
 
     def update_tag_checkboxes(self, collection):
         """Update tag checkboxes based on collection data"""
+        # Get all tags from collection
+        tags = set(collection.get("tags", []))
+        
         # Update genre tags
-        collection_genres = set(collection.get("genre", []))
         for tag, var in self.genre_vars.items():
-            var.set(tag in collection_genres)
+            var.set(tag in tags)
+        
+        # Update actor tags
+        for tag, var in self.actor_vars.items():
+            var.set(tag in tags)
         
         # Update episodic tag
-        self.episodic_var.set(collection.get("episodic", False))
+        self.episodic_var.set("Episodic" in tags)
 
-    def toggle_genre_tag(self, tag):
-        """Toggle a genre tag for selected videos"""
+    def toggle_tag(self, tag):
+        """Toggle a tag for selected videos"""
         if not self.selected_indices:
             messagebox.showwarning("Warning", "Please select at least one video first!")
-            self.genre_vars[tag].set(False)
+            # Reset the checkbox
+            if tag in self.genre_vars:
+                self.genre_vars[tag].set(False)
+            elif tag in self.actor_vars:
+                self.actor_vars[tag].set(False)
+            elif tag == "Episodic":
+                self.episodic_var.set(False)
             return
-            
+        
         for idx in self.selected_indices:
             collection = self.collections[idx]
-            genres = collection.get("genre", [])
+            tags = collection.get("tags", [])
             
-            if self.genre_vars[tag].get():
+            # Get current state of the tag
+            if tag in self.genre_vars:
+                is_checked = self.genre_vars[tag].get()
+            elif tag in self.actor_vars:
+                is_checked = self.actor_vars[tag].get()
+            elif tag == "Episodic":
+                is_checked = self.episodic_var.get()
+            
+            if is_checked:
                 # Add the tag if it's not already there
-                if tag not in genres:
-                    genres.append(tag)
+                if tag not in tags:
+                    tags.append(tag)
             else:
                 # Remove the tag if it exists
-                if tag in genres:
-                    genres.remove(tag)
+                if tag in tags:
+                    tags.remove(tag)
             
-            collection["genre"] = genres
-            
-            # Update the genre field if this is the only selected item
-            if len(self.selected_indices) == 1:
-                self.metadata_vars["genre_var"].set(", ".join(genres))
-
-    def toggle_episodic_tag(self):
-        """Toggle the episodic tag for selected videos"""
-        if not self.selected_indices:
-            messagebox.showwarning("Warning", "Please select at least one video first!")
-            self.episodic_var.set(False)
-            return
-            
-        for idx in self.selected_indices:
-            collection = self.collections[idx]
-            collection["episodic"] = self.episodic_var.get()
+            # Save the tags back to the collection
+            collection["tags"] = tags
 
     def update_collections(self):
         """Update selected collections with new metadata from loaded video info"""
@@ -1713,6 +1800,12 @@ Your API key will be saved for future use.""")
                 collection["genre"] = [g.strip() for g in genre_str.split(",") if g.strip()]
             else:
                 collection["genre"] = []
+                
+            tags_str = self.metadata_vars["tags_var"].get().strip()
+            if tags_str:
+                collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
+            else:
+                collection["tags"] = []
 
             year_str = self.metadata_vars["year_var"].get().strip()
             if year_str:
