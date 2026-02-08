@@ -261,23 +261,7 @@ Your API key will be saved for future use.""")
         ttk.Radiobutton(omdb_frame, text="OMDB (Requires Free API Key - omdbapi.com)", 
                        variable=source_var, value="omdb").pack(side="left")
         
-        # Language selection
-        ttk.Separator(source_dialog, orient='horizontal').pack(fill="x", padx=20, pady=10)
-        ttk.Label(source_dialog, text="Choose language:", font=("TkDefaultFont", 12)).pack(pady=5)
-        
-        language_var = tk.StringVar(value="english")
-        
-        # English option
-        en_frame = ttk.Frame(source_dialog)
-        en_frame.pack(fill="x", padx=20, pady=2)
-        ttk.Radiobutton(en_frame, text="English", 
-                       variable=language_var, value="english").pack(side="left")
-        
-        # Bulgarian option
-        bg_frame = ttk.Frame(source_dialog)
-        bg_frame.pack(fill="x", padx=20, pady=2)
-        ttk.Radiobutton(bg_frame, text="Български (Bulgarian)", 
-                       variable=language_var, value="bulgarian").pack(side="left")
+
         
         # Skip existing metadata option
         ttk.Separator(source_dialog, orient='horizontal').pack(fill="x", padx=20, pady=10)
@@ -305,7 +289,6 @@ Your API key will be saved for future use.""")
 
         def proceed():
             selected_source["value"] = source_var.get()
-            selected_language["value"] = language_var.get()
             selected_skip["value"] = skip_var.get()
             selected_redownload_covers["value"] = redownload_covers_var.get()
             source_dialog.destroy()
@@ -421,7 +404,7 @@ Your API key will be saved for future use.""")
                 elif selected_source["value"] == "wikipedia":
                     movie_data = self.metadata_fetcher.search_wikipedia_movie(movie_title, year, search_hints)
                 elif selected_source["value"] == "imdb":
-                    movie_data = self.metadata_fetcher.search_imdb_movie(movie_title, year, selected_language["value"], search_hints)
+                    movie_data = self.metadata_fetcher.search_imdb_movie(movie_title, year, search_hints)
                 elif selected_source["value"] == "omdb":
                     movie_data = self.metadata_fetcher.search_omdb_movie(movie_title, year, self.omdb_api_key, search_hints)
                 
@@ -430,36 +413,9 @@ Your API key will be saved for future use.""")
                     print(f"DEBUG: Selected language: {selected_language['value']}")
                     
                     # Update collection with movie data
-                    original_title = movie_data.get("title", movie_title)
-                    if selected_language["value"] == "bulgarian":
-                        # Try to get Bulgarian title from our database
-                        bulgarian_title = self.metadata_fetcher.get_known_movie_title(original_title, "bulgarian")
-                        if bulgarian_title != original_title:
-                            print(f"DEBUG: Using Bulgarian title: {bulgarian_title} instead of {original_title}")
-                            collection["name"] = bulgarian_title
-                        else:
-                            collection["name"] = original_title
-                    else:
-                        collection["name"] = original_title
+                    collection["name"] = movie_data.get("title", movie_title)
                     
-                    # Get description - translate if Bulgarian is selected
-                    original_description = movie_data.get("overview", "")
-                    if selected_language["value"] == "bulgarian":
-                        print(f"DEBUG: Looking for Bulgarian description for: {movie_title}")
-                        # Try to get Bulgarian description from our database first
-                        bulgarian_desc = self.metadata_fetcher.get_known_movie_description(movie_title, year, "bulgarian")
-                        print(f"DEBUG: Bulgarian description found: {bulgarian_desc[:50]}...")
-                        
-                        # Check if we got a real Bulgarian description (not a generic fallback)
-                        if "филм от" not in bulgarian_desc and len(bulgarian_desc) > 50:
-                            print("DEBUG: Using Bulgarian description from database")
-                            collection["description"] = bulgarian_desc
-                        else:
-                            print("DEBUG: No Bulgarian description found, using original")
-                            # Use the original description (could add translation API here)
-                            collection["description"] = original_description
-                    else:
-                        collection["description"] = original_description
+                    collection["description"] = movie_data.get("overview", "")
                     
                     # Handle year
                     release_date = movie_data.get("release_date", "")
@@ -476,32 +432,7 @@ Your API key will be saved for future use.""")
                     
                     # Map genres to our genre list
                     movie_genres = [g["name"] for g in movie_data.get("genres", [])]
-                    
-                    # Translate genres to Bulgarian if selected
-                    if selected_language["value"] == "bulgarian":
-                        bulgarian_genres = []
-                        genre_translations = {
-                            'Horror': 'Ужаси',
-                            'Action': 'Екшън',
-                            'Sci-Fi': 'Научна фантастика',
-                            'Anime': 'Аниме',
-                            'Comedy': 'Комедия',
-                            'Drama': 'Драма',
-                            'Thriller': 'Трилър',
-                            'Romance': 'Романтика',
-                            'Adventure': 'Приключения',
-                            'Fantasy': 'Фентъзи',
-                            'Mystery': 'Мистерия',
-                            'Documentary': 'Документален'
-                        }
-                        
-                        for genre in movie_genres:
-                            bulgarian_genre = genre_translations.get(genre, genre)
-                            bulgarian_genres.append(bulgarian_genre)
-                        
-                        collection["genre"] = bulgarian_genres
-                    else:
-                        collection["genre"] = movie_genres
+                    collection["genre"] = movie_genres
                     
                     # Download image/poster if enabled
                     image_path = movie_data.get("poster_path")

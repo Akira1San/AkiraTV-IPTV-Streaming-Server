@@ -646,7 +646,7 @@ class MetadataFetcher:
         except Exception as e:
             print(f"Error getting Wikipedia page info: {e}")
             return None
-    def search_imdb_movie(self, title, year=None, language="english", search_hints=None):
+    def search_imdb_movie(self, title, year=None, search_hints=None):
         """Search for movie information on IMDb (web scraping)"""
         try:
             # Clean up the title for better search results
@@ -728,13 +728,13 @@ class MetadataFetcher:
                 print(f"DEBUG: Free API failed: {e}")
 
             # Fallback to web scraping if API fails
-            return self.search_imdb_web_scraping(clean_title, search_year, language, hints_names)
+            return self.search_imdb_web_scraping(clean_title, search_year, hints_names)
 
         except Exception as e:
             print(f"Error searching IMDb: {e}")
             return None
 
-    def search_imdb_web_scraping(self, clean_title, year=None, language="english", search_hints=None):
+    def search_imdb_web_scraping(self, clean_title, year=None, search_hints=None):
         """Fallback IMDb web scraping method"""
         try:
             # Set proper headers to avoid blocking
@@ -1248,169 +1248,12 @@ class MetadataFetcher:
         """Get translated title for well-known movies"""
         title_lower = title.lower()
         
-        # Bulgarian titles for popular movies
-        if language == "bulgarian":
-            import configparser
-            import os
-            
-            # Load translations from INI file
-            config = configparser.ConfigParser()
-            translations_file = os.path.join(os.path.dirname(__file__), 'translations.ini')
-            
-            try:
-                config.read(translations_file, encoding='utf-8')
-                
-                if 'bulgarian_titles' in config:
-                    for key, bg_title in config['bulgarian_titles'].items():
-                        # Match whole words only to avoid partial matches (e.g., "it" should not match "title")
-                        if re.search(r'\b' + re.escape(key) + r'\b', title_lower):
-                            # Only return translation if it's not empty
-                            if bg_title.strip():
-                                return bg_title.strip()
-            
-            except Exception as e:
-                print(f"Error loading translations from {translations_file}: {e}")
-                # Fallback to embedded translations if INI file fails
-                known_titles_bg = {
-                    "terminator": "Терминатор",
-                    "alien": "Пришълците",
-                    "predator": "Хищникът",
-                    "matrix": "Матрицата",
-                    "die hard": "Умирай трудно"
-                }
-                for key, bg_title in known_titles_bg.items():
-                    if re.search(r'\b' + re.escape(key) + r'\b', title_lower):
-                        return bg_title
-        
-        # Return original title if no translation found
+        # Return original title (English is sufficient)
         return title
 
     def get_known_movie_description(self, title, year, language="english"):
         """Get description for well-known movies"""
         title_lower = title.lower()
-        
-        # Bulgarian descriptions for popular movies
-        if language == "bulgarian":
-            known_movies_bg = {
-                "terminator": f"Научнофантастичен екшън филм от {year} година за киборг убиец, изпратен от бъдещето.",
-                "alien": f"Научнофантастичен хорър филм от {year} година за смъртоносно извземно създание в космоса.",
-                "predator": f"Екшън научнофантастичен филм от {year} година за извънземен ловец в джунглата.",
-                "matrix": f"Научнофантастичен екшън филм от {year} година за виртуална реалност и борбата за свободата.",
-                "blade runner": f"Научнофантастичен филм от {year} година за ловец на андроиди в дистопично бъдеще.",
-                "star wars": f"Космическа опера от {year} година за борбата между добро и зло в далечна галактика.",
-                "indiana jones": f"Приключенски екшън филм от {year} година за археолог и неговите опасни мисии.",
-                "die hard": f"Екшън филм от {year} година за полицай, който се бори срещу терористи.",
-                "rambo": f"Екшън военен филм от {year} година за ветеран от Виетнам и неговите мисии.",
-                "rocky": f"Спортна драма от {year} година за боксьор и неговия път към славата.",
-                "godfather": f"Криминална драма от {year} година за италианско-американско мафиотско семейство.",
-                "scarface": f"Криминална драма от {year} година за възхода и падението на наркобарон.",
-                "goodfellas": f"Криминална драма от {year} година за живота в мафията.",
-                "casino": f"Криминална драма от {year} година за корупция и власт в Лас Вегас.",
-                "pulp fiction": f"Криминална драма от {year} година с преплетени истории от подземния свят.",
-                "kill bill": f"Екшън филм от {year} година за отмъщение и бойни изкуства.",
-                "batman": f"Супергеройски филм от {year} година за Тъмния рицар на Готъм Сити.",
-                "superman": f"Супергеройски филм от {year} година за Човека от стомана.",
-                "spider-man": f"Супергеройски филм от {year} година за паякочовека.",
-                "x-men": f"Супергеройски филм от {year} година за мутанти с свръхестествени способности.",
-                "avengers": f"Супергеройски филм от {year} година за отбор от супергерои.",
-                "iron man": f"Супергеройски филм от {year} година за гениален изобретател в бронирана броня.",
-                "captain america": f"Супергеройски филм от {year} година за супер-войника от Втората световна война.",
-                "thor": f"Супергеройски филм от {year} година за скандинавския бог на гръмотевиците.",
-                "hulk": f"Супергеройски филм от {year} година за учен, който се превръща в зелен гигант.",
-                "transformers": f"Научнофантастичен екшън филм от {year} година за роботи, които се превръщат в коли.",
-                "fast and furious": f"Екшън филм от {year} година за улични състезания и криминални операции.",
-                "mission impossible": f"Екшън шпионски филм от {year} година за тайни агенти и опасни мисии.",
-                "james bond": f"Шпионски екшън филм от {year} година за британския таен агент 007.",
-                "john wick": f"Екшън филм от {year} година за професионален убиец в подземния свят.",
-                "taken": f"Екшън трилър от {year} година за баща, който търси отвлечената си дъщеря.",
-                "bourne": f"Шпионски трилър от {year} година за агент с амнезия.",
-                "mad max": f"Постапокалиптичен екшън филм от {year} година в пустинен свят.",
-                "expendables": f"Екшън филм от {year} година за отбор от наемници.",
-                "lethal weapon": f"Екшън комедия от {year} година за двама полицейски партньори.",
-                "beverly hills cop": f"Екшън комедия от {year} година за детектив в Бевърли Хилс.",
-                "rush hour": f"Екшън комедия от {year} година за полицейски дует.",
-                "men in black": f"Научнофантастична комедия от {year} година за тайни агенти и извънземни.",
-                "ghostbusters": f"Комедия от {year} година за ловци на духове в Ню Йорк.",
-                "back to the future": f"Научнофантастична комедия от {year} година за пътуване във времето.",
-                "jurassic park": f"Научнофантастичен трилър от {year} година за възкресени динозаври.",
-                "jaws": f"Трилър от {year} година за гигантска бяла акула.",
-                "the shining": f"Психологически хорър от {year} година за лудост в изолиран хотел.",
-                "halloween": f"Хорър филм от {year} година за серийния убиец Майкъл Майърс.",
-                "friday the 13th": f"Хорър филм от {year} година за убийствата в лагер Кристъл Лейк.",
-                "nightmare on elm street": f"Хорър филм от {year} година за Фреди Крюгер и кошмарите.",
-                "scream": f"Хорър филм от {year} година за серийен убиец с маска.",
-                "saw": f"Хорър трилър от {year} година за садистични игри на живот и смърт.",
-                "final destination": f"Хорър филм от {year} година за смъртта и нейните планове.",
-                "the ring": f"Хорър филм от {year} година за проклето видео.",
-                "the grudge": f"Хорър филм от {year} година за проклет дом.",
-                "paranormal activity": f"Хорър филм от {year} година за свръхестествени явления в дома.",
-                "conjuring": f"Хорър филм от {year} година за демонолози и призраци.",
-                "insidious": f"Хорър филм от {year} година за астрална проекция и демони.",
-                "sinister": f"Хорър филм от {year} година за древно зло и семейни трагедии.",
-                "it": f"Хорър филм от {year} година за клоуна Пенивайз и неговия терор.",
-                "the exorcist": f"Хорър филм от {year} година за демонично обладаване.",
-                "poltergeist": f"Хорър филм от {year} година за призраци в семеен дом.",
-                "amityville": f"Хорър филм от {year} година за дом с тъмно минало.",
-                "child's play": f"Хорър филм от {year} година за убийствена кукла Чъки.",
-                "annabelle": f"Хорър филм от {year} година за проклета кукла.",
-                "the nun": f"Хорър филм от {year} година за демонична монахиня.",
-                "lights out": f"Хорър филм от {year} година за създание, което живее в тъмнината.",
-                "don't breathe": f"Трилър от {year} година за слеп мъж и крадци в неговия дом.",
-                "get out": f"Психологически трилър от {year} година за расизъм и хипноза.",
-                "us": f"Хорър трилър от {year} година за семейство и техните двойници.",
-                "hereditary": f"Хорър филм от {year} година за семейни тайни и окултизъм.",
-                "midsommar": f"Хорър филм от {year} година за скандинавски фестивал и ритуали.",
-                "the witch": f"Хорър филм от {year} година за вещица в колониална Америка.",
-                "the babadook": f"Психологически хорър от {year} година за майка, дете и чудовище.",
-                "it follows": f"Хорър филм от {year} година за проклятие, което те преследва.",
-                "a quiet place": f"Хорър трилър от {year} година за семейство в свят на тишина.",
-                "bird box": f"Постапокалиптичен трилър от {year} година за свят, където не можеш да гледаш.",
-                "the platform": f"Научнофантастичен трилър от {year} година за социална йерархия.",
-                "parasite": f"Трилър драма от {year} година за класови различия в Корея.",
-                "joker": f"Психологическа драма от {year} година за произхода на злодея Жокера.",
-                "braveheart": f"Историческа драма от {year} година за Уилям Уолъс и шотландската свобода.",
-                "gladiator": f"Историческа драма от {year} година за римски генерал, станал гладиатор.",
-                "troy": f"Епическа драма от {year} година за Троянската война.",
-                "300": f"Екшън филм от {year} година за 300-те спартанци в Термопилите.",
-                "alexander": f"Биографична драма от {year} година за Александър Македонски.",
-                "kingdom of heaven": f"Историческа драма от {year} година за кръстоносните походи.",
-                "the last samurai": f"Историческа драма от {year} година за американски офицер в Япония.",
-                "apocalypto": f"Историческа драма от {year} година за цивилизацията на маите.",
-                "anime": f"Японски анимационен филм от {year} година.",
-                "manga": f"Филм от {year} година, базиран на японска манга.",
-                "dragon ball": f"Анимационен филм от {year} година от поредицата Драгън Бол.",
-                "naruto": f"Анимационен филм от {year} година от поредицата Наруто.",
-                "one piece": f"Анимационен филм от {year} година от поредицата Уан Пийс.",
-                "attack on titan": f"Анимационен филм от {year} година за титаните.",
-                "death note": f"Трилър от {year} година за тетрадка на смъртта.",
-                "fullmetal alchemist": f"Фентъзи филм от {year} година за алхимия.",
-                "ghost in the shell": f"Научнофантастичен филм от {year} година за киборги.",
-                "akira": f"Научнофантастичен анимационен филм от {year} година.",
-                "spirited away": f"Фентъзи анимационен филм от {year} година на Хаяо Миядзаки.",
-                "princess mononoke": f"Фентъзи анимационен филм от {year} година за природата.",
-                "my neighbor totoro": f"Семеен анимационен филм от {year} година за горски духове.",
-                "castle in the sky": f"Приключенски анимационен филм от {year} година.",
-                "howl's moving castle": f"Фентъзи анимационен филм от {year} година за магия.",
-                "your name": f"Романтичен анимационен филм от {year} година за размяна на тела.",
-                "weathering with you": f"Романтичен анимационен филм от {year} година за времето.",
-                "demon slayer": f"Анимационен екшън от {year} година за ловци на демони.",
-                "jujutsu kaisen": f"Анимационен екшън от {year} година за проклятия.",
-                "my hero academia": f"Супергеройски анимационен филм от {year} година.",
-                "one punch man": f"Супергеройска анимационна комедия от {year} година.",
-                "hunter x hunter": f"Приключенски анимационен филм от {year} година.",
-                "bleach": f"Свръхестествен анимационен екшън от {year} година.",
-                "tokyo ghoul": f"Хорър анимационен филм от {year} година за гулове.",
-                "parasyte": f"Хорър научнофантастичен анимационен филм от {year} година.",
-                "cowboy bebop": f"Космически уестърн анимационен филм от {year} година.",
-                "samurai champloo": f"Исторически анимационен филм от {year} година за самураи.",
-                "vampire hunter d": f"Хорър анимационен филм от {year} година за ловец на вампири.",
-                "neon genesis evangelion": f"Научнофантастичен анимационен филм от {year} година за меха."
-            }
-            
-            # Check for matches in Bulgarian database
-            for key, description in known_movies_bg.items():
-                if key in title_lower:
-                    return description
         
         # English descriptions for popular movies
         known_movies_en = {
@@ -1534,10 +1377,7 @@ class MetadataFetcher:
             if key in title_lower:
                 return description
         
-        # Generic fallback descriptions
-        if language == "bulgarian":
-            return f"Филм от {year} година."
-        else:
+        # Generic fallback description
             return f"A {year} film."
     def download_poster(self, poster_path, movie_title):
         """Download movie poster from TMDB"""
