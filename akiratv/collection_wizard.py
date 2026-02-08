@@ -82,6 +82,7 @@ class CollectionWizard:
         self.root.option_add('*Listbox.selectForeground', "")
         self.root.option_add('*Listbox.borderWidth', "")
         self.root.option_add('*Listbox.relief', "")
+        self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
         
         self.root.option_add('*Text.background', "")
         self.root.option_add('*Text.foreground', "")
@@ -190,6 +191,7 @@ class CollectionWizard:
         self.root.option_add('*Listbox.selectForeground', 'white')
         self.root.option_add('*Listbox.borderWidth', 1)
         self.root.option_add('*Listbox.relief', 'flat')
+        self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
         
         # Configure text widget
         self.root.option_add('*Text.background', light_bg)
