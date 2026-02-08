@@ -258,6 +258,12 @@ class CollectionWizard:
         dialog.transient(self.root)
         dialog.grab_set()
         
+        # Apply theme to dialog
+        if self.current_theme == "dark":
+            dialog.configure(bg="#2d2d2d")
+        else:
+            dialog.configure(bg="")
+        
         # Center the dialog
         dialog.update_idletasks()
         x = (dialog.winfo_screenwidth() // 2) - (dialog.winfo_width() // 2)
@@ -326,6 +332,12 @@ Your API key will be saved for future use.""")
         dialog.transient(self.root)
         dialog.grab_set()
         
+        # Apply theme to dialog
+        if self.current_theme == "dark":
+            dialog.configure(bg="#2d2d2d")
+        else:
+            dialog.configure(bg="")
+        
         # Center the dialog
         dialog.update_idletasks()
         x = (dialog.winfo_screenwidth() // 2) - (dialog.winfo_width() // 2)
@@ -386,6 +398,12 @@ Your API key will be saved for future use.""")
         source_dialog.geometry("500x500")
         source_dialog.transient(self.root)
         source_dialog.grab_set()
+        
+        # Apply theme to dialog
+        if self.current_theme == "dark":
+            source_dialog.configure(bg="#2d2d2d")
+        else:
+            source_dialog.configure(bg="")
         
         # Center the dialog
         source_dialog.update_idletasks()
