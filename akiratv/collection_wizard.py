@@ -56,115 +56,36 @@ class CollectionWizard:
         self.create_widgets()
     
     def apply_light_theme(self):
-        """Apply light theme to the application"""
+        """Apply default light theme (system defaults) to the application"""
         # Create a custom style
         style = ttk.Style()
         
-        # Configure the main background
-        self.root.configure(bg="#ffffff")
+        # Reset to system default theme
+        try:
+            # Try to use the default theme (varies by platform)
+            style.theme_use('default')
+        except:
+            # Fallback to clam theme if default is not available
+            style.theme_use('clam')
         
-        # Configure style elements
-        style.theme_use('clam')  # Use clam theme as base
+        # Reset root background to system default
+        self.root.configure(bg="")
         
-        # Configure colors
-        light_bg = "#ffffff"
-        slightly_dark_bg = "#f0f0f0"
-        field_bg = "#ffffff"
-        text_color = "#000000"
-        disabled_text = "#808080"
-        border_color = "#d0d0d0"
-        highlight_color = "#4a86e8"
+        # Reset all custom style configurations
+        # This will make ttk use the system default colors
+        style.configure('.')
         
-        # Configure root window
-        style.configure('.', 
-                      background=light_bg, 
-                      foreground=text_color,
-                      fieldbackground=field_bg,
-                      bordercolor=border_color,
-                      lightcolor=border_color,
-                      darkcolor=border_color)
+        # Reset Tkinter widget options to defaults
+        self.root.option_add('*Listbox.background', "")
+        self.root.option_add('*Listbox.foreground', "")
+        self.root.option_add('*Listbox.selectBackground', "")
+        self.root.option_add('*Listbox.selectForeground', "")
+        self.root.option_add('*Listbox.borderWidth', "")
+        self.root.option_add('*Listbox.relief', "")
         
-        # Configure buttons
-        style.configure('TButton', 
-                      background=slightly_dark_bg,
-                      foreground=text_color,
-                      borderwidth=1,
-                      relief='flat')
-        style.map('TButton',
-                 background=[('active', highlight_color), ('pressed', border_color)],
-                 foreground=[('active', 'white'), ('pressed', text_color)])
-        
-        # Configure labels
-        style.configure('TLabel',
-                      background=light_bg,
-                      foreground=text_color)
-        
-        # Configure entries
-        style.configure('TEntry',
-                      background=field_bg,
-                      foreground=text_color,
-                      fieldbackground=field_bg,
-                      borderwidth=1)
-        
-        # Configure combobox
-        style.configure('TCombobox',
-                      background=field_bg,
-                      foreground=text_color,
-                      fieldbackground=field_bg,
-                      borderwidth=1)
-        style.map('TCombobox',
-                 fieldbackground=[('readonly', slightly_dark_bg)],
-                 selectbackground=[('readonly', highlight_color)],
-                 selectforeground=[('readonly', 'white')])
-        
-        # Configure checkbuttons and radiobuttons
-        style.configure('TCheckbutton',
-                      background=light_bg,
-                      foreground=text_color)
-        style.configure('TRadiobutton',
-                      background=light_bg,
-                      foreground=text_color)
-        
-        # Configure frames
-        style.configure('TFrame',
-                      background=light_bg)
-        
-        # Configure labelframes
-        style.configure('TLabelframe',
-                      background=light_bg,
-                      foreground=text_color)
-        style.configure('TLabelframe.Label',
-                      background=light_bg,
-                      foreground=text_color)
-        
-        # Configure separators
-        style.configure('TSeparator',
-                      background=border_color)
-        
-        # Configure scrollbars
-        style.configure('Vertical.TScrollbar',
-                      background=slightly_dark_bg,
-                      troughcolor=light_bg,
-                      arrowcolor=text_color)
-        style.configure('Horizontal.TScrollbar',
-                      background=slightly_dark_bg,
-                      troughcolor=light_bg,
-                      arrowcolor=text_color)
-        
-        # Configure listbox
-        self.root.option_add('*Listbox.background', field_bg)
-        self.root.option_add('*Listbox.foreground', text_color)
-        self.root.option_add('*Listbox.selectBackground', highlight_color)
-        self.root.option_add('*Listbox.selectForeground', 'white')
-        self.root.option_add('*Listbox.borderWidth', 1)
-        self.root.option_add('*Listbox.relief', 'flat')
-        
-        # Configure text widget
-        self.root.option_add('*Text.background', field_bg)
-        self.root.option_add('*Text.foreground', text_color)
-        self.root.option_add('*Text.insertBackground', text_color)
-        
-        # Configure messagebox (note: messagebox styling is limited on some platforms)
+        self.root.option_add('*Text.background', "")
+        self.root.option_add('*Text.foreground', "")
+        self.root.option_add('*Text.insertBackground', "")
     
     def apply_dark_theme(self):
         """Apply dark theme to the application"""
