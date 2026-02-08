@@ -24,6 +24,9 @@ class CollectionWizard:
         self.root.title("AkiraTV — Collection Manager")
         self.root.geometry("1100x800")  # Increased height for additional fields
         
+        # Apply dark theme
+        self.apply_dark_theme()
+        
         self.collections = []
         self.video_database = {}
         self.folder_path = tk.StringVar()
@@ -50,6 +53,117 @@ class CollectionWizard:
         self.load_tmdb_config()
         self.load_collections()
         self.create_widgets()
+    
+    def apply_dark_theme(self):
+        """Apply dark theme to the application"""
+        # Create a custom style
+        style = ttk.Style()
+        
+        # Configure the main background
+        self.root.configure(bg="#2d2d2d")
+        
+        # Configure style elements
+        style.theme_use('clam')  # Use clam theme as base
+        
+        # Configure colors
+        dark_bg = "#2d2d2d"
+        darker_bg = "#1a1a1a"
+        light_bg = "#3d3d3d"
+        text_color = "#ffffff"
+        disabled_text = "#808080"
+        border_color = "#505050"
+        highlight_color = "#4a86e8"
+        
+        # Configure root window
+        style.configure('.', 
+                      background=dark_bg, 
+                      foreground=text_color,
+                      fieldbackground=light_bg,
+                      bordercolor=border_color,
+                      lightcolor=border_color,
+                      darkcolor=border_color)
+        
+        # Configure buttons
+        style.configure('TButton', 
+                      background=light_bg,
+                      foreground=text_color,
+                      borderwidth=1,
+                      relief='flat')
+        style.map('TButton',
+                 background=[('active', highlight_color), ('pressed', darker_bg)],
+                 foreground=[('active', 'white'), ('pressed', 'white')])
+        
+        # Configure labels
+        style.configure('TLabel',
+                      background=dark_bg,
+                      foreground=text_color)
+        
+        # Configure entries
+        style.configure('TEntry',
+                      background=light_bg,
+                      foreground=text_color,
+                      fieldbackground=light_bg,
+                      borderwidth=1)
+        
+        # Configure combobox
+        style.configure('TCombobox',
+                      background=light_bg,
+                      foreground=text_color,
+                      fieldbackground=light_bg,
+                      borderwidth=1)
+        style.map('TCombobox',
+                 fieldbackground=[('readonly', light_bg)],
+                 selectbackground=[('readonly', highlight_color)],
+                 selectforeground=[('readonly', 'white')])
+        
+        # Configure checkbuttons and radiobuttons
+        style.configure('TCheckbutton',
+                      background=dark_bg,
+                      foreground=text_color)
+        style.configure('TRadiobutton',
+                      background=dark_bg,
+                      foreground=text_color)
+        
+        # Configure frames
+        style.configure('TFrame',
+                      background=dark_bg)
+        
+        # Configure labelframes
+        style.configure('TLabelframe',
+                      background=dark_bg,
+                      foreground=text_color)
+        style.configure('TLabelframe.Label',
+                      background=dark_bg,
+                      foreground=text_color)
+        
+        # Configure separators
+        style.configure('TSeparator',
+                      background=border_color)
+        
+        # Configure scrollbars
+        style.configure('Vertical.TScrollbar',
+                      background=light_bg,
+                      troughcolor=dark_bg,
+                      arrowcolor=text_color)
+        style.configure('Horizontal.TScrollbar',
+                      background=light_bg,
+                      troughcolor=dark_bg,
+                      arrowcolor=text_color)
+        
+        # Configure listbox
+        self.root.option_add('*Listbox.background', light_bg)
+        self.root.option_add('*Listbox.foreground', text_color)
+        self.root.option_add('*Listbox.selectBackground', highlight_color)
+        self.root.option_add('*Listbox.selectForeground', 'white')
+        self.root.option_add('*Listbox.borderWidth', 1)
+        self.root.option_add('*Listbox.relief', 'flat')
+        
+        # Configure text widget
+        self.root.option_add('*Text.background', light_bg)
+        self.root.option_add('*Text.foreground', text_color)
+        self.root.option_add('*Text.insertBackground', text_color)
+        
+        # Configure messagebox (note: messagebox styling is limited on some platforms)
 
     def load_tmdb_config(self):
         """Load TMDB API key from config file or prompt user"""
