@@ -24,7 +24,8 @@ class CollectionWizard:
         self.root.title("AkiraTV — Collection Manager")
         self.root.geometry("1100x800")  # Increased height for additional fields
         
-        # Apply dark theme
+        # Initialize theme state (default to dark)
+        self.current_theme = "dark"
         self.apply_dark_theme()
         
         self.collections = []
@@ -53,6 +54,117 @@ class CollectionWizard:
         self.load_tmdb_config()
         self.load_collections()
         self.create_widgets()
+    
+    def apply_light_theme(self):
+        """Apply light theme to the application"""
+        # Create a custom style
+        style = ttk.Style()
+        
+        # Configure the main background
+        self.root.configure(bg="#ffffff")
+        
+        # Configure style elements
+        style.theme_use('clam')  # Use clam theme as base
+        
+        # Configure colors
+        light_bg = "#ffffff"
+        slightly_dark_bg = "#f0f0f0"
+        field_bg = "#ffffff"
+        text_color = "#000000"
+        disabled_text = "#808080"
+        border_color = "#d0d0d0"
+        highlight_color = "#4a86e8"
+        
+        # Configure root window
+        style.configure('.', 
+                      background=light_bg, 
+                      foreground=text_color,
+                      fieldbackground=field_bg,
+                      bordercolor=border_color,
+                      lightcolor=border_color,
+                      darkcolor=border_color)
+        
+        # Configure buttons
+        style.configure('TButton', 
+                      background=slightly_dark_bg,
+                      foreground=text_color,
+                      borderwidth=1,
+                      relief='flat')
+        style.map('TButton',
+                 background=[('active', highlight_color), ('pressed', border_color)],
+                 foreground=[('active', 'white'), ('pressed', text_color)])
+        
+        # Configure labels
+        style.configure('TLabel',
+                      background=light_bg,
+                      foreground=text_color)
+        
+        # Configure entries
+        style.configure('TEntry',
+                      background=field_bg,
+                      foreground=text_color,
+                      fieldbackground=field_bg,
+                      borderwidth=1)
+        
+        # Configure combobox
+        style.configure('TCombobox',
+                      background=field_bg,
+                      foreground=text_color,
+                      fieldbackground=field_bg,
+                      borderwidth=1)
+        style.map('TCombobox',
+                 fieldbackground=[('readonly', slightly_dark_bg)],
+                 selectbackground=[('readonly', highlight_color)],
+                 selectforeground=[('readonly', 'white')])
+        
+        # Configure checkbuttons and radiobuttons
+        style.configure('TCheckbutton',
+                      background=light_bg,
+                      foreground=text_color)
+        style.configure('TRadiobutton',
+                      background=light_bg,
+                      foreground=text_color)
+        
+        # Configure frames
+        style.configure('TFrame',
+                      background=light_bg)
+        
+        # Configure labelframes
+        style.configure('TLabelframe',
+                      background=light_bg,
+                      foreground=text_color)
+        style.configure('TLabelframe.Label',
+                      background=light_bg,
+                      foreground=text_color)
+        
+        # Configure separators
+        style.configure('TSeparator',
+                      background=border_color)
+        
+        # Configure scrollbars
+        style.configure('Vertical.TScrollbar',
+                      background=slightly_dark_bg,
+                      troughcolor=light_bg,
+                      arrowcolor=text_color)
+        style.configure('Horizontal.TScrollbar',
+                      background=slightly_dark_bg,
+                      troughcolor=light_bg,
+                      arrowcolor=text_color)
+        
+        # Configure listbox
+        self.root.option_add('*Listbox.background', field_bg)
+        self.root.option_add('*Listbox.foreground', text_color)
+        self.root.option_add('*Listbox.selectBackground', highlight_color)
+        self.root.option_add('*Listbox.selectForeground', 'white')
+        self.root.option_add('*Listbox.borderWidth', 1)
+        self.root.option_add('*Listbox.relief', 'flat')
+        
+        # Configure text widget
+        self.root.option_add('*Text.background', field_bg)
+        self.root.option_add('*Text.foreground', text_color)
+        self.root.option_add('*Text.insertBackground', text_color)
+        
+        # Configure messagebox (note: messagebox styling is limited on some platforms)
     
     def apply_dark_theme(self):
         """Apply dark theme to the application"""
@@ -164,6 +276,17 @@ class CollectionWizard:
         self.root.option_add('*Text.insertBackground', text_color)
         
         # Configure messagebox (note: messagebox styling is limited on some platforms)
+    
+    def toggle_theme(self):
+        """Toggle between light and dark themes"""
+        if self.current_theme == "dark":
+            self.apply_light_theme()
+            self.current_theme = "light"
+            self.theme_btn.config(text="🌙 Dark Mode")
+        else:
+            self.apply_dark_theme()
+            self.current_theme = "dark"
+            self.theme_btn.config(text="☀️ Light Mode")
 
     def load_tmdb_config(self):
         """Load TMDB API key from config file or prompt user"""
@@ -860,6 +983,11 @@ Your API key will be saved for future use.""")
         export_ini_btn = ttk.Button(btn_frame, text="📄 Export INI", command=self.export_metadata_ini)
         export_ini_btn.pack(side="left", padx=2)
         self.create_tooltip(export_ini_btn, "Export collections to INI file with metadata")
+        
+        # Theme toggle button
+        self.theme_btn = ttk.Button(btn_frame, text="☀️ Light Mode", command=self.toggle_theme)
+        self.theme_btn.pack(side="left", padx=2)
+        self.create_tooltip(self.theme_btn, "Toggle between light and dark themes")
         
         # Create a container for the list and tags
         content_frame = ttk.Frame(main_frame)
