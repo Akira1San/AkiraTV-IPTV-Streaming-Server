@@ -203,15 +203,23 @@ class SimpleSchedulerWizard:
         self.info_duration.pack(anchor="w", pady=2)
 
     def create_collection_panel(self, parent):
-        """Create the Collection panel for profile selection and collection selection"""
+        """Create the Collection panel with tabs for collections and standby"""
         # Main container for collection panel
         collection_container = ttk.Frame(parent)
         collection_container.pack(fill="both", expand=True, padx=10, pady=10)
         
-        ttk.Label(collection_container, text="Collection", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        ttk.Label(collection_container, text="Collection & Standby", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        
+        # Create tab control
+        self.tab_control = ttk.Notebook(collection_container)
+        self.tab_control.pack(fill="both", expand=True, pady=(0, 10))
+        
+        # === COLLECTIONS TAB ===
+        collections_tab = ttk.Frame(self.tab_control)
+        self.tab_control.add(collections_tab, text="Collections")
         
         # Profile selection
-        profile_frame = ttk.Frame(collection_container)
+        profile_frame = ttk.Frame(collections_tab)
         profile_frame.pack(fill="x", pady=(0, 10))
         
         # First row: Collection Profile dropdown
@@ -236,8 +244,8 @@ class SimpleSchedulerWizard:
         ttk.Button(profile_row2, text="Load", command=self.load_profile, width=5).pack(side="left")
         
         # Collections list frame (horizontal)
-        ttk.Label(collection_container, text="Collections:").pack(anchor="w")
-        collection_list_frame = ttk.Frame(collection_container)
+        ttk.Label(collections_tab, text="Collections:").pack(anchor="w")
+        collection_list_frame = ttk.Frame(collections_tab)
         collection_list_frame.pack(fill="both", expand=True, pady=5)
         
         self.collection_list = tk.Listbox(collection_list_frame, selectmode=tk.EXTENDED, font=("TkDefaultFont", 11))
@@ -246,6 +254,15 @@ class SimpleSchedulerWizard:
         collection_scrollbar.pack(side="right", fill="y")
         self.collection_list.configure(yscrollcommand=collection_scrollbar.set)
         self.collection_list.bind("<<ListboxSelect>>", self.on_collection_select)
+        
+        # === STANDBY TAB ===
+        standby_tab = ttk.Frame(self.tab_control)
+        self.tab_control.add(standby_tab, text="Standby")
+        
+        # Standby tab content - placeholder
+        ttk.Label(standby_tab, text="Standby Management", font=("TkDefaultFont", 11, "bold")).pack(pady=10)
+        ttk.Label(standby_tab, text="Bumper generation and standby settings will be implemented here.", 
+                 font=("TkDefaultFont", 10), wraplength=300).pack(pady=5)
         
         # Buttons frame (separate from list)
         btn_frame = ttk.Frame(collection_container)
