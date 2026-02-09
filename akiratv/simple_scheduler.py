@@ -6,6 +6,7 @@ import random
 from datetime import datetime, timedelta
 from pathlib import Path
 from PIL import Image, ImageTk
+import configparser
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 USER_DIR = BASE_DIR / "user"
@@ -46,6 +47,64 @@ def load_collections(profile_name="collections"):
         print(f"Error loading collections: {e}")
         return []
 
+def load_blacklist(profile_name="collections"):
+    """Load blacklist from INI file matching the profile name"""
+    try:
+        script_dir = Path(__file__).resolve().parent
+        base_dir = script_dir.parent
+        collections_dir = base_dir / "user" / "collections"
+        
+        # Try to find the INI file
+        ini_file = collections_dir / f"{profile_name}.ini"
+        if not ini_file.exists():
+            ini_file = collections_dir / f"collections_{profile_name}.ini"
+        
+        if not ini_file.exists():
+            ini_file = script_dir / f"{profile_name}.ini"
+            if not ini_file.exists():
+                ini_file = script_dir / f"collections_{profile_name}.ini"
+        
+        if ini_file.exists():
+            config = configparser.ConfigParser()
+            config.read(ini_file, encoding="utf-8")
+            
+            if "Blacklist" in config:
+                return set(config["Blacklist"].get("videos", "").splitlines())
+        return set()
+    except Exception as e:
+        print(f"Error loading blacklist: {e}")
+        return set()
+
+def save_blacklist(profile_name="collections", blacklisted_videos=None):
+    """Save blacklist to INI file matching the profile name"""
+    if blacklisted_videos is None:
+        blacklisted_videos = set()
+    
+    try:
+        script_dir = Path(__file__).resolve().parent
+        base_dir = script_dir.parent
+        collections_dir = base_dir / "user" / "collections"
+        
+        # Determine the INI file path (matching the profile file location)
+        profile_file = collections_dir / f"{profile_name}.json"
+        if not profile_file.exists():
+            profile_file = collections_dir / f"collections_{profile_name}.json"
+        
+        ini_file = profile_file.with_suffix(".ini")
+        
+        config = configparser.ConfigParser()
+        config["Blacklist"] = {
+            "videos": "\n".join(blacklisted_videos)
+        }
+        
+        with open(ini_file, "w", encoding="utf-8") as f:
+            config.write(f)
+            
+        return True
+    except Exception as e:
+        print(f"Error saving blacklist: {e}")
+        return False
+
 class SimpleSchedulerWizard:
     def __init__(self, root):
         self.root = root
@@ -65,6 +124,7 @@ class SimpleSchedulerWizard:
         self.selected_video = None  # Currently selected video for info panel
         self.selected_collection = None  # Currently selected collection (for info panel)
         self.selected_collections = []  # List of selected collections (for multiselect)
+        self.blacklisted_videos = set()  # Set of video paths that are blacklisted
         
         self.create_widgets()
 
@@ -190,6 +250,8 @@ class SimpleSchedulerWizard:
         # Buttons frame (separate from list)
         btn_frame = ttk.Frame(collection_container)
         btn_frame.pack(fill="x", pady=5)
+        ttk.Button(btn_frame, text="Select All", command=self.select_all_collections).pack(side="left", padx=2)
+        ttk.Button(btn_frame, text="Clear Selection", command=self.clear_collection_selection).pack(side="left", padx=2)
         ttk.Button(btn_frame, text="Add Selected Collections", command=self.add_selected_collection).pack(side="left", padx=2)
         
         # Populate collections (from default profile initially)
@@ -202,6 +264,12 @@ class SimpleSchedulerWizard:
         added_container.pack(fill="both", expand=True, padx=10, pady=10)
         
         ttk.Label(added_container, text="Added Videos", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        
+        # Blacklist control
+        blacklist_frame = ttk.Frame(added_container)
+        blacklist_frame.pack(fill="x", pady=(0, 5))
+        ttk.Button(blacklist_frame, text="Add to Blacklist", command=self.apply_blacklist).pack(side="left", padx=5)
+        ttk.Button(blacklist_frame, text="Remove from Blacklist", command=self.remove_from_blacklist).pack(side="left", padx=5)
         
         # Added videos list frame (horizontal)
         added_list_frame = ttk.Frame(added_container)
@@ -217,6 +285,10 @@ class SimpleSchedulerWizard:
         # Count display
         self.added_count_label = ttk.Label(added_container, text="Total: 0 videos", font=("TkDefaultFont", 9))
         self.added_count_label.pack(pady=5)
+        
+        # Blacklist count display
+        self.blacklist_count_label = ttk.Label(added_container, text="Blacklisted: 0 videos", font=("TkDefaultFont", 9))
+        self.blacklist_count_label.pack(pady=2)
         
         # Buttons frame (separate from list)
         btn_frame = ttk.Frame(added_container)
@@ -478,10 +550,14 @@ class SimpleSchedulerWizard:
         for video in self.added_videos:
             collection_name = video.get("collection", {}).get("name", "Unknown")
             video_name = video.get("name", "Unknown")
-            display_text = f"{collection_name} - {video_name}"
+            if video["path"] in self.blacklisted_videos:
+                display_text = f"[BLACKLISTED] {collection_name} - {video_name}"
+            else:
+                display_text = f"{collection_name} - {video_name}"
             self.added_list.insert(tk.END, display_text)
         
         self.added_count_label.configure(text=f"Total: {len(self.added_videos)} videos")
+        self.update_blacklist_count()
     
     def remove_selected_videos(self):
         """Remove selected videos from added list"""
@@ -512,6 +588,45 @@ class SimpleSchedulerWizard:
             self.video_to_collection_map.clear()
             self.update_added_list_display()
             messagebox.showinfo("Success", "All videos removed!")
+    
+    def apply_blacklist(self):
+        """Add selected videos to blacklist"""
+        selection = self.added_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Select at least one video to blacklist!")
+            return
+        
+        blacklisted_count = 0
+        for idx in selection:
+            video = self.added_videos[idx]
+            video_path = video.get("path", "")
+            self.blacklisted_videos.add(video_path)
+            blacklisted_count += 1
+        
+        self.update_blacklist_count()
+        messagebox.showinfo("Success", f"Added {blacklisted_count} video(s) to blacklist!")
+    
+    def remove_from_blacklist(self):
+        """Remove selected videos from blacklist"""
+        selection = self.added_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Select at least one video to remove from blacklist!")
+            return
+        
+        removed_count = 0
+        for idx in selection:
+            video = self.added_videos[idx]
+            video_path = video.get("path", "")
+            if video_path in self.blacklisted_videos:
+                self.blacklisted_videos.remove(video_path)
+                removed_count += 1
+        
+        self.update_blacklist_count()
+        messagebox.showinfo("Success", f"Removed {removed_count} video(s) from blacklist!")
+    
+    def update_blacklist_count(self):
+        """Update the blacklist count display"""
+        self.blacklist_count_label.configure(text=f"Blacklisted: {len(self.blacklisted_videos)} videos")
     
     def on_added_video_select(self, event):
         """Handle added video selection - update info panel with selected video"""
@@ -666,6 +781,12 @@ class SimpleSchedulerWizard:
         total_days = (end_date - start_date).days + 1
         total_duration_needed = total_days * 24 * 3600
 
+        # Filter out blacklisted videos first
+        filtered_videos = [v for v in self.added_videos if v["path"] not in self.blacklisted_videos]
+        if not filtered_videos:
+            messagebox.showwarning("No Available Videos", "All videos are blacklisted!")
+            return {"calendar": {}}
+
         # Generate schedule entries directly using calendar dates
         current_time = datetime(start_date.year, start_date.month, start_date.day, 0, 0)  # Start at midnight on start date
         total_seconds_needed = total_days * 24 * 3600
@@ -677,11 +798,11 @@ class SimpleSchedulerWizard:
 
             # Detect episodic content if enabled
             if self.episodic_var.get():
-                episodic_groups, standalone_videos = self.detect_episodic_content(self.added_videos)
+                episodic_groups, standalone_videos = self.detect_episodic_content(filtered_videos)
                 episode_trackers = {series: 0 for series in episodic_groups.keys()}
             else:
                 episodic_groups = {}
-                standalone_videos = self.added_videos
+                standalone_videos = filtered_videos
                 episode_trackers = {}
 
             while (current_time - datetime(start_date.year, start_date.month, start_date.day, 0, 0)).total_seconds() < total_seconds_needed:
@@ -727,10 +848,10 @@ class SimpleSchedulerWizard:
                     else:
                         video = random.choice(available_standalone if available_standalone else standalone_videos)
                 else:
-                    available_videos = [v for v in self.added_videos if v["path"] not in recent_paths]
+                    available_videos = [v for v in filtered_videos if v["path"] not in recent_paths]
                     if not available_videos:
                         recent_videos = []
-                        available_videos = self.added_videos
+                        available_videos = filtered_videos
                 
                     video = random.choice(available_videos)
             
@@ -762,8 +883,8 @@ class SimpleSchedulerWizard:
             # Sequential generation - track dates instead of weekly
             seq_index = 0
             while (current_time - datetime(start_date.year, start_date.month, start_date.day, 0, 0)).total_seconds() < total_seconds_needed:
-                video = self.added_videos[seq_index]
-                seq_index = (seq_index + 1) % len(self.added_videos)
+                video = filtered_videos[seq_index]
+                seq_index = (seq_index + 1) % len(filtered_videos)
                 
                 day_name = current_time.strftime("%A").lower()
                 date_str = current_time.strftime("%Y-%m-%d")
@@ -864,25 +985,34 @@ class SimpleSchedulerWizard:
             self.preview_info.configure(text=f"{mode.title()} schedule generated: {total_entries} entries{episodic_status}")
 
     def save_current_schedule(self):
-        """Save the currently previewed schedule"""
+        """Save the currently previewed schedule and the blacklist"""
         if not self.current_schedule:
             messagebox.showwarning("No Schedule", "Generate a preview first!")
             return
         
         self._save_schedule(self.current_schedule, self.current_channel)
+        # Save the blacklist to INI file
+        if save_blacklist(self.current_profile, self.blacklisted_videos):
+            print(f"Blacklist saved to {self.current_profile}.ini")
 
     def _generate_random_schedule(self, all_videos, new_schedule, current_time, total_duration_needed, target_channel):
         """Generate random schedule with 24-hour no-repeat rule and episodic handling"""
         recent_videos = []  # Track videos played in last 24 hours
         no_repeat_hours = 24 * 3600  # 24 hours in seconds
         
+        # Filter out blacklisted videos first
+        filtered_videos = [v for v in all_videos if v["path"] not in self.blacklisted_videos]
+        if not filtered_videos:
+            messagebox.showwarning("No Available Videos", "All videos are blacklisted!")
+            return
+        
         # Detect episodic content if enabled
         if self.episodic_var.get():
-            episodic_groups, standalone_videos = self.detect_episodic_content(all_videos)
+            episodic_groups, standalone_videos = self.detect_episodic_content(filtered_videos)
             episode_trackers = {series: 0 for series in episodic_groups.keys()}  # Track current episode per series
         else:
             episodic_groups = {}
-            standalone_videos = all_videos
+            standalone_videos = filtered_videos
             episode_trackers = {}
         
         while (current_time - datetime(2023, 1, 2, 0, 0)).total_seconds() < total_duration_needed:
@@ -940,11 +1070,11 @@ class SimpleSchedulerWizard:
                     video = random.choice(available_standalone if available_standalone else standalone_videos)
             else:
                 # Standard random selection with 24-hour rule
-                available_videos = [v for v in all_videos if v["path"] not in recent_paths]
+                available_videos = [v for v in filtered_videos if v["path"] not in recent_paths]
                 if not available_videos:
                     # Reset if no videos available (emergency fallback)
                     recent_videos = []
-                    available_videos = all_videos
+                    available_videos = filtered_videos
                 
                 video = random.choice(available_videos)
             
@@ -967,10 +1097,16 @@ class SimpleSchedulerWizard:
 
     def _generate_sequential_schedule(self, all_videos, new_schedule, current_time, total_duration_needed, target_channel):
         """Generate sequential schedule (original logic)"""
+        # Filter out blacklisted videos first
+        filtered_videos = [v for v in all_videos if v["path"] not in self.blacklisted_videos]
+        if not filtered_videos:
+            messagebox.showwarning("No Available Videos", "All videos are blacklisted!")
+            return
+        
         seq_index = 0
         while (current_time - datetime(2023, 1, 2, 0, 0)).total_seconds() < total_duration_needed:
-            video = all_videos[seq_index]
-            seq_index = (seq_index + 1) % len(all_videos)
+            video = filtered_videos[seq_index]
+            seq_index = (seq_index + 1) % len(filtered_videos)
 
             day_index = current_time.weekday()
             days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -1203,12 +1339,25 @@ class SimpleSchedulerWizard:
         self.load_collections_from_profile()
         messagebox.showinfo("Success", f"Loaded profile: {self.current_profile}.json")
 
+    def select_all_collections(self):
+        """Select all collections in the collection list"""
+        self.collection_list.selection_set(0, tk.END)
+        # Update selected collections
+        self.selected_collections = self.collections.copy()
+    
+    def clear_collection_selection(self):
+        """Clear all selected collections"""
+        self.collection_list.selection_clear(0, tk.END)
+        self.selected_collections = []
+    
     def load_collections_from_profile(self):
         """Load collections from current profile and update UI"""
         self.collections = load_collections(self.current_profile)
         self.collection_list.delete(0, tk.END)
         for col in self.collections:
             self.collection_list.insert(tk.END, col["name"])
+        # Load blacklist from INI file
+        self.blacklisted_videos = load_blacklist(self.current_profile)
 
     def get_known_channels(self):
         channels = {"critters", "default"}
