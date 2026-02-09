@@ -259,10 +259,9 @@ class SimpleSchedulerWizard:
         standby_tab = ttk.Frame(self.tab_control)
         self.tab_control.add(standby_tab, text="Standby")
         
-        # Standby tab content - placeholder
-        ttk.Label(standby_tab, text="Standby Management", font=("TkDefaultFont", 11, "bold")).pack(pady=10)
-        ttk.Label(standby_tab, text="Bumper generation and standby settings will be implemented here.", 
-                 font=("TkDefaultFont", 10), wraplength=300).pack(pady=5)
+        # Import and integrate StandbyManager
+        from .standby_manager import StandbyTab
+        self.standby_tab = StandbyTab(standby_tab)
         
         # Buttons frame (separate from list)
         btn_frame = ttk.Frame(collection_container)
