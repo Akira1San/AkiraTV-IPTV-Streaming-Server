@@ -144,7 +144,7 @@ class SimpleSchedulerWizard:
         
         # === SECOND PANE: COLLECTION PANEL ===
         collection_frame = ttk.Frame(self.main_paned)
-        self.main_paned.add(collection_frame, weight=1)
+        self.main_paned.add(collection_frame, weight=0.5)
         self.create_collection_panel(collection_frame)
         
         # === THIRD PANE: ADDED PANEL ===
