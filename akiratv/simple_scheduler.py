@@ -139,22 +139,22 @@ class SimpleSchedulerWizard:
         
         # === LEFT PANE: INFO PANEL ===
         info_frame = ttk.Frame(self.main_paned)
-        self.main_paned.add(info_frame, weight=1)
+        self.main_paned.add(info_frame, weight=2)
         self.create_info_panel(info_frame)
         
         # === SECOND PANE: COLLECTION PANEL ===
         collection_frame = ttk.Frame(self.main_paned)
-        self.main_paned.add(collection_frame, weight=0.5)
+        self.main_paned.add(collection_frame, weight=1)
         self.create_collection_panel(collection_frame)
         
         # === THIRD PANE: ADDED PANEL ===
         added_frame = ttk.Frame(self.main_paned)
-        self.main_paned.add(added_frame, weight=1)
+        self.main_paned.add(added_frame, weight=2)
         self.create_added_panel(added_frame)
         
         # === FOURTH PANE: PREVIEW PANEL ===
         preview_frame = ttk.Frame(self.main_paned)
-        self.main_paned.add(preview_frame, weight=1)
+        self.main_paned.add(preview_frame, weight=2)
         self.create_preview_panel(preview_frame)
         
         # === BOTTOM CONTROL BAR ===
