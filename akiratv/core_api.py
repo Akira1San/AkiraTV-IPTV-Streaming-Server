@@ -894,6 +894,33 @@ class CoreAPI:
             from .config import Config
             return Config.load_or_create()
 
+    def delete_channel(self, channel: str) -> Dict[str, Any]:
+        """Delete a channel from the configuration"""
+        try:
+            config = self._get_config_object()
+            
+            if "channels" not in config.data or channel not in config.data["channels"]:
+                return {"success": False, "error": f"Channel '{channel}' not found"}
+            
+            # Stop channel if it's running
+            if self._running and hasattr(self._engine, 'workers') and channel in self._engine.workers:
+                stop_result = self.stop_channel_worker(channel)
+                if not stop_result["success"]:
+                    logger.warning(f"CoreAPI: Failed to stop channel '{channel}' before deletion: {stop_result.get('error')}")
+            
+            # Remove from config
+            del config.data["channels"][channel]
+            config.save()
+            
+            self._emit("channel_deleted", {"channel": channel})
+            logger.info(f"CoreAPI: Deleted channel '{channel}'")
+            
+            return {"success": True, "message": f"Channel '{channel}' deleted successfully"}
+        except Exception as e:
+            error_msg = f"Failed to delete channel: {str(e)}"
+            logger.error(f"CoreAPI: {error_msg}")
+            return {"success": False, "error": error_msg}
+
     def _update_channel_config(self, channel: str, updates: Dict[str, Any]) -> Dict[str, Any]:
         """Update channel-specific configuration"""
         try:

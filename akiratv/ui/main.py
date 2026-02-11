@@ -146,6 +146,26 @@ class AkiraTVApp:
                         worker.dynamic_playlist.add_entry(entry["file"])
                     print(f"🔄 Reloaded dynamic playlist for {worker.channel}")
 
+    def delete_channel(self, channel_name):
+        """Delete a channel from configuration."""
+        # Confirm deletion
+        confirm = messagebox.askyesno(
+            "Delete Channel",
+            f"Are you sure you want to delete channel '{channel_name}'?\nThis cannot be undone.",
+            icon='warning'
+        )
+        
+        if not confirm:
+            return
+            
+        result = self.api.delete_channel(channel_name)
+        if result["success"]:
+            messagebox.showinfo("Success", result["message"])
+            # Refresh channel list
+            self.load_channel_toggles()
+        else:
+            messagebox.showerror("Error", result["error"])
+    
     def stop_video(self):
         """Stop currently playing video on selected channel."""
         if not self.streaming:
@@ -391,10 +411,11 @@ class AkiraTVApp:
 
         # Create header row
         header_frame = ttk.Frame(self.channels_container)
-        header_frame.grid(row=0, column=0, columnspan=4, sticky="ew", padx=5, pady=(0,5))
+        header_frame.grid(row=0, column=0, columnspan=5, sticky="ew", padx=5, pady=(0,5))
         ttk.Label(header_frame, text="Channel", width=20, font=("TkDefaultFont", 9, "bold")).pack(side="left", padx=(0,10))
         ttk.Label(header_frame, text="Transcoding", width=12, font=("TkDefaultFont", 9, "bold")).pack(side="left", padx=(0,10))
-        ttk.Label(header_frame, text="Subtitles", width=12, font=("TkDefaultFont", 9, "bold")).pack(side="left")
+        ttk.Label(header_frame, text="Subtitles", width=12, font=("TkDefaultFont", 9, "bold")).pack(side="left", padx=(0,10))
+        ttk.Label(header_frame, text="Actions", width=10, font=("TkDefaultFont", 9, "bold")).pack(side="left")
 
         row = 1
         for channel in sorted(known_channels):
@@ -447,6 +468,15 @@ class AkiraTVApp:
                 state="readonly"
             )
             subs_combo.grid(row=row, column=2, sticky="w", padx=5, pady=2)
+            
+            # Delete button
+            delete_btn = ttk.Button(
+                self.channels_container,
+                text="Delete",
+                width=8,
+                command=lambda ch=channel: self.delete_channel(ch)
+            )
+            delete_btn.grid(row=row, column=3, sticky="w", padx=5, pady=2)
             
             # Store all variables for this channel
             self.channel_configs[channel] = {
