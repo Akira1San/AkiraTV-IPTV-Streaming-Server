@@ -8,7 +8,7 @@ import subprocess
 import socket
 from pathlib import Path
 
-from ..core import AkiraTV
+from ..core_api import CoreAPI
 from ..config import Config
 from ..utils import find_project_root
 # Import the new tab and widget classes
@@ -49,7 +49,7 @@ class AkiraTVApp:
         self.hwaccel = tk.StringVar(value=ffmpeg_config.get("hwaccel", "none"))
 
         self.streaming = False
-        self.akiratv_instance = None
+        self.api = CoreAPI()
 
         # Apply saved theme
         self.dark_mode.set(self.config_data.get("ui", {}).get("dark_mode", False))
@@ -125,10 +125,13 @@ class AkiraTVApp:
                 self.playlist_dropdown.set(playlists[0])
 
     def reload_schedule(self):
-        if self.akiratv_instance:
+        if self.api.is_running:
             # Trigger schedule reload in core
-            self.akiratv_instance.reload_schedule()
-            messagebox.showinfo("Success", "Schedule reloaded!")
+            result = self.api.reload_schedule()
+            if result["success"]:
+                messagebox.showinfo("Success", "Schedule reloaded!")
+            else:
+                messagebox.showerror("Error", result["error"])
         else:
             messagebox.showwarning("Warning", "AkiraTV is not running.")
 
@@ -143,6 +146,20 @@ class AkiraTVApp:
                         worker.dynamic_playlist.add_entry(entry["file"])
                     print(f"🔄 Reloaded dynamic playlist for {worker.channel}")
 
+    def stop_video(self):
+        """Stop currently playing video on selected channel."""
+        if not self.streaming:
+            messagebox.showerror("Error", "Start streaming first!")
+            return
+            
+        channel_name = self.dynamic_channel_var.get().strip()
+        
+        result = self.api.stop_channel(channel_name)
+        if result["success"]:
+            messagebox.showinfo("Success", result["message"])
+        else:
+            messagebox.showerror("Error", result["error"])
+    
     def play_now_video(self):
             if not self.streaming:
                 messagebox.showerror("Error", "Start streaming first!")
@@ -168,12 +185,12 @@ class AkiraTVApp:
                 messagebox.showerror("Error", "Channel name required!")
                 return
             
-            try:
-                self.akiratv_instance.play_now(channel_name, video_path)
+            result = self.api.play_now(channel_name, video_path)
+            if result["success"]:
                 messagebox.showinfo("Success", f"Now playing on {channel_name}: {Path(video_path).name}")
                 self.play_now_path.set("")
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
+            else:
+                messagebox.showerror("Error", result["error"])
 
     def load_or_init_config(self):
         config_path = Path("config.json")
@@ -294,8 +311,6 @@ class AkiraTVApp:
             self.update_stats_running = True
             try:
                 self.update_stats()
-                if self.akiratv_instance:
-                    self.akiratv_instance.process_commands()
             finally:
                 self.update_stats_running = False
                 self.root.after(2000, self.update_stats_loop)
@@ -310,17 +325,22 @@ class AkiraTVApp:
         self.stats_labels["status"].set(status)
         
         # Channels
-        active_channels = sum(
-            1 for vars_dict in self.channel_configs.values() 
-            if vars_dict["enabled"].get()
-        )
-        self.stats_labels["channels"].set(str(active_channels))
-        
-        # Viewers (from core.py global)
         try:
-            from ..core import get_active_viewers
-            viewers = get_active_viewers()
-            self.stats_labels["viewers"].set(str(viewers))
+            channels = self.api.get_channels()
+            active_channels = sum(1 for ch in channels if ch.enabled)
+            self.stats_labels["channels"].set(str(active_channels))
+        except:
+            self.stats_labels["channels"].set("0")
+        
+        # Viewers
+        try:
+            # Get viewers from first running channel
+            channels = self.api.get_channels()
+            running_channels = [ch for ch in channels if ch.status == "running"]
+            if running_channels:
+                self.stats_labels["viewers"].set(str(running_channels[0].viewers))
+            else:
+                self.stats_labels["viewers"].set("0")
         except:
             self.stats_labels["viewers"].set("N/A")
         
@@ -333,33 +353,41 @@ class AkiraTVApp:
         
         # Now/Next
         try:
-            from ..core import AKIRATV_STATS, STATS_LOCK
-            with STATS_LOCK:
-                now = AKIRATV_STATS.get("now_playing", "N/A")
-                next_p = AKIRATV_STATS.get("next_program", "N/A")
-            self.now_playing.set(now)
-            self.next_program.set(next_p)
+            channels = self.api.get_channels()
+            running_channels = [ch for ch in channels if ch.status == "running"]
+            if running_channels:
+                self.now_playing.set(running_channels[0].now_playing or "N/A")
+                self.next_program.set(running_channels[0].next_program or "N/A")
+            else:
+                self.now_playing.set("No program info")
+                self.next_program.set("")
         except Exception as e:
             self.now_playing.set("N/A")
             self.next_program.set("N/A")
 
     def load_channel_toggles(self):
         """Load channel list with per-channel transcoding and subtitle controls."""
-        known_channels = set(self.config_data.get("channels", {}).keys())
         try:
-            with open("schedule.json", "r", encoding="utf-8") as f:
-                sched = json.load(f)
-                for key, entries in sched.get("weekly", {}).items():
-                    for entry in entries:
-                        known_channels.add(entry.get("channel", "default"))
-                for key in sched:
-                    if key != "weekly" and isinstance(sched[key], list):
-                        for entry in sched[key]:
-                            known_channels.add(entry.get("channel", "default"))
+            channels = self.api.get_channels()
+            known_channels = [ch.name for ch in channels]
+            if not known_channels:
+                known_channels = {"critters"}
         except:
-            pass
-        if not known_channels:
-            known_channels = {"critters"}
+            known_channels = set(self.config_data.get("channels", {}).keys())
+            try:
+                with open("schedule.json", "r", encoding="utf-8") as f:
+                    sched = json.load(f)
+                    for key, entries in sched.get("weekly", {}).items():
+                        for entry in entries:
+                            known_channels.add(entry.get("channel", "default"))
+                    for key in sched:
+                        if key != "weekly" and isinstance(sched[key], list):
+                            for entry in sched[key]:
+                                known_channels.add(entry.get("channel", "default"))
+            except:
+                pass
+            if not known_channels:
+                known_channels = {"critters"}
 
         # Create header row
         header_frame = ttk.Frame(self.channels_container)
@@ -490,6 +518,12 @@ class AkiraTVApp:
 
     def _create_channel_with_type(self, channel_name, channel_type):
         """Helper method to actually create the channel UI elements."""
+        # Use CoreAPI to add the channel
+        result = self.api.add_channel(channel_name, channel_type)
+        if not result["success"]:
+            messagebox.showerror("Error", result["error"])
+            return
+            
         # Determine the next row for the UI grid
         last_row = 0
         for child in self.channels_container.winfo_children():
@@ -575,26 +609,29 @@ class AkiraTVApp:
             local_ip = bind
 
         urls = []
-        for channel, vars_dict in self.channel_configs.items():
-            if vars_dict["enabled"].get():
-                # Local URLs
-                stream_local = f"http://{local_ip}:{port}/hls/{channel}/index.m3u8"
-                xmltv_local = f"http://{local_ip}:{port}/xmltv.xml"
-                urls.append(f"📺 {channel} Stream (LAN): {stream_local}")
-                urls.append(f"📋 {channel} EPG (LAN): {xmltv_local}")
-                
-                # Check Ngrok / Tailscale public URLs
-                ngrok_url = getattr(self, "ngrok_url", None)
-                tailscale_url = getattr(self, "tailscale_url", None)
-                
-                if ngrok_url:
-                    urls.append(f"🌍 {channel} Stream (Ngrok): {ngrok_url}/hls/{channel}/index.m3u8")
-                    urls.append(f"📋 {channel} EPG (Ngrok): {ngrok_url}/xmltv.xml")
-                if tailscale_url:
-                    urls.append(f"🌐 {channel} Stream (Tailscale): {tailscale_url}/hls/{channel}/index.m3u8")
-                    urls.append(f"📋 {channel} EPG (Tailscale): {tailscale_url}/xmltv.xml")
-                
-                urls.append("")  # Blank line
+        try:
+            channels = self.api.get_channels()
+            for ch in channels:
+                if ch.enabled:
+                    # Use CoreAPI to get channel URLs
+                    channel_urls = self.api.get_channel_url(ch.name)
+                    urls.append(f"📺 {ch.name} Stream (LAN): {channel_urls['stream']}")
+                    urls.append(f"📋 {ch.name} EPG (LAN): {channel_urls['epg']}")
+                    
+                    # Check Ngrok / Tailscale public URLs
+                    ngrok_url = getattr(self, "ngrok_url", None)
+                    tailscale_url = getattr(self, "tailscale_url", None)
+                    
+                    if ngrok_url:
+                        urls.append(f"🌍 {ch.name} Stream (Ngrok): {ngrok_url}/hls/{ch.name}/index.m3u8")
+                        urls.append(f"📋 {ch.name} EPG (Ngrok): {ngrok_url}/xmltv.xml")
+                    if tailscale_url:
+                        urls.append(f"🌐 {ch.name} Stream (Tailscale): {tailscale_url}/hls/{ch.name}/index.m3u8")
+                        urls.append(f"📋 {ch.name} EPG (Tailscale): {tailscale_url}/xmltv.xml")
+                    
+                    urls.append("")  # Blank line
+        except Exception as e:
+            print(f"Error getting channel URLs: {e}")
 
         if not urls:
             urls.append("No enabled channels.")
@@ -711,26 +748,16 @@ class AkiraTVApp:
         if self.streaming:
             return
             
-        if self.akiratv_instance:
-            self.stop_streaming()
-            time.sleep(1)
-
-        self.akiratv_instance = AkiraTV()
-
-        # Make globally accessible for dashboard
-        from .. import core
-        core.AKIRATV_INSTANCE = self.akiratv_instance
-
-        stream_thread = threading.Thread(target=self.akiratv_instance.start, daemon=True)
-        stream_thread.start()
-        self.streaming = True
-
-        # Update new stats system
-        if hasattr(self, 'stats_labels'):
-            self.stats_labels["status"].set("Streaming")
-
-        # Note: FastAPI server (api_server.py) should be started separately
-        # The HTTP server for HLS streaming is started by AkiraTV core
+        result = self.api.start()
+        if result["success"]:
+            self.streaming = True
+            # Update new stats system
+            if hasattr(self, 'stats_labels'):
+                self.stats_labels["status"].set("Streaming")
+            messagebox.showinfo("Success", "AkiraTV started successfully")
+        else:
+            messagebox.showerror("Error", result["error"])
+            return
 
         import socket
         try:
@@ -746,8 +773,16 @@ class AkiraTVApp:
         self.ngrok_url = "http://unnumerative-amuck-larry.ngrok-free.dev"
 
     def stop_streaming(self):
-        print("DEBUG: Stop button pressed. Calling akiratv_instance.stop()...")
-        if self.akiratv_instance:
+        print("DEBUG: Stop button pressed. Calling api.stop()...")
+        result = self.api.stop()
+        if result["success"]:
+            self.streaming = False
+            # Update new stats system
+            if hasattr(self, 'stats_labels'):
+                self.stats_labels["status"].set("Stopped")
+            messagebox.showinfo("Success", "AkiraTV stopped successfully")
+        else:
+            messagebox.showerror("Error", result["error"])
             self.akiratv_instance.stop()
         self.streaming = False
         if hasattr(self, 'stats_labels'):

@@ -81,6 +81,7 @@ class GeneralTab(ttk.Frame):
 
         ttk.Button(playlist_frame, text="Create Playlist", command=self.app.create_playlist).pack(side="left", padx=(5,0))
         ttk.Button(playlist_frame, text="Play Now", command=self.app.play_now_video).pack(side="left", padx=(5,0))
+        ttk.Button(playlist_frame, text="Stop", command=self.app.stop_video).pack(side="left", padx=(5,0))
 
         # Playlist selector
         playlist_select_frame = ttk.Frame(self)
@@ -97,6 +98,7 @@ class GeneralTab(ttk.Frame):
         self.app.load_playlist_dropdown()
 
         ttk.Button(playlist_select_frame, text="Play Selected", command=self.app.play_selected_video).pack(side="left", padx=(5,0))
+        ttk.Button(playlist_select_frame, text="Stop", command=self.app.stop_video).pack(side="left", padx=(5,0))
 
 
 class SettingsTab(ttk.Frame):
