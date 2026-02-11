@@ -1262,52 +1262,58 @@ Your API key will be saved for future use.""")
         try:
             print(f"DEBUG: Scanning folder for new videos: {base_folder}")
             
-            # Get all video files in the folder
+            # Get all video files in the folder (case-insensitive on Windows)
             video_extensions = {".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v"}
             all_videos_in_folder = []
             
+            seen_paths = set()
             for ext in video_extensions:
-                all_videos_in_folder.extend(Path(base_folder).glob(f"*{ext}"))
-                all_videos_in_folder.extend(Path(base_folder).glob(f"*{ext.upper()}"))
+                # Search for both lowercase and uppercase extensions
+                for video_file in Path(base_folder).glob(f"*{ext}"):
+                    file_path = str(video_file).lower()
+                    if file_path not in seen_paths:
+                        seen_paths.add(file_path)
+                        all_videos_in_folder.append(video_file)
+                
+                for video_file in Path(base_folder).glob(f"*{ext.upper()}"):
+                    file_path = str(video_file).lower()
+                    if file_path not in seen_paths:
+                        seen_paths.add(file_path)
+                        all_videos_in_folder.append(video_file)
             
             # Get existing video paths from ALL collections (normalized for comparison)
             existing_paths = set()
             for collection in self.collections:
                 for video in collection.get("videos", []):
-                    # Normalize paths for comparison - handle both forward and backward slashes
+                    # Normalize paths to absolute, forward slash, lowercase for comparison
                     video_path = video["path"]
                     try:
                         normalized_path = str(Path(video_path).resolve()).replace("\\", "/").lower()
                         existing_paths.add(normalized_path)
-                        # Also add the original path format for safety
-                        existing_paths.add(video_path.replace("\\", "/").lower())
-                        existing_paths.add(video_path.replace("/", "\\").lower())
                     except:
-                        # If path resolution fails, just use the original path
-                        existing_paths.add(video_path.replace("\\", "/").lower())
-                        existing_paths.add(video_path.replace("/", "\\").lower())
+                        # If path resolution fails, normalize as best we can
+                        normalized_path = str(Path(video_path)).replace("\\", "/").lower()
+                        existing_paths.add(normalized_path)
             
             print(f"DEBUG: Found {len(existing_paths)} existing video paths across all collections")
+            # Debug print existing paths
+            for path in existing_paths:
+                print(f"DEBUG: Existing path: '{path}'")
             
             # Find new videos not in any collection
             new_videos = []
             for video_file in all_videos_in_folder:
-                # Normalize the new video path for comparison
+                # Normalize the new video path to absolute, forward slash, lowercase
                 try:
                     video_path_normalized = str(video_file.resolve()).replace("\\", "/").lower()
-                    video_path_alt = str(video_file).replace("\\", "/").lower()
-                    video_path_alt2 = str(video_file).replace("/", "\\").lower()
                 except:
                     video_path_normalized = str(video_file).replace("\\", "/").lower()
-                    video_path_alt = str(video_file).replace("/", "\\").lower()
-                    video_path_alt2 = video_path_normalized
+                
+                print(f"DEBUG: Checking video: '{video_file.name}'")
+                print(f"DEBUG: Normalized path: '{video_path_normalized}'")
                 
                 # Check if this video is already in any collection
-                is_duplicate = (video_path_normalized in existing_paths or 
-                               video_path_alt in existing_paths or 
-                               video_path_alt2 in existing_paths)
-                
-                if not is_duplicate:
+                if video_path_normalized not in existing_paths:
                     new_videos.append(video_file)
                     print(f"DEBUG: New video found: {video_file.name}")
                 else:
