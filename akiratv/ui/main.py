@@ -394,18 +394,6 @@ class AkiraTVApp:
                 known_channels = {"critters"}
         except:
             known_channels = set(self.config_data.get("channels", {}).keys())
-            try:
-                with open("schedule.json", "r", encoding="utf-8") as f:
-                    sched = json.load(f)
-                    for key, entries in sched.get("weekly", {}).items():
-                        for entry in entries:
-                            known_channels.add(entry.get("channel", "default"))
-                    for key in sched:
-                        if key != "weekly" and isinstance(sched[key], list):
-                            for entry in sched[key]:
-                                known_channels.add(entry.get("channel", "default"))
-            except:
-                pass
             if not known_channels:
                 known_channels = {"critters"}
 

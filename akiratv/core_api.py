@@ -174,7 +174,7 @@ class CoreAPI:
     
     def get_channels(self) -> List[ChannelStatus]:
         """
-        Get status of all channels (from config + schedule files)
+        Get status of all channels (from config only)
         
         Returns:
             List of ChannelStatus objects
@@ -189,7 +189,7 @@ class CoreAPI:
             from .config import Config
             config = Config.load_or_create().data
         
-        # Add channels from config
+        # Add channels from config ONLY - don't add channels from schedule files
         for name, conf in config.get("channels", {}).items():
             known_channels.add(name)
             
@@ -205,40 +205,6 @@ class CoreAPI:
                 uptime=self.uptime if is_running else 0.0
             )
             channels.append(status)
-        
-        # Scan for per-channel schedule files (schedule_CHANNELNAME.json)
-        try:
-            import json
-            from pathlib import Path
-            
-            # Look for schedule_*.json files in multiple locations
-            schedule_paths = [
-                Path("."),  # Current directory
-                Path("user/schedules"),  # User schedules directory
-                Path("schedules")  # Alternative schedules directory
-            ]
-            
-            for schedule_dir in schedule_paths:
-                if schedule_dir.exists():
-                    for schedule_file in schedule_dir.glob("schedule_*.json"):
-                        try:
-                            # Extract channel name from filename: schedule_akiratv.json -> akiratv
-                            channel_name = schedule_file.stem.replace("schedule_", "")
-                            
-                            if channel_name not in known_channels:
-                                known_channels.add(channel_name)
-                                # Add as linear channel by default
-                                channels.append(ChannelStatus(
-                                    name=channel_name,
-                                    type="linear",
-                                    enabled=True,  # Default to enabled if it has a schedule
-                                    status="stopped"
-                                ))
-                                logger.debug(f"Found channel '{channel_name}' from {schedule_file}")
-                        except Exception as e:
-                            logger.debug(f"Could not parse {schedule_file.name}: {e}")
-        except Exception as e:
-            logger.debug(f"Could not scan schedule files: {e}")
         
         # Update with live stats from first running channel
         if channels:
