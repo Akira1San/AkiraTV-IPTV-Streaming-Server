@@ -93,7 +93,8 @@ class Config:
         try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            logger.info(f"✅ Loaded config from {path}")
+            # Only log config load once or when in debug mode
+            logger.debug(f"✅ Loaded config from {path}")
             return cls(cls._merge_with_defaults(data))
         except json.JSONDecodeError as e:
             logger.error(f"❌ Invalid JSON in {path}: {e}")
