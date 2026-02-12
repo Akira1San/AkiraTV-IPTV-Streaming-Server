@@ -50,11 +50,6 @@ class GeneralTab(ttk.Frame):
             command=self.app.toggle_theme
         ).pack(side="left")
 
-        # Standby Loop Generator
-        standby_frame = ttk.Frame(self)
-        standby_frame.pack(fill="x", padx=10, pady=5)
-        ttk.Button(standby_frame, text="Create Standby Loop", command=self.app.create_standby_loop).pack(side="left")
-
         # Playlist Controls
         playlist_frame = ttk.Frame(self)
         playlist_frame.pack(fill="x", padx=10, pady=5)
