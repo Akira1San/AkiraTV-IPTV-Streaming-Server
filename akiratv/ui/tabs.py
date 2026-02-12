@@ -40,15 +40,7 @@ class GeneralTab(ttk.Frame):
         self.app.url_text.pack(padx=5, pady=5, fill="x")
         scrollbar.config(command=self.app.url_text.yview)
 
-        # === Dark Theme Toggle ===
-        theme_frame = ttk.Frame(self)
-        theme_frame.pack(fill="x", padx=10, pady=5)
-        ttk.Checkbutton(
-            theme_frame,
-            text="Dark Theme",
-            variable=self.app.dark_mode,
-            command=self.app.toggle_theme
-        ).pack(side="left")
+
 
         # Playlist Controls
         playlist_frame = ttk.Frame(self)
@@ -126,6 +118,14 @@ class SettingsTab(ttk.Frame):
         ttk.Label(gen_frame, text="Channel Name:").grid(row=0, column=0, sticky="w", padx=5, pady=2)
         self.app.channel_name = tk.StringVar(value=self.app.config_data.get("channel", "critters"))
         ttk.Entry(gen_frame, textvariable=self.app.channel_name, width=30).grid(row=0, column=1, padx=5, pady=2)
+        
+        # Dark Theme Toggle
+        ttk.Checkbutton(
+            gen_frame,
+            text="Dark Theme",
+            variable=self.app.dark_mode,
+            command=self.app.toggle_theme
+        ).grid(row=1, column=0, columnspan=2, sticky="w", padx=5, pady=2)
 
         # === TRANSCODING SETTINGS ===
         trans_frame = ttk.LabelFrame(scrollable_frame, text="Transcoding Settings")
