@@ -205,7 +205,7 @@ class CollectionWizard:
         if self.current_theme == "dark":
             self.apply_light_theme()
             self.current_theme = "light"
-            self.theme_btn.config(text="🌙 Dark Mode")
+            self.theme_btn.config(text="[DARK] Dark Mode")
         else:
             self.apply_dark_theme()
             self.current_theme = "dark"
@@ -717,14 +717,24 @@ Your API key will be saved for future use.""")
         except:
             self.collections = []
 
-    def save_collections(self):
-        """Save collections to current profile"""
+    def save_collections(self, show_success_message=True):
+        """Save collections to current profile
+        
+        Also saves UI field values to selected collection(s) before saving to file.
+        
+        Args:
+            show_success_message: If True, show success messagebox after saving
+        """
+        # First, save UI field values to selected collection(s)
+        if self.selected_indices:
+            self._save_ui_fields_to_selected_collections()
+        
         try:
             # Get the profile name from the text field, not self.current_profile
             profile_name = self.profile_var.get().strip()
             if not profile_name:
                 messagebox.showwarning("Warning", "Please enter a profile name!")
-                return
+                return False
             
             # Handle the filename properly - ensure collections_ prefix without duplication
             # Remove collections_ prefix if it exists, then add it back
@@ -767,8 +777,11 @@ Your API key will be saved for future use.""")
                 self.current_profile = clean_name
             else:
                 print(f"DEBUG: ERROR - File was not created!")
-                
-            messagebox.showinfo("Success", f"Collections saved to {profile_file.name}!")
+                return False
+            
+            if show_success_message:
+                messagebox.showinfo("Success", f"Collections saved to {profile_file.name}!")
+            return True
             
         except PermissionError as e:
             print(f"DEBUG: Permission error - file may be locked by another process")
@@ -779,9 +792,11 @@ Your API key will be saved for future use.""")
                 f"• Close AkiraTV and try again\n"
                 f"• Use 'Save As' with a different name\n"
                 f"• Check if the file is open in a text editor")
+            return False
         except Exception as e:
             print(f"DEBUG: Exception during save: {e}")
             messagebox.showerror("Error", f"Failed to save collections:\n{str(e)}")
+            return False
 
     def auto_find_cover(self, video_path):
         """Improved cover matching algorithm"""
@@ -881,10 +896,6 @@ Your API key will be saved for future use.""")
         load_btn.pack(side="left", padx=2)
         self.create_tooltip(load_btn, "Load existing collection file by name")
         
-        browse_btn = ttk.Button(profile_row2, text="Browse...", command=self.load_profile_dialog)
-        browse_btn.pack(side="left", padx=2)
-        self.create_tooltip(browse_btn, "Browse and select collection file from anywhere")
-        
         save_btn = ttk.Button(profile_row2, text="Save", command=self.save_collections)
         save_btn.pack(side="left", padx=2)
         self.create_tooltip(save_btn, "Save current collections to file")
@@ -892,6 +903,10 @@ Your API key will be saved for future use.""")
         save_as_btn = ttk.Button(profile_row2, text="Save As", command=self.save_as_profile)
         save_as_btn.pack(side="left", padx=2)
         self.create_tooltip(save_as_btn, "Save collections with a new name")
+        
+        update_btn = ttk.Button(profile_row2, text="Update Collection", command=self.update_selected_collection)
+        update_btn.pack(side="left", padx=2)
+        self.create_tooltip(update_btn, "Add new videos to selected collection from its original folder")
         
         # Rest of UI (folder selection, buttons, etc.)
         top_frame = ttk.Frame(main_frame)
@@ -901,6 +916,10 @@ Your API key will be saved for future use.""")
         ttk.Entry(top_frame, textvariable=self.folder_path, width=50).pack(side="left", padx=5)
         ttk.Button(top_frame, text="Browse", command=self.browse_folder).pack(side="left", padx=2)
         
+        rescan_btn = ttk.Button(top_frame, text="Re-Scan Folder", command=self.rescan_folder)
+        rescan_btn.pack(side="left", padx=2)
+        self.create_tooltip(rescan_btn, "Scan video folder again and create new collections")
+        
         btn_frame = ttk.Frame(top_frame)
         btn_frame.pack(side="right")
         
@@ -908,16 +927,8 @@ Your API key will be saved for future use.""")
         load_collections_btn.pack(side="left", padx=2)
         self.create_tooltip(load_collections_btn, "Load existing collection file for editing")
         
-        rescan_btn = ttk.Button(btn_frame, text="Re-Scan Folder", command=self.rescan_folder)
-        rescan_btn.pack(side="left", padx=2)
-        self.create_tooltip(rescan_btn, "Scan video folder again and create new collections")
-        
-        update_btn = ttk.Button(btn_frame, text="🔄 Update Collection", command=self.update_selected_collection)
-        update_btn.pack(side="left", padx=2)
-        self.create_tooltip(update_btn, "Add new videos to selected collection from its original folder")
-        
         # Online metadata buttons
-        metadata_btn = ttk.Button(btn_frame, text="🌐 Fetch Metadata", command=self.fetch_online_metadata)
+        metadata_btn = ttk.Button(btn_frame, text="[WEB] Fetch Metadata", command=self.fetch_online_metadata)
         metadata_btn.pack(side="left", padx=2)
         self.create_tooltip(metadata_btn, "Fetch movie metadata and posters from TMDB")
         
@@ -1049,11 +1060,6 @@ Your API key will be saved for future use.""")
                 entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
             self.metadata_vars[var_name] = var
         
-        # Update button
-        button_frame = ttk.Frame(detail_frame)
-        button_frame.grid(row=len(fields), column=0, columnspan=2, pady=10)
-        ttk.Button(button_frame, text="Save Fields", command=self.save_ui_fields_to_collection).pack(side="left", padx=5)
-        
         detail_frame.columnconfigure(1, weight=1)
         self.refresh_collection_list()
 
@@ -1176,27 +1182,6 @@ Your API key will be saved for future use.""")
             return
             
         self._load_profile_by_name(profile_name)
-
-    def load_profile_dialog(self):
-        """Load profile using file dialog (original functionality)"""
-        profile_file = filedialog.askopenfilename(
-            title="Select Collection Profile",
-            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-            initialdir="."
-        )
-        if not profile_file:
-            return
-
-        try:
-            with open(profile_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self.collections = data.get("collections", [])
-            self.refresh_collection_list()
-            # Update profile name in entry (without .json)
-            self.profile_var.set(Path(profile_file).stem)
-            messagebox.showinfo("Success", f"Loaded: {Path(profile_file).name}")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to load profile:\n{str(e)}")
 
     def load_collections_file(self):
         """Load collections from a file for editing"""
@@ -1443,9 +1428,15 @@ Your API key will be saved for future use.""")
             
         old_profile = self.current_profile
         self.current_profile = profile_name  # Store without prefix
-        self.save_collections()  # This will add the prefix automatically
-        self.current_profile = old_profile  # Keep working on current profile
-        messagebox.showinfo("Success", f"Saved as profile: collections_{profile_name}.json")
+        
+        # Save without showing success message from save_collections
+        success = self.save_collections(show_success_message=False)
+        
+        # Restore old profile so user continues working on original
+        self.current_profile = old_profile
+        
+        if success:
+            messagebox.showinfo("Success", f"Saved as profile: collections_{profile_name}.json")
     
     def browse_folder(self):
         folder = filedialog.askdirectory(title="Select Video Folder")
@@ -1723,12 +1714,11 @@ Your API key will be saved for future use.""")
             .replace("-", "_")
         )
 
-    def save_ui_fields_to_collection(self):
-        """Save UI field values back to selected collection(s)"""
-        if not self.selected_indices:
-            messagebox.showwarning("Warning", "Please select at least one collection first!")
-            return
-
+    def _save_ui_fields_to_selected_collections(self):
+        """Internal method to save UI field values to selected collection(s)
+        
+        Called automatically by save_collections() when there are selected items.
+        """
         for idx in self.selected_indices:
             collection = self.collections[idx]
 
@@ -1774,11 +1764,6 @@ Your API key will be saved for future use.""")
 
         # Refresh the list to show any name changes
         self.refresh_collection_list()
-
-        # Also save to JSON file
-        self.save_collections()
-
-        messagebox.showinfo("Success", f"Saved fields for {len(self.selected_indices)} collection(s)!")
 
 def launch_collection_wizard():
     root = tk.Tk()
