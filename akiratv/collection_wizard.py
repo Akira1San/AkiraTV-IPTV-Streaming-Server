@@ -1262,14 +1262,14 @@ Your API key will be saved for future use.""")
             
             seen_paths = set()
             for ext in video_extensions:
-                # Search for both lowercase and uppercase extensions
-                for video_file in Path(base_folder).glob(f"*{ext}"):
+                # Search for both lowercase and uppercase extensions (recursive - includes subfolders)
+                for video_file in Path(base_folder).rglob(f"*{ext}"):
                     file_path = str(video_file).lower()
                     if file_path not in seen_paths:
                         seen_paths.add(file_path)
                         all_videos_in_folder.append(video_file)
                 
-                for video_file in Path(base_folder).glob(f"*{ext.upper()}"):
+                for video_file in Path(base_folder).rglob(f"*{ext.upper()}"):
                     file_path = str(video_file).lower()
                     if file_path not in seen_paths:
                         seen_paths.add(file_path)
