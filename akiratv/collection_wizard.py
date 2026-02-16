@@ -941,23 +941,69 @@ Your API key will be saved for future use.""")
         self.theme_btn.pack(side="left", padx=2)
         self.create_tooltip(self.theme_btn, "Toggle between light and dark themes")
         
-        # Create a container for the list and tags
+        # Create a container for the main content area
         content_frame = ttk.Frame(main_frame)
         content_frame.pack(fill="both", expand=True)
         
-        # Cover preview frame
-        cover_frame = ttk.LabelFrame(content_frame, text="Cover Preview")
-        cover_frame.pack(side="left", fill="y", padx=(0, 10), pady=(0, 10))
-        cover_frame.configure(width=220, height=320)
+        # Left column: Cover preview + Collection details
+        left_column = ttk.Frame(content_frame)
+        left_column.pack(side="left", fill="y", padx=(0, 10))
+        
+        # Cover preview frame (top of left column)
+        cover_frame = ttk.LabelFrame(left_column, text="Cover Preview")
+        cover_frame.pack(fill="x", pady=(0, 10))
+        cover_frame.configure(width=280, height=300)
         cover_frame.pack_propagate(False)  # Prevent frame from shrinking
         
         # Cover preview label - will display the cover image
-        self.cover_preview = tk.Label(cover_frame, bg="black")
+        self.cover_preview = tk.Label(cover_frame, bg="black", width=35, height=15)
         self.cover_preview.pack(padx=10, pady=10, fill="both", expand=True)
         
-        # Collections list with scrollbar
-        list_frame = ttk.LabelFrame(content_frame, text="Collections")
-        list_frame.pack(side="left", fill="both", expand=True, pady=(0, 10))
+        # Collection details frame (below cover preview)
+        detail_frame = ttk.LabelFrame(left_column, text="Collection Details")
+        detail_frame.pack(fill="both", expand=True)
+
+        self.cover_var = tk.StringVar() # cover
+
+        # Metadata fields - added ID field and Tags field
+        fields = [
+            ("ID:", "id_var"),
+            ("Name:", "name_var"),
+            ("Cover:", "cover_var"),
+            ("Description:", "desc_var"),
+            ("Search Hints:", "search_hints_var"),
+            ("Genre:", "genre_var"),
+            ("Tags:", "tags_var"),
+            ("Year:", "year_var")
+        ]
+        
+        self.metadata_vars = {}
+        for i, (label_text, var_name) in enumerate(fields):
+            ttk.Label(detail_frame, text=label_text).grid(row=i, column=0, sticky="w", padx=5, pady=2)
+            if var_name == "rating_var":
+                var = tk.StringVar()
+                combo = ttk.Combobox(detail_frame, textvariable=var, 
+                                    values=["NR", "G", "PG", "PG-13", "R", "NC-17"], width=45)
+                combo.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+            elif var_name == "id_var":  # ID field should be read-only
+                var = tk.StringVar()
+                entry = ttk.Entry(detail_frame, textvariable=var, width=50, state="readonly")
+                entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+            else:
+                var = tk.StringVar()
+                entry = ttk.Entry(detail_frame, textvariable=var, width=50)
+                entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+            self.metadata_vars[var_name] = var
+        
+        detail_frame.columnconfigure(1, weight=1)
+        
+        # Right column: Collections list + Tags side by side
+        right_column = ttk.Frame(content_frame)
+        right_column.pack(side="left", fill="both", expand=True)
+        
+        # Collections list with scrollbar (left side of right column)
+        list_frame = ttk.LabelFrame(right_column, text="Collections")
+        list_frame.pack(side="left", fill="both", expand=True)
         
         # Selection buttons
         selection_btn_frame = ttk.Frame(list_frame)
@@ -984,8 +1030,8 @@ Your API key will be saved for future use.""")
         # Bind selection event
         self.collection_list.bind("<<ListboxSelect>>", self.on_collection_select)
         
-        # Tags panel on the right
-        tags_frame = ttk.LabelFrame(content_frame, text="Tags")
+        # Tags panel (right of collections list)
+        tags_frame = ttk.LabelFrame(right_column, text="Tags")
         tags_frame.pack(side="right", fill="y", padx=(10, 0))
         
         # Genre tags
@@ -1024,43 +1070,6 @@ Your API key will be saved for future use.""")
                                      command=lambda: self.toggle_tag("Episodic"))
         episodic_cb.pack(anchor="w", padx=5, pady=2)
         
-        # Metadata details
-        detail_frame = ttk.LabelFrame(main_frame, text="Collection Details")
-        detail_frame.pack(fill="x")
-
-        self.cover_var = tk.StringVar() # cover
-
-        # Metadata fields - added ID field and Tags field
-        fields = [
-            ("ID:", "id_var"),
-            ("Name:", "name_var"),
-            ("Cover:", "cover_var"),
-            ("Description:", "desc_var"),
-            ("Search Hints (actor/director):", "search_hints_var"),
-            ("Genre (comma-separated):", "genre_var"),
-            ("Tags (comma-separated):", "tags_var"),
-            ("Year:", "year_var")
-        ]
-        
-        self.metadata_vars = {}
-        for i, (label_text, var_name) in enumerate(fields):
-            ttk.Label(detail_frame, text=label_text).grid(row=i, column=0, sticky="w", padx=5, pady=2)
-            if var_name == "rating_var":
-                var = tk.StringVar()
-                combo = ttk.Combobox(detail_frame, textvariable=var, 
-                                    values=["NR", "G", "PG", "PG-13", "R", "NC-17"], width=47)
-                combo.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
-            elif var_name == "id_var":  # ID field should be read-only
-                var = tk.StringVar()
-                entry = ttk.Entry(detail_frame, textvariable=var, width=50, state="readonly")
-                entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
-            else:
-                var = tk.StringVar()
-                entry = ttk.Entry(detail_frame, textvariable=var, width=50)
-                entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
-            self.metadata_vars[var_name] = var
-        
-        detail_frame.columnconfigure(1, weight=1)
         self.refresh_collection_list()
 
     def select_all(self):
