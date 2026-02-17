@@ -9,19 +9,24 @@ import socket
 def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
     """
     Generate XMLTV file from schedule and collections data.
-    Supports multiple channels, real dates, and custom directories.
+    Supports multiple channels, real dates, custom directories.
+    Supports both weekly recurring schedules and calendar-specific entries.
+    
+    Calendar entries take priority over weekly entries for specific dates.
+    Calendar format: "2026-12-25_wednesday" with date, day, and entries
     """
     # --- 1. Load all schedule data from the specified directory ---
-    schedule_data = {"weekly": {}}
+    schedule_data = {"weekly": {}, "calendar": {}}
     schedules_path = Path(schedules_dir)
     if not schedules_path.is_dir():
-        print(f"❌ Error: Schedules directory not found at '{schedules_dir}'")
+        print(f"[ERROR] Error: Schedules directory not found at '{schedules_dir}'")
         return
 
     for schedule_file in schedules_path.glob("*.json"):
         try:
             with open(schedule_file, "r", encoding="utf-8") as f:
                 sched = json.load(f)
+            
             # Merge weekly entries
             weekly = sched.get("weekly", {})
             for day, entries in weekly.items():
@@ -33,20 +38,47 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
                         # Default channel if not specified in the entry
                         entry["channel"] = "default" 
                     schedule_data["weekly"][day].append(entry)
-            # print(f"✅ Loaded schedule from {schedule_file.name}")  # DEBUG: Enable for schedule loading
+            
+            # Merge calendar entries (new format)
+            calendar = sched.get("calendar", {})
+            for calendar_key, calendar_data in calendar.items():
+                if isinstance(calendar_data, dict) and "entries" in calendar_data:
+                    if calendar_key not in schedule_data["calendar"]:
+                        schedule_data["calendar"][calendar_key] = calendar_data
+                    else:
+                        # Merge entries for same calendar key
+                        schedule_data["calendar"][calendar_key]["entries"].extend(calendar_data["entries"])
+            
+            # Also check for legacy date-keyed entries (direct date keys like "2026-12-25")
+            for key, entries in sched.items():
+                if key not in ["weekly", "calendar"] and isinstance(entries, list):
+                    # This might be a legacy date entry
+                    try:
+                        # Check if key looks like a date
+                        datetime.strptime(key, "%Y-%m-%d")
+                        if key not in schedule_data["calendar"]:
+                            schedule_data["calendar"][key] = {
+                                "date": key,
+                                "day": datetime.strptime(key, "%Y-%m-%d").strftime("%A").lower(),
+                                "entries": entries
+                            }
+                    except ValueError:
+                        pass  # Not a date key, skip
+            
+            # print(f"[OK] Loaded schedule from {schedule_file.name}")  # DEBUG: Enable for schedule loading
         except Exception as e:
             # print(f"⚠️ Failed to load {schedule_file}: {e}")  # DEBUG: Enable for error tracking
             pass
 
-    if not schedule_data["weekly"]:
-        print("❌ Error: No schedule data was loaded. Please check your schedule files.")
+    if not schedule_data["weekly"] and not schedule_data["calendar"]:
+        print("[ERROR] Error: No schedule data was loaded. Please check your schedule files.")
         return
 
     # --- 2. Load all collections data from the specified directory ---
     collections_data = {"collections": []}
     collections_path = Path(collections_dir)
     if not collections_path.is_dir():
-        # print(f"❌ Error: Collections directory not found at '{collections_dir}'")  # DEBUG: Enable for error tracking
+        # print(f"[ERROR] Error: Collections directory not found at '{collections_dir}'")  # DEBUG: Enable for error tracking
         return
 
     for collections_file in collections_path.glob("*.json"):
@@ -55,13 +87,13 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
                 col_data = json.load(f)
             # Merge collections
             collections_data["collections"].extend(col_data.get("collections", []))
-            # print(f"✅ Loaded collection from {collections_file.name}")  # DEBUG: Enable for collection loading
+            # print(f"[OK] Loaded collection from {collections_file.name}")  # DEBUG: Enable for collection loading
         except Exception as e:
             # print(f"⚠️ Failed to load {collections_file}: {e}")  # DEBUG: Enable for error tracking
             pass
 
     if not collections_data["collections"]:
-        # print("❌ Error: No collection data was loaded. Please check your collection files.")  # DEBUG: Enable for error tracking
+        # print("[ERROR] Error: No collection data was loaded. Please check your collection files.")  # DEBUG: Enable for error tracking
         pass
 
     # --- 3. Build a lookup table: video_path -> collection metadata ---
@@ -81,22 +113,31 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
                 "videos": [video]  # Keep the video object to access duration
             }
     
-    # 🔍 Debug: Print the video lookup to see if paths are matching
-    # print(f"🔍 Debug: Video lookup contains {len(video_lookup)} entries")
+    # [SEARCH] Debug: Print the video lookup to see if paths are matching
+    # print(f"[SEARCH] Debug: Video lookup contains {len(video_lookup)} entries")
     # for path, meta in video_lookup.items():
-    #     print(f"🔍 Debug: Path: {path}, Name: {meta.get('name')}, Channel: {path.split('/')[2] if len(path.split('/')) > 2 else 'unknown'}")
+    #     print(f"[SEARCH] Debug: Path: {path}, Name: {meta.get('name')}, Channel: {path.split('/')[2] if len(path.split('/')) > 2 else 'unknown'}")
 
     # --- 4. Create the XMLTV structure ---
     root = ET.Element("tv")
     root.set("generator-info-name", "AkiraTV")
     root.set("generator-info-url", "https://github.com/yourname/akiratv")
 
-    # Discover all channels from the loaded schedule
+    # Discover all channels from the loaded schedule (both weekly and calendar)
     all_channels = set()
     weekly = schedule_data.get("weekly", {})
+    calendar = schedule_data.get("calendar", {})
+    
+    # Channels from weekly entries
     for day_entries in weekly.values():
         for entry in day_entries:
             all_channels.add(entry.get("channel", "default"))
+    
+    # Channels from calendar entries
+    for calendar_key, calendar_data in calendar.items():
+        if isinstance(calendar_data, dict):
+            for entry in calendar_data.get("entries", []):
+                all_channels.add(entry.get("channel", "default"))
 
     # Add channel definitions
     for channel_id in sorted(all_channels):
@@ -119,33 +160,56 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
         icon.set("src", logo_url)
 
     # --- 5. Generate programme entries ---
+    # Track statistics
+    weekly_count = 0
+    calendar_count = 0
+    
+    # Process calendar entries first (they take priority for specific dates)
+    for calendar_key, calendar_data in calendar.items():
+        if isinstance(calendar_data, dict):
+            date_str = calendar_data.get("date", "")
+            entries = calendar_data.get("entries", [])
+            for entry in entries:
+                prog = create_programme_from_calendar(entry, video_lookup, date_str)
+                if prog is not None:
+                    root.append(prog)
+                    calendar_count += 1
+    
+    # Process weekly entries (recurring schedule)
     for day_name, entries in weekly.items():
         for entry in entries:
-            # 🔍 Debug: Print the entry to see if it's being processed
-            # print(f"🔍 Debug: Processing entry for channel {entry.get('channel')}: {entry.get('file')}")
-            
-            prog = create_programme(entry, video_lookup, day_name)
+            # Check if this entry is already covered by a calendar entry
+            # Skip weekly entries for dates that have calendar overrides
+            prog = create_programme(entry, video_lookup, day_name, calendar)
             if prog is not None:
                 root.append(prog)
+                weekly_count += 1
+    
+    # Log statistics
+    print(f"[OK] Generated XMLTV with {calendar_count} calendar entries and {weekly_count} weekly entries")
 
     # --- 6. Write the final XMLTV file ---
     try:
         tree = ET.ElementTree(root)
         ET.indent(tree, space="  ", level=0)
         tree.write(output_path, encoding="utf-8", xml_declaration=True)
-        print(f"✅ XMLTV EPG saved to: {output_path}")
+        print(f"[OK] XMLTV EPG saved to: {output_path}")
     except Exception as e:
-        # print(f"❌ Error writing XMLTV file: {e}")  # DEBUG: Enable for error tracking
+        # print(f"[ERROR] Error writing XMLTV file: {e}")  # DEBUG: Enable for error tracking
         pass
 
-def create_programme(entry, video_lookup, day_name):
-    """Create a single <programme> element with real timestamps for Bulgarian time."""
+def create_programme(entry, video_lookup, day_name, calendar=None):
+    """Create a single <programme> element with real timestamps for Bulgarian time.
+    
+    Args:
+        entry: Schedule entry dict with time, file, channel
+        video_lookup: Dict mapping video paths to metadata
+        day_name: Day name (monday, tuesday, etc.)
+        calendar: Optional calendar dict to check for date overrides
+    """
     try:
         # Normalize the file path from the schedule for reliable lookup
         file_path = Path(entry["file"]).as_posix()
-        
-        # 🔍 Debug: Print the normalized path
-        # print(f"🔍 Debug: Normalized file path: {file_path}")
         
         # Parse scheduled start time
         start_time = datetime.strptime(entry["time"], "%H:%M:%S")
@@ -163,14 +227,19 @@ def create_programme(entry, video_lookup, day_name):
             days_ahead = 7  # Use next week if time already passed today
         program_date = today + timedelta(days=days_ahead)
         
+        # Check if this date has a calendar override
+        if calendar:
+            date_str = program_date.strftime("%Y-%m-%d")
+            for calendar_key, calendar_data in calendar.items():
+                if isinstance(calendar_data, dict) and calendar_data.get("date") == date_str:
+                    # This date has a calendar override, skip weekly entry
+                    return None
+        
         # Build start datetime (naive - this is assumed to be BULGARIAN LOCAL TIME)
         start_dt = datetime.combine(program_date, start_time.time())
         
         # Get video metadata
         meta = video_lookup.get(file_path, {})
-        
-        # 🔍 Debug: Print the metadata
-        # print(f"🔍 Debug: Metadata for {file_path}: {meta}")
         
         # Default 90 min duration if not found
         duration_seconds = 5400
@@ -183,7 +252,6 @@ def create_programme(entry, video_lookup, day_name):
         stop_dt = start_dt + timedelta(seconds=duration_seconds)
         
         # Bulgarian Timezone Handling
-        import time
         is_dst = time.localtime().tm_isdst > 0
         tz_offset_hours = 3 if is_dst else 2
         
@@ -259,6 +327,116 @@ def create_programme(entry, video_lookup, day_name):
         # print(f"⚠️  Error creating programme for {entry.get('file', 'unknown file')}: {e}")  # DEBUG: Enable for error tracking
         return None
 
+def create_programme_from_calendar(entry, video_lookup, date_str):
+    """Create a single <programme> element from a calendar entry with a specific date.
+    
+    Args:
+        entry: Schedule entry dict with time, file, channel
+        video_lookup: Dict mapping video paths to metadata
+        date_str: Date string in YYYY-MM-DD format
+    """
+    try:
+        # Normalize the file path from the schedule for reliable lookup
+        file_path = Path(entry["file"]).as_posix()
+        
+        # Parse the specific date
+        program_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        
+        # Parse scheduled start time
+        start_time = datetime.strptime(entry["time"], "%H:%M:%S")
+        
+        # Build start datetime (naive - this is assumed to be BULGARIAN LOCAL TIME)
+        start_dt = datetime.combine(program_date, start_time.time())
+        
+        # Get video metadata
+        meta = video_lookup.get(file_path, {})
+        
+        # Default 90 min duration if not found
+        duration_seconds = 5400
+        
+        # Try to get real duration from lookup
+        if "videos" in meta and len(meta["videos"]) > 0 and "duration" in meta["videos"][0]:
+            duration_seconds = int(float(meta["videos"][0]["duration"])) # Ensure it's an int
+        
+        # Calculate stop datetime (naive)
+        stop_dt = start_dt + timedelta(seconds=duration_seconds)
+        
+        # Bulgarian Timezone Handling
+        is_dst = time.localtime().tm_isdst > 0
+        tz_offset_hours = 3 if is_dst else 2
+        
+        # To get UTC, we subtract the local timezone offset from the naive local time
+        utc_start_dt = start_dt - timedelta(hours=tz_offset_hours)
+        utc_stop_dt = stop_dt - timedelta(hours=tz_offset_hours)
+        
+        # Now, make them timezone-aware UTC objects for proper formatting
+        utc_start_dt = utc_start_dt.replace(tzinfo=timezone.utc)
+        utc_stop_dt = utc_stop_dt.replace(tzinfo=timezone.utc)
+        
+        # Format as required by XMLTV (YYYYMMDDHHMMSS +HHMM)
+        start_str = utc_start_dt.strftime("%Y%m%d%H%M%S %z")
+        stop_str = utc_stop_dt.strftime("%Y%m%d%H%M%S %z")
+
+        # Create programme element
+        prog = ET.Element("programme")
+        prog.set("start", start_str)
+        prog.set("stop", stop_str)
+        prog.set("channel", entry.get("channel", "default"))
+
+        # Title
+        title = ET.SubElement(prog, "title")
+        title.set("lang", "en")
+        title.text = meta.get("name", Path(entry["file"]).stem)
+
+        # Description
+        desc = ET.SubElement(prog, "desc")
+        desc.set("lang", "en")
+        desc.text = meta.get("description", "AkiraTV Stream")
+
+        # Genre
+        for genre in meta.get("genre", ["Movie"]):
+            cat = ET.SubElement(prog, "category")
+            cat.set("lang", "en")
+            cat.text = genre
+
+        # Rating
+        if meta.get("rating", "NR") != "NR":
+            rating = ET.SubElement(prog, "rating")
+            rating.set("system", "MPAA")
+            val = ET.SubElement(rating, "value")
+            val.text = meta["rating"]
+
+        # Year
+        if meta.get("year"):
+            date_el = ET.SubElement(prog, "date")
+            date_el.text = str(meta["year"])
+
+        # Add cover/icon if available
+        if meta.get("cover"):
+            # Get local IP for creating URL
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect(("8.8.8.8", 80))
+                local_ip = s.getsockname()[0]
+                s.close()
+            except:
+                local_ip = "127.0.0.1"
+            
+            # Convert local path to URL
+            cover_path = Path(meta["cover"])
+            # Create a relative path for the URL
+            cover_url = f"http://{local_ip}:8081/{cover_path.as_posix()}"
+            
+            # Add icon element
+            icon = ET.SubElement(prog, "icon")
+            icon.set("src", cover_url)
+
+        return prog
+
+    except Exception as e:
+        # print(f"⚠️  Error creating calendar programme for {entry.get('file', 'unknown file')}: {e}")  # DEBUG: Enable for error tracking
+        return None
+
 def generate_m3u_playlist(config, output_path="channels.m3u"):
     """Generate M3U playlist for Kodi with tvg-id and tvg-url linking to XMLTV."""
     # Try Ngrok first
@@ -313,6 +491,6 @@ def generate_m3u_playlist(config, output_path="channels.m3u"):
                     f'{base_url}/hls/{channel_id}/index.m3u8\n'
                 )
     
-    # print(f"✅ M3U playlist saved to: {output_path}")
-    # print(f"🌐 Public M3U URL (share with friends): http://{ngrok_url}/channels.m3u")
-    # print(f"🌐 Local M3U URL: http://{ip}:{port}/channels.m3u")
+    # print(f"[OK] M3U playlist saved to: {output_path}")
+    # print(f"[WEB] Public M3U URL (share with friends): http://{ngrok_url}/channels.m3u")
+    # print(f"[WEB] Local M3U URL: http://{ip}:{port}/channels.m3u")
