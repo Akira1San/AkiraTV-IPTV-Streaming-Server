@@ -44,16 +44,17 @@
       "enabled": true,
       "type": "vod",
       "transcoding": {
-        "enabled": true
+        "enabled": false
       },
-      "enable_subtitles": true
+      "enable_subtitles": false
     },
     "akiratv": {
       "enabled": true,
       "type": "linear",
       "transcoding": {
         "enabled": false
-      }
+      },
+      "enable_subtitles": false
     },
     "AnimeTV": {
       "enabled": false,
@@ -68,13 +69,6 @@
       "type": "linear",
       "transcoding": {
         "enabled": false
-      }
-    },
-    "don_dragon": {
-      "enabled": false,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
       },
       "enable_subtitles": false
     },
@@ -85,17 +79,6 @@
         "enabled": false
       },
       "enable_subtitles": false
-    },
-    "fma": {
-      "enabled": false,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
-      }
-    },
-    "superman_cartoonTV": {
-      "enabled": false,
-      "type": "linear"
     },
     "asian_vids": {
       "enabled": true,
@@ -108,26 +91,6 @@
     "dynamic": {
       "enabled": false,
       "type": "dynamic",
-      "transcoding": {
-        "enabled": false
-      }
-    },
-    "critters": {
-      "enabled": false
-    },
-    "Sasho": {
-      "enabled": true,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
-      }
-    },
-    "akiratv_calendar_example": {
-      "enabled": false
-    },
-    "Fast": {
-      "enabled": false,
-      "type": "linear",
       "transcoding": {
         "enabled": false
       }

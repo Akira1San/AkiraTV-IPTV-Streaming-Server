@@ -144,7 +144,7 @@ class AkiraTVApp:
                     worker.dynamic_playlist.clear()
                     for entry in worker.schedule_entries:
                         worker.dynamic_playlist.add_entry(entry["file"])
-                    print(f"🔄 Reloaded dynamic playlist for {worker.channel}")
+                    print(f"[REFRESH] Reloaded dynamic playlist for {worker.channel}")
 
     def delete_channel(self, channel_name):
         """Delete a channel from configuration."""
@@ -592,7 +592,7 @@ class AkiraTVApp:
             "subtitles": subs_var
         }
         
-        print(f"✅ Added channel '{channel_name}' with type '{channel_type}'")
+        print(f"[OK] Added channel '{channel_name}' with type '{channel_type}'")
         print(f"   Config: {self.channel_configs[channel_name]}")
 
         self.new_channel_var.set("")
@@ -601,7 +601,7 @@ class AkiraTVApp:
         # Show success message
         messagebox.showinfo(
             "Channel Created",
-            f"✅ Channel '{channel_name}' created as {channel_type.upper()} type!\n\n"
+            f"[OK] Channel '{channel_name}' created as {channel_type.upper()} type!\n\n"
             f"Don't forget to click 'Apply Config' to save."
         )
 
@@ -633,19 +633,15 @@ class AkiraTVApp:
                 if ch.enabled:
                     # Use CoreAPI to get channel URLs
                     channel_urls = self.api.get_channel_url(ch.name)
-                    urls.append(f"📺 {ch.name} Stream (LAN): {channel_urls['stream']}")
-                    urls.append(f"📋 {ch.name} EPG (LAN): {channel_urls['epg']}")
+                    urls.append(f"[TV] {ch.name} Stream (LAN): {channel_urls['stream']}")
+                    urls.append(f"[COPY] {ch.name} EPG (LAN): {channel_urls['epg']}")
                     
-                    # Check Ngrok / Tailscale public URLs
-                    ngrok_url = getattr(self, "ngrok_url", None)
+                    # Check Tailscale public URLs
                     tailscale_url = getattr(self, "tailscale_url", None)
                     
-                    if ngrok_url:
-                        urls.append(f"🌍 {ch.name} Stream (Ngrok): {ngrok_url}/hls/{ch.name}/index.m3u8")
-                        urls.append(f"📋 {ch.name} EPG (Ngrok): {ngrok_url}/xmltv.xml")
                     if tailscale_url:
-                        urls.append(f"🌐 {ch.name} Stream (Tailscale): {tailscale_url}/hls/{ch.name}/index.m3u8")
-                        urls.append(f"📋 {ch.name} EPG (Tailscale): {tailscale_url}/xmltv.xml")
+                        urls.append(f"[WEB] {ch.name} Stream (Tailscale): {tailscale_url}/hls/{ch.name}/index.m3u8")
+                        urls.append(f"[COPY] {ch.name} EPG (Tailscale): {tailscale_url}/xmltv.xml")
                     
                     urls.append("")  # Blank line
         except Exception as e:
@@ -787,9 +783,6 @@ class AkiraTVApp:
         except:
             self.tailscale_url = None
 
-        # Example: Ngrok (manually set your public URL for now)
-        self.ngrok_url = "http://unnumerative-amuck-larry.ngrok-free.dev"
-
     def stop_streaming(self):
         print("DEBUG: Stop button pressed. Calling api.stop()...")
         result = self.api.stop()
@@ -921,7 +914,7 @@ class AkiraTVApp:
             
             messagebox.showinfo(
                 "EPG + M3U Generated",
-                "✅ xmltv.xml + channels.m3u saved!\n\n"
+                "[OK] xmltv.xml + channels.m3u saved!\n\n"
                 "In Kodi IPTV Simple Client:\n"
                 f"- M3U Path: http://YOUR_IP:8081/channels.m3u\n"
                 f"- XMLTV Path: http://YOUR_IP:8081/xmltv.xml"
@@ -946,9 +939,9 @@ class AkiraTVApp:
         # Add this at the start of create_standby_loop
         from pathlib import Path
         inventory_file = Path("user/video_inventory.json")
-        print(f"📁 Inventory file exists: {inventory_file.exists()}")
+        print(f"[FOLDER] Inventory file exists: {inventory_file.exists()}")
         if inventory_file.exists():
-            print(f"📁 Inventory file size: {inventory_file.stat().st_size} bytes")
+            print(f"[FOLDER] Inventory file size: {inventory_file.stat().st_size} bytes")
 
         def _create():
             try:
@@ -1036,7 +1029,7 @@ class AkiraTVApp:
             inventory_file = Path("user/video_inventory.json")
             
             if not inventory_file.exists():
-                print("❌ Inventory file not found!")
+                print("[ERROR] Inventory file not found!")
                 return []
             
             with open(inventory_file, 'r', encoding='utf-8') as f:
@@ -1057,7 +1050,7 @@ class AkiraTVApp:
                         resolutions.append((width, height))
             
             if not resolutions:
-                print("❌ No valid resolutions found in inventory!")
+                print("[ERROR] No valid resolutions found in inventory!")
                 return []
             
             resolution_counts = Counter(resolutions)
@@ -1067,11 +1060,11 @@ class AkiraTVApp:
                 for (width, height), count in resolution_counts.most_common()
             ]
             
-            print(f"✅ Unique resolutions: {unique_resolutions}")
+            print(f"[OK] Unique resolutions: {unique_resolutions}")
             return unique_resolutions
             
         except Exception as e:
-            print(f"❌ Error reading inventory: {e}")
+            print(f"[ERROR] Error reading inventory: {e}")
             import traceback
             traceback.print_exc()
             return []

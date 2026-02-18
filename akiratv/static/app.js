@@ -536,17 +536,6 @@ function generateChannelUrls(channelName, urls) {
         `;
     }
     
-    // Ngrok URL (if configured)
-    if (urls.ngrok && urls.ngrok.stream) {
-        urlsHtml += `
-            <div class="channel-url">
-                <div class="url-label">🌍 Ngrok Stream:</div>
-                <span style="overflow: hidden; text-overflow: ellipsis;">${urls.ngrok.stream}</span>
-                <button class="copy-btn" onclick="copyToClipboard('${urls.ngrok.stream}')">Copy</button>
-            </div>
-        `;
-    }
-    
     // If we have URLs but none of the expected ones, show fallback
     if (!urlsHtml) {
         const fallbackUrl = `http://192.168.50.183:8081/hls/${channelName}/index.m3u8`;

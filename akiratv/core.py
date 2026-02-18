@@ -45,7 +45,6 @@ logger.addHandler(file_handler)
 
 logging.getLogger("PIL").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-logging.getLogger("ngrok").setLevel(logging.WARNING)
 
 
 class AkiraTV:
@@ -120,11 +119,11 @@ class AkiraTV:
                     continue
 
             except Exception as e:
-                logger.error(f"❌ Failed to start worker for {channel_name}: {e}")
+                logger.error(f"[ERROR] Failed to start worker for {channel_name}: {e}")
 
         if not self.workers:
             logger.error("No channels were started. Exiting.")
-            print("❌ No valid channels to stream. Check your configuration.")
+            print("[ERROR] No valid channels to stream. Check your configuration.")
             return
 
         self.finalize_startup()
@@ -147,7 +146,7 @@ class AkiraTV:
         thread = threading.Thread(target=worker.run, daemon=True)
         self.workers[channel_name] = (worker, thread)
         thread.start()
-        logger.info(f"✅ VOD worker for {channel_name} started.")
+        logger.info(f"[OK] VOD worker for {channel_name} started.")
 
     def _start_dynamic_channel(self, channel_name: str):
         """Start a dynamic channel (standby with VOD switching)"""
@@ -174,7 +173,7 @@ class AkiraTV:
         thread = threading.Thread(target=worker.run, daemon=True)
         self.workers[channel_name] = (worker, thread)
         thread.start()
-        logger.info(f"✅ Dynamic worker for {channel_name} started.")
+        logger.info(f"[OK] Dynamic worker for {channel_name} started.")
 
     def _start_linear_channel(self, channel_name: str):
         """Start a linear channel with auto-restart wrapper"""
@@ -202,13 +201,13 @@ class AkiraTV:
         # We store a placeholder worker reference (will be updated in the restart loop)
         self.workers[channel_name] = (None, thread)
         thread.start()
-        logger.info(f"✅ Linear worker for {channel_name} started with auto-restart.")
+        logger.info(f"[OK] Linear worker for {channel_name} started with auto-restart.")
 
     def _linear_worker_with_restart(self, channel_name: str):
         """Wrapper that restarts a linear worker when it exits"""
         while self.running:
             try:
-                logger.info(f"🔄 Starting/Restarting linear worker for {channel_name}...")
+                logger.info(f"[REFRESH] Starting/Restarting linear worker for {channel_name}...")
                 
                 # Get fresh schedule
                 from .scheduler import get_current_schedule_for_channel
@@ -245,7 +244,7 @@ class AkiraTV:
                     break
                     
             except Exception as e:
-                logger.error(f"❌ Error in linear worker for {channel_name}: {e}")
+                logger.error(f"[ERROR] Error in linear worker for {channel_name}: {e}")
                 if self.running:
                     logger.info(f"Retrying in 10s...")
                     time.sleep(10)
@@ -263,7 +262,7 @@ class AkiraTV:
         try:
             hls_root = self.get_hls_root_path()
             hls_root.mkdir(parents=True, exist_ok=True)
-            print(f"📁 HTTP server will serve HLS from: {hls_root.resolve()}")
+            print(f"[FOLDER] HTTP server will serve HLS from: {hls_root.resolve()}")
             
             http_conf = self.config.data["output"]["http"]
             port = http_conf.get("port", 8080)
@@ -275,7 +274,7 @@ class AkiraTV:
             return True
         except Exception as e:
             logger.error(f"HTTP server failed: {e}")
-            print("❌ Error: Could not start HTTP server.")
+            print("[ERROR] Error: Could not start HTTP server.")
             return False
 
     def get_hls_root_path(self):
@@ -317,8 +316,8 @@ class AkiraTV:
         port = self.config.data["output"]["http"].get("port", 8080)
         bind = self.config.data["output"]["http"].get("bind", "127.0.0.1")
         ip = bind if bind != "0.0.0.0" else "YOUR_LOCAL_IP"
-        print(f"✅ AkiraTV is running! Streaming {len(self.workers)} channel(s).")
-        print(f"▶️  Watch: http://{ip}:{port}/hls/{first_channel}/index.m3u8")
+        print(f"[OK] AkiraTV is running! Streaming {len(self.workers)} channel(s).")
+        print(f"Watch: http://{ip}:{port}/hls/{first_channel}/index.m3u8")
 
     def stop(self):
         self._command_thread_running = False
@@ -390,10 +389,10 @@ class AkiraTV:
         worker, _ = self.workers[channel]
 
         if isinstance(worker, VODWorker):
-            logger.info(f"🎬 Sending 'play_now' command to VOD channel '{channel}'.")
+            logger.info(f"[PLAY] Sending 'play_now' command to VOD channel '{channel}'.")
             worker.play_now(video_path)
         elif hasattr(worker, 'play_now'):  # DynamicWorker also has play_now
-            logger.info(f"🎬 Sending 'play_now' command to Dynamic channel '{channel}'.")
+            logger.info(f"[PLAY] Sending 'play_now' command to Dynamic channel '{channel}'.")
             worker.play_now(video_path)
         else:
             logger.warning(f"⚠️ Channel '{channel}' does not support play_now commands.")
@@ -408,7 +407,7 @@ class AkiraTV:
 
             if cmd == "play_now":
                 self.play_now(channel, video_path)
-                print("📬 Command received:", cmd, channel)
+                print("[MSG] Command received:", cmd, channel)
 
     def process_commands(self):
         while not self.command_queue.empty():

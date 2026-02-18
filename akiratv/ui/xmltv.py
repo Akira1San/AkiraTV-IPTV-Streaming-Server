@@ -443,41 +443,24 @@ def create_programme_from_calendar(entry, video_lookup, date_str):
 
 def generate_m3u_playlist(config, output_path="channels.m3u"):
     """Generate M3U playlist for Kodi with tvg-id and tvg-url linking to XMLTV."""
-    # Try Ngrok first
-    ngrok_url = None
-    try:
-        from pyngrok import ngrok
-        tunnels = ngrok.get_tunnels()
-        if tunnels and len(tunnels) > 0:
-            # Use the first HTTP tunnel (remove protocol for consistency)
-            ngrok_url = tunnels[0].public_url.replace("https://", "").replace("http://", "")
-    except:
-        pass  # Ngrok not installed or not running → fallback to local
+    # Get local IP for M3U playlist
+    import socket
+    http_conf = config.get("output", {}).get("http", {})
+    port = http_conf.get("port", 8081)
+    bind = http_conf.get("bind", "127.0.0.1")
 
-    if ngrok_url:
-        # Use Ngrok URL (no port needed — it's embedded in the URL)
-        ip = ngrok_url
-        port = ""  # Ngrok URLs include port implicitly
-        base_url = f"http://{ip}"
+    if bind == "0.0.0.0":
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+        except:
+            ip = "YOUR_LOCAL_IP"
     else:
-        # Fallback to local IP logic
-        import socket
-        http_conf = config.get("output", {}).get("http", {})
-        port = http_conf.get("port", 8081)
-        bind = http_conf.get("bind", "127.0.0.1")
+        ip = bind
 
-        if bind == "0.0.0.0":
-            try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(("8.8.8.8", 80))
-                ip = s.getsockname()[0]
-                s.close()
-            except:
-                ip = "YOUR_LOCAL_IP"
-        else:
-            ip = bind
-
-        base_url = f"http://{ip}:{port}"
+    base_url = f"http://{ip}:{port}"
 
     with open(output_path, "w", encoding="utf-8") as f:
         # --- THIS IS THE NEW, IMPORTANT PART ---
@@ -496,5 +479,4 @@ def generate_m3u_playlist(config, output_path="channels.m3u"):
                 )
     
     # print(f"[OK] M3U playlist saved to: {output_path}")
-    # print(f"[WEB] Public M3U URL (share with friends): http://{ngrok_url}/channels.m3u")
     # print(f"[WEB] Local M3U URL: http://{ip}:{port}/channels.m3u")

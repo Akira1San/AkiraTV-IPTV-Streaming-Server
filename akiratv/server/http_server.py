@@ -5,13 +5,6 @@ from pathlib import Path
 from aiohttp import web, hdrs
 from ..stats import AKIRATV_STATS, STATS_LOCK
 
-# === Ngrok for public sharing ===
-try:
-    from pyngrok import ngrok
-    NGROK_AVAILABLE = True
-except ImportError:
-    NGROK_AVAILABLE = False
-
 class HttpServer:
     def __init__(self, config, stats, stats_lock):
         self.config = config
@@ -27,60 +20,61 @@ class HttpServer:
         """Serve HLS files with proper headers and retry logic for permission errors."""
         path = request.match_info['path']
         
-        # Try to get config from stats first, then fall back to self.config
+        # Resolve storage path
         storage = self.stats.get("config", {}).get("storage", {})
-        
         if not storage:
-            # Fallback to config.data
             storage = self.config.data.get("storage", {})
-            print(f"[DEBUG] Using config.data for storage: {storage}")
-        
         if not storage:
-            print(f"[DEBUG] No storage config found, using defaults")
+            print(f"[HLS] No storage config found, using defaults")
         
         if storage.get("type") == "ram":
-            ram_path = storage.get("ram_path", "./output")
-            #print(f"[DEBUG] RAM storage base path: {ram_path}")
-            base_path = Path(ram_path)
+            base_path = Path(storage.get("ram_path", "./output"))
         else:
-            disk_path = storage.get("disk_path", "./output")
-            print(f"[DEBUG] Disk storage base path: {disk_path}")
-            base_path = Path(disk_path)
+            base_path = Path(storage.get("disk_path", "./output"))
         
         file_path = base_path / path
-        #print(f"[DEBUG] Serving HLS file: {file_path}")
         
         if not file_path.exists():
-            print(f"[DEBUG] File not found: {file_path}")
+            print(f"[HLS] File not found: {file_path}")
             raise web.HTTPNotFound()
         
-        # --- RETRY LOGIC FOR PERMISSION ERROR ---
-        max_retries = 5  # Increased from 3 to 5
+        max_retries = 20 # max_retries = 5
         for i in range(max_retries):
             try:
-                # Check if file is being written to by FFmpeg
-                if file_path.suffix == '.ts' and file_path.stat().st_size == 0:
-                    await asyncio.sleep(0.5)
-                    continue
+                # Special handling for .ts segments being written by FFmpeg
+                if file_path.suffix == '.ts':
+                    try:
+                        if file_path.stat().st_size == 0:
+                            print(f"[HLS] {file_path.name} size=0 (retry {i+1}/{max_retries})")
+                            await asyncio.sleep(0.5)
+                            continue  # Skip to next retry
+                    except FileNotFoundError:
+                        print(f"[HLS] File vanished during check: {file_path}")
+                        raise web.HTTPNotFound()
                 
+                # Attempt to read file
                 with open(file_path, 'rb') as f:
                     content = f.read()
                 
                 response = web.Response(body=content)
                 response.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = '*'
                 response.headers[hdrs.CACHE_CONTROL] = 'no-cache, no-store, must-revalidate'
-                response.headers["ngrok-skip-browser-warning"] = "true"
                 return response
+                
             except PermissionError:
                 if i < max_retries - 1:
-                    print(f"Permission denied on {file_path}, retrying in 0.5s...")
+                    print(f"[HLS] Perm denied on {file_path.name} (retry {i+1}/{max_retries})")
                     await asyncio.sleep(0.5)
                 else:
-                    # Instead of raising an error, return a 503 Service Unavailable
+                    print(f"[HLS] Max retries exhausted (PermissionError): {file_path.name}")
                     return web.Response(status=503, text="Service temporarily unavailable")
             except Exception as e:
-                print(f"Error serving {file_path}: {e}")
+                print(f"[HLS] Unexpected error serving {file_path}: {type(e).__name__}: {e}")
                 raise
+        
+        # CRITICAL FIX: Handle exhausted retries (e.g., .ts file remained size=0)
+        print(f"[HLS] Max retries exhausted (size=0 or other): {file_path.name}")
+        return web.Response(status=503, text="Service temporarily unavailable")
 
     async def root_handler(self, request):
         """Simple root handler - redirect to FastAPI UI or return basic info."""
@@ -91,6 +85,10 @@ class HttpServer:
 
     async def static_file_handler(self, request):
         """Serve static files like xmltv.xml and channels.m3u"""
+        # Security: Prevent path traversal attacks
+        if ".." in request.path:
+            raise web.HTTPBadRequest(text="Invalid path")
+        
         storage = self.stats.get("config", {}).get("storage", {})
         if storage.get("type") == "ram":
             base_path = Path(storage.get("ram_path", "./output"))
@@ -98,50 +96,24 @@ class HttpServer:
             base_path = Path(storage.get("disk_path", "./output"))
             
         file_path = base_path / request.path.lstrip("/")
+        
         if not file_path.exists():
+            print(f"[STATIC] File not found: {file_path}")
             raise web.HTTPNotFound()
-            
-        with open(file_path, 'rb') as f:
-            content = f.read()
+        
+        try:
+            with open(file_path, 'rb') as f:
+                content = f.read()
+        except Exception as e:
+            print(f"[STATIC] Error reading {file_path}: {e}")
+            raise web.HTTPInternalServerError()
             
         content_type = "application/xml" if file_path.suffix == ".xml" else "application/x-mpegURL"
 
-        response.headers["ngrok-skip-browser-warning"] = "true"
+        response = web.Response(body=content, content_type=content_type)
+        response.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = '*'
             
-        return web.Response(body=content, content_type=content_type)
-
-    # async def user_assets_handler(self, request):
-    #     """Serve static assets from the project root (e.g., user/covers)."""
-    #     # Get the relative path from the request URL
-    #     # e.g. /user/covers/filename.jpg -> user/covers/filename.jpg
-    #     relative_path = request.path.lstrip("/")
-        
-    #     # Determine the project root (assuming script is in akiratv/http_server.py)
-    #     project_root = Path(__file__).parent.parent.resolve()
-        
-    #     file_path = project_root / relative_path
-        
-    #     if not file_path.exists():
-    #         raise web.HTTPNotFound(text=f"File not found: {file_path}")
-            
-    #     try:
-    #         with open(file_path, 'rb') as f:
-    #             content = f.read()
-            
-    #         # Determine content type
-    #         if relative_path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-    #             # Extract extension for content type
-    #             ext = relative_path.split('.')[-1].lower()
-    #             content_type = f"image/{ext}"
-    #         else:
-    #             content_type = 'application/octet-stream'
-
-    #         response = web.Response(body=content, content_type=content_type)
-    #         response.headers["ngrok-skip-browser-warning"] = "true"
-    #         return response
-    #     except Exception as e:
-    #         print(f"Error serving user asset {file_path}: {e}")
-    #         raise web.HTTPInternalServerError()
+        return response
 
     def setup_routes(self):
         """Setup all routes for the HTTP server."""
@@ -163,9 +135,9 @@ class HttpServer:
         if user_dir.exists():
             # This maps http://server/user/... to the physical folder
             self.app.router.add_static('/user', user_dir, name='user_assets')
-            print(f"📂 Serving user assets from: {user_dir}")
+            print(f"[DIR] Serving user assets from: {user_dir}")
         else:
-            print(f"❌ User directory not found at: {user_dir}")
+            print(f"[ERROR] User directory not found at: {user_dir}")
         # ------------------------------
 
         # The root handler as fallback
@@ -185,19 +157,7 @@ class HttpServer:
         self.site = web.TCPSite(self.runner, bind, port)
         await self.site.start()
         
-        print(f"📺 Stream URL: http://{bind}:{port}/hls/ (e.g., /hls/channel1/index.m3u8)")
-        
-        # Start Ngrok tunnel (if available)
-        if NGROK_AVAILABLE:
-            try:
-                self.public_url = ngrok.connect(port, "http")
-                print(f"🌍 Public Stream URL: {self.public_url}/hls/critters/index.m3u8")
-                print(f"📤 Share M3U: {self.public_url}/channels.m3u")
-                return self.public_url
-            except Exception as e:
-                print(f"⚠️ Ngrok not available: {e}")
-                return None
-        return None
+        print(f"[TV] Stream URL: http://{bind}:{port}/hls/ (e.g., /hls/channel1/index.m3u8)")
 
     def start(self, directory: str, port: int, bind: str = "127.0.0.1"):
         """Start aiohttp server in a thread."""
@@ -222,14 +182,6 @@ class HttpServer:
         """Stop the HTTP server asynchronously."""
         if self.runner:
             await self.runner.cleanup()
-        
-        # Stop Ngrok tunnel
-        if NGROK_AVAILABLE and self.public_url:
-            try:
-                ngrok.disconnect(self.public_url)
-                ngrok.kill()
-            except Exception as e:
-                print(f"Ngrok cleanup failed: {e}")
 
     def stop(self):
         """Stop the HTTP server."""
@@ -242,30 +194,37 @@ class HttpServer:
         channel_name = request.match_info['channel_name']
         filename = request.match_info['filename']
         
-        # Determine the base storage path
+        # Resolve storage path
         storage = self.stats.get("config", {}).get("storage", {})
         if storage.get("type") == "ram":
             base_path = Path(storage.get("ram_path", "./output"))
         else:
             base_path = Path(storage.get("disk_path", "./output"))
             
-        # Construct the full path to the file
         file_path = base_path / "channels" / channel_name / filename
         
         if not file_path.exists():
+            print(f"[ASSET] File not found: {file_path}")
             raise web.HTTPNotFound(text=f"Channel asset not found: {file_path}")
         
-        try:
-            with open(file_path, 'rb') as f:
-                content = f.read()
-            
-            # Determine content type
-            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                content_type = f"image/{filename.split('.')[-1].lower()}"
-            else:
-                content_type = 'application/octet-stream' # Generic binary type
-
-            return web.Response(body=content, content_type=content_type)
-        except Exception as e:
-            print(f"Error serving channel asset {file_path}: {e}")
-            raise web.HTTPInternalServerError()
+        # Permission retry logic
+        max_retries = 3
+        content = None
+        for i in range(max_retries):
+            try:
+                with open(file_path, 'rb') as f:
+                    content = f.read()
+                break
+            except PermissionError:
+                if i == max_retries - 1:
+                    print(f"[ASSET] Max retries exhausted: {file_path}")
+                    return web.Response(status=503, text="Service temporarily unavailable")
+                await asyncio.sleep(0.1)
+        
+        # Determine content type
+        ext = filename.split('.')[-1].lower()
+        content_type = f"image/{ext}" if ext in ('png', 'jpg', 'jpeg', 'gif') else 'application/octet-stream'
+        
+        response = web.Response(body=content, content_type=content_type)
+        response.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = '*'
+        return response

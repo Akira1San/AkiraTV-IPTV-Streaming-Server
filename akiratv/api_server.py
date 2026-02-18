@@ -75,9 +75,9 @@ if static_dir.exists():
 user_dir = Path(__file__).parent.parent / "user"
 if user_dir.exists():
     app.mount("/user", StaticFiles(directory=str(user_dir)), name="user")
-    print(f"📂 Serving user assets from: {user_dir}")
+    print(f"Serving user assets from: {user_dir}")
 else:
-    print(f"❌ User directory not found at: {user_dir}")
+    print(f"User directory not found at: {user_dir}")
     # Create user directory if it doesn't exist
     user_dir.mkdir(parents=True, exist_ok=True)
     app.mount("/user", StaticFiles(directory=str(user_dir)), name="user")
@@ -216,7 +216,7 @@ def update_channel_settings(channel: str, request: ChannelUpdateRequest):
         current_type = channels_config[channel].get("type", "linear")
         if request.type != current_type:
             channel_updates["type"] = request.type
-            print(f"🔄 Changing channel '{channel}' type from '{current_type}' to '{request.type}'")
+            print(f"[REFRESH] Changing channel '{channel}' type from '{current_type}' to '{request.type}'")
     
     if request.transcoding is not None:
         if request.transcoding == "global":
@@ -276,15 +276,43 @@ def get_all_channel_urls():
         port = http_conf.get("port", 8081)
         bind = http_conf.get("bind", "127.0.0.1")
         
-        # Determine local IP
+        # Determine local IP - try multiple methods for robustness
+        local_ip = "127.0.0.1"
         if bind == "0.0.0.0":
+            # Method 1: Try connecting to Google DNS
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 s.connect(("8.8.8.8", 80))
                 local_ip = s.getsockname()[0]
                 s.close()
             except:
-                local_ip = "127.0.0.1"
+                pass
+            
+            # Method 2: If method 1 failed, try getting hostname IP
+            if local_ip == "127.0.0.1":
+                try:
+                    hostname = socket.gethostname()
+                    local_ip = socket.gethostbyname(hostname)
+                    # If still localhost, try another method
+                    if local_ip.startswith("127."):
+                        # Method 3: Get all network interfaces
+                        import subprocess
+                        try:
+                            # Windows: use ipconfig
+                            result = subprocess.run(['ipconfig'], capture_output=True, text=True)
+                            lines = result.stdout.split('\n')
+                            for i, line in enumerate(lines):
+                                if 'IPv4 Address' in line or 'IPv4' in line:
+                                    # Extract IP from line like "   IPv4 Address. . . . . . . . . . . : 192.168.50.183"
+                                    if ':' in line:
+                                        ip = line.split(':')[-1].strip()
+                                        if ip and not ip.startswith('127.'):
+                                            local_ip = ip
+                                            break
+                        except:
+                            pass
+                except:
+                    pass
         else:
             local_ip = bind
         
@@ -319,9 +347,6 @@ def get_all_channel_urls():
                     "stream": f"http://{tailscale_ip}:{port}/hls/{channel_name}/index.m3u8",
                     "epg": f"http://{tailscale_ip}:{port}/xmltv.xml"
                 }
-            
-            # Note: Ngrok URL would need to be configured or detected
-            # For now, we'll leave it as a placeholder that can be configured
             
             channel_urls[channel_name] = urls
         
@@ -1162,7 +1187,7 @@ def scan_folder_for_videos(request: dict):
         videos = []
         total_size = 0
         
-        print(f"🔍 Scanning folder: {folder_path}")
+        print(f"[SEARCH] Scanning folder: {folder_path}")
         
         # Scan for video files
         for file_path in folder.rglob('*'):
@@ -1177,7 +1202,7 @@ def scan_folder_for_videos(request: dict):
                         'relative_path': str(file_path.relative_to(folder))
                     })
                     total_size += file_size
-                    print(f"📁 Found video: {file_path.name}")
+                    print(f"[FOLDER] Found video: {file_path.name}")
                 except Exception as e:
                     print(f"Error processing {file_path}: {e}")
                     continue
@@ -1185,7 +1210,7 @@ def scan_folder_for_videos(request: dict):
         # Sort by name
         videos.sort(key=lambda x: x['name'].lower())
         
-        print(f"✅ Scan complete: {len(videos)} videos found, {total_size} bytes total")
+        print(f"[OK] Scan complete: {len(videos)} videos found, {total_size} bytes total")
         
         return Response(
             success=True,
@@ -1199,7 +1224,7 @@ def scan_folder_for_videos(request: dict):
         )
         
     except Exception as e:
-        print(f"❌ Folder scan error: {str(e)}")
+        print(f"[ERROR] Folder scan error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to scan folder: {str(e)}")
 
 @app.post("/api/wizard/collection/check", response_model=Response)
@@ -1238,7 +1263,7 @@ def check_collection_exists(request: dict):
         )
         
     except Exception as e:
-        print(f"❌ Collection check error: {str(e)}")
+        print(f"[ERROR] Collection check error: {str(e)}")
         return Response(success=True, data={"exists": False})  # Fail gracefully
 
 
@@ -1256,7 +1281,7 @@ def create_collection_wizard(request: dict):
         collection_data = request.get("collection_data", {})
         overwrite_existing = request.get("overwrite_existing", False)
         
-        print(f"🧙‍♂️ Creating collection via wizard:")
+        print(f"[WIZARD] Creating collection via wizard:")
         print(f"   Collection: {collection_name}")
         print(f"   Channel: {channel_name}")
         print(f"   Folder: {folder_path}")
@@ -1280,7 +1305,7 @@ def create_collection_wizard(request: dict):
                 detail=f"Channel '{channel_name}' does not exist. Available channels: {', '.join(channel_names) if channel_names else 'None'}. Please create the channel first using 'Add Channel'."
             )
         
-        print(f"✅ Channel '{channel_name}' exists and is available.")
+        print(f"[OK] Channel '{channel_name}' exists and is available.")
         
         # Create collections directory
         collections_dir = Path("user/collections")
@@ -1341,7 +1366,7 @@ def create_collection_wizard(request: dict):
             "collections": collections
         }
         
-        print(f"📁 Writing collection file: {collection_file}")
+        print(f"[FOLDER] Writing collection file: {collection_file}")
         print(f"   Collections count: {len(collections)}")
         print(f"   Sample collection: {collections[0] if collections else 'None'}")
         
@@ -1349,7 +1374,7 @@ def create_collection_wizard(request: dict):
         with open(collection_file, 'w', encoding='utf-8') as f:
             json.dump(collection_content, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Collection file created successfully")
+        print(f"[OK] Collection file created successfully")
         
         return Response(
             success=True,
@@ -1367,7 +1392,7 @@ def create_collection_wizard(request: dict):
         # Re-raise HTTP exceptions
         raise
     except Exception as e:
-        print(f"❌ Collection creation error: {str(e)}")
+        print(f"[ERROR] Collection creation error: {str(e)}")
         print(f"   Request data: {request}")
         import traceback
         traceback.print_exc()
@@ -1744,9 +1769,9 @@ def setup_event_handlers():
 @app.on_event("startup")
 async def startup():
     setup_event_handlers()
-    print("🚀 AkiraTV API Server started")
-    print("📖 API docs: http://localhost:8000/docs")
-    print("🔌 WebSocket: ws://localhost:8000/ws")
+    print("AkiraTV API Server started")
+    print("API docs: http://localhost:8000/docs")
+    print("WebSocket: ws://localhost:8000/ws")
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -1780,6 +1805,16 @@ def root():
             "websocket": "/ws",
             "note": "Web UI not found. Create 'static' directory with index.html, styles.css, and app.js"
         }
+
+@app.get("/viewer")
+def viewer_page():
+    """Serve the viewer UI for regular users"""
+    viewer_path = Path(__file__).parent / "static" / "viewer.html"
+    if viewer_path.exists():
+        with open(viewer_path, 'r', encoding='utf-8') as f:
+            return HTMLResponse(content=f.read())
+    else:
+        return {"error": "Viewer page not found"}
 
 # ========================================
 # VOD LIBRARY API
@@ -1855,10 +1890,10 @@ def get_video_details(video_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 Starting AkiraTV API Server")
-    print("📖 API docs: http://localhost:8001/docs")
-    print("🌐 Web UI: http://localhost:8001")
-    print("🔌 WebSocket: ws://localhost:8001/ws")
+    print("[START] Starting AkiraTV API Server")
+    print("[DOC] API docs: http://localhost:8001/docs")
+    print("[WEB] Web UI: http://localhost:8001")
+    print("[WS] WebSocket: ws://localhost:8001/ws")
     
     uvicorn.run(
         "akiratv.api_server:app",
