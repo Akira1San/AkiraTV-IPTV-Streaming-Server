@@ -227,13 +227,17 @@ def create_programme(entry, video_lookup, day_name, calendar=None):
             days_ahead = 7  # Use next week if time already passed today
         program_date = today + timedelta(days=days_ahead)
         
-        # Check if this date has a calendar override
+        # Check if this date has a calendar override FOR THE SAME CHANNEL
         if calendar:
             date_str = program_date.strftime("%Y-%m-%d")
+            entry_channel = entry.get("channel", "default")
             for calendar_key, calendar_data in calendar.items():
                 if isinstance(calendar_data, dict) and calendar_data.get("date") == date_str:
-                    # This date has a calendar override, skip weekly entry
-                    return None
+                    # Check if any calendar entry is for the same channel
+                    for cal_entry in calendar_data.get("entries", []):
+                        if cal_entry.get("channel", "default") == entry_channel:
+                            # This date has a calendar override for this channel, skip weekly entry
+                            return None
         
         # Build start datetime (naive - this is assumed to be BULGARIAN LOCAL TIME)
         start_dt = datetime.combine(program_date, start_time.time())
