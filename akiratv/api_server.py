@@ -1890,15 +1890,23 @@ def get_video_details(video_id: str):
 
 if __name__ == "__main__":
     import uvicorn
-    print("[START] Starting AkiraTV API Server")
-    print("[DOC] API docs: http://localhost:8001/docs")
-    print("[WEB] Web UI: http://localhost:8001")
-    print("[WS] WebSocket: ws://localhost:8001/ws")
+    
+    # Get port from config
+    api = get_core_api()
+    config = api.get_config()
+    http_conf = config.get("output", {}).get("http", {})
+    port = http_conf.get("port", 8081)
+    bind = http_conf.get("bind", "0.0.0.0")
+    
+    print(f"[START] Starting AkiraTV API Server")
+    print(f"[DOC] API docs: http://localhost:{port}/docs")
+    print(f"[WEB] Web UI: http://localhost:{port}")
+    print(f"[WS] WebSocket: ws://localhost:{port}/ws")
     
     uvicorn.run(
         "akiratv.api_server:app",
-        host="0.0.0.0",
-        port=8001,
+        host=bind,
+        port=port,
         reload=False,
         log_level="info"
     )

@@ -4,6 +4,13 @@ const API_BASE = window.location.origin;
 let ws = null;
 let isRunning = false;
 
+// Helper function to get dynamic stream base URL
+function getStreamBaseUrl() {
+    const host = window.location.hostname;
+    const port = window.location.port || '8081';
+    return `http://${host}:${port}`;
+}
+
 // Internationalization
 let currentLanguage = 'en';
 
@@ -225,14 +232,15 @@ async function loadChannels() {
         
         console.log('📺 Loaded channels:', channels);
         
-        // Use fallback URL generation with the actual streaming server
+        // Use dynamic URL generation based on current host
+        const streamBase = getStreamBaseUrl();
         let channelUrls = {};
         channels.forEach(ch => {
             if (ch.enabled) {
                 channelUrls[ch.name] = {
                     lan: {
-                        stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`,
-                        epg: `http://192.168.50.183:8081/xmltv.xml`
+                        stream: `${streamBase}/hls/${ch.name}/index.m3u8`,
+                        epg: `${streamBase}/xmltv.xml`
                     }
                 };
             }
@@ -435,13 +443,14 @@ function filterChannels(searchTerm) {
     }
     
     // Generate URLs for filtered channels
+    const streamBase = getStreamBaseUrl();
     const channelUrls = {};
     filteredChannels.forEach(ch => {
         if (ch.enabled) {
             channelUrls[ch.name] = {
                 lan: {
-                    stream: `http://192.168.50.183:8081/hls/${ch.name}/index.m3u8`,
-                    epg: `http://192.168.50.183:8081/xmltv.xml`
+                    stream: `${streamBase}/hls/${ch.name}/index.m3u8`,
+                    epg: `${streamBase}/xmltv.xml`
                 }
             };
         }
@@ -502,9 +511,10 @@ function clearChannelSearch() {
 }
 
 function generateChannelUrls(channelName, urls) {
+    const streamBase = getStreamBaseUrl();
     if (!urls || Object.keys(urls).length === 0) {
-        // Fallback to a basic URL with your actual streaming server
-        const fallbackUrl = `http://192.168.50.183:8081/hls/${channelName}/index.m3u8`;
+        // Fallback to a basic URL with dynamic streaming server
+        const fallbackUrl = `${streamBase}/hls/${channelName}/index.m3u8`;
         return `<div class="channel-url">
             <div class="url-label">📺 Stream:</div>
             <span style="overflow: hidden; text-overflow: ellipsis;">${fallbackUrl}</span>
@@ -538,7 +548,7 @@ function generateChannelUrls(channelName, urls) {
     
     // If we have URLs but none of the expected ones, show fallback
     if (!urlsHtml) {
-        const fallbackUrl = `http://192.168.50.183:8081/hls/${channelName}/index.m3u8`;
+        const fallbackUrl = `${streamBase}/hls/${channelName}/index.m3u8`;
         return `<div class="channel-url">
             <div class="url-label">📺 Stream:</div>
             <span style="overflow: hidden; text-overflow: ellipsis;">${fallbackUrl}</span>
