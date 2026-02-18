@@ -450,15 +450,11 @@
             runningChannels.forEach(channel => {
                 // Get stream URL from API response (with correct IP and port)
                 let lanUrl = '';
-                let ngrokUrl = '';
                 let tailscaleUrl = '';
                 
                 if (channelUrls[channel.name]) {
                     if (channelUrls[channel.name].lan) {
                         lanUrl = channelUrls[channel.name].lan.stream;
-                    }
-                    if (channelUrls[channel.name].ngrok) {
-                        ngrokUrl = channelUrls[channel.name].ngrok.stream;
                     }
                     if (channelUrls[channel.name].tailscale) {
                         tailscaleUrl = channelUrls[channel.name].tailscale.stream;
@@ -494,21 +490,6 @@
                                 </button>
                             </div>
                         </div>
-                        
-                        ${ngrokUrl ? `
-                        <!-- Ngrok URL -->
-                        <div style="margin-bottom: 8px;">
-                            <div style="font-size: 0.75em; color: #6c757d; margin-bottom: 2px;">🌐 Ngrok (Public Internet)</div>
-                            <div style="display: flex; align-items: center; gap: 10px; background: #1a1a2e; padding: 8px 12px; border-radius: 4px;">
-                                <input type="text" value="${ngrokUrl}" readonly
-                                       style="flex: 1; background: transparent; border: none; color: #a0a0a0; font-size: 0.85em; font-family: monospace;">
-                                <button onclick="copyChannelUrl('${ngrokUrl}')" title="Copy Ngrok URL"
-                                        style="background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
-                                    📋 Copy
-                                </button>
-                            </div>
-                        </div>
-                        ` : ''}
                         
                         ${tailscaleUrl ? `
                         <!-- Tailscale URL -->
