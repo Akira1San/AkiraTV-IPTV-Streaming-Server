@@ -886,6 +886,95 @@ def get_weekly_tv_guide():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get weekly TV guide: {str(e)}")
 
+@app.get("/api/guide/date/{date_str}")
+def get_guide_for_date(date_str: str):
+    """Get TV guide data for a specific date (YYYY-MM-DD format)"""
+    try:
+        import json
+        from datetime import datetime, timedelta
+        from pathlib import Path
+        
+        # Parse the date string
+        try:
+            selected_date = datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+        
+        # Get the day name for the selected date
+        day_name = selected_date.strftime("%A").lower()
+        
+        # Get all channels
+        api = get_core_api()
+        channels = api.get_channels()
+        
+        guide_data = {}
+        
+        for channel in channels:
+            if not channel.enabled:
+                continue
+                
+            channel_name = channel.name
+            schedule_file = Path(f"user/schedules/schedule_{channel_name}.json")
+            
+            if not schedule_file.exists():
+                # No schedule file, show as "No schedule"
+                guide_data[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "schedule": [],
+                    "error": "No schedule file found"
+                }
+                continue
+            
+            try:
+                with open(schedule_file, 'r', encoding='utf-8') as f:
+                    schedule_data = json.load(f)
+                
+                # Get the schedule for the selected day
+                day_schedule = schedule_data.get("weekly", {}).get(day_name, [])
+                
+                # Sort schedule by time
+                sorted_schedule = sorted(day_schedule, key=lambda x: time_to_minutes(x["time"]))
+                
+                # Format programs for display
+                formatted_schedule = []
+                for program in sorted_schedule:
+                    formatted_program = program.copy()
+                    formatted_program["display_name"] = Path(program["file"]).stem
+                    formatted_program["duration_estimate"] = "~90 min"
+                    formatted_schedule.append(formatted_program)
+                
+                guide_data[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "schedule": formatted_schedule,
+                    "program_count": len(formatted_schedule)
+                }
+                
+            except Exception as e:
+                # Error reading schedule file
+                guide_data[channel_name] = {
+                    "channel": channel_name,
+                    "type": channel.type,
+                    "status": channel.status,
+                    "schedule": [],
+                    "error": f"Error reading schedule: {str(e)}"
+                }
+        
+        return {
+            "guide": guide_data,
+            "selected_date": date_str,
+            "day_name": day_name.capitalize(),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get TV guide for date: {str(e)}")
+
 def time_to_minutes(time_str):
     """Convert HH:MM:SS to minutes since midnight"""
     try:

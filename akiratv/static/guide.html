@@ -46,6 +46,13 @@
                     <button class="btn btn-secondary guide-view-btn" id="weeklyViewBtn" onclick="switchGuideView('weekly')">
                         <span data-i18n="guide.weekly">📆 Weekly</span>
                     </button>
+                    <button class="btn btn-secondary guide-view-btn" id="calendarViewBtn" onclick="switchGuideView('calendar')">
+                        <span data-i18n="guide.calendar">🗓️ Calendar</span>
+                    </button>
+                </div>
+                <div class="guide-date-picker" id="datePickerContainer" style="display: none;">
+                    <input type="date" id="guideDatePicker" onchange="loadGuideForDate(this.value)" 
+                           style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary);">
                 </div>
                 <button class="btn btn-secondary" onclick="refreshGuide()">
                     <span data-i18n="guide.refresh">🔄 Refresh Guide</span>

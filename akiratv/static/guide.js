@@ -1,11 +1,16 @@
 // TV Guide JavaScript
-let currentGuideView = 'daily'; // 'daily' or 'weekly'
+let currentGuideView = 'daily'; // 'daily', 'weekly', or 'calendar'
+let selectedGuideDate = null; // For calendar view
 
 // Initialize the guide page
 document.addEventListener('DOMContentLoaded', function() {
     initializeLanguage();
     checkServerStatus();
     loadTVGuide();
+    
+    // Set default date for calendar picker to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('guideDatePicker').value = today;
     
     // Update time every minute
     setInterval(updateGuideTime, 60000);
@@ -93,6 +98,8 @@ async function loadTVGuide() {
         let endpoint = '/api/guide';
         if (currentGuideView === 'weekly') {
             endpoint = '/api/guide/weekly';
+        } else if (currentGuideView === 'calendar' && selectedGuideDate) {
+            endpoint = `/api/guide/date/${selectedGuideDate}`;
         }
         
         const response = await fetch(endpoint);
@@ -100,6 +107,8 @@ async function loadTVGuide() {
         
         if (currentGuideView === 'weekly') {
             displayWeeklyTVGuide(data);
+        } else if (currentGuideView === 'calendar') {
+            displayCalendarGuide(data);
         } else {
             displayTVGuide(data);
         }
@@ -118,8 +127,35 @@ function switchGuideView(view) {
     
     currentGuideView = view;
     
-    // Reload guide with new view
-    loadTVGuide();
+    // Show/hide date picker for calendar view
+    const datePickerContainer = document.getElementById('datePickerContainer');
+    if (view === 'calendar') {
+        datePickerContainer.style.display = 'block';
+        // Load guide for the selected date or today
+        const datePicker = document.getElementById('guideDatePicker');
+        if (datePicker.value) {
+            loadGuideForDate(datePicker.value);
+        }
+    } else {
+        datePickerContainer.style.display = 'none';
+        loadTVGuide();
+    }
+}
+
+async function loadGuideForDate(dateStr) {
+    selectedGuideDate = dateStr;
+    const container = document.getElementById('guideContainer');
+    container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);"><div class="loading"></div> ${t('guide.loadingText')}</div>`;
+    
+    try {
+        const response = await fetch(`/api/guide/date/${dateStr}`);
+        const data = await response.json();
+        displayCalendarGuide(data);
+    } catch (error) {
+        console.error('Failed to load guide for date:', error);
+        container.innerHTML = 
+            `<div style="text-align: center; padding: 40px; color: var(--error);">${t('messages.failedToLoadGuide')}</div>`;
+    }
 }
 
 function displayTVGuide(guideData) {
@@ -241,7 +277,7 @@ function displayWeeklyTVGuide(weeklyData) {
                 ` : `
                     <div class="weekly-schedule-grid">
                         ${daysOrder.map(day => {
-                            const daySchedule = channelData.schedule[day] || [];
+                            const daySchedule = channelData.weekly_schedule?.[day]?.programs || [];
                             return `
                                 <div class="weekly-day-column">
                                     <div class="weekly-day-header">${day}</div>
@@ -259,6 +295,87 @@ function displayWeeklyTVGuide(weeklyData) {
                                 </div>
                             `;
                         }).join('')}
+                    </div>
+                `}
+            </div>
+        `;
+    }
+    
+    guideHtml += '</div>';
+    container.innerHTML = guideHtml;
+}
+
+function displayCalendarGuide(calendarData) {
+    const container = document.getElementById('guideContainer');
+    
+    const guide = calendarData.guide;
+    const selectedDate = calendarData.selected_date;
+    
+    // Format the date for display
+    const dateObj = new Date(selectedDate);
+    const formattedDate = dateObj.toLocaleDateString(undefined, { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    if (!guide || Object.keys(guide).length === 0) {
+        container.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+            <div style="font-size: 1.2em; margin-bottom: 10px;">📅 ${formattedDate}</div>
+            ${t('messages.noChannelsFound')}
+        </div>`;
+        return;
+    }
+    
+    let guideHtml = `
+        <div style="text-align: center; margin-bottom: 20px; padding: 15px; background: var(--card-bg); border-radius: 8px;">
+            <div style="font-size: 1.3em; color: var(--text-primary);">📅 ${formattedDate}</div>
+            <div style="font-size: 0.9em; color: var(--text-secondary); margin-top: 5px;">${t('guide.calendarView') || 'Calendar View'}</div>
+        </div>
+        <div class="guide-grid">
+    `;
+    
+    // Sort channels by name
+    const sortedChannels = Object.keys(guide).sort();
+    
+    for (const channelName of sortedChannels) {
+        const channelGuide = guide[channelName];
+        
+        guideHtml += `
+            <div class="guide-channel-card">
+                <div class="guide-channel-header">
+                    <div class="guide-channel-name">${channelName}</div>
+                    <div class="guide-channel-type ${channelGuide.type}">${channelGuide.type}</div>
+                    <div class="guide-channel-status ${channelGuide.status === 'running' ? 'running' : 'stopped'}">
+                        ${channelGuide.status === 'running' ? '🟢' : '🔴'}
+                        ${channelGuide.status}
+                    </div>
+                </div>
+                
+                ${channelGuide.error ? `
+                    <div class="guide-error">⚠️ ${channelGuide.error}</div>
+                ` : ''}
+                
+                ${channelGuide.schedule && channelGuide.schedule.length > 0 ? `
+                    <div class="guide-schedule">
+                        <div class="guide-schedule-label">${t('guide.scheduleFor') || 'Schedule'} (${channelGuide.schedule.length} ${t('guide.programs') || 'programs'})</div>
+                        <div class="guide-schedule-list">
+                            ${channelGuide.schedule.slice(0, 10).map(program => `
+                                <div class="guide-schedule-item">
+                                    <div class="guide-schedule-time">${program.time}</div>
+                                    <div class="guide-schedule-title">${program.display_name}</div>
+                                </div>
+                            `).join('')}
+                            ${channelGuide.schedule.length > 10 ? `
+                                <div class="guide-schedule-more">... +${channelGuide.schedule.length - 10} ${t('guide.morePrograms') || 'more programs'}</div>
+                            ` : ''}
+                        </div>
+                    </div>
+                ` : `
+                    <div class="guide-no-program">
+                        <div class="guide-program-label">${t('guide.noSchedule')}</div>
+                        <div class="guide-program-title">${t('guide.noProgram')}</div>
                     </div>
                 `}
             </div>
