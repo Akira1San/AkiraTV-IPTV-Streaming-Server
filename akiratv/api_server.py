@@ -705,8 +705,11 @@ def get_tv_guide():
                 with open(schedule_file, 'r', encoding='utf-8') as f:
                     schedule_data = json.load(f)
                 
-                # Get today's schedule
-                today_schedule = schedule_data.get("weekly", {}).get(current_day, [])
+                # Get today's date string for calendar lookup
+                today_date_str = now.strftime("%Y-%m-%d")
+                
+                # Get today's schedule (check calendar first, then weekly)
+                today_schedule = get_schedule_for_date(schedule_data, today_date_str, current_day)
                 
                 # Find current and next programs
                 current_program = None
@@ -806,7 +809,7 @@ def get_weekly_tv_guide():
     """Get full weekly TV guide for all channels"""
     try:
         import json
-        from datetime import datetime
+        from datetime import datetime, timedelta
         from pathlib import Path
         
         # Get current time for highlighting current program
@@ -846,9 +849,20 @@ def get_weekly_tv_guide():
                 
                 weekly_schedule = {}
                 
+                # Calculate dates for each day of the current week
+                # Find the date for Monday of this week
+                today = now.date()
+                days_since_monday = today.weekday()  # Monday = 0, Sunday = 6
+                monday_date = today - timedelta(days=days_since_monday)
+                
                 # Process each day of the week
-                for day in days_order:
-                    day_schedule = schedule_data.get("weekly", {}).get(day, [])
+                for i, day in enumerate(days_order):
+                    # Calculate the date for this day
+                    day_date = monday_date + timedelta(days=i)
+                    day_date_str = day_date.strftime("%Y-%m-%d")
+                    
+                    # Get schedule for this date (check calendar first, then weekly)
+                    day_schedule = get_schedule_for_date(schedule_data, day_date_str, day)
                     
                     # Sort programs by time
                     sorted_programs = sorted(day_schedule, key=lambda x: time_to_minutes(x["time"]))
@@ -953,8 +967,8 @@ def get_guide_for_date(date_str: str):
                 with open(schedule_file, 'r', encoding='utf-8') as f:
                     schedule_data = json.load(f)
                 
-                # Get the schedule for the selected day
-                day_schedule = schedule_data.get("weekly", {}).get(day_name, [])
+                # Get the schedule for the selected date (check calendar first, then weekly)
+                day_schedule = get_schedule_for_date(schedule_data, date_str, day_name)
                 
                 # Sort schedule by time
                 sorted_schedule = sorted(day_schedule, key=lambda x: time_to_minutes(x["time"]))
@@ -1006,6 +1020,32 @@ def time_to_minutes(time_str):
         return hours * 60 + minutes
     except:
         return 0
+
+def get_schedule_for_date(schedule_data: dict, date_str: str, day_name: str) -> list:
+    """
+    Get schedule entries for a specific date.
+    First checks calendar section (e.g., "2026-02-21_saturday"), then falls back to weekly.
+    
+    Args:
+        schedule_data: The loaded schedule JSON (has 'weekly' and 'calendar' keys)
+        date_str: Date string in YYYY-MM-DD format
+        day_name: Day name in lowercase (e.g., "saturday")
+    
+    Returns:
+        List of schedule entries for the date
+    """
+    # First, try calendar section (for calendar-based schedules)
+    calendar_key = f"{date_str}_{day_name}"
+    calendar_entry = schedule_data.get("calendar", {}).get(calendar_key)
+    if calendar_entry and calendar_entry.get("entries"):
+        return calendar_entry["entries"]
+    
+    # Fall back to weekly section (for weekly-based schedules)
+    weekly_entries = schedule_data.get("weekly", {}).get(day_name, [])
+    if weekly_entries:
+        return weekly_entries
+    
+    return []
 
 @app.post("/api/playlist/create", response_model=Response)
 def create_playlist(folder_path: str):
