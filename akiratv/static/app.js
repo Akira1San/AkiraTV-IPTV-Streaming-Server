@@ -1628,5 +1628,61 @@ async function executeFastScheduler() {
     }
 }
 
+// ========================================
+// VIEWER DETAILS FUNCTIONS
+// ========================================
+
+async function refreshViewerDetails() {
+    try {
+        const response = await fetch('/api/viewers/detail');
+        const data = await response.json();
+        
+        // Update total
+        const totalEl = document.getElementById('totalViewers');
+        if (totalEl) {
+            totalEl.textContent = data.total;
+        }
+        
+        // Build viewer list
+        const listEl = document.getElementById('viewerList');
+        if (!listEl) return;
+        
+        if (data.viewers.length === 0) {
+            listEl.innerHTML = '<p class="no-viewers">No active viewers</p>';
+            return;
+        }
+        
+        // Group by channel
+        const byChannel = {};
+        data.viewers.forEach(v => {
+            if (!byChannel[v.channel]) byChannel[v.channel] = [];
+            byChannel[v.channel].push(v);
+        });
+        
+        let html = '';
+        for (const [channel, viewers] of Object.entries(byChannel)) {
+            html += `<div class="channel-group">
+                <div class="channel-header">${channel} (${viewers.length})</div>
+                <div class="channel-viewers">`;
+            
+            viewers.forEach(v => {
+                html += `<div class="viewer-row">
+                    <span class="viewer-ip">${v.ip}</span>
+                    <span class="viewer-time">${v.seconds_ago}s ago</span>
+                </div>`;
+            });
+            
+            html += '</div></div>';
+        }
+        listEl.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Failed to fetch viewer details:', error);
+    }
+}
+
+// Auto-refresh viewer details every 10 seconds
+setInterval(refreshViewerDetails, 10000);
+
 // Initialize on load
 init();

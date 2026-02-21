@@ -45,7 +45,19 @@
             </div>
         </div>
 
-
+        <!-- Viewer Details Panel -->
+        <div class="section" id="viewerDetailsSection">
+            <div class="section-title">👥 Active Viewers</div>
+            <div id="viewerDetailsContent">
+                <div class="viewer-summary">
+                    <span>Total: <strong id="totalViewers">0</strong></span>
+                    <button class="btn btn-small" onclick="refreshViewerDetails()">🔄 Refresh</button>
+                </div>
+                <div id="viewerList" class="viewer-list">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
 
         <!-- Control Panel -->
         <div class="control-panel">

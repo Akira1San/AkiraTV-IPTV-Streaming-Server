@@ -20,6 +20,23 @@ class HttpServer:
         """Serve HLS files with proper headers and retry logic for permission errors."""
         path = request.match_info['path']
         
+        # === VIEWER TRACKING ===
+        # Extract channel name from path (e.g., "akiratv/index.m3u8" -> "akiratv")
+        parts = path.split('/')
+        channel_name = parts[0] if parts else "unknown"
+        
+        # Get client IP (handle reverse proxies)
+        client_ip = request.remote
+        if 'X-Forwarded-For' in request.headers:
+            # Take first IP if multiple (original client)
+            forwarded = request.headers['X-Forwarded-For']
+            client_ip = forwarded.split(',')[0].strip()
+        
+        # Record this view
+        from ..viewer_tracker import viewer_tracker
+        viewer_tracker.record_view(channel_name, client_ip or "unknown")
+        # === END VIEWER TRACKING ===
+        
         # Resolve storage path
         storage = self.stats.get("config", {}).get("storage", {})
         if not storage:

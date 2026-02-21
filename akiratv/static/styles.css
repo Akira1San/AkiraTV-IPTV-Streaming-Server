@@ -3547,3 +3547,72 @@ input:checked + .toggle-slider:before {
     font-size: 12px;
     line-height: 1.4;
 }
+
+/* ========================================
+   VIEWER DETAILS PANEL
+   ======================================== */
+
+.viewer-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.viewer-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.channel-group {
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.channel-header {
+    background: var(--primary);
+    color: white;
+    padding: 10px 15px;
+    font-weight: 600;
+}
+
+.channel-viewers {
+    padding: 10px;
+}
+
+.viewer-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.viewer-row:last-child {
+    border-bottom: none;
+}
+
+.viewer-ip {
+    font-family: monospace;
+    color: var(--text-primary);
+}
+
+.viewer-time {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.no-viewers {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    font-size: 0.85em;
+}

@@ -16,6 +16,7 @@ import json
 
 from .core_api import get_api, ChannelStatus, LibraryStats
 from .fast_scheduler import FastScheduler
+from .viewer_tracker import viewer_tracker
 
 # ========================================
 # PYDANTIC MODELS (Request/Response)
@@ -474,6 +475,27 @@ def get_viewers():
     """Get active viewer count"""
     api = get_core_api()
     return {"viewers": api.get_viewers()}
+
+@app.get("/api/viewers/detail")
+def get_viewer_details():
+    """Get detailed viewer information with IPs and channels."""
+    viewer_tracker.cleanup_stale()  # Clean up before returning
+    return {
+        "total": viewer_tracker.total_viewers,
+        "viewers": viewer_tracker.get_viewer_list(),
+        "per_channel": viewer_tracker.get_counts()
+    }
+
+@app.get("/api/viewers/channel/{channel_name}")
+def get_channel_viewers(channel_name: str):
+    """Get viewers for a specific channel."""
+    viewer_tracker.cleanup_stale()
+    viewers = viewer_tracker.get_channel_viewers(channel_name)
+    return {
+        "channel": channel_name,
+        "viewers": viewers,
+        "count": len(viewers)
+    }
 
 @app.get("/api/logs")
 def get_logs(limit: int = 100):
