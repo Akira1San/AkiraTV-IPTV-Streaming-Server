@@ -448,11 +448,11 @@ class SimpleSchedulerWizard:
             day_frame.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
             
             # Day header
-            header_label = ttk.Label(day_frame, text=day.upper(), font=("TkDefaultFont", 10, "bold"))
+            header_label = ttk.Label(day_frame, text=day.upper(), font=("TkDefaultFont", 12, "bold"))
             header_label.pack(pady=5)
             
             # Day listbox
-            day_listbox = tk.Listbox(day_frame, font=("Consolas", 9), width=30, height=25)
+            day_listbox = tk.Listbox(day_frame, font=("Consolas", 11), width=30, height=25)
             day_listbox.pack(fill="both", expand=True, padx=5, pady=5)
             
             # Populate the listbox
