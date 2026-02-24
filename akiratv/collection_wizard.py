@@ -6,7 +6,6 @@ import re
 from pathlib import Path
 from datetime import datetime
 import subprocess
-import difflib
 import unicodedata
 import configparser
 from threading import Thread
@@ -798,68 +797,6 @@ Your API key will be saved for future use.""")
             messagebox.showerror("Error", f"Failed to save collections:\n{str(e)}")
             return False
 
-    def auto_find_cover(self, video_path):
-        """Improved cover matching algorithm"""
-        if not COVERS_DIR.exists():
-            return None
-
-        video_name = Path(video_path).stem
-        
-        # Clean up the video name for better matching
-        clean_video_name = self.normalize_name_for_matching(video_name)
-        
-        # Get all cover files
-        cover_files = []
-        for ext in [".jpg", ".jpeg", ".png", ".webp"]:
-            cover_files.extend(COVERS_DIR.glob(f"*{ext}"))
-        
-        if not cover_files:
-            return None
-            
-        # Try to find the best match
-        best_match = None
-        best_ratio = 0
-        
-        for cover_path in cover_files:
-            cover_name = cover_path.stem
-            clean_cover_name = self.normalize_name_for_matching(cover_name)
-            
-            # Calculate similarity ratio
-            ratio = difflib.SequenceMatcher(None, clean_video_name, clean_cover_name).ratio()
-            
-            # Check for partial matches (video name in cover name or vice versa)
-            if clean_video_name in clean_cover_name or clean_cover_name in clean_video_name:
-                ratio = max(ratio, 0.8)  # Boost ratio for partial matches
-                
-            if ratio > best_ratio:
-                best_ratio = ratio
-                best_match = cover_path
-        
-        # Only return if we have a decent match (threshold of 0.6)
-        if best_match and best_ratio > 0.6:
-            return f"user/covers/{best_match.name}"
-            
-        return None
-
-    def normalize_name_for_matching(self, name):
-        """Normalize name for better matching"""
-        # Remove common patterns
-        name = re.sub(r'\d{4}', '', name)  # Remove years
-        name = re.sub(r'(1080p|720p|2160p|4k|bluray|webrip|bdrip|dvdrip|x264|x265|h264|h265)', '', name, flags=re.IGNORECASE)
-        name = re.sub(r'(fmp4|mp4|mkv|avi|mov|webm|remux|remastered|extended|uncut)', '', name, flags=re.IGNORECASE)
-        name = re.sub(r'(dd5\.1|aac|ac3|dts|flac)', '', name, flags=re.IGNORECASE)
-        name = re.sub(r'(\-|_|\.)', ' ', name)  # Replace separators with space
-        name = re.sub(r'\s+', ' ', name)  # Replace multiple spaces with single space
-        name = name.strip().lower()
-        
-        # Remove common tags at the end
-        if ' part ' in name:
-            name = name.split(' part ')[0]
-        if ' pt ' in name:
-            name = name.split(' pt ')[0]
-            
-        return name
-
     def create_widgets(self):
         # Main frame
         main_frame = ttk.Frame(self.root)
@@ -1220,10 +1157,6 @@ Your API key will be saved for future use.""")
                             # Also update duration for the new file
                             video["duration"] = self.get_video_duration(new_path)
                             
-                            # Update cover if it was based on the old path
-                            if not collection.get("cover") or collection.get("cover") == "":
-                                collection["cover"] = self.auto_find_cover(Path(new_path))
-                            
                             fixed_count += 1
                             print(f"Fixed path: {old_filename} -> {new_path}")
         
@@ -1459,14 +1392,13 @@ Your API key will be saved for future use.""")
                     clean_name = stem
 
                 collection_id = self.generate_id(clean_name)
-                cover = self.auto_find_cover(video_file)
                 duration = self.get_video_duration(video_str)
 
                 # Create new collection
                 collection = {
                     "id": collection_id,
                     "name": clean_name,
-                    "cover": cover,
+                    "cover": "",  # Will be set via online metadata fetch
                     "description": "",
                     "genre": [],
                     "tags": [],
@@ -1634,13 +1566,12 @@ Your API key will be saved for future use.""")
                 clean_name = stem
 
             collection_id = self.generate_id(clean_name)
-            cover = self.auto_find_cover(video_path)
 
             # Include all required fields with default values
             collection = {
                 "id": collection_id,
                 "name": clean_name,
-                "cover": cover,
+                "cover": "",  # Will be set via online metadata fetch
                 "description": "",  # Empty by default
                 "genre": [],       # Empty list by default
                 "year": datetime.now().year,  # Default to current year
