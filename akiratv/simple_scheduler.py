@@ -232,7 +232,7 @@ class SimpleSchedulerWizard:
                                            state="readonly", width=15)
         self.profile_dropdown.pack(side="left", padx=5)
         self.profile_dropdown.bind("<<ComboboxSelected>>", self.on_quick_profile_select)
-        ttk.Button(profile_row1, text="🔄", command=self.refresh_collections_dropdown, width=3).pack(side="left")
+        ttk.Button(profile_row1, text="[REFRESH]", command=self.refresh_collections_dropdown, width=3).pack(side="left")
         
         # Second row: Manual entry
         profile_row2 = ttk.Frame(profile_frame)
@@ -274,21 +274,28 @@ class SimpleSchedulerWizard:
         self.load_collections_from_profile()
 
     def create_added_panel(self, parent):
-        """Create the Added panel for user-selected videos"""
+        """Create the Added panel for user-selected videos with tabs"""
         # Main container for added panel
         added_container = ttk.Frame(parent)
         added_container.pack(fill="both", expand=True, padx=10, pady=10)
         
         ttk.Label(added_container, text="Added Videos", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
         
-        # Blacklist control
-        blacklist_frame = ttk.Frame(added_container)
-        blacklist_frame.pack(fill="x", pady=(0, 5))
-        ttk.Button(blacklist_frame, text="Add to Blacklist", command=self.apply_blacklist).pack(side="left", padx=5)
-        ttk.Button(blacklist_frame, text="Remove from Blacklist", command=self.remove_from_blacklist).pack(side="left", padx=5)
+        # Create tab control for Added Videos and Blacklist
+        self.added_tab_control = ttk.Notebook(added_container)
+        self.added_tab_control.pack(fill="both", expand=True, pady=(0, 5))
         
-        # Added videos list frame (horizontal)
-        added_list_frame = ttk.Frame(added_container)
+        # === ADDED VIDEOS TAB ===
+        added_tab = ttk.Frame(self.added_tab_control)
+        self.added_tab_control.add(added_tab, text="Added Videos")
+        
+        # Blacklist control buttons
+        blacklist_btn_frame = ttk.Frame(added_tab)
+        blacklist_btn_frame.pack(fill="x", pady=(0, 5))
+        ttk.Button(blacklist_btn_frame, text="Add to Blacklist", command=self.apply_blacklist).pack(side="left", padx=5)
+        
+        # Added videos list frame
+        added_list_frame = ttk.Frame(added_tab)
         added_list_frame.pack(fill="both", expand=True, pady=5)
         
         self.added_list = tk.Listbox(added_list_frame, selectmode=tk.EXTENDED, font=("TkDefaultFont", 11))
@@ -298,19 +305,40 @@ class SimpleSchedulerWizard:
         self.added_list.configure(yscrollcommand=added_scrollbar.set)
         self.added_list.bind("<<ListboxSelect>>", self.on_added_video_select)
         
-        # Count display
-        self.added_count_label = ttk.Label(added_container, text="Total: 0 videos", font=("TkDefaultFont", 9))
+        # Count display for added videos
+        self.added_count_label = ttk.Label(added_tab, text="Total: 0 videos", font=("TkDefaultFont", 9))
         self.added_count_label.pack(pady=5)
         
-        # Blacklist count display
-        self.blacklist_count_label = ttk.Label(added_container, text="Blacklisted: 0 videos", font=("TkDefaultFont", 9))
-        self.blacklist_count_label.pack(pady=2)
-        
-        # Buttons frame (separate from list)
-        btn_frame = ttk.Frame(added_container)
+        # Buttons frame for added videos
+        btn_frame = ttk.Frame(added_tab)
         btn_frame.pack(fill="x", pady=5)
         ttk.Button(btn_frame, text="Remove Selected", command=self.remove_selected_videos).pack(side="left", padx=2)
         ttk.Button(btn_frame, text="Remove All", command=self.remove_all_videos).pack(side="left", padx=2)
+        
+        # === BLACKLIST TAB ===
+        blacklist_tab = ttk.Frame(self.added_tab_control)
+        self.added_tab_control.add(blacklist_tab, text="Blacklist")
+        
+        # Blacklist management buttons
+        blacklist_mgmt_frame = ttk.Frame(blacklist_tab)
+        blacklist_mgmt_frame.pack(fill="x", pady=(5, 5))
+        ttk.Button(blacklist_mgmt_frame, text="Remove from Blacklist", command=self.remove_from_blacklist_tab).pack(side="left", padx=5)
+        ttk.Button(blacklist_mgmt_frame, text="Clear Blacklist", command=self.clear_blacklist).pack(side="left", padx=5)
+        
+        # Blacklist list frame
+        blacklist_list_frame = ttk.Frame(blacklist_tab)
+        blacklist_list_frame.pack(fill="both", expand=True, pady=5)
+        
+        self.blacklist_list = tk.Listbox(blacklist_list_frame, selectmode=tk.EXTENDED, font=("TkDefaultFont", 11))
+        self.blacklist_list.pack(side="left", fill="both", expand=True)
+        blacklist_scrollbar = ttk.Scrollbar(blacklist_list_frame, orient="vertical", command=self.blacklist_list.yview)
+        blacklist_scrollbar.pack(side="right", fill="y")
+        self.blacklist_list.configure(yscrollcommand=blacklist_scrollbar.set)
+        self.blacklist_list.bind("<<ListboxSelect>>", self.on_blacklist_video_select)
+        
+        # Count display for blacklist
+        self.blacklist_count_label = ttk.Label(blacklist_tab, text="Blacklisted: 0 videos", font=("TkDefaultFont", 9))
+        self.blacklist_count_label.pack(pady=5)
 
     def create_preview_panel(self, parent):
         """Create the Preview panel for schedule preview"""
@@ -332,7 +360,7 @@ class SimpleSchedulerWizard:
         day_combo.bind("<<ComboboxSelected>>", self.update_preview_display)
         
         # Copy button
-        ttk.Button(day_frame, text="📋 Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
+        ttk.Button(day_frame, text="[COPY] Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
         
         # Preview listbox frame (horizontal)
         preview_frame = ttk.Frame(preview_container)
@@ -412,7 +440,7 @@ class SimpleSchedulerWizard:
         preview_frame = ttk.Frame(bottom_frame)
         preview_frame.pack(fill="x")
         
-        ttk.Button(preview_frame, text="🎲 Preview Random", 
+        ttk.Button(preview_frame, text="[RAND] Preview Random", 
                   command=lambda: self.preview_schedule(mode="random")).pack(side="left", padx=5)
         
         ttk.Button(preview_frame, text="▶ Preview Sequential", 
@@ -420,7 +448,7 @@ class SimpleSchedulerWizard:
         
         ttk.Separator(preview_frame, orient="vertical").pack(side="left", fill="y", padx=10)
         
-        self.save_button = ttk.Button(preview_frame, text="💾 Save Schedule", 
+        self.save_button = ttk.Button(preview_frame, text="[SAVE] Save Schedule", 
                   command=self.save_current_schedule, state="disabled")
         self.save_button.pack(side="left")
 
@@ -434,8 +462,8 @@ class SimpleSchedulerWizard:
         
         collection = video_data.get("collection", {})
         
-        # Update cover image
-        self.load_cover_image(collection.get("id"))
+        # Update cover image - pass both id and cover path
+        self.load_cover_image(collection.get("id"), collection.get("cover"))
         
         # Update metadata labels
         self.info_name.configure(text=f"Name: {collection.get('name', '-')}")
@@ -462,24 +490,39 @@ class SimpleSchedulerWizard:
         self.info_path.configure(text="Path: -")
         self.info_duration.configure(text="Duration: -")
     
-    def load_cover_image(self, collection_id):
-        """Load cover image from user/covers directory"""
-        if not collection_id:
-            self.cover_label.configure(image="", text="No cover")
-            return
+    def load_cover_image(self, collection_id, cover_path=None):
+        """Load cover image from user/covers directory
         
-        # Try to find cover image
-        cover_path = None
-        for ext in ['.jpg', '.jpeg', '.png']:
-            potential_path = COVERS_DIR / f"{collection_id}{ext}"
-            if potential_path.exists():
-                cover_path = potential_path
-                break
+        Args:
+            collection_id: The collection ID to search for cover if no explicit path
+            cover_path: Explicit cover path from collection data (takes priority)
+        """
+        cover_file = None
         
+        # First, try the explicit cover path if provided
         if cover_path:
+            # Handle both relative and absolute paths
+            if cover_path.startswith("user/"):
+                full_path = BASE_DIR / cover_path
+            else:
+                full_path = Path(cover_path)
+            
+            if full_path.exists():
+                cover_file = full_path
+        
+        # Fallback: search by collection_id in covers directory
+        if not cover_file and collection_id:
+            for ext in ['.jpg', '.jpeg', '.png']:
+                potential_path = COVERS_DIR / f"{collection_id}{ext}"
+                if potential_path.exists():
+                    cover_file = potential_path
+                    break
+        
+        # Display the cover or show "No cover"
+        if cover_file:
             try:
                 # Load and resize image
-                img = Image.open(cover_path)
+                img = Image.open(cover_file)
                 img = img.resize((300, 420), Image.Resampling.LANCZOS)
                 photo = ImageTk.PhotoImage(img)
                 self.cover_label.configure(image=photo, text="")
@@ -561,19 +604,33 @@ class SimpleSchedulerWizard:
     # === ADDED PANEL METHODS ===
     
     def update_added_list_display(self):
-        """Update added videos listbox"""
+        """Update added videos listbox (excludes blacklisted videos)"""
         self.added_list.delete(0, tk.END)
+        non_blacklisted_count = 0
         for video in self.added_videos:
+            # Skip blacklisted videos in the main list
+            if video["path"] in self.blacklisted_videos:
+                continue
             collection_name = video.get("collection", {}).get("name", "Unknown")
             video_name = video.get("name", "Unknown")
-            if video["path"] in self.blacklisted_videos:
-                display_text = f"[BLACKLISTED] {collection_name} - {video_name}"
-            else:
-                display_text = f"{collection_name} - {video_name}"
+            display_text = f"{collection_name} - {video_name}"
             self.added_list.insert(tk.END, display_text)
+            non_blacklisted_count += 1
         
-        self.added_count_label.configure(text=f"Total: {len(self.added_videos)} videos")
-        self.update_blacklist_count()
+        self.added_count_label.configure(text=f"Total: {non_blacklisted_count} videos")
+        self.update_blacklist_list_display()
+    
+    def update_blacklist_list_display(self):
+        """Update the blacklist tab listbox"""
+        self.blacklist_list.delete(0, tk.END)
+        for video in self.added_videos:
+            if video["path"] in self.blacklisted_videos:
+                collection_name = video.get("collection", {}).get("name", "Unknown")
+                video_name = video.get("name", "Unknown")
+                display_text = f"{collection_name} - {video_name}"
+                self.blacklist_list.insert(tk.END, display_text)
+        
+        self.blacklist_count_label.configure(text=f"Blacklisted: {len(self.blacklisted_videos)} videos")
     
     def remove_selected_videos(self):
         """Remove selected videos from added list"""
@@ -582,16 +639,22 @@ class SimpleSchedulerWizard:
             messagebox.showwarning("No Selection", "Select at least one video to remove!")
             return
         
+        # Get non-blacklisted videos to map indices correctly
+        non_blacklisted = [v for v in self.added_videos if v["path"] not in self.blacklisted_videos]
+        
         # Remove in reverse order to maintain indices
+        removed_count = 0
         for idx in sorted(selection, reverse=True):
-            video = self.added_videos[idx]
-            video_path = video.get("path", "")
-            if video_path in self.video_to_collection_map:
-                del self.video_to_collection_map[video_path]
-            del self.added_videos[idx]
+            if idx < len(non_blacklisted):
+                video = non_blacklisted[idx]
+                video_path = video.get("path", "")
+                if video_path in self.video_to_collection_map:
+                    del self.video_to_collection_map[video_path]
+                self.added_videos.remove(video)  # Remove by reference
+                removed_count += 1
         
         self.update_added_list_display()
-        messagebox.showinfo("Success", f"Removed {len(selection)} video(s)!")
+        messagebox.showinfo("Success", f"Removed {removed_count} video(s)!")
     
     def remove_all_videos(self):
         """Clear entire added list"""
@@ -612,37 +675,72 @@ class SimpleSchedulerWizard:
             messagebox.showwarning("No Selection", "Select at least one video to blacklist!")
             return
         
+        # Get non-blacklisted videos to map indices correctly
+        non_blacklisted = [v for v in self.added_videos if v["path"] not in self.blacklisted_videos]
+        
         blacklisted_count = 0
         for idx in selection:
-            video = self.added_videos[idx]
-            video_path = video.get("path", "")
-            self.blacklisted_videos.add(video_path)
-            blacklisted_count += 1
+            if idx < len(non_blacklisted):
+                video = non_blacklisted[idx]
+                video_path = video.get("path", "")
+                self.blacklisted_videos.add(video_path)
+                blacklisted_count += 1
         
-        self.update_blacklist_count()
+        self.update_added_list_display()  # Refresh both lists
         messagebox.showinfo("Success", f"Added {blacklisted_count} video(s) to blacklist!")
     
-    def remove_from_blacklist(self):
-        """Remove selected videos from blacklist"""
-        selection = self.added_list.curselection()
+    def update_blacklist_count(self):
+        """Update the blacklist count display and list"""
+        self.update_blacklist_list_display()
+    
+    def on_blacklist_video_select(self, event):
+        """Handle blacklist video selection - update info panel with selected video"""
+        selection = self.blacklist_list.curselection()
+        if not selection:
+            self.clear_info_panel()
+            self.selected_video = None
+            return
+        
+        # Find the video in added_videos that matches the blacklist selection
+        # We need to map the blacklist list index to the actual video
+        blacklist_videos = [v for v in self.added_videos if v["path"] in self.blacklisted_videos]
+        if selection[0] < len(blacklist_videos):
+            video = blacklist_videos[selection[0]]
+            self.selected_video = video
+            self.update_info_panel(video)
+    
+    def remove_from_blacklist_tab(self):
+        """Remove selected videos from blacklist (from blacklist tab)"""
+        selection = self.blacklist_list.curselection()
         if not selection:
             messagebox.showwarning("No Selection", "Select at least one video to remove from blacklist!")
             return
         
-        removed_count = 0
-        for idx in selection:
-            video = self.added_videos[idx]
-            video_path = video.get("path", "")
-            if video_path in self.blacklisted_videos:
-                self.blacklisted_videos.remove(video_path)
-                removed_count += 1
+        # Get blacklisted videos in order
+        blacklist_videos = [v for v in self.added_videos if v["path"] in self.blacklisted_videos]
         
-        self.update_blacklist_count()
+        removed_count = 0
+        for idx in sorted(selection, reverse=True):
+            if idx < len(blacklist_videos):
+                video = blacklist_videos[idx]
+                video_path = video.get("path", "")
+                if video_path in self.blacklisted_videos:
+                    self.blacklisted_videos.remove(video_path)
+                    removed_count += 1
+        
+        self.update_added_list_display()
         messagebox.showinfo("Success", f"Removed {removed_count} video(s) from blacklist!")
     
-    def update_blacklist_count(self):
-        """Update the blacklist count display"""
-        self.blacklist_count_label.configure(text=f"Blacklisted: {len(self.blacklisted_videos)} videos")
+    def clear_blacklist(self):
+        """Clear all videos from blacklist"""
+        if not self.blacklisted_videos:
+            messagebox.showinfo("Info", "Blacklist is already empty.")
+            return
+        
+        if messagebox.askyesno("Confirm", f"Remove all {len(self.blacklisted_videos)} videos from blacklist?"):
+            self.blacklisted_videos.clear()
+            self.update_added_list_display()
+            messagebox.showinfo("Success", "Blacklist cleared!")
     
     def on_added_video_select(self, event):
         """Handle added video selection - update info panel with selected video"""
@@ -652,13 +750,17 @@ class SimpleSchedulerWizard:
             self.selected_video = None
             return
         
+        # Get non-blacklisted videos to map indices correctly
+        non_blacklisted = [v for v in self.added_videos if v["path"] not in self.blacklisted_videos]
+        
         # Use first selected video for info panel
         idx = selection[0]
-        video = self.added_videos[idx]
-        self.selected_video = video
-        
-        # Update info panel with selected video data
-        self.update_info_panel(video)
+        if idx < len(non_blacklisted):
+            video = non_blacklisted[idx]
+            self.selected_video = video
+            
+            # Update info panel with selected video data
+            self.update_info_panel(video)
 
     # === PREVIEW PANEL METHODS ===
     
