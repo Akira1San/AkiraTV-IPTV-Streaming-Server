@@ -1037,17 +1037,31 @@ class SimpleSchedulerWizard:
                 # Choose next video
                 if self.episodic_var.get() and episodic_groups:
                     available_standalone = [v for v in standalone_videos if v["path"] not in recent_paths]
-                    available_series = [series for series in episodic_groups.keys() 
-                                      if episodic_groups[series][episode_trackers[series]]["path"] not in recent_paths]
+                    
+                    # Fix: Safe index access with modulo to prevent IndexError
+                    available_series = []
+                    for series in episodic_groups.keys():
+                        episodes = episodic_groups[series]
+                        idx = episode_trackers[series] % len(episodes)  # Safe index
+                        if episodes[idx]["path"] not in recent_paths:
+                            available_series.append(series)
                     
                     if not available_standalone and not available_series:
                         recent_videos = []
                         recent_paths = set()
-                        available_standalone = standalone_videos
+                        available_standalone = list(standalone_videos)
                         available_series = list(episodic_groups.keys())
+                        random.shuffle(available_standalone)
+                        random.shuffle(available_series)
                     
+                    # Weighted choice based on content count
                     if available_standalone and available_series:
-                        choice_type = random.choice(["standalone", "series"])
+                        total_standalone = len(available_standalone)
+                        total_series_eps = sum(len(episodic_groups[s]) for s in available_series)
+                        if random.random() < total_standalone / (total_standalone + total_series_eps):
+                            choice_type = "standalone"
+                        else:
+                            choice_type = "series"
                     elif available_standalone:
                         choice_type = "standalone"
                     elif available_series:
@@ -1057,22 +1071,24 @@ class SimpleSchedulerWizard:
                     
                     if choice_type == "series" and available_series:
                         series_name = random.choice(available_series)
-                        episode_idx = episode_trackers[series_name]
+                        episode_idx = episode_trackers[series_name] % len(episodic_groups[series_name])  # Safe index
                         
                         if self.sequential_var.get():
                             video = episodic_groups[series_name][episode_idx]
                         else:
-                            video = random.choice(episodic_groups[series_name])
-                            episode_idx = episodic_groups[series_name].index(video)
+                            # Fix: Direct random index
+                            episode_idx = random.randint(0, len(episodic_groups[series_name]) - 1)
+                            video = episodic_groups[series_name][episode_idx]
                         
                         episode_trackers[series_name] = (episode_idx + 1) % len(episodic_groups[series_name])
                     else:
-                        video = random.choice(available_standalone if available_standalone else standalone_videos)
+                        video = random.choice(available_standalone)
                 else:
                     available_videos = [v for v in filtered_videos if v["path"] not in recent_paths]
                     if not available_videos:
                         recent_videos = []
-                        available_videos = filtered_videos
+                        available_videos = list(filtered_videos)
+                        random.shuffle(available_videos)
                 
                     video = random.choice(available_videos)
             
@@ -1248,30 +1264,45 @@ class SimpleSchedulerWizard:
             if self.episodic_var.get() and episodic_groups:
                 # Mix of standalone and episodic content
                 available_standalone = [v for v in standalone_videos if v["path"] not in recent_paths]
-                available_series = [series for series in episodic_groups.keys() 
-                                  if episodic_groups[series][episode_trackers[series]]["path"] not in recent_paths]
+                
+                # Fix: Safe index access with modulo to prevent IndexError
+                available_series = []
+                for series in episodic_groups.keys():
+                    episodes = episodic_groups[series]
+                    idx = episode_trackers[series] % len(episodes)  # Safe index
+                    if episodes[idx]["path"] not in recent_paths:
+                        available_series.append(series)
                 
                 # If no available content, reset recent list (emergency fallback)
                 if not available_standalone and not available_series:
                     recent_videos = []
                     recent_paths = set()
-                    available_standalone = standalone_videos
+                    available_standalone = list(standalone_videos)  # Fresh copy
                     available_series = list(episodic_groups.keys())
+                    # Shuffle to avoid same sequence after reset
+                    random.shuffle(available_standalone)
+                    random.shuffle(available_series)
                 
-                # Randomly choose between standalone video or starting/continuing a series
+                # Weighted choice based on content count (not 50/50)
                 if available_standalone and available_series:
-                    choice_type = random.choice(["standalone", "series"])
+                    total_standalone = len(available_standalone)
+                    total_series_eps = sum(len(episodic_groups[s]) for s in available_series)
+                    # Probability proportional to content count
+                    if random.random() < total_standalone / (total_standalone + total_series_eps):
+                        choice_type = "standalone"
+                    else:
+                        choice_type = "series"
                 elif available_standalone:
                     choice_type = "standalone"
                 elif available_series:
                     choice_type = "series"
                 else:
-                    choice_type = "standalone"  # Fallback
+                    choice_type = "standalone"  # Fallback (shouldn't reach here)
                 
                 if choice_type == "series" and available_series:
                     # Pick a random series
                     series_name = random.choice(available_series)
-                    episode_idx = episode_trackers[series_name]
+                    episode_idx = episode_trackers[series_name] % len(episodic_groups[series_name])  # Safe index
                     
                     # Sequential tracking: always continue from last episode
                     # Otherwise pick random episode if sequential is disabled
@@ -1279,23 +1310,23 @@ class SimpleSchedulerWizard:
                         # Continue from last played episode
                         video = episodic_groups[series_name][episode_idx]
                     else:
-                        # Pick random episode from series
-                        video = random.choice(episodic_groups[series_name])
-                        # Find and set the episode index for tracking
-                        episode_idx = episodic_groups[series_name].index(video)
+                        # Fix: Direct random index instead of random.choice + index()
+                        episode_idx = random.randint(0, len(episodic_groups[series_name]) - 1)
+                        video = episodic_groups[series_name][episode_idx]
                     
                     # Advance episode tracker (loop back to start if at end)
                     episode_trackers[series_name] = (episode_idx + 1) % len(episodic_groups[series_name])
                 else:
-                    # Pick random standalone video
-                    video = random.choice(available_standalone if available_standalone else standalone_videos)
+                    # Pick random standalone video (available_standalone is guaranteed non-empty here)
+                    video = random.choice(available_standalone)
             else:
                 # Standard random selection with 24-hour rule
                 available_videos = [v for v in filtered_videos if v["path"] not in recent_paths]
                 if not available_videos:
                     # Reset if no videos available (emergency fallback)
                     recent_videos = []
-                    available_videos = filtered_videos
+                    available_videos = list(filtered_videos)
+                    random.shuffle(available_videos)  # Shuffle to avoid same sequence
                 
                 video = random.choice(available_videos)
             
