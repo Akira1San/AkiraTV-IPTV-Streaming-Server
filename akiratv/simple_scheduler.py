@@ -1427,12 +1427,36 @@ class SimpleSchedulerWizard:
         self.save_button.configure(state="disabled")
 
     def detect_episodic_content(self, all_videos):
-        """Detect and group episodic/sequential content"""
+        """Detect and group episodic/sequential content
+        
+        Uses two methods:
+        1. Check for 'episodic' tag in collection data (explicit)
+        2. Filename pattern detection (implicit)
+        """
         episodic_groups = {}
         standalone_videos = []
         
-        # Group videos by potential series name (remove episode indicators)
+        # First pass: Check for explicit episodic tags in collection data
         for video in all_videos:
+            collection = video.get("collection", {})
+            tags = collection.get("tags", [])
+            
+            # Check if this video has an "episodic" tag
+            if tags and "episodic" in [t.lower() for t in tags]:
+                # Use collection name or id as series identifier
+                series_name = collection.get("name", collection.get("id", "unknown"))
+                series_key = f"tagged:{series_name.lower()}"
+                
+                if series_key not in episodic_groups:
+                    episodic_groups[series_key] = []
+                episodic_groups[series_key].append(video)
+            else:
+                # Will be processed in second pass (filename detection)
+                standalone_videos.append(video)
+        
+        # Second pass: Filename pattern detection for remaining videos
+        filename_groups = {}
+        for video in standalone_videos:
             name = Path(video["path"]).stem.lower()
             
             # Common episode patterns to detect
@@ -1456,22 +1480,52 @@ class SimpleSchedulerWizard:
                     break
             
             if series_name:
-                if series_name not in episodic_groups:
-                    episodic_groups[series_name] = []
-                episodic_groups[series_name].append(video)
-            else:
-                standalone_videos.append(video)
+                if series_name not in filename_groups:
+                    filename_groups[series_name] = []
+                filename_groups[series_name].append(video)
         
-        # Only keep groups with 2+ episodes
-        final_groups = {k: sorted(v, key=lambda x: self._extract_episode_number(Path(x["path"]).stem))
-                       for k, v in episodic_groups.items() if len(v) >= 2}
+        # Merge filename-detected groups with tagged groups
+        for series_name, videos in filename_groups.items():
+            if len(videos) >= 2:
+                episodic_groups[series_name] = videos
         
-        # Add single-episode "series" back to standalone
-        for k, v in episodic_groups.items():
-            if len(v) == 1:
-                standalone_videos.extend(v)
+        # Move single-episode filename detections to standalone
+        final_standalone = []
+        for video in standalone_videos:
+            name = Path(video["path"]).stem.lower()
+            found_in_group = False
+            
+            import re
+            patterns = [
+                r'(.+?)\s*[s]\d+[e]\d+',
+                r'(.+?)\s*season\s*\d+.*episode\s*\d+',
+                r'(.+?)\s*\d+x\d+',
+                r'(.+?)\s*ep\s*\d+',
+                r'(.+?)\s*episode\s*\d+',
+                r'(.+?)\s*part\s*\d+',
+                r'(.+?)\s*\d{2,3}$',
+                r'^(.+?)\s+\d+$',
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, name, re.IGNORECASE)
+                if match:
+                    series_name = match.group(1).strip()
+                    if series_name in filename_groups and len(filename_groups[series_name]) >= 2:
+                        found_in_group = True
+                        break
+            
+            if not found_in_group:
+                final_standalone.append(video)
         
-        return final_groups, standalone_videos
+        # Sort episodes within each group by episode number
+        for series_name in episodic_groups:
+            episodic_groups[series_name] = sorted(
+                episodic_groups[series_name],
+                key=lambda x: self._extract_episode_number(Path(x["path"]).stem)
+            )
+        
+        return episodic_groups, final_standalone
     
     def _extract_episode_number(self, filename):
         """Extract episode number from filename for sorting"""
