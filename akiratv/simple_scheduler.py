@@ -348,18 +348,28 @@ class SimpleSchedulerWizard:
         
         ttk.Label(preview_container, text="Schedule Preview", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
         
-        # Day selector frame (separate from list)
+        # Day selector with buttons
         day_frame = ttk.Frame(preview_container)
         day_frame.pack(fill="x", pady=(0, 5))
-        ttk.Label(day_frame, text="View day:").pack(side="left")
-        self.day_var = tk.StringVar(value="monday")
-        day_combo = ttk.Combobox(day_frame, textvariable=self.day_var, 
-                                values=["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-                                state="readonly", width=12)
-        day_combo.pack(side="left", padx=5)
-        day_combo.bind("<<ComboboxSelected>>", self.update_preview_display)
         
-        # Copy button
+        self.day_var = tk.StringVar(value="monday")
+        self.day_buttons = {}
+        days = [("Mon", "monday"), ("Tue", "tuesday"), ("Wed", "wednesday"), 
+                ("Thu", "thursday"), ("Fri", "friday"), ("Sat", "saturday"), ("Sun", "sunday")]
+        
+        for label, day_value in days:
+            btn = ttk.Button(day_frame, text=label, width=5,
+                           command=lambda d=day_value: self.select_day(d))
+            btn.pack(side="left", padx=2)
+            self.day_buttons[day_value] = btn
+        
+        # Highlight initial selection
+        self.highlight_day_button("monday")
+        
+        # Debug button to show all 7 days in popup
+        ttk.Button(day_frame, text="[DEBUG] 7-Day View", command=self.show_seven_day_popup, width=12).pack(side="right", padx=5)
+        
+        # Copy button on the right
         ttk.Button(day_frame, text="[COPY] Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
         
         # Preview listbox frame (horizontal)
@@ -378,6 +388,99 @@ class SimpleSchedulerWizard:
         self.preview_info = ttk.Label(info_frame, text="Generate a schedule to see preview", 
                                      font=("TkDefaultFont", 9), foreground="gray")
         self.preview_info.pack()
+    
+    def select_day(self, day):
+        """Select a day and update the preview"""
+        self.day_var.set(day)
+        self.highlight_day_button(day)
+        self.update_preview_display()
+    
+    def highlight_day_button(self, selected_day):
+        """Highlight the selected day button"""
+        # Reset all buttons to normal state
+        for day, btn in self.day_buttons.items():
+            if day == selected_day:
+                btn.state(['pressed'])  # Visual indication of selection
+            else:
+                btn.state(['!pressed'])
+    
+    def show_seven_day_popup(self):
+        """Show a popup window with horizontal schedules for all 7 days (debug view)"""
+        if not self.current_schedule:
+            messagebox.showinfo("No Schedule", "Generate a schedule first to see the 7-day view.")
+            return
+        
+        # Create popup window
+        popup = tk.Toplevel(self.root)
+        popup.title("7-Day Schedule View (Debug)")
+        popup.geometry("1400x600")
+        
+        # Main frame with horizontal scroll
+        main_frame = ttk.Frame(popup)
+        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Create a canvas with horizontal scrollbar for 7 columns
+        canvas = tk.Canvas(main_frame)
+        h_scrollbar = ttk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
+        v_scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
+        
+        scrollable_frame = ttk.Frame(canvas)
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(xscrollcommand=h_scrollbar.set, yscrollcommand=v_scrollbar.set)
+        
+        # Pack scrollbars and canvas
+        h_scrollbar.pack(side="bottom", fill="x")
+        v_scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+        
+        # Days of the week
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        
+        # Create 7 columns (one for each day)
+        for col, day in enumerate(days):
+            day_frame = ttk.Frame(scrollable_frame, borderwidth=1, relief="solid")
+            day_frame.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
+            
+            # Day header
+            header_label = ttk.Label(day_frame, text=day.upper(), font=("TkDefaultFont", 10, "bold"))
+            header_label.pack(pady=5)
+            
+            # Day listbox
+            day_listbox = tk.Listbox(day_frame, font=("Consolas", 9), width=30, height=25)
+            day_listbox.pack(fill="both", expand=True, padx=5, pady=5)
+            
+            # Populate the listbox
+            day_schedule = self.current_schedule.get(day, [])
+            
+            if day_schedule:
+                for entry in day_schedule:
+                    time_str = entry.get("time", "??:??")
+                    file_path = entry.get("file", "")
+                    file_name = Path(file_path).name
+                    
+                    # Truncate long filenames
+                    if len(file_name) > 25:
+                        display_name = file_name[:22] + "..."
+                    else:
+                        display_name = file_name
+                    
+                    day_listbox.insert(tk.END, f"{time_str} {display_name}")
+                
+                # Add entry count
+                day_listbox.insert(tk.END, f"--- {len(day_schedule)} entries ---")
+            else:
+                day_listbox.insert(tk.END, "No entries")
+        
+        # Close button
+        close_frame = ttk.Frame(popup)
+        close_frame.pack(pady=10)
+        ttk.Button(close_frame, text="Close", command=popup.destroy).pack()
 
     def create_bottom_controls(self, parent):
         """Create bottom control bar with channel selection and action buttons"""
