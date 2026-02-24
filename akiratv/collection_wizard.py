@@ -1012,6 +1012,12 @@ Your API key will be saved for future use.""")
         ttk.Button(selection_btn_frame, text="Select All", command=self.select_all).pack(side="left", padx=2)
         ttk.Button(selection_btn_frame, text="Unselect All", command=self.unselect_all).pack(side="left", padx=2)
         ttk.Button(selection_btn_frame, text="Remove", command=self.remove_collections).pack(side="left", padx=2)
+        upgrade_btn = ttk.Button(selection_btn_frame, text="⬆️ Upgrade", command=self.upgrade_video_duration)
+        upgrade_btn.pack(side="left", padx=2)
+        self.create_tooltip(upgrade_btn, "Rescan video file(s) and update duration (use when video file was replaced)")
+        fix_path_btn = ttk.Button(selection_btn_frame, text="🔧 Fix Path", command=self.fix_video_path)
+        fix_path_btn.pack(side="left", padx=2)
+        self.create_tooltip(fix_path_btn, "Fix missing video file path (browse for new location)")
         
         # Create a frame for the listbox and scrollbar
         list_container = ttk.Frame(list_frame)
@@ -1121,6 +1127,112 @@ Your API key will be saved for future use.""")
             self.episodic_var.set(False)
             
             messagebox.showinfo("Success", f"Removed {count} collection(s)!")
+
+    def upgrade_video_duration(self):
+        """Rescan selected collection(s) and update video duration(s)
+        
+        This is useful when a video file has been replaced with another file
+        that has the same name but different duration.
+        """
+        if not self.selected_indices:
+            messagebox.showwarning("Warning", "Please select at least one collection to upgrade!")
+            return
+        
+        # Confirm action
+        count = len(self.selected_indices)
+        if not messagebox.askyesno("Confirm Upgrade", 
+                                   f"Rescan and update duration for {count} collection(s)?\n\n"
+                                   "This will read the actual video file(s) and update their duration."):
+            return
+        
+        updated_count = 0
+        not_found_count = 0
+        
+        for idx in self.selected_indices:
+            collection = self.collections[idx]
+            videos = collection.get("videos", [])
+            
+            for video in videos:
+                video_path = video.get("path", "")
+                if video_path:
+                    if Path(video_path).exists():
+                        old_duration = video.get("duration", 0)
+                        new_duration = self.get_video_duration(video_path)
+                        video["duration"] = new_duration
+                        updated_count += 1
+                        print(f"Updated: {Path(video_path).name} | {old_duration:.1f}s -> {new_duration:.1f}s")
+                    else:
+                        not_found_count += 1
+                        print(f"File not found: {video_path}")
+        
+        # Save the updated collections
+        if updated_count > 0:
+            self.save_collections()
+        
+        # Show result
+        result_msg = f"Updated duration for {updated_count} video(s)."
+        if not_found_count > 0:
+            result_msg += f"\n\nWarning: {not_found_count} video file(s) not found."
+        messagebox.showinfo("Upgrade Complete", result_msg)
+
+    def fix_video_path(self):
+        """Fix missing video file path by browsing for new location"""
+        if not self.selected_indices:
+            messagebox.showwarning("Warning", "Please select at least one collection to fix!")
+            return
+        
+        # Get selected collection(s)
+        fixed_count = 0
+        
+        for idx in self.selected_indices:
+            collection = self.collections[idx]
+            videos = collection.get("videos", [])
+            
+            for video in videos:
+                video_path = video.get("path", "")
+                if video_path and not Path(video_path).exists():
+                    # Video file is missing - ask user to find it
+                    old_filename = Path(video_path).name
+                    
+                    # Show dialog with the missing file name
+                    result = messagebox.askyesno(
+                        "Missing Video File",
+                        f"Video file not found:\n\n{video_path}\n\n"
+                        f"Would you like to browse for '{old_filename}'?"
+                    )
+                    
+                    if result:
+                        # Open file browser
+                        new_path = filedialog.askopenfilename(
+                            title=f"Find: {old_filename}",
+                            initialfile=old_filename,
+                            filetypes=[
+                                ("Video files", "*.mp4 *.mkv *.avi *.mov *.webm *.wmv *.flv *.m4v"),
+                                ("All files", "*.*")
+                            ]
+                        )
+                        
+                        if new_path:
+                            # Update the path
+                            new_path = new_path.replace("\\", "/")
+                            video["path"] = new_path
+                            
+                            # Also update duration for the new file
+                            video["duration"] = self.get_video_duration(new_path)
+                            
+                            # Update cover if it was based on the old path
+                            if not collection.get("cover") or collection.get("cover") == "":
+                                collection["cover"] = self.auto_find_cover(Path(new_path))
+                            
+                            fixed_count += 1
+                            print(f"Fixed path: {old_filename} -> {new_path}")
+        
+        if fixed_count > 0:
+            self.save_collections()
+            self.refresh_collection_list()
+            messagebox.showinfo("Success", f"Fixed {fixed_count} video path(s)!")
+        else:
+            messagebox.showinfo("Info", "No missing video files found or no paths were updated.")
 
     def create_tooltip(self, widget, text):
         """Create a tooltip for a widget"""
@@ -1545,10 +1657,28 @@ Your API key will be saved for future use.""")
         messagebox.showinfo("Success", f"Scanned {len(video_files)} videos and created {len(new_collections)} collections!")
 
     def refresh_collection_list(self):
-        """Refresh the collections listbox"""
+        """Refresh the collections listbox with red color for missing videos"""
         self.collection_list.delete(0, tk.END)
+        
         for collection in self.collections:
-            self.collection_list.insert(tk.END, collection["name"])
+            # Check if any video in this collection is missing
+            has_missing = False
+            for video in collection.get("videos", []):
+                video_path = video.get("path", "")
+                if video_path and not Path(video_path).exists():
+                    has_missing = True
+                    break
+            
+            # Insert with appropriate display
+            display_name = collection["name"]
+            if has_missing:
+                display_name = f"❌ {display_name}"  # Add X marker for missing videos
+            
+            self.collection_list.insert(tk.END, display_name)
+            
+            # Set red color for items with missing videos
+            if has_missing:
+                self.collection_list.itemconfig(tk.END, fg="red")
 
     def display_cover_preview(self, cover_path):
         """Display cover image in the preview widget"""
