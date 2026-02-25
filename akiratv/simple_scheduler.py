@@ -111,6 +111,11 @@ class SimpleSchedulerWizard:
         self.root.title("AkiraTV — Simple Random Scheduler")
         self.root.geometry("1600x900")
         
+        # Theme settings
+        self.style = ttk.Style()
+        self.current_theme = "windows"  # Default theme
+        self.setup_themes()
+        
         # Data structures
         self.collections = []
         self.current_profile = "collections"  # Default profile
@@ -127,6 +132,78 @@ class SimpleSchedulerWizard:
         self.blacklisted_videos = set()  # Set of video paths that are blacklisted
         
         self.create_widgets()
+    
+    def setup_themes(self):
+        """Setup custom themes"""
+        # Store original Windows theme
+        self.windows_theme = self.style.theme_use()
+        
+        # Create dark theme based on clam (better for custom styling)
+        try:
+            self.style.theme_create("dark", parent="clam")
+        except tk.TclError:
+            pass  # Theme already exists
+        
+        # Configure dark theme colors
+        self.style.configure("dark.TFrame", background="#2b2b2b")
+        self.style.configure("dark.TLabel", background="#2b2b2b", foreground="#ffffff")
+        self.style.configure("dark.TButton", background="#404040", foreground="#ffffff")
+        self.style.configure("dark.TCheckbutton", background="#2b2b2b", foreground="#ffffff")
+        self.style.configure("dark.TRadiobutton", background="#2b2b2b", foreground="#ffffff")
+        self.style.configure("dark.TEntry", fieldbackground="#404040", foreground="#ffffff")
+        self.style.configure("dark.TCombobox", fieldbackground="#404040", foreground="#ffffff")
+        self.style.configure("dark.TNotebook", background="#2b2b2b")
+        self.style.configure("dark.TNotebook.Tab", background="#404040", foreground="#ffffff")
+        self.style.configure("dark.TLabelframe", background="#2b2b2b", foreground="#ffffff")
+        self.style.configure("dark.TLabelframe.Label", background="#2b2b2b", foreground="#ffffff")
+        self.style.configure("dark.TPanedwindow", background="#2b2b2b")
+        self.style.configure("dark.TScrollbar", background="#404040", troughcolor="#2b2b2b")
+        self.style.configure("dark.Horizontal.TScrollbar", background="#404040", troughcolor="#2b2b2b")
+        self.style.configure("dark.Vertical.TScrollbar", background="#404040", troughcolor="#2b2b2b")
+        
+        # Map for button states
+        self.style.map("dark.TButton",
+                      background=[("active", "#505050"), ("pressed", "#606060")])
+    
+    def apply_theme(self, theme_name):
+        """Apply the selected theme"""
+        if theme_name == "dark":
+            self.style.theme_use("dark")
+            self.root.configure(bg="#2b2b2b")
+            # Apply dark background to all tk widgets
+            self._apply_dark_to_tk_widgets(self.root)
+        else:
+            # Use Windows/default theme
+            try:
+                self.style.theme_use(self.windows_theme)
+            except:
+                self.style.theme_use("default")
+            self.root.configure(bg="SystemButtonFace")
+            # Reset tk widgets to default
+            self._reset_tk_widgets(self.root)
+        
+        self.current_theme = theme_name
+    
+    def _apply_dark_to_tk_widgets(self, widget):
+        """Recursively apply dark theme to tk widgets (like Listbox)"""
+        for child in widget.winfo_children():
+            if isinstance(child, tk.Listbox):
+                child.configure(bg="#404040", fg="#ffffff", selectbackground="#505050")
+            elif isinstance(child, tk.Label):
+                if "cover_label" in str(child):
+                    pass  # Skip cover label, handled separately
+            elif isinstance(child, tk.Canvas):
+                child.configure(bg="#2b2b2b")
+            self._apply_dark_to_tk_widgets(child)
+    
+    def _reset_tk_widgets(self, widget):
+        """Recursively reset tk widgets to default theme"""
+        for child in widget.winfo_children():
+            if isinstance(child, tk.Listbox):
+                child.configure(bg="SystemButtonFace", fg="SystemWindowText", selectbackground="SystemHighlight")
+            elif isinstance(child, tk.Canvas):
+                child.configure(bg="SystemButtonFace")
+            self._reset_tk_widgets(child)
 
     def create_widgets(self):
         # Main container
@@ -562,6 +639,15 @@ class SimpleSchedulerWizard:
         self.save_button = ttk.Button(button_center, text="[SAVE] Save Schedule", 
                   command=self.save_current_schedule, state="disabled")
         self.save_button.pack(side="left")
+        
+        # Theme selector
+        ttk.Separator(button_center, orient="vertical").pack(side="left", fill="y", padx=10)
+        ttk.Label(button_center, text="Theme:").pack(side="left")
+        self.theme_var = tk.StringVar(value="windows")
+        theme_combo = ttk.Combobox(button_center, textvariable=self.theme_var,
+                                  values=["windows", "dark"], width=8, state="readonly")
+        theme_combo.pack(side="left", padx=5)
+        theme_combo.bind("<<ComboboxSelected>>", lambda e: self.apply_theme(self.theme_var.get()))
 
     # === INFO PANEL METHODS ===
     
