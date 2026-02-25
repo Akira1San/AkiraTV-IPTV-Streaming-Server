@@ -109,7 +109,7 @@ class SimpleSchedulerWizard:
     def __init__(self, root):
         self.root = root
         self.root.title("AkiraTV — Simple Random Scheduler")
-        self.root.geometry("1600x800")
+        self.root.geometry("1600x900")
         
         # Data structures
         self.collections = []
@@ -539,19 +539,23 @@ class SimpleSchedulerWizard:
         # Hide calendar frame initially
         calendar_frame.pack_forget()
 
-        # Preview buttons and save button on one line
+        # Preview buttons and save button on one line (centered)
         preview_frame = ttk.Frame(bottom_frame)
-        preview_frame.pack(fill="x")
+        preview_frame.pack(fill="x", pady=5)
         
-        ttk.Button(preview_frame, text="[RAND] Preview Random", 
+        # Center container for buttons
+        center_frame = ttk.Frame(preview_frame)
+        center_frame.pack(anchor="center")
+        
+        ttk.Button(center_frame, text="[RAND] Preview Random", 
                   command=lambda: self.preview_schedule(mode="random")).pack(side="left", padx=5)
         
-        ttk.Button(preview_frame, text="▶ Preview Sequential", 
+        ttk.Button(center_frame, text="▶ Preview Sequential", 
                   command=lambda: self.preview_schedule(mode="sequential")).pack(side="left", padx=5)
         
-        ttk.Separator(preview_frame, orient="vertical").pack(side="left", fill="y", padx=10)
+        ttk.Separator(center_frame, orient="vertical").pack(side="left", fill="y", padx=10)
         
-        self.save_button = ttk.Button(preview_frame, text="[SAVE] Save Schedule", 
+        self.save_button = ttk.Button(center_frame, text="[SAVE] Save Schedule", 
                   command=self.save_current_schedule, state="disabled")
         self.save_button.pack(side="left")
 
