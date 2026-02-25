@@ -487,31 +487,35 @@ class SimpleSchedulerWizard:
         bottom_frame = ttk.Frame(parent)
         bottom_frame.pack(fill="x", pady=(10, 0))
         
-        # Channel selection and episodic checkbox on one line
+        # Channel selection and episodic checkbox on one line (centered)
         chan_episodic_frame = ttk.Frame(bottom_frame)
         chan_episodic_frame.pack(fill="x", pady=(0, 5))
         
-        ttk.Label(chan_episodic_frame, text="Channel:").pack(side="left")
+        # Center container for controls
+        controls_center = ttk.Frame(chan_episodic_frame)
+        controls_center.pack(anchor="center")
+        
+        ttk.Label(controls_center, text="Channel:").pack(side="left")
         self.channel_var = tk.StringVar(value="critters")
-        chan_combo = ttk.Combobox(chan_episodic_frame, textvariable=self.channel_var,
+        chan_combo = ttk.Combobox(controls_center, textvariable=self.channel_var,
                                  values=self.get_known_channels(), width=12)
         chan_combo.set("critters")
         chan_combo.pack(side="left", padx=5)
 
         self.episodic_var = tk.BooleanVar(value=False)
-        episodic_check = ttk.Checkbutton(chan_episodic_frame, text="Auto-detect episodic content",
+        episodic_check = ttk.Checkbutton(controls_center, text="Auto-detect episodic content",
                                         variable=self.episodic_var)
         episodic_check.pack(side="left", padx=10)
         self.create_tooltip(episodic_check, "Groups videos into series (e.g., MySeries S01E01, S01E02) and treats them as episodic content.")
 
         self.sequential_var = tk.BooleanVar(value=False)
-        sequential_check = ttk.Checkbutton(chan_episodic_frame, text="Sequential Episode Tracking",
+        sequential_check = ttk.Checkbutton(controls_center, text="Sequential Episode Tracking",
                                           variable=self.sequential_var)
         sequential_check.pack(side="left", padx=10)
         self.create_tooltip(sequential_check, "When the same series is picked multiple times, plays episodes in order (1→2→3→loop). Session-based only.")
 
         # Schedule mode selection (Weekly/Calendar)
-        mode_frame = ttk.Frame(chan_episodic_frame)
+        mode_frame = ttk.Frame(controls_center)
         mode_frame.pack(side="left", padx=20)
 
         ttk.Label(mode_frame, text="Mode:").pack(side="left")
@@ -522,7 +526,7 @@ class SimpleSchedulerWizard:
                         value="calendar", command=self.on_schedule_mode_change).pack(side="left", padx=2)
 
         # Calendar date range (hidden by default)
-        calendar_frame = ttk.Frame(chan_episodic_frame)
+        calendar_frame = ttk.Frame(controls_center)
         calendar_frame.pack(side="left", padx=10)
         self.calendar_frame = calendar_frame
 
@@ -544,18 +548,18 @@ class SimpleSchedulerWizard:
         preview_frame.pack(fill="x", pady=5)
         
         # Center container for buttons
-        center_frame = ttk.Frame(preview_frame)
-        center_frame.pack(anchor="center")
+        button_center = ttk.Frame(preview_frame)
+        button_center.pack(anchor="center")
         
-        ttk.Button(center_frame, text="[RAND] Preview Random", 
+        ttk.Button(button_center, text="[RAND] Preview Random", 
                   command=lambda: self.preview_schedule(mode="random")).pack(side="left", padx=5)
         
-        ttk.Button(center_frame, text="▶ Preview Sequential", 
+        ttk.Button(button_center, text="▶ Preview Sequential", 
                   command=lambda: self.preview_schedule(mode="sequential")).pack(side="left", padx=5)
         
-        ttk.Separator(center_frame, orient="vertical").pack(side="left", fill="y", padx=10)
+        ttk.Separator(button_center, orient="vertical").pack(side="left", fill="y", padx=10)
         
-        self.save_button = ttk.Button(center_frame, text="[SAVE] Save Schedule", 
+        self.save_button = ttk.Button(button_center, text="[SAVE] Save Schedule", 
                   command=self.save_current_schedule, state="disabled")
         self.save_button.pack(side="left")
 
