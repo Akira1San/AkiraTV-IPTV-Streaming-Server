@@ -446,6 +446,9 @@ class SimpleSchedulerWizard:
         # Debug button to show all 7 days in popup
         ttk.Button(day_frame, text="[DEBUG] 7-Day View", command=self.show_seven_day_popup, width=12).pack(side="right", padx=5)
         
+        # Button to inspect the generated schedule
+        ttk.Button(day_frame, text="[INSPECT] View Schedule", command=self.show_seven_day_popup, width=15).pack(side="right", padx=5)
+        
         # Copy button on the right
         ttk.Button(day_frame, text="[COPY] Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
         
