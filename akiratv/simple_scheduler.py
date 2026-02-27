@@ -516,38 +516,84 @@ class SimpleSchedulerWizard:
         v_scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
         
-        # Days of the week
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        
-        # Create 7 columns (one for each day)
-        for col, day in enumerate(days):
-            day_frame = ttk.Frame(scrollable_frame, borderwidth=1, relief="solid")
-            day_frame.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
+        # Check if this is calendar mode
+        if hasattr(self, 'current_schedule_mode') and self.current_schedule_mode == "calendar":
+            # Calendar mode: display calendar entries grouped by dates
+            calendar = self.current_schedule.get("calendar", {})
+            if not calendar:
+                messagebox.showinfo("No Calendar Entries", "This calendar schedule contains no entries.")
+                popup.destroy()
+                return
             
-            # Day header
-            header_label = ttk.Label(day_frame, text=day.upper(), font=("TkDefaultFont", 12, "bold"))
-            header_label.pack(pady=5)
+            # Sort calendar entries by date
+            sorted_calendar = sorted(calendar.items(), key=lambda x: x[1]["date"])
             
-            # Day listbox
-            day_listbox = tk.Listbox(day_frame, font=("Consolas", 11), width=30, height=25)
-            day_listbox.pack(fill="both", expand=True, padx=5, pady=5)
+            # Create columns for each calendar date
+            for col, (date_key, date_data) in enumerate(sorted_calendar):
+                day_frame = ttk.Frame(scrollable_frame, borderwidth=1, relief="solid")
+                day_frame.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
+                
+                # Date header
+                header_label = ttk.Label(day_frame, text=f"{date_data['date']}\n({date_data['day']})", 
+                                        font=("TkDefaultFont", 12, "bold"), justify="center")
+                header_label.pack(pady=5)
+                
+                # Day listbox
+                day_listbox = tk.Listbox(day_frame, font=("Consolas", 11), width=30, height=25)
+                day_listbox.pack(fill="both", expand=True, padx=5, pady=5)
+                
+                # Populate the listbox with calendar entries
+                entries = date_data.get("entries", [])
+                if entries:
+                    for entry in entries:
+                        time_str = entry.get("time", "??:??")
+                        file_path = entry.get("file", "")
+                        file_name = Path(file_path).name
+                        
+                        # Truncate long filenames
+                        if len(file_name) > 25:
+                            display_name = file_name[:22] + "..."
+                        else:
+                            display_name = file_name
+                        
+                        day_listbox.insert(tk.END, f"{time_str} {display_name}")
+                else:
+                    day_listbox.insert(tk.END, "No entries")
+        else:
+            # Weekly mode: display weekly schedule for each day
+            days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
             
-            # Populate the listbox
-            day_schedule = self.current_schedule.get(day, [])
-            
-            if day_schedule:
-                for entry in day_schedule:
-                    time_str = entry.get("time", "??:??")
-                    file_path = entry.get("file", "")
-                    file_name = Path(file_path).name
-                    
-                    # Truncate long filenames
-                    if len(file_name) > 25:
-                        display_name = file_name[:22] + "..."
-                    else:
-                        display_name = file_name
-                    
-                    day_listbox.insert(tk.END, f"{time_str} {display_name}")
+            # Create 7 columns (one for each day)
+            for col, day in enumerate(days):
+                day_frame = ttk.Frame(scrollable_frame, borderwidth=1, relief="solid")
+                day_frame.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
+                
+                # Day header
+                header_label = ttk.Label(day_frame, text=day.upper(), font=("TkDefaultFont", 12, "bold"))
+                header_label.pack(pady=5)
+                
+                # Day listbox
+                day_listbox = tk.Listbox(day_frame, font=("Consolas", 11), width=30, height=25)
+                day_listbox.pack(fill="both", expand=True, padx=5, pady=5)
+                
+                # Populate the listbox
+                day_schedule = self.current_schedule.get(day, [])
+                
+                if day_schedule:
+                    for entry in day_schedule:
+                        time_str = entry.get("time", "??:??")
+                        file_path = entry.get("file", "")
+                        file_name = Path(file_path).name
+                        
+                        # Truncate long filenames
+                        if len(file_name) > 25:
+                            display_name = file_name[:22] + "..."
+                        else:
+                            display_name = file_name
+                        
+                        day_listbox.insert(tk.END, f"{time_str} {display_name}")
+                else:
+                    day_listbox.insert(tk.END, "No entries")
                 
                 # Add entry count
                 day_listbox.insert(tk.END, f"--- {len(day_schedule)} entries ---")
@@ -1722,6 +1768,8 @@ class SimpleSchedulerWizard:
         if selected:
             # Update the manual entry field and load the profile
             self.profile_var.set(selected)
+            # Auto-update channel to match profile name
+            self.channel_var.set(selected)
             self.load_profile()
 
     def load_profile(self):
@@ -1736,6 +1784,8 @@ class SimpleSchedulerWizard:
             profile_name = profile_name[:-5]
             
         self.current_profile = profile_name
+        # Auto-update channel to match profile name
+        self.channel_var.set(profile_name)
         self.load_collections_from_profile()
         messagebox.showinfo("Success", f"Loaded profile: {self.current_profile}.json")
 
