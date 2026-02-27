@@ -446,8 +446,8 @@ class SimpleSchedulerWizard:
         # Debug button to show all 7 days in popup
         ttk.Button(day_frame, text="[DEBUG] 7-Day View", command=self.show_seven_day_popup, width=12).pack(side="right", padx=5)
         
-        # Button to inspect the generated schedule
-        ttk.Button(day_frame, text="[INSPECT] View Schedule", command=self.show_seven_day_popup, width=15).pack(side="right", padx=5)
+        # Button to inspect a saved schedule JSON file
+        ttk.Button(day_frame, text="[INSPECT] View Schedule", command=self.inspect_schedule_file, width=15).pack(side="right", padx=5)
         
         # Copy button on the right
         ttk.Button(day_frame, text="[COPY] Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
@@ -490,9 +490,41 @@ class SimpleSchedulerWizard:
             messagebox.showinfo("No Schedule", "Generate a schedule first to see the 7-day view.")
             return
         
+        channel_name = self.current_channel or "Current"
+        self._show_schedule_popup(self.current_schedule, channel_name)
+
+    def inspect_schedule_file(self):
+        """Open a file dialog to load and inspect a saved schedule JSON file"""
+        # Open file dialog to select a schedule JSON file
+        file_path = filedialog.askopenfilename(
+            title="Select Schedule File",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            initialdir=SCHEDULE_DIR
+        )
+        
+        if not file_path:
+            return  # User cancelled
+        
+        try:
+            # Load the schedule from the selected file
+            with open(file_path, "r", encoding="utf-8") as f:
+                schedule_data = json.load(f)
+            
+            # Determine the filename for display
+            file_name = Path(file_path).stem
+            channel_name = file_name.replace("schedule_", "") if file_name.startswith("schedule_") else file_name
+            
+            # Show the schedule in a popup (reusing the display logic)
+            self._show_schedule_popup(schedule_data, channel_name)
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load schedule file: {e}")
+
+    def _show_schedule_popup(self, schedule_data, channel_name):
+        """Display a schedule in a popup window (used by both generated and loaded schedules)"""
         # Create popup window
         popup = tk.Toplevel(self.root)
-        popup.title("7-Day Schedule View (Debug)")
+        popup.title(f"Schedule View - {channel_name}")
         popup.geometry("1400x600")
         
         # Main frame with horizontal scroll
@@ -520,9 +552,9 @@ class SimpleSchedulerWizard:
         canvas.pack(side="left", fill="both", expand=True)
         
         # Check if this is calendar mode
-        if hasattr(self, 'current_schedule_mode') and self.current_schedule_mode == "calendar":
+        if "calendar" in schedule_data:
             # Calendar mode: display calendar entries grouped by dates
-            calendar = self.current_schedule.get("calendar", {})
+            calendar = schedule_data.get("calendar", {})
             if not calendar:
                 messagebox.showinfo("No Calendar Entries", "This calendar schedule contains no entries.")
                 popup.destroy()
@@ -580,7 +612,8 @@ class SimpleSchedulerWizard:
                 day_listbox.pack(fill="both", expand=True, padx=5, pady=5)
                 
                 # Populate the listbox
-                day_schedule = self.current_schedule.get(day, [])
+                weekly_data = schedule_data.get("weekly", {})
+                day_schedule = weekly_data.get(day, [])
                 
                 if day_schedule:
                     for entry in day_schedule:
@@ -600,8 +633,6 @@ class SimpleSchedulerWizard:
                 
                 # Add entry count
                 day_listbox.insert(tk.END, f"--- {len(day_schedule)} entries ---")
-            else:
-                day_listbox.insert(tk.END, "No entries")
         
         # Close button
         close_frame = ttk.Frame(popup)
