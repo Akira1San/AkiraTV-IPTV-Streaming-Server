@@ -506,17 +506,10 @@ async function playVideo(videoId) {
     }
     
     try {
-        const response = await fetch(`/api/channels/${selectedChannel}/play`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                video_path: video.path
-            })
+        // Use apiCall which properly handles error responses
+        const result = await apiCall(`/api/channels/${selectedChannel}/play`, 'POST', {
+            video_path: video.path
         });
-        
-        const result = await response.json();
         
         if (result.success) {
             vodData.currentlyPlaying = {
@@ -526,11 +519,11 @@ async function playVideo(videoId) {
             updateNowPlaying();
             showToast(t('vod.videoStarted').replace('{video}', video.name), 'success');
         } else {
-            showToast(t('vod.playbackFailed') + ': ' + result.error, 'error');
+            showToast(t('vod.playbackFailed') + ': ' + (result.error || result.message || 'Unknown error'), 'error');
         }
     } catch (error) {
         console.error('Failed to play video:', error);
-        showToast(t('vod.playbackError'), 'error');
+        showToast(t('vod.playbackError') + ': ' + error.message, 'error');
     }
 }
 
@@ -544,22 +537,19 @@ async function stopCurrentVideo() {
     }
     
     try {
-        const response = await fetch(`/api/channels/${selectedChannel}/stop`, {
-            method: 'POST'
-        });
-        
-        const result = await response.json();
+        // Use apiCall which properly handles error responses
+        const result = await apiCall(`/api/channels/${selectedChannel}/stop`, 'POST');
         
         if (result.success) {
             vodData.currentlyPlaying = null;
             updateNowPlaying();
             showToast(t('vod.videoStopped'), 'success');
         } else {
-            showToast(t('vod.stopFailed') + ': ' + result.error, 'error');
+            showToast(t('vod.stopFailed') + ': ' + (result.error || result.message || 'Unknown error'), 'error');
         }
     } catch (error) {
         console.error('Failed to stop video:', error);
-        showToast(t('vod.stopError'), 'error');
+        showToast(t('vod.stopError') + ': ' + error.message, 'error');
     }
 }
 
@@ -571,6 +561,8 @@ async function checkCurrentlyPlaying() {
     try {
         const response = await fetch(`/api/channels/${selectedChannel}`);
         const data = await response.json();
+        
+        console.log('checkCurrentlyPlaying response:', data);
         
         if (data.current_video) {
             // Find the video in our library
@@ -587,6 +579,7 @@ async function checkCurrentlyPlaying() {
         
         updateNowPlaying();
     } catch (error) {
+        console.error('checkCurrentlyPlaying error:', error);
         // Silently fail - channel might not exist or be running
     }
 }
@@ -596,14 +589,18 @@ function updateNowPlaying() {
     const nowPlayingDiv = document.getElementById('vodNowPlaying');
     const stopBtn = document.getElementById('stopCurrentBtn');
     
+    console.log('updateNowPlaying called with:', vodData.currentlyPlaying);
+    
     if (vodData.currentlyPlaying) {
         document.getElementById('nowPlayingTitle').textContent = vodData.currentlyPlaying.video.name;
         document.getElementById('nowPlayingChannel').textContent = `Channel: ${vodData.currentlyPlaying.channel}`;
         nowPlayingDiv.style.display = 'block';
         stopBtn.disabled = false;
+        console.log('Stop button enabled');
     } else {
         nowPlayingDiv.style.display = 'none';
         stopBtn.disabled = true;
+        console.log('Stop button disabled');
     }
 }
 
