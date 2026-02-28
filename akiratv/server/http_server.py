@@ -1,4 +1,4 @@
-# akiratv/http_server.py
+# akiratv/server/http_server.py
 import os
 import asyncio
 from pathlib import Path
@@ -15,6 +15,7 @@ class HttpServer:
         self.site = None
         self.public_url = None
         self.thread = None
+        self._logged_missing_channels = set()  # Track channels we've already logged
 
     async def hls_handler(self, request):
         """Serve HLS files with proper headers and retry logic for permission errors."""
@@ -52,7 +53,10 @@ class HttpServer:
         file_path = base_path / path
         
         if not file_path.exists():
-            print(f"[HLS] File not found: {file_path}")
+            # Only log once per channel to avoid spam
+            if channel_name not in self._logged_missing_channels:
+                self._logged_missing_channels.add(channel_name)
+                print(f"[HLS] File not found: {file_path}")
             raise web.HTTPNotFound()
         
         max_retries = 20 # max_retries = 5
@@ -115,7 +119,11 @@ class HttpServer:
         file_path = base_path / request.path.lstrip("/")
         
         if not file_path.exists():
-            print(f"[STATIC] File not found: {file_path}")
+            # Only log once per path to avoid spam
+            path_key = f"static:{file_path}"
+            if path_key not in self._logged_missing_channels:
+                self._logged_missing_channels.add(path_key)
+                print(f"[STATIC] File not found: {file_path}")
             raise web.HTTPNotFound()
         
         try:
@@ -221,7 +229,11 @@ class HttpServer:
         file_path = base_path / "channels" / channel_name / filename
         
         if not file_path.exists():
-            print(f"[ASSET] File not found: {file_path}")
+            # Only log once per asset to avoid spam
+            asset_key = f"asset:{channel_name}:{filename}"
+            if asset_key not in self._logged_missing_channels:
+                self._logged_missing_channels.add(asset_key)
+                print(f"[ASSET] File not found: {file_path}")
             raise web.HTTPNotFound(text=f"Channel asset not found: {file_path}")
         
         # Permission retry logic
