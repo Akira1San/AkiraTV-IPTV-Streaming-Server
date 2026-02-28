@@ -220,10 +220,11 @@ let currentChannelFilter = 'all'; // Current filter: 'all', 'enabled', 'disabled
 
 async function loadChannels() {
     try {
-        // Load channels and config first
-        const [channelsData, configData] = await Promise.all([
+        // Load channels, config, and channel URLs from API
+        const [channelsData, configData, urlsData] = await Promise.all([
             apiCall('/api/channels'),
-            apiCall('/api/config')
+            apiCall('/api/config'),
+            apiCall('/api/channels/urls')
         ]);
         
         globalConfig = configData;
@@ -232,20 +233,10 @@ async function loadChannels() {
         
         console.log('📺 Loaded channels:', channels);
         
-        // Use dynamic URL generation based on current host
-        const streamBase = getStreamBaseUrl();
-        let channelUrls = {};
-        channels.forEach(ch => {
-            if (ch.enabled) {
-                channelUrls[ch.name] = {
-                    lan: {
-                        stream: `${streamBase}/hls/${ch.name}/index.m3u8`,
-                        epg: `${streamBase}/xmltv.xml`
-                    }
-                };
-            }
-        });
-        console.log('🔗 Using fallback channel URLs:', channelUrls);
+        // Use URLs from API endpoint which correctly determines LAN IP and streaming port
+        const channelUrls = urlsData.channels || {};
+        window.cachedChannelUrls = urlsData; // Cache for filterChannels
+        console.log('🔗 Using API channel URLs:', channelUrls);
         
         const channelsCount = document.getElementById('channelsCount');
         if (channelsCount) channelsCount.textContent = channels.length;
@@ -442,19 +433,9 @@ function filterChannels(searchTerm) {
         );
     }
     
-    // Generate URLs for filtered channels
-    const streamBase = getStreamBaseUrl();
-    const channelUrls = {};
-    filteredChannels.forEach(ch => {
-        if (ch.enabled) {
-            channelUrls[ch.name] = {
-                lan: {
-                    stream: `${streamBase}/hls/${ch.name}/index.m3u8`,
-                    epg: `${streamBase}/xmltv.xml`
-                }
-            };
-        }
-    });
+    // Get URLs from the cached API data (loaded in loadChannels)
+    const urlsData = window.cachedChannelUrls || {};
+    const channelUrls = urlsData.channels || {};
     
     // Display filtered channels
     displayChannels(filteredChannels, channelUrls);
@@ -511,10 +492,20 @@ function clearChannelSearch() {
 }
 
 function generateChannelUrls(channelName, urls) {
-    const streamBase = getStreamBaseUrl();
+    // Try to get URL from cached API data if not provided
     if (!urls || Object.keys(urls).length === 0) {
-        // Fallback to a basic URL with dynamic streaming server
-        const fallbackUrl = `${streamBase}/hls/${channelName}/index.m3u8`;
+        const cachedUrls = window.cachedChannelUrls;
+        if (cachedUrls && cachedUrls.channels && cachedUrls.channels[channelName]) {
+            urls = cachedUrls.channels[channelName];
+        }
+    }
+    
+    if (!urls || Object.keys(urls).length === 0) {
+        // Fallback: use cached API data to build URL with correct LAN IP and port
+        const cachedUrls = window.cachedChannelUrls;
+        const port = cachedUrls?.port || '8081';
+        const localIp = cachedUrls?.local_ip || '127.0.0.1';
+        const fallbackUrl = `http://${localIp}:${port}/hls/${channelName}/index.m3u8`;
         return `<div class="channel-url">
             <div class="url-label">📺 Stream:</div>
             <span style="overflow: hidden; text-overflow: ellipsis;">${fallbackUrl}</span>
@@ -548,7 +539,10 @@ function generateChannelUrls(channelName, urls) {
     
     // If we have URLs but none of the expected ones, show fallback
     if (!urlsHtml) {
-        const fallbackUrl = `${streamBase}/hls/${channelName}/index.m3u8`;
+        const cachedUrls = window.cachedChannelUrls;
+        const port = cachedUrls?.port || '8081';
+        const localIp = cachedUrls?.local_ip || '127.0.0.1';
+        const fallbackUrl = `http://${localIp}:${port}/hls/${channelName}/index.m3u8`;
         return `<div class="channel-url">
             <div class="url-label">📺 Stream:</div>
             <span style="overflow: hidden; text-overflow: ellipsis;">${fallbackUrl}</span>
@@ -561,10 +555,18 @@ function generateChannelUrls(channelName, urls) {
 
 // Get Channel URL
 function getChannelUrl(channel) {
-    // This will be replaced by the proper URLs from the API
-    const port = window.location.port || '8080';
-    const host = window.location.hostname;
-    return `http://${host}:${port}/hls/${channel}/index.m3u8`;
+    // Try to get URL from cached API data first
+    const cachedUrls = window.cachedChannelUrls;
+    if (cachedUrls && cachedUrls.channels && cachedUrls.channels[channel]) {
+        const channelUrl = cachedUrls.channels[channel];
+        if (channelUrl.lan && channelUrl.lan.stream) {
+            return channelUrl.lan.stream;
+        }
+    }
+    // Fallback: use cached API data to build URL with correct LAN IP and port
+    const port = cachedUrls?.port || '8081';
+    const localIp = cachedUrls?.local_ip || '127.0.0.1';
+    return `http://${localIp}:${port}/hls/${channel}/index.m3u8`;
 }
 
 // Engine Control
