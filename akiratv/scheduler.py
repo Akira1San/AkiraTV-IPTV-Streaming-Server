@@ -312,16 +312,10 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
             entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             current_time = current_dt.time()
             
-            # Debug logging
-            logger.debug(f"[SCHEDULER] Checking entry {i}: time={entry['time']}, file={entry.get('file', 'N/A')[:50]}")
-            logger.debug(f"[SCHEDULER]   entry_time={entry_time}, current_time={current_time}")
-            
             # Handle overnight/schedule wrap-around
             # If entry time is more than 2 hours ahead, treat as yesterday
             # This handles cases where schedule spans midnight
             time_diff_seconds = (datetime.combine(datetime.min, entry_time) - datetime.combine(datetime.min, current_time)).total_seconds()
-            
-            logger.debug(f"[SCHEDULER]   time_diff_seconds={time_diff_seconds}")
             
             if time_diff_seconds > 7200:
                 # Entry time is more than 2 hours ahead - treat as yesterday

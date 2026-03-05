@@ -361,24 +361,39 @@ class AkiraTV:
             self.stop()
 
     def reload_schedule(self):
-        """Reload schedule without restarting AkiraTV."""
+        """Reload schedule without restarting AkiraTV - updates schedules in-place."""
         from .scheduler import get_current_schedule_for_channel
-        all_entries = []
+        
+        # Get current time for logging
+        from datetime import datetime
+        current_time = datetime.now().strftime("%H:%M:%S")
+        logger.info(f"Reloading schedules at {current_time}...")
+        
+        # Update each channel's schedule in-place without restarting
+        reloaded_count = 0
         for channel, chan_conf in self.config.data.get("channels", {}).items():
             if chan_conf.get("enabled", True):
-                entries = get_current_schedule_for_channel(channel)
-                all_entries.extend(entries)
+                # Get new schedule for this channel
+                new_entries = get_current_schedule_for_channel(channel)
+                
+                # Find the worker for this channel
+                if channel in self.workers:
+                    worker, thread = self.workers[channel]
+                    if worker and hasattr(worker, 'update_schedule'):
+                        # Update schedule in-place
+                        worker.update_schedule(new_entries)
+                        reloaded_count += 1
+                    else:
+                        logger.warning(f"Worker for {channel} doesn't support in-place update, will restart")
+                        # Fall back to old behavior: mark worker for restart
+                        worker.running = False
+                else:
+                    logger.warning(f"No worker found for channel {channel}")
         
-        if all_entries:
-            for worker, thread in self.workers.values():
-                if worker:
-                    worker.running = False
-            self.workers.clear()
-            
-            self.launch_channel_workers(all_entries)
-            logger.info("Schedule reloaded successfully.")
+        if reloaded_count > 0:
+            logger.info(f"Schedule reloaded successfully for {reloaded_count} channel(s) in-place.")
         else:
-            logger.warning("No schedule entries found after reload.")
+            logger.warning("No channels were updated - may need to restart workers.")
 
     def play_now(self, channel: str, video_path: str):
         """Sends a play_now command to a VOD or Dynamic worker."""
