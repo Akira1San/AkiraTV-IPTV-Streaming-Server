@@ -183,7 +183,10 @@ class SimpleSchedulerWizard:
             self._reset_tk_widgets(self.root)
         
         self.current_theme = theme_name
-    
+        
+        # Refresh list displays to update colors
+        self.update_added_list_display()
+
     def _apply_dark_to_tk_widgets(self, widget):
         """Recursively apply dark theme to tk widgets (like Listbox)"""
         for child in widget.winfo_children():
@@ -856,9 +859,15 @@ class SimpleSchedulerWizard:
             return
         
         added_count = 0
+        skipped_count = 0
         for collection in self.selected_collections:
             for video in collection.get("videos", []):
                 video_path = video.get("path", "")
+                
+                # Skip missing videos (don't add them)
+                if video_path and not Path(video_path).exists():
+                    skipped_count += 1
+                    continue
                 
                 # Check if already added
                 if video_path not in [v["path"] for v in self.added_videos]:
@@ -872,9 +881,12 @@ class SimpleSchedulerWizard:
                     self.video_to_collection_map[video_path] = collection
                     added_count += 1
         
-        if added_count > 0:
+        if added_count > 0 or skipped_count > 0:
             self.update_added_list_display()
-            messagebox.showinfo("Success", f"Added {added_count} video(s) from {len(self.selected_collections)} collection(s)!")
+            msg = f"Added {added_count} video(s) from {len(self.selected_collections)} collection(s)!"
+            if skipped_count > 0:
+                msg += f"\n⚠️ Skipped {skipped_count} missing video(s) (not found on disk)."
+            messagebox.showinfo("Success", msg)
         else:
             messagebox.showinfo("Info", "All videos from selected collections are already in the added list.")
 
@@ -884,14 +896,27 @@ class SimpleSchedulerWizard:
         """Update added videos listbox (excludes blacklisted videos)"""
         self.added_list.delete(0, tk.END)
         non_blacklisted_count = 0
+        
+        # Determine text color based on theme
+        normal_color = "white" if self.current_theme == "dark" else "black"
+        
         for video in self.added_videos:
             # Skip blacklisted videos in the main list
             if video["path"] in self.blacklisted_videos:
                 continue
             collection_name = video.get("collection", {}).get("name", "Unknown")
             video_name = video.get("name", "Unknown")
-            display_text = f"{collection_name} - {video_name}"
-            self.added_list.insert(tk.END, display_text)
+            video_path = video.get("path", "")
+            
+            # Check if video file exists
+            if video_path and not Path(video_path).exists():
+                display_text = f"❌ {collection_name} - {video_name} (MISSING)"
+                self.added_list.insert(tk.END, display_text)
+                self.added_list.itemconfig(tk.END, fg="red")  # Red for missing
+            else:
+                display_text = f"{collection_name} - {video_name}"
+                self.added_list.insert(tk.END, display_text)
+                self.added_list.itemconfig(tk.END, fg=normal_color)  # Normal color
             non_blacklisted_count += 1
         
         self.added_count_label.configure(text=f"Total: {non_blacklisted_count} videos")
@@ -900,12 +925,23 @@ class SimpleSchedulerWizard:
     def update_blacklist_list_display(self):
         """Update the blacklist tab listbox"""
         self.blacklist_list.delete(0, tk.END)
+        normal_color = "white" if self.current_theme == "dark" else "black"
+        
         for video in self.added_videos:
             if video["path"] in self.blacklisted_videos:
                 collection_name = video.get("collection", {}).get("name", "Unknown")
                 video_name = video.get("name", "Unknown")
-                display_text = f"{collection_name} - {video_name}"
-                self.blacklist_list.insert(tk.END, display_text)
+                video_path = video.get("path", "")
+                
+                # Check if video file exists
+                if video_path and not Path(video_path).exists():
+                    display_text = f"❌ {collection_name} - {video_name} (MISSING)"
+                    self.blacklist_list.insert(tk.END, display_text)
+                    self.blacklist_list.itemconfig(tk.END, fg="red")  # Red for missing
+                else:
+                    display_text = f"{collection_name} - {video_name}"
+                    self.blacklist_list.insert(tk.END, display_text)
+                    self.blacklist_list.itemconfig(tk.END, fg=normal_color)
         
         self.blacklist_count_label.configure(text=f"Blacklisted: {len(self.blacklisted_videos)} videos")
     

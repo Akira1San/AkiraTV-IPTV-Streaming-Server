@@ -209,6 +209,9 @@ class CollectionWizard:
             self.apply_dark_theme()
             self.current_theme = "dark"
             self.theme_btn.config(text="☀️ Light Mode")
+        
+        # Refresh video list to update colors
+        self.refresh_video_list()
 
     def load_tmdb_config(self):
         """Load TMDB API key from config file or prompt user"""
@@ -1013,6 +1016,22 @@ Your API key will be saved for future use.""")
                                      command=lambda: self.toggle_tag("Episodic"))
         episodic_cb.pack(anchor="w", padx=5, pady=2)
         
+        # Videos list frame (below collections list)
+        videos_frame = ttk.LabelFrame(right_column, text="Videos in Collection")
+        videos_frame.pack(side="bottom", fill="both", expand=True, pady=(10, 0))
+        
+        # Create scrollbar for video list
+        video_scrollbar = ttk.Scrollbar(videos_frame)
+        video_scrollbar.pack(side="right", fill="y")
+        
+        # Create video listbox
+        self.video_list = tk.Listbox(videos_frame, yscrollcommand=video_scrollbar.set)
+        self.video_list.pack(fill="both", expand=True, padx=5, pady=5)
+        video_scrollbar.config(command=self.video_list.yview)
+        
+        # Store reference for video list colors
+        self.video_list_colors = []
+        
         self.refresh_collection_list()
 
     def select_all(self):
@@ -1611,6 +1630,47 @@ Your API key will be saved for future use.""")
             if has_missing:
                 self.collection_list.itemconfig(tk.END, fg="red")
 
+    def refresh_video_list(self):
+        """Refresh the video list with red color for missing videos"""
+        self.video_list.delete(0, tk.END)
+        self.video_list_colors.clear()
+        
+        # Get selected collection
+        selection = self.collection_list.curselection()
+        if not selection or len(selection) != 1:
+            return
+        
+        idx = selection[0]
+        collection = self.collections[idx]
+        
+        videos = collection.get("videos", [])
+        
+        if not videos:
+            self.video_list.insert(tk.END, "(No videos in this collection)")
+            self.video_list.itemconfig(tk.END, fg="gray")
+            return
+        
+        # Determine text color based on theme
+        normal_color = "white" if self.current_theme == "dark" else "black"
+        
+        for video in videos:
+            video_path = video.get("path", "")
+            video_name = Path(video_path).name if video_path else "Unknown"
+            
+            # Check if video file exists
+            if video_path and not Path(video_path).exists():
+                display_name = f"❌ {video_name} (MISSING)"
+                self.video_list.insert(tk.END, display_name)
+                self.video_list.itemconfig(tk.END, fg="red")
+                self.video_list_colors.append("missing")
+            else:
+                duration = video.get("duration", 0)
+                display_name = f"{video_name} [{duration:.1f}s]"
+                self.video_list.insert(tk.END, display_name)
+                # Use theme-appropriate color for normal videos
+                self.video_list.itemconfig(tk.END, fg=normal_color)
+                self.video_list_colors.append("normal")
+
     def display_cover_preview(self, cover_path):
         """Display cover image in the preview widget"""
         try:
@@ -1707,6 +1767,9 @@ Your API key will be saved for future use.""")
             
             # Update tag checkboxes
             self.update_tag_checkboxes(collection)
+            
+            # Refresh the video list
+            self.refresh_video_list()
         else:
             # Clear metadata fields if multiple or no items selected
             for var in self.metadata_vars.values():
@@ -1720,6 +1783,9 @@ Your API key will be saved for future use.""")
             for var in self.genre_vars.values():
                 var.set(False)
             self.episodic_var.set(False)
+            
+            # Refresh the video list
+            self.refresh_video_list()
 
     def update_tag_checkboxes(self, collection):
         """Update tag checkboxes based on collection data"""
