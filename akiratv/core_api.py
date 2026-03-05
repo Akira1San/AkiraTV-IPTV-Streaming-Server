@@ -26,6 +26,7 @@ class ChannelStatus:
     next_program: str = ""
     viewers: int = 0
     uptime: float = 0.0  # seconds
+    current_video: Optional[str] = None
     
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -234,6 +235,17 @@ class CoreAPI:
         channels = self.get_channels()
         for ch in channels:
             if ch.name == channel:
+                # Add current video information for VOD/Dynamic channels
+                if self._running and self._engine and channel in self._engine.workers:
+                    worker, thread = self._engine.workers[channel]
+                    if worker and hasattr(worker, 'video_to_play'):
+                        ch.current_video = worker.video_to_play
+                    elif hasattr(worker, 'current_video'):
+                        ch.current_video = worker.current_video
+                    else:
+                        ch.current_video = None
+                else:
+                    ch.current_video = None
                 return ch
         return None
 

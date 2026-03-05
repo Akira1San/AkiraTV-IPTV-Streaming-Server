@@ -82,7 +82,7 @@ def get_full_todays_schedule() -> List[Dict[str, Any]]:
             logger.warning(f"📆 No weekly schedule found for {today_dow}")
 
     if not entries:
-        logger.warning(f"❌ No schedule entries found for {today_date} ({today_dow})")
+        logger.warning(f"[ERROR] No schedule entries found for {today_date} ({today_dow})")
         return []
 
     # Sort all entries by time
@@ -110,11 +110,11 @@ def get_full_todays_schedule() -> List[Dict[str, Any]]:
     # Return from current entry to end
     if current_entry_index >= 0:
         result = entries[current_entry_index:]
-        logger.info(f"✅ Found current entry at index {current_entry_index}, returning {len(result)} entries")
+        logger.info(f"[OK] Found current entry at index {current_entry_index}, returning {len(result)} entries")
     else:
         # No entries started yet - return all (start from first)
         result = entries
-        logger.info(f"✅ No current entry found, returning all {len(result)} entries")
+        logger.info(f"[OK] No current entry found, returning all {len(result)} entries")
 
     return result
 
@@ -305,26 +305,49 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
 
     # Find current entry (last one that started before now)
     current_entry_index = -1
+    current_dt = datetime.now()
+    
     for i, entry in enumerate(entries):
-        entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
-        entry_dt = datetime.combine(current_dt.date(), entry_time)
-        
-        # Handle overnight: if entry time is > 2 hours ahead, it's yesterday
-        if (datetime.combine(datetime.min, entry_time) - datetime.combine(datetime.min, current_dt.time())).total_seconds() > 7200:
-            # Entry time is more than 2 hours ahead → treat as yesterday
-            entry_dt = datetime.combine(current_dt.date() - timedelta(days=1), entry_time)
-        else:
-            entry_dt = datetime.combine(current_dt.date(), entry_time)
-        
-        if entry_dt <= current_dt:
-            current_entry_index = i
-        else:
-            break
+        try:
+            entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
+            current_time = current_dt.time()
+            
+            # Debug logging
+            logger.debug(f"[SCHEDULER] Checking entry {i}: time={entry['time']}, file={entry.get('file', 'N/A')[:50]}")
+            logger.debug(f"[SCHEDULER]   entry_time={entry_time}, current_time={current_time}")
+            
+            # Handle overnight/schedule wrap-around
+            # If entry time is more than 2 hours ahead, treat as yesterday
+            # This handles cases where schedule spans midnight
+            time_diff_seconds = (datetime.combine(datetime.min, entry_time) - datetime.combine(datetime.min, current_time)).total_seconds()
+            
+            logger.debug(f"[SCHEDULER]   time_diff_seconds={time_diff_seconds}")
+            
+            if time_diff_seconds > 7200:
+                # Entry time is more than 2 hours ahead - treat as yesterday
+                entry_dt = datetime.combine(current_dt.date() - timedelta(days=1), entry_time)
+            else:
+                # Entry is today (either in past or within 2 hours ahead)
+                entry_dt = datetime.combine(current_dt.date(), entry_time)
+            
+            if entry_dt <= current_dt:
+                current_entry_index = i
+            else:
+                # Stop at first future entry - don't include entries that haven't started yet
+                break
+        except (ValueError, KeyError) as e:
+            logger.warning(f"Error parsing entry time for {entry.get('file', 'unknown')}: {e}")
+            continue
 
     # Return from current entry onward
     if current_entry_index >= 0:
+        logger.info(f"Found {current_entry_index + 1} past schedule entry(ies), starting from entry {current_entry_index + 1}")
         return entries[current_entry_index:]
     else:
+        # No past entries found - check if there are any future entries for today
+        if entries:
+            # Return entries but log that we're starting from beginning
+            logger.info(f"No past entries found. Starting from beginning (first entry at {entries[0].get('time', 'unknown')})")
         return entries  # Start from beginning if no past entries
 
 
