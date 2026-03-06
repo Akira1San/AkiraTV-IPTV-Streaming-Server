@@ -669,65 +669,8 @@ class MetadataFetcher:
             if hints_names:
                 print(f"DEBUG: Will filter results by hints: {hints_names}")
 
-            # Try the free movie_db API first (no registration needed)
-            try:
-                api_url = "http://theapache64.com/movie_db/search"
-                params = {"keyword": clean_title}
-
-                response = requests.get(api_url, params=params, timeout=10)
-                if response.status_code == 200:
-                    data = response.json()
-                    if not data.get("error", True) and data.get("data"):
-                        movie_data = data["data"]
-                        print(f"DEBUG: Found movie via free API: {movie_data.get('name')}")
-
-                        # If we have search hints, verify the result contains the hints
-                        if hints_names:
-                            movie_name_lower = movie_data.get("name", "").lower()
-                            plot_lower = movie_data.get("plot", "").lower()
-
-                            hints_found = False
-                            for hint in hints_names:
-                                hint_lower = hint.lower()
-                                if hint_lower in movie_name_lower or hint_lower in plot_lower:
-                                    print(f"DEBUG: Search hint '{hint}' verified in result")
-                                    hints_found = True
-                                    break
-
-                            if not hints_found:
-                                print(f"DEBUG: Search hints not found in result, trying web scraping...")
-                                # Fall through to web scraping for better matching
-                                raise Exception("Hints not in result")
-
-                        # Convert to our format
-                        genres = movie_data.get("genre", "").split(",")
-                        genres = [g.strip() for g in genres if g.strip()]
-                        
-                        # Extract year from API response if available
-                        api_year = None
-                        if movie_data.get("year"):
-                            try:
-                                api_year = int(movie_data.get("year"))
-                            except:
-                                pass
-                        
-                        # Use API year if available, otherwise use search year
-                        release_year = api_year if api_year else (search_year if search_year else datetime.now().year)
-
-                        print(f"DEBUG: Free API returned - Genres: {genres}, Year: {release_year}")
-
-                        return {
-                            "title": movie_data.get("name", clean_title),
-                            "overview": movie_data.get("plot", ""),
-                            "release_date": str(release_year),
-                            "genres": [{"name": genre} for genre in genres],
-                            "poster_path": movie_data.get("poster_url"),
-                            "source": "IMDb (Free API)"
-                        }
-            except Exception as e:
-                print(f"DEBUG: Free API failed: {e}")
-
-            # Fallback to web scraping if API fails
+            # Directly use web scraping which reliably fetches English titles from IMDb
+            # Disabled the free API because it returns non-English titles for Asian movies
             return self.search_imdb_web_scraping(clean_title, search_year, hints_names)
 
         except Exception as e:
@@ -741,7 +684,7 @@ class MetadataFetcher:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Language': 'en-US,en;q=0.9',
                 'Accept-Encoding': 'gzip, deflate',
                 'Connection': 'keep-alive',
                 'Upgrade-Insecure-Requests': '1',
@@ -976,7 +919,8 @@ class MetadataFetcher:
         """Get movie information from IMDb page"""
         try:
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9'
             }
             
             full_url = f"https://www.imdb.com{movie_url}"
@@ -987,19 +931,29 @@ class MetadataFetcher:
             
             content = response.text
             
-            # Extract title - try multiple patterns
+            # Extract title - try multiple patterns (prioritize H1 tag for English)
             title = ""
             original_title = ""
             
-            # Pattern 1: Look for the English/AKA title in the page
-            # IMDb often shows "Original title: <original>" and the main title is the English one
-            aka_match = re.search(r'original title[:\s]+([^<]+)', content, re.IGNORECASE)
-            if aka_match:
-                original_title = aka_match.group(1).strip()
-            
-            # Pattern 2: Look for title in JSON-LD - this usually has the English title
+            # Always get JSON-LD first because it's needed for year extraction later
             json_ld_match = re.search(r'<script type="application/ld\+json">(.*?)</script>', content, re.DOTALL | re.IGNORECASE)
-            if json_ld_match:
+            
+            # Pattern 1: h1 tag - this almost always contains the English title
+            title_match = re.search(r'<h1[^>]*>(?:\s*<[^>]+>)*\s*([^<]+?)(?:\s*</[^>]+>)*\s*</h1>', content, re.IGNORECASE | re.DOTALL)
+            if title_match:
+                title = title_match.group(1).strip()
+                # Unescape HTML entities
+                title = title.replace('&amp;', '&').replace('&quot;', '"').replace('&#39;', "'")
+            
+            # Pattern 2: Look for the English/AKA title in the page
+            # IMDb often shows "Original title: <original>" and the main title is the English one
+            if not title:
+                aka_match = re.search(r'original title[:\s]+([^<]+)', content, re.IGNORECASE)
+                if aka_match:
+                    original_title = aka_match.group(1).strip()
+            
+            # Pattern 3: Look for title in JSON-LD - only if H1 didn't work
+            if not title and json_ld_match:
                 json_content = json_ld_match.group(1)
                 # Try to find name in JSON
                 name_match = re.search(r'"name"\s*:\s*"([^"]+)"', json_content)
@@ -1007,12 +961,21 @@ class MetadataFetcher:
                     title = name_match.group(1).strip()
                     # Unescape unicode
                     title = title.encode('utf-8').decode('unicode-escape')
-            
-            # Pattern 3: h1 tag - often contains the English title
-            if not title:
-                title_match = re.search(r'<h1[^>]*>(?:\s*<[^>]+>)*\s*([^<]+?)(?:\s*</[^>]+>)*\s*</h1>', content, re.IGNORECASE | re.DOTALL)
-                if title_match:
-                    title = title_match.group(1).strip()
+                    
+                    # Check for alternateName which might be the English title
+                    alternate_name_match = re.search(r'"alternateName"\s*:\s*"([^"]+)"', json_content)
+                    if alternate_name_match:
+                        alternate_title = alternate_name_match.group(1).strip()
+                        alternate_title = alternate_title.encode('utf-8').decode('unicode-escape')
+                        
+                        # Determine if main title is non-English and alternate is English
+                        latin_chars_title = sum(1 for c in title if 0x0020 <= ord(c) <= 0x007F)
+                        latin_chars_alt = sum(1 for c in alternate_title if 0x0020 <= ord(c) <= 0x007F)
+                        
+                        # If main title has significantly fewer Latin characters than alternate, use alternate
+                        if len(title) > 0 and latin_chars_title < len(title) * 0.6 and latin_chars_alt > len(alternate_title) * 0.8:
+                            print(f"DEBUG: Switched to alternate title: '{alternate_title}' (from '{title}')")
+                            title = alternate_title
             
             # Pattern 4: Look for meta title tag - usually has English title
             if not title:

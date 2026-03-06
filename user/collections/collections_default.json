@@ -1,770 +1,1500 @@
 {
   "collections": [
     {
-      "id": "bloodsport",
-      "name": "Bloodsport",
-      "cover": "user/covers/bloodsport.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Bloodsport.mp4",
-          "duration": 5533.569708
-        }
-      ]
-    },
-    {
-      "id": "broken_arrow",
-      "name": "Broken Arrow",
-      "cover": "user/covers/broken_arrow.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Broken Arrow.mp4",
-          "duration": 6501.332993
-        }
-      ]
-    },
-    {
-      "id": "con_air",
-      "name": "Con Air",
-      "cover": "user/covers/con_air.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Con Air.mp4",
-          "duration": 6926.92
-        }
-      ]
-    },
-    {
-      "id": "cyborg_cop_i",
-      "name": "Cyborg Cop I",
-      "cover": "user/covers/cyborg_cop_ii.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Cyborg Cop I.mp4",
-          "duration": 5537.698833
-        }
-      ]
-    },
-    {
-      "id": "cyborg_cop_ii",
-      "name": "Cyborg Cop II",
-      "cover": "user/covers/cyborg_cop_ii.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
-          "duration": 5604.34875
-        }
-      ]
-    },
-    {
-      "id": "cyborg_cop_iii",
-      "name": "Cyborg Cop III",
-      "cover": "user/covers/cyborg_cop_iii.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Cyborg Cop III.mp4",
-          "duration": 5412.490417
-        }
-      ]
-    },
-    {
-      "id": "death_warrant",
-      "name": "Death Warrant",
-      "cover": "user/covers/death_warrant.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Death Warrant.mp4",
-          "duration": 5124.536083
-        }
-      ]
-    },
-    {
-      "id": "death_wish",
-      "name": "Death Wish",
-      "cover": "user/covers/death_wish.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Death Wish.mp4",
-          "duration": 6475.488005
-        }
-      ]
-    },
-    {
-      "id": "escape_from_los_angeles",
-      "name": "Escape from L.A. (film score)",
+      "id": "du6lg7l5by2g",
+      "name": "du6lg7L5By2G",
       "cover": null,
-      "description": "Escape from L.A.: Original Score Album From the Motion Picture  is the score by John Carpenter and Shirley Walker to the film of the same name. It was released on August 27, 1996 through Milan Records. A limited expanded edition was released in February, 2014 through La-La Land Records.",
-      "genre": [
-        "Action"
-      ],
-      "rating": "NR",
+      "description": "",
+      "genre": [],
       "videos": [
         {
-          "path": "C:/Videos/tatkotv3/Escape from los angeles.mp4",
-          "duration": 5794.079958
+          "path": "C:/Users/Admin/Downloads/Movies/du6lg7L5By2G.mp4",
+          "duration": 6058.0
         }
       ],
-      "search_hints": "1996, Kurt Russell, John Carpenter",
-      "year": 1996
+      "tags": []
     },
     {
-      "id": "escape_from_new_york",
-      "name": "Escape from New York",
-      "cover": "user/covers/escape_from_new_york.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Escape from New York.mp4",
-          "duration": 5707.368333
-        }
-      ]
-    },
-    {
-      "id": "face_off",
-      "name": "Face Off",
+      "id": "gunhed_ia",
+      "name": "Gunhed ia",
       "cover": null,
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
-          "path": "C:/Videos/tatkotv3/Face Off.mp4",
-          "duration": 8336.369708
+          "path": "C:/Users/Admin/Downloads/Movies/Gunhed.ia.mp4",
+          "duration": 6055.060998
         }
       ]
     },
     {
-      "id": "firepower",
-      "name": "Firepower",
-      "cover": "user/covers/firepower.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Firepower.mp4",
-          "duration": 5731.67
-        }
-      ]
-    },
-    {
-      "id": "gone_in_sixty_seconds",
-      "name": "Gone in Sixty Seconds",
-      "cover": "user/covers/gone_in_sixty_seconds.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Gone in Sixty Seconds.mp4",
-          "duration": 7077.028292
-        }
-      ]
-    },
-    {
-      "id": "hard_target",
-      "name": "Hard Target",
-      "cover": "user/covers/hard_target.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Hard Target.mp4",
-          "duration": 5764.58
-        }
-      ]
-    },
-    {
-      "id": "hummingbird",
-      "name": "Hummingbird",
-      "cover": "user/covers/hummingbird.png",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Hummingbird.mp4",
-          "duration": 6036.329206
-        }
-      ]
-    },
-    {
-      "id": "kickboxer",
-      "name": "Kickboxer",
-      "cover": "user/covers/kickboxer.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Kickboxer.mp4",
-          "duration": 5857.142958
-        }
-      ]
-    },
-    {
-      "id": "on_deadly_ground",
-      "name": "On Deadly Ground",
-      "cover": "user/covers/on_deadly_ground.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
-          "duration": 6103.806042
-        }
-      ]
-    },
-    {
-      "id": "predator",
-      "name": "Predator",
-      "cover": "user/covers/predator.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Predator.mp4",
-          "duration": 6395.764375
-        }
-      ]
-    },
-    {
-      "id": "savage_dog",
-      "name": "Savage Dog",
-      "cover": "user/covers/savage_dog.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Savage Dog.mp4",
-          "duration": 5710.621583
-        }
-      ]
-    },
-    {
-      "id": "soldier",
-      "name": "Soldier",
-      "cover": "user/covers/soldier.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Soldier.mp4",
-          "duration": 5916.752993
-        }
-      ]
-    },
-    {
-      "id": "swordfish",
-      "name": "Swordfish",
-      "cover": "user/covers/swordfish.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Swordfish.mp4",
-          "duration": 5955.658042
-        }
-      ]
-    },
-    {
-      "id": "the_beastmaster",
-      "name": "The Beastmaster",
-      "cover": "user/covers/the_beastmaster.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The Beastmaster.mp4",
-          "duration": 7107.141708
-        }
-      ]
-    },
-    {
-      "id": "the_mechanic_1",
-      "name": "The Mechanic 1",
-      "cover": "user/covers/the_mechanic.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
-          "duration": 5564.607007
-        }
-      ]
-    },
-    {
-      "id": "the_mechanic_2_resurrection",
-      "name": "The Mechanic 2 Resurrection",
-      "cover": "user/covers/the_mechanic.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
-          "duration": 5918.996417
-        }
-      ]
-    },
-    {
-      "id": "the_mechanic",
-      "name": "The Mechanic",
-      "cover": "user/covers/the_mechanic.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The Mechanic.mp4",
-          "duration": 6005.165833
-        }
-      ]
-    },
-    {
-      "id": "the_quest",
-      "name": "The quest",
-      "cover": "user/covers/the_quest.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The quest.mp4",
-          "duration": 5675.015011
-        }
-      ]
-    },
-    {
-      "id": "the_rock",
-      "name": "The Rock",
-      "cover": "user/covers/the_rock.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The Rock.mp4",
-          "duration": 7854.09625
-        }
-      ]
-    },
-    {
-      "id": "the_tournament",
-      "name": "The Tournament",
-      "cover": "user/covers/the_tournament.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/The Tournament..mp4",
-          "duration": 5534.529
-        }
-      ]
-    },
-    {
-      "id": "timecop",
-      "name": "Timecop",
-      "cover": "user/covers/timecop.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Timecop.mp4",
-          "duration": 5874.952417
-        }
-      ]
-    },
-    {
-      "id": "transporter_1",
-      "name": "Transporter 1",
-      "cover": "user/covers/transporter_2.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Transporter 1.mp4",
-          "duration": 5529.232042
-        }
-      ]
-    },
-    {
-      "id": "transporter_2",
-      "name": "Transporter 2",
-      "cover": "user/covers/transporter_2.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Transporter 2.mp4",
-          "duration": 5293.265079
-        }
-      ]
-    },
-    {
-      "id": "transporter_3",
-      "name": "Transporter 3",
-      "cover": "user/covers/transporter_3.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Transporter 3.mp4",
-          "duration": 6238.315417
-        }
-      ]
-    },
-    {
-      "id": "universal_soldier_day_of_reckoning",
-      "name": "Universal Soldier Day of Reckoning",
-      "cover": "user/covers/universal_soldier_day_of_reckoning.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Universal Soldier Day of Reckoning.mp4",
-          "duration": 6538.615417
-        }
-      ]
-    },
-    {
-      "id": "universal_soldier",
-      "name": "Universal Soldier",
-      "cover": "user/covers/universal_soldier.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/Universal Soldier.mp4",
-          "duration": 5968.295667
-        }
-      ]
-    },
-    {
-      "id": "death_wish_1",
-      "name": "Death Wish 1",
-      "cover": "user/covers/death_wish_3.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/death wish/Death Wish 1.mp4",
-          "duration": 5610.535011
-        }
-      ]
-    },
-    {
-      "id": "death_wish_2",
-      "name": "Death Wish 2",
-      "cover": "user/covers/death_wish_3.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/death wish/Death Wish 2.mp4",
-          "duration": 5276.7715
-        }
-      ]
-    },
-    {
-      "id": "death_wish_3",
-      "name": "Death Wish 3",
-      "cover": "user/covers/death_wish_3.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/death wish/Death Wish 3.mp4",
-          "duration": 5419.831083
-        }
-      ]
-    },
-    {
-      "id": "death_wish_4",
-      "name": "Death Wish 4",
-      "cover": "user/covers/death_wish_3.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/death wish/Death Wish 4.mp4",
-          "duration": 5975.21925
-        }
-      ]
-    },
-    {
-      "id": "above_the_law",
-      "name": "Above the Law",
-      "cover": "user/covers/above_the_law.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
-          "duration": 5956.158542
-        }
-      ]
-    },
-    {
-      "id": "belly_of_the_beast",
-      "name": "Belly of the Beast",
-      "cover": "user/covers/belly_of_the_beast.png",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
-          "duration": 5478.22275
-        }
-      ]
-    },
-    {
-      "id": "exit_wounds",
-      "name": "Exit Wounds",
-      "cover": "user/covers/exit_wounds.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
-          "duration": 6081.867458
-        }
-      ]
-    },
-    {
-      "id": "fire_down_below",
-      "name": "Fire Down Below",
-      "cover": "user/covers/fire_down_below.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
-          "duration": 6271.723792
-        }
-      ]
-    },
-    {
-      "id": "half_past_dead",
-      "name": "Half Past Dead",
-      "cover": "user/covers/half_past_dead.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Half Past Dead.mp4",
-          "duration": 5913.365792
-        }
-      ]
-    },
-    {
-      "id": "hard_to_kill",
-      "name": "Hard To Kill",
-      "cover": "user/covers/hard_to_kill.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
-          "duration": 5518.346167
-        }
-      ]
-    },
-    {
-      "id": "into_the_sun",
-      "name": "Into The Sun",
-      "cover": "user/covers/into_the_sun.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
-          "duration": 5811.07825
-        }
-      ]
-    },
-    {
-      "id": "marked_for_death",
-      "name": "Marked For Death",
-      "cover": "user/covers/marked_for_death.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
-          "duration": 5369.61425
-        }
-      ]
-    },
-    {
-      "id": "out_for_a_kill",
-      "name": "Out For A Kill",
+      "id": "comanche_moon_e01_brrip_x264-war",
+      "name": "Comanche Moon E01 BRRip x264-WAR",
       "cover": null,
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
-          "path": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
-          "duration": 5403.087333
+          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Comanche.Moon.2008.E01.BRRip.x264-WAR.mp4",
+          "duration": 5526.122667
         }
       ]
     },
     {
-      "id": "out_of_reach",
-      "name": "Out of Reach",
-      "cover": "user/covers/out_of_reach.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Out of Reach.mp4",
-          "duration": 4924.794875
-        }
-      ]
-    },
-    {
-      "id": "the_glimmer_man",
-      "name": "The Glimmer Man",
-      "cover": "user/covers/the_glimmer_man.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
-          "duration": 5481.503991
-        }
-      ]
-    },
-    {
-      "id": "ticker",
-      "name": "Ticker",
-      "cover": "user/covers/ticker.jpg",
-      "description": "",
-      "genre": [],
-      "rating": "NR",
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
-          "duration": 5521.516
-        }
-      ]
-    },
-    {
-      "id": "urban_justice",
-      "name": "Urban Justice",
+      "id": "comanche_moon_e02_brrip_x264-war",
+      "name": "Comanche Moon E02 BRRip x264-WAR",
       "cover": null,
       "description": "",
       "genre": [],
-      "rating": "NR",
       "year": 2026,
       "videos": [
         {
-          "path": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
-          "duration": 5553.714833
+          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Comanche.Moon.2008.E02.BRRip.x264-WAR.mp4",
+          "duration": 5321.04
+        }
+      ]
+    },
+    {
+      "id": "comanche_moon_e03_brrip_x264-war",
+      "name": "Comanche Moon E03 BRRip x264-WAR",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Comanche.Moon.2008.E03.BRRip.x264-WAR.mp4",
+          "duration": 5523.114667
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Sample.mp4",
+          "duration": 64.355
+        }
+      ]
+    },
+    {
+      "id": "akira_1988_trailer",
+      "name": "Akira (1988) Trailer",
+      "cover": "user/covers/akira.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Akira (1988) Trailer.mp4",
+          "duration": 75.882812
+        }
+      ]
+    },
+    {
+      "id": "charge_blender_studio_re-score",
+      "name": "Charge (Blender Studio) Re-score",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Charge (Blender Studio) Re-score.mp4",
+          "duration": 262.803447
+        }
+      ]
+    },
+    {
+      "id": "ed_1024",
+      "name": "ed 1024",
+      "cover": "user/covers/eden_lake.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/ed_1024.mp4",
+          "duration": 653.823991
+        }
+      ]
+    },
+    {
+      "id": "hero_blender_grease_pencil_showcase",
+      "name": "HERO – Blender Grease Pencil Showcase",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/HERO – Blender Grease Pencil Showcase.mp4",
+          "duration": 236.797098
+        }
+      ]
+    },
+    {
+      "id": "sintel_-_open_movie_by_blender_foundation",
+      "name": "Sintel - Open Movie by Blender Foundation",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Sintel - Open Movie by Blender Foundation.mp4",
+          "duration": 888.163265
+        }
+      ]
+    },
+    {
+      "id": "swallowed_star_moviebattleofprimordialstar",
+      "name": "Swallowed Star MovieBattleofPrimordialStar",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Swallowed Star MovieBattleofPrimordialStar.mp4",
+          "duration": 75.789932
+        }
+      ]
+    },
+    {
+      "id": "congo_j",
+      "name": "Congo J",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Congo 1995.J.1080p.BluRay.BG Audio.MadMax & Goredolo & Bodhi666.mkv",
+          "duration": 6495.717
+        }
+      ]
+    },
+    {
+      "id": "prince_of_persia_the_sands_of_time",
+      "name": "Prince of Persia The Sands of Time",
+      "cover": "user/covers/prince_of_persia_the_sands_of_time.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Prince.of.Persia.The.Sands.of.Time.2010.1080p.BluRay.x265.BGAudio-LooNTerN.mkv",
+          "duration": 6953.502
+        }
+      ]
+    },
+    {
+      "id": "rambo_first_blood_part_ii",
+      "name": "Rambo First Blood Part II",
+      "cover": "user/covers/rambo_first_blood_part_ii.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Rambo.First.Blood.Part.II.1985.720p.BluRay.ENG.BG.AUDIO.x264.VDON.mkv",
+          "duration": 5758.806
+        }
+      ]
+    },
+    {
+      "id": "the_evil_dead_j",
+      "name": "The Evil Dead J",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The Evil Dead 1981.J.1080p.BluRay.BG Audio.MadMax & Goredolo.mkv",
+          "duration": 5126.246
+        }
+      ]
+    },
+    {
+      "id": "the_valley_of_death_j_dvdrip_bg_audio_mad_max_goredole",
+      "name": "The Valley of Death J DVDRip BG Audio Mad Max & Goredole",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The Valley of Death 1968.J.DVDRip.BG Audio.Mad Max & Goredole.mkv",
+          "duration": 5338.336
+        }
+      ]
+    },
+    {
+      "id": "1978",
+      "name": "1978",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/1978.2024.1080p.AMZN.WEB-DL.DDP.2.0.H.264-BITFLOW/1978.2024.1080p.AMZN.WEB-DL.DDP.2.0.H.264-BITFLOW.mkv",
+          "duration": 4818.24
+        }
+      ]
+    },
+    {
+      "id": "from_dusk_till_dawn_iii_the_hangmans_daughter",
+      "name": "From Dusk Till Dawn III The Hangmans Daughter",
+      "cover": "user/covers/from_dusk_till_dawn.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.III.The.Hangman's.Daughter.1999.BDRip.XviD.AC3-WAR/From Dusk Till Dawn III The Hangmans Daughter.mkv",
+          "duration": 5582.072
+        }
+      ]
+    },
+    {
+      "id": "hardware_j",
+      "name": "Hardware J",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Hardware 1990.J.1080p.BluRay.BG Audio.MadMax & Goredolo/Hardware 1990.J.1080p.BluRay.BG Audio.MadMax & Goredolo.mkv",
+          "duration": 5654.304
+        }
+      ]
+    },
+    {
+      "id": "mad_max_3_beyond_thunderdome",
+      "name": "Mad Max 3 Beyond Thunderdome",
+      "cover": "user/covers/thunder.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Mad.Max.3.Beyond.Thunderdome.1985.1080p.BluRay.AV1-DiN/Mad.Max.3.Beyond.Thunderdome.1985.1080p.BluRay.AV1-DiN.mkv",
+          "duration": 6418.543
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Mad.Max.3.Beyond.Thunderdome.1985.1080p.BluRay.AV1-DiN/sample.mkv",
+          "duration": 60.14
+        }
+      ]
+    },
+    {
+      "id": "maximum_conviction_bdrip_x264_aac_bgaudio-siso",
+      "name": "Maximum Conviction BDRip x264 AAC BGAUDiO-SiSO",
+      "cover": "user/covers/maximum_conviction.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Maximum.Conviction.2012.BDRip.x264.AAC.BGAUDiO-SiSO/Maximum.Conviction.2012.BDRip.x264.AAC.BGAUDiO-SiSO.mkv",
+          "duration": 5870.9
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Maximum.Conviction.2012.BDRip.x264.AAC.BGAUDiO-SiSO/sample.mkv",
+          "duration": 32.37
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Rambo.First.Blood.1982.1080p.BluRay.x265.DD2.0-5.1-WAR/sample.mkv",
+          "duration": 62.056
+        }
+      ]
+    },
+    {
+      "id": "war-rambofirstblood",
+      "name": "war-rambofirstblood",
+      "cover": "user/covers/rambo_first_blood_part_ii.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Rambo.First.Blood.1982.1080p.BluRay.x265.DD2.0-5.1-WAR/war-rambofirstblood.mkv",
+          "duration": 5610.552
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Rambo.III.1988.1080p.BluRay.x265.DD2.0-5.1-WAR/sample.mkv",
+          "duration": 62.53
+        }
+      ]
+    },
+    {
+      "id": "war-rambo3",
+      "name": "war-rambo3",
+      "cover": "user/covers/rambo.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Rambo.III.1988.1080p.BluRay.x265.DD2.0-5.1-WAR/war-rambo3.mkv",
+          "duration": 6091.372
+        }
+      ]
+    },
+    {
+      "id": "return_to_silent_hill",
+      "name": "Return To Silent Hill",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP.mkv",
+          "duration": 6326.432
+        }
+      ]
+    },
+    {
+      "id": "riddick_dc",
+      "name": "Riddick DC",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Riddick.2013.DC.1080p.BluRay.DD5.1.H.265-WAR/Riddick.2013.DC.1080p.BluRay.DD5.1.H.265-WAR.mkv",
+          "duration": 7613.536
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Riddick.2013.DC.1080p.BluRay.DD5.1.H.265-WAR/sample.mkv",
+          "duration": 62.351
+        }
+      ]
+    },
+    {
+      "id": "shelter",
+      "name": "Shelter",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Shelter.2026.1080p.TELESYNC.x264-SyncUP/Shelter.2026.1080p.TELESYNC.x264-SyncUP.mkv",
+          "duration": 6043.36
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Spacehunter.Adventures.in.The.Forbidden.Zone.1983.720p.BluRay.x265.DD2.0-TuKCo/Sample.mkv",
+          "duration": 40.401
+        }
+      ]
+    },
+    {
+      "id": "spacehunter_adventures_in_the_forbidden_zone",
+      "name": "Spacehunter Adventures in The Forbidden Zone",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Spacehunter.Adventures.in.The.Forbidden.Zone.1983.720p.BluRay.x265.DD2.0-TuKCo/Spacehunter.Adventures.in.The.Forbidden.Zone.1983.720p.BluRay.x265.DD2.0-TuKCo.mkv",
+          "duration": 5390.594
+        }
+      ]
+    },
+    {
+      "id": "spartacus",
+      "name": "Spartacus",
+      "cover": "user/covers/spartacus.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Spartacus (1960)/Spartacus 720p HD BG AUDIO.mkv",
+          "duration": 11804.522
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Spartacus.1960.REMASTERED.BRRip.x265-DiN/sample.mkv",
+          "duration": 54.142
+        }
+      ]
+    },
+    {
+      "id": "spartacus-din",
+      "name": "spartacus-din",
+      "cover": "user/covers/spartacus.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Spartacus.1960.REMASTERED.BRRip.x265-DiN/spartacus-din.mkv",
+          "duration": 11803.806
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Splinter.2008.1080p.BluRay.x265.DD5.1-WAR/sample.mkv",
+          "duration": 63.112
+        }
+      ]
+    },
+    {
+      "id": "splinter",
+      "name": "Splinter",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Splinter.2008.1080p.BluRay.x265.DD5.1-WAR/Splinter.2008.1080p.BluRay.x265.DD5.1-WAR.mkv",
+          "duration": 4923.136
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.1990.1080p.BluRay.AV1-DiN/sample.mkv",
+          "duration": 60.14
+        }
+      ]
+    },
+    {
+      "id": "teenage_mutant_ninja_turtles",
+      "name": "Teenage Mutant Ninja Turtles",
+      "cover": "user/covers/ninja.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.1990.1080p.BluRay.AV1-DiN/Teenage.Mutant.Ninja.Turtles.1990.1080p.BluRay.AV1-DiN.mkv",
+          "duration": 5614.631
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.II.The.Secret.of.the.Ooze.1991.1080p.BluRay.AV1-DiN/sample.mkv",
+          "duration": 60.225
+        }
+      ]
+    },
+    {
+      "id": "teenage_mutant_ninja_turtles_ii_the_secret_of_the_ooze",
+      "name": "Teenage Mutant Ninja Turtles II The Secret of the Ooze",
+      "cover": "user/covers/ninja.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.II.The.Secret.of.the.Ooze.1991.1080p.BluRay.AV1-DiN/Teenage.Mutant.Ninja.Turtles.II.The.Secret.of.the.Ooze.1991.1080p.BluRay.AV1-DiN.mkv",
+          "duration": 5313.959
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.III.1993.1080p.BluRay.AV1-DiN/sample.mkv",
+          "duration": 60.14
+        }
+      ]
+    },
+    {
+      "id": "teenage_mutant_ninja_turtles_iii",
+      "name": "Teenage Mutant Ninja Turtles III",
+      "cover": "user/covers/ninja.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.III.1993.1080p.BluRay.AV1-DiN/Teenage.Mutant.Ninja.Turtles.III.1993.1080p.BluRay.AV1-DiN.mkv",
+          "duration": 5747.303
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Autopsy.of.Jane.Doe.2016.BRRip.x264.AC3.BGAUDiO-SiSO/sample.mkv",
+          "duration": 31.686
+        }
+      ]
+    },
+    {
+      "id": "the_autopsy_of_jane_doe_brrip_x264_ac3_bgaudio-siso",
+      "name": "The Autopsy of Jane Doe BRRip x264 AC3 BGAUDiO-SiSO",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Autopsy.of.Jane.Doe.2016.BRRip.x264.AC3.BGAUDiO-SiSO/The.Autopsy.of.Jane.Doe.2016.BRRip.x264.AC3.BGAUDiO-SiSO.mkv",
+          "duration": 5186.56
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Black.Phone.2021.576p.WEBRip.x265.AAC-HUD/Sample.mkv",
+          "duration": 40.263
+        }
+      ]
+    },
+    {
+      "id": "the_black_phone_2021",
+      "name": "The Black Phone 2021",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Black.Phone.2021.576p.WEBRip.x265.AAC-HUD/The Black Phone 2021.mkv",
+          "duration": 6202.313
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2.2016.BRRip.x264.AC3.BGAUDiO-SiSO/sample.mkv",
+          "duration": 31.14
+        }
+      ]
+    },
+    {
+      "id": "the_conjuring_2_brrip_x264_ac3_bgaudio-siso",
+      "name": "The Conjuring 2 BRRip x264 AC3 BGAUDiO-SiSO",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2.2016.BRRip.x264.AC3.BGAUDiO-SiSO/The.Conjuring.2.2016.BRRip.x264.AC3.BGAUDiO-SiSO.mkv",
+          "duration": 8032.768
+        }
+      ]
+    },
+    {
+      "id": "whthecing",
+      "name": "whthecing",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2013.1080p.BluRay.x265.HEVC.DTS-WAR/whthecing.mkv",
+          "duration": 6718.048
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Hunt.2020.BDRip.x264.AC3.BGAUDiO-SiSO/sample.mkv",
+          "duration": 33.583
+        }
+      ]
+    },
+    {
+      "id": "the_hunt_bdrip_x264_ac3_bgaudio-siso",
+      "name": "The Hunt BDRip x264 AC3 BGAUDiO-SiSO",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Hunt.2020.BDRip.x264.AC3.BGAUDiO-SiSO/The.Hunt.2020.BDRip.x264.AC3.BGAUDiO-SiSO.mkv",
+          "duration": 5402.048
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.1992.1080p.BluRay.DUAL.AUDiO.H.265-WAR/sample.mkv",
+          "duration": 60.357
+        }
+      ]
+    },
+    {
+      "id": "tiger_claws",
+      "name": "Tiger Claws",
+      "cover": "user/covers/tiger_claws.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.1992.1080p.BluRay.DUAL.AUDiO.H.265-WAR/Tiger.Claws.1992.1080p.BluRay.DUAL.AUDiO.H.265-WAR.mkv",
+          "duration": 5545.624
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.II.1996.1080p.BluRay.DUAL.AUDiO.H.265-WAR/sample.mkv",
+          "duration": 61.618
+        }
+      ]
+    },
+    {
+      "id": "tiger_claws_ii",
+      "name": "Tiger Claws II",
+      "cover": "user/covers/tiger_claws.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.II.1996.1080p.BluRay.DUAL.AUDiO.H.265-WAR/Tiger.Claws.II.1996.1080p.BluRay.DUAL.AUDiO.H.265-WAR.mkv",
+          "duration": 5325.153
+        }
+      ]
+    },
+    {
+      "id": "critters_2_1988_clip",
+      "name": "Critters 2 1988 clip",
+      "cover": "user/covers/critters.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters 2 1988_clip.mkv",
+          "duration": 122.08
+        }
+      ]
+    },
+    {
+      "id": "critters_3_j",
+      "name": "Critters 3 J",
+      "cover": "user/covers/critters.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_clip.mkv",
+          "duration": 120.995
+        }
+      ]
+    },
+    {
+      "id": "critters_4_j",
+      "name": "Critters 4 J",
+      "cover": "user/covers/critters.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_clip.mkv",
+          "duration": 123.831
+        }
+      ]
+    },
+    {
+      "id": "critters1986_clip",
+      "name": "Critters1986 clip",
+      "cover": "user/covers/critters.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters1986._clip.mkv",
+          "duration": 121.662
+        }
+      ]
+    },
+    {
+      "id": "ghost_in_the_shell_1995_original_english_trailer_fhd",
+      "name": "Ghost in the Shell (1995) Original English Trailer [FHD]",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Ghost in the Shell (1995) Original English Trailer [FHD].mkv",
+          "duration": 97.291
+        }
+      ]
+    },
+    {
+      "id": "rflx-van_helsing_mkv",
+      "name": "rflx-van helsing mkv",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Van.Helsing.2004.480p.BDRip.x265.AAC.BGaudio-REFLUX/rflx-van.helsing.mkv.mkv",
+          "duration": 7897.932
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.2.Teil.1964.1080p.BluRay.x265.Dual-DiN/sample.mkv",
+          "duration": 60.0
+        }
+      ]
+    },
+    {
+      "id": "winnetou_2_teil",
+      "name": "Winnetou 2 Teil",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.2.Teil.1964.1080p.BluRay.x265.Dual-DiN/Winnetou.2.Teil.1964.1080p.BluRay.x265.Dual-DiN.mkv",
+          "duration": 5674.4
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.3.Teil.1965.1080p.BluRay.x265.Dual-DiN/sample.mkv",
+          "duration": 60.0
+        }
+      ]
+    },
+    {
+      "id": "winnetou_3_teil",
+      "name": "Winnetou 3 Teil",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.3.Teil.1965.1080p.BluRay.x265.Dual-DiN/Winnetou.3.Teil.1965.1080p.BluRay.x265.Dual-DiN.mkv",
+          "duration": 5570.88
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.und.das.Halbblut.Apanatschi.1966.1080p.BluRay.x265-DiN/sample.mkv",
+          "duration": 5400.0
+        }
+      ]
+    },
+    {
+      "id": "winnetou_und_das_halbblut_apanatschi",
+      "name": "Winnetou und das Halbblut Apanatschi",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.und.das.Halbblut.Apanatschi.1966.1080p.BluRay.x265-DiN/Winnetou.und.das.Halbblut.Apanatschi.1966.1080p.BluRay.x265-DiN.mkv",
+          "duration": 5422.304
+        }
+      ]
+    },
+    {
+      "id": "xiii_the_conspiracy",
+      "name": "XIII The Conspiracy",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/XIII.The.Conspiracy.2008.1080p.BDRip.AV1-DiN/XIII.The.Conspiracy.2008.1080p.BDRip.AV1-DiN.mkv",
+          "duration": 10804.807
+        }
+      ]
+    },
+    {
+      "id": "sample1",
+      "name": "Sample1",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP/Samples/Sample1.mkv",
+          "duration": 120.064
+        }
+      ]
+    },
+    {
+      "id": "sample2",
+      "name": "Sample2",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP/Samples/Sample2.mkv",
+          "duration": 126.72
+        }
+      ]
+    },
+    {
+      "id": "sample1",
+      "name": "Sample1",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Shelter.2026.1080p.TELESYNC.x264-SyncUP/Samples/Sample1.mkv",
+          "duration": 103.488
+        }
+      ]
+    },
+    {
+      "id": "sample2",
+      "name": "Sample2",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Shelter.2026.1080p.TELESYNC.x264-SyncUP/Samples/Sample2.mkv",
+          "duration": 106.592
+        }
+      ]
+    },
+    {
+      "id": "whthecing",
+      "name": "whthecing",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2013.1080p.BluRay.x265.HEVC.DTS-WAR/Sample/whthecing.mkv",
+          "duration": 201.209
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Van.Helsing.2004.480p.BDRip.x265.AAC.BGaudio-REFLUX/cover, screens, nfo, sample/sample.mkv",
+          "duration": 120.845
+        }
+      ]
+    },
+    {
+      "id": "ballistic_j_ldrip_bg_audio_madmax_goredolo",
+      "name": "Ballistic J LDRip BG Audio MadMax & Goredolo",
+      "cover": "user/covers/ballistic.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Ballistic 1995.J.LDRip.BG Audio.MadMax & Goredolo.avi",
+          "duration": 5828.3225
+        }
+      ]
+    },
+    {
+      "id": "city_hunter_tvrip_xvid_bgaudio-redneck",
+      "name": "City Hunter TVRip XviD BGAudio-REDNECK",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/City.Hunter.TVRip.XviD.BGAudio-REDNECK.avi",
+          "duration": 5536.2
+        }
+      ]
+    },
+    {
+      "id": "heart_of_a_dragon_dvdrip_vhsbgaudio-weltmeister",
+      "name": "Heart of a Dragon DVDRip VHSBGAudio-Weltmeister",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Heart of a Dragon 1985 DVDRip VHSBGAudio-Weltmeister.avi",
+          "duration": 5214.16
+        }
+      ]
+    },
+    {
+      "id": "tombstone_brrip_bg_audio-atany_stezarai_stasoiakara",
+      "name": "Tombstone BRRip BG Audio-Atany & Stezarai & Stasoiakara",
+      "cover": "user/covers/tombstone.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Tombstone.1993.BRRip.BG.Audio-Atany & Stezarai & Stasoiakara.avi",
+          "duration": 7777.98632
+        }
+      ]
+    },
+    {
+      "id": "wmine",
+      "name": "wmine",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Dead.Mine.2012.BRRip.XviD-WAR/wmine.avi",
+          "duration": 5488.900083
+        }
+      ]
+    },
+    {
+      "id": "dead_space_downfall_480p_brrip_xvid_ac3-lxd-sample",
+      "name": "Dead Space Downfall 480p BRRip XviD AC3-LxD-sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD-sample.avi",
+          "duration": 31.364667
+        }
+      ]
+    },
+    {
+      "id": "dead_space_downfall_480p_brrip_xvid_ac3-lxd",
+      "name": "Dead Space Downfall 480p BRRip XviD AC3-LxD",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD.avi",
+          "duration": 4464.376583
+        }
+      ]
+    },
+    {
+      "id": "evil_dead_rise_brrip_xvid_ac3_dual-slzd",
+      "name": "Evil Dead Rise BRRip XviD AC3 DUAL-SlzD",
+      "cover": "user/covers/evil_dead_rise.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Evil.Dead.Rise.2023.BRRip.XviD.AC3.DUAL-SlzD/Evil.Dead.Rise.2023.BRRip.XviD.AC3.DUAL-SlzD.avi",
+          "duration": 5787.072958
+        }
+      ]
+    },
+    {
+      "id": "from_dusk_till_dawn_ii_texas_blood_money_brrip_xvid_ac3-war",
+      "name": "From Dusk Till Dawn II Texas Blood Money BRRip XviD AC3-WAR",
+      "cover": "user/covers/from_dusk_till_dawn_2_texas_blood_money.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.II.Texas.Blood.Money.1999.BRRip.XviD.AC3-WAR/From.Dusk.Till.Dawn.II.Texas.Blood.Money.1999.BRRip.XviD.AC3-WAR.avi",
+          "duration": 5286.9024
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.II.Texas.Blood.Money.1999.BRRip.XviD.AC3-WAR/Sample.avi",
+          "duration": 47.58917
+        }
+      ]
+    },
+    {
+      "id": "from_dusk_till_dawn_iii_the_hangmans_daughter",
+      "name": "From Dusk Till Dawn III The Hangmans Daughter",
+      "cover": "user/covers/from_dusk_till_dawn.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.III.The.Hangman's.Daughter.1999.BDRip.XviD.AC3-WAR/From Dusk Till Dawn III The Hangmans Daughter.avi",
+          "duration": 5582.072039
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.III.The.Hangman's.Daughter.1999.BDRip.XviD.AC3-WAR/Sample.avi",
+          "duration": 48.047962
+        }
+      ]
+    },
+    {
+      "id": "night_teeth_hdrip_xvid_ac3-evo",
+      "name": "Night Teeth HDRip XviD AC3-EVO",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Night.Teeth.2021.HDRip.XviD.AC3-EVO/Night.Teeth.2021.HDRip.XviD.AC3-EVO.avi",
+          "duration": 6522.656
+        }
+      ]
+    },
+    {
+      "id": "raven_hawk_1996_bg_audio",
+      "name": "Raven Hawk (1996) BG Audio",
+      "cover": "user/covers/Raven Hawk.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Raven Hawk-Граблива птица/Raven Hawk (1996) BG Audio.avi",
+          "duration": 5060.597551
+        }
+      ]
+    },
+    {
+      "id": "scooby-doo_brrip_xvid_bg_audio_lovejesus",
+      "name": "Scooby-Doo BRRip XviD BG Audio LoveJesus",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Scooby-Doo.2002.BRRip.XviD.BG.Audio.LoveJesus/Scooby-Doo.2002.BRRip.XviD.BG.Audio.LoveJesus.avi",
+          "duration": 5194.739512
+        }
+      ]
+    },
+    {
+      "id": "terminator-sample",
+      "name": "Terminator-sample",
+      "cover": "user/covers/Terminator.2.1991.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Terminator.DVDRip.BG-EN audio-K79/Terminator-sample.avi",
+          "duration": 75.075
+        }
+      ]
+    },
+    {
+      "id": "terminator_dvdrip_bg-en_audio-k79",
+      "name": "Terminator DVDRip BG-EN audio-K79",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Terminator.DVDRip.BG-EN audio-K79/Terminator.DVDRip.BG-EN audio-K79.avi",
+          "duration": 6432.968208
+        }
+      ]
+    },
+    {
+      "id": "asa-ted_iii-480p",
+      "name": "asa-ted III-480p",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Evil.Dead.III.Army.of.Darkness.1992.480p.BRRip.XviD.AC3-AsA/asa-ted.III-480p.avi",
+          "duration": 4846.007833
+        }
+      ]
+    },
+    {
+      "id": "l-expendables_xvid",
+      "name": "l-expendables xvid",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Expendables.2010.BDRip.XviD-Larceny/l-expendables.xvid.avi",
+          "duration": 6208.248
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Expendables.2010.EXTENDED.BRRip.XviD.AC3-ZmN/sample.avi",
+          "duration": 65.31525
+        }
+      ]
+    },
+    {
+      "id": "the_expendables_extended_brrip_xvid_ac3-zmn",
+      "name": "The Expendables EXTENDED BRRip XviD AC3-ZmN",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/The.Expendables.2010.EXTENDED.BRRip.XviD.AC3-ZmN/The.Expendables.2010.EXTENDED.BRRip.XviD.AC3-ZmN.avi",
+          "duration": 6797.582458
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Twinkle.Twinkle.Lucky.Stars.1985.DVDRip.XviD.BgAudio-ZElKA/Sample.avi",
+          "duration": 61.4
+        }
+      ]
+    },
+    {
+      "id": "twinkle_twinkle_lucky_stars_bg_audio_-zelka",
+      "name": "Twinkle, Twinkle, Lucky Stars [Bg Audio]-ZElKA",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Twinkle.Twinkle.Lucky.Stars.1985.DVDRip.XviD.BgAudio-ZElKA/Twinkle, Twinkle, Lucky Stars [Bg Audio]-ZElKA.avi",
+          "duration": 5454.04
+        }
+      ]
+    },
+    {
+      "id": "lycan-venom",
+      "name": "lycan-venom",
+      "cover": "user/covers/venom.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Venom.2005.BDRip.XviD.AC3-LYCAN/lycan-venom.avi",
+          "duration": 5212.290417
+        }
+      ]
+    },
+    {
+      "id": "sample",
+      "name": "Sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Who.Am.I.1998.DVDRip.AC3/Sample.AVI",
+          "duration": 32.328
+        }
+      ]
+    },
+    {
+      "id": "who_am_i_dvdrip_ac3",
+      "name": "Who Am I DVDRip AC3",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Who.Am.I.1998.DVDRip.AC3/Who.Am.I.1998.DVDRip.AC3.avi",
+          "duration": 7225.176292
+        }
+      ]
+    },
+    {
+      "id": "winnetou_-_1_teil_1963",
+      "name": "Winnetou - 1 Teil (1963)",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.1.Teil.1964.XviD.PAL.DVDRip.Cine/Winnetou - 1. Teil (1963).avi",
+          "duration": 5846.04
+        }
+      ]
+    },
+    {
+      "id": "winnetou_und_das_halbblut_apanatschi_1966",
+      "name": "Winnetou und das Halbblut Apanatschi (1966)",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.und.das.Halbblut.Apanatschi .XviD.PAL.DVDRip.Cine/Winnetou und das Halbblut Apanatschi (1966).avi",
+          "duration": 5199.44
+        }
+      ]
+    },
+    {
+      "id": "wmine_sample",
+      "name": "wmine sample",
+      "cover": null,
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Dead.Mine.2012.BRRip.XviD-WAR/Sample/wmine.sample.avi",
+          "duration": 59.184125
+        }
+      ]
+    },
+    {
+      "id": "lycan-venom_sample",
+      "name": "lycan-venom sample",
+      "cover": "user/covers/venom.jpg",
+      "description": "",
+      "genre": [],
+      "year": 2026,
+      "videos": [
+        {
+          "path": "C:/Users/Admin/Downloads/Movies/Venom.2005.BDRip.XviD.AC3-LYCAN/Sample/lycan-venom.sample.avi",
+          "duration": 65.106708
         }
       ]
     }

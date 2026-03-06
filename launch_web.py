@@ -57,20 +57,20 @@ def main():
     project_root = Path(__file__).parent
     os.chdir(project_root)
     
-    print(f"📁 Project root: {project_root}")
+    print(f"Project root: {project_root}")
     print()
     
     # Find available port
     port = find_free_port(8000)
     local_ip = get_local_ip()
     
-    print("🚀 Starting AkiraTV API Server...")
+    print("Starting AkiraTV API Server...")
     print()
     print(f"  Local:   http://127.0.0.1:{port}")
     print(f"  Network: http://{local_ip}:{port}")
     print()
-    print("📱 Access from your phone using the Network URL")
-    print("📖 API Documentation: http://127.0.0.1:{port}/docs")
+    print("Access from your phone using the Network URL")
+    print(f"API Documentation: http://127.0.0.1:{port}/docs")
     print()
     print("Press Ctrl+C to stop the server")
     print("=" * 60)

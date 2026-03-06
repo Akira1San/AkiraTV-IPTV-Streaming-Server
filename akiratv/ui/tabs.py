@@ -314,16 +314,16 @@ class InfoTab(ttk.Frame):
                 font=("TkDefaultFont", 14, "bold")).pack(pady=10)
         
         features = [
-            "✅ Multi-channel linear TV streaming",
-            "✅ Per-channel schedules (weekly/daily)",
-            "✅ Live-TV seeking (join mid-program)",
-            "✅ EPG with Kodi XMLTV support",
-            "✅ Channel logos & program descriptions",
-            "✅ Global sharing via Ngrok",
-            "✅ RAM-disk acceleration (ImDisk)",
-            "✅ HLS streaming with -c copy (zero CPU)",
-            "✅ Bumper-free continuous playback",
-            "✅ Dark theme & responsive UI"
+            "[OK] Multi-channel linear TV streaming",
+            "[OK] Per-channel schedules (weekly/daily)",
+            "[OK] Live-TV seeking (join mid-program)",
+            "[OK] EPG with Kodi XMLTV support",
+            "[OK] Channel logos & program descriptions",
+            "[OK] Global sharing via Ngrok",
+            "[OK] RAM-disk acceleration (ImDisk)",
+            "[OK] HLS streaming with -c copy (zero CPU)",
+            "[OK] Bumper-free continuous playback",
+            "[OK] Dark theme & responsive UI"
         ]
         
         for feature in features:

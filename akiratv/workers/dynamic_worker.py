@@ -24,6 +24,7 @@ class DynamicWorker(BaseWorker):
         self.command_queue = command_queue
         self.schedule_entries = schedule_entries or []
         self.is_playing_vod = False
+        self.current_video = None  # Track currently playing video
         self.current_schedule_index = 0
         self.target_resolution = self._get_channel_resolution()
         self.last_schedule_check = time.time()
@@ -59,7 +60,7 @@ class DynamicWorker(BaseWorker):
                     try:
                         cmd, video_path = self.command_queue.get_nowait()
                         if cmd == "play_now":
-                            self.logger.info(f"🔥 VOD interruption: {video_path}")
+                            self.logger.info(f"[HOT] VOD interruption: {video_path}")
                             self._switch_to_vod(video_path)
                             continue  # After VOD, check schedule again
                     except:
@@ -169,7 +170,7 @@ class DynamicWorker(BaseWorker):
     def _play_scheduled_content(self, entry: Dict, current_time: datetime):
         """Play scheduled content in NATIVE resolution (copy mode) like VOD."""
         video_path = entry['file']
-        self.logger.info(f"📺 Playing scheduled content: {Path(video_path).name}")
+        self.logger.info(f"[TV] Playing scheduled content: {Path(video_path).name}")
         
         # Calculate seek time
         seek_time = self._calculate_seek_time(entry, current_time)
@@ -180,7 +181,7 @@ class DynamicWorker(BaseWorker):
         
         # ALWAYS use native playback for scheduled content (like VOD)
         encoding_args = ["-c:v", "copy", "-c:a", "copy"]
-        self.logger.info(f"🚀 Playing scheduled video in NATIVE resolution (copy mode)")
+        self.logger.info(f"[START] Playing scheduled video in NATIVE resolution (copy mode)")
         
         args = [
             "ffmpeg",
@@ -219,7 +220,7 @@ class DynamicWorker(BaseWorker):
         except (AttributeError, Exception):
             pass
         
-        self.logger.info(f"✅ Scheduled video finished: {Path(video_path).name}")
+        self.logger.info(f"[OK] Scheduled video finished: {Path(video_path).name}")
         self.is_in_standby = False
 
     def _start_ffmpeg_nonblocking(self, args):
@@ -275,7 +276,7 @@ class DynamicWorker(BaseWorker):
 
     def _start_standby(self):
         """Starts a looped standby video."""
-        self.logger.info(f"💤 Entering Standby Mode for {self.channel}...")
+        self.logger.info(f"[STANDBY] Entering Standby Mode for {self.channel}...")
         
         standby_file = self._get_best_standby()
         if not standby_file.exists():
@@ -316,7 +317,7 @@ class DynamicWorker(BaseWorker):
         # Start FFmpeg
         self._start_ffmpeg_nonblocking(args)
         #app_context.set_now_playing(self.channel, "Standby Loop")
-        self.logger.info(f"✅ Standby mode active for {self.channel}")
+        self.logger.info(f"[OK] Standby mode active for {self.channel}")
         self.is_in_standby = True
 
     def _monitor_and_handle_commands(self):
@@ -327,7 +328,7 @@ class DynamicWorker(BaseWorker):
                 cmd, video_path = self.command_queue.get(timeout=0.5)
                 
                 if cmd == "play_now":
-                    self.logger.info(f"🔥 Play Now triggered: {video_path}")
+                    self.logger.info(f"[HOT] Play Now triggered: {video_path}")
                     self._switch_to_vod(video_path)
                     return  # Exit monitoring loop after VOD switch
                     
@@ -353,6 +354,7 @@ class DynamicWorker(BaseWorker):
         self._stop_current_ffmpeg()
         self.is_playing_vod = True
         self.is_in_standby = False
+        self.current_video = video_path
         
         # 2. Get video metadata
         video_path = Path(video_path)
@@ -364,7 +366,7 @@ class DynamicWorker(BaseWorker):
         stats = self.inventory_manager.get_source_details(str(video_path))
         if stats:
             res = f"{stats.get('width', '?')}x{stats.get('height', '?')}"
-            self.logger.info(f"🎬 Playing VOD: {video_path.name} ({res})")
+            self.logger.info(f"[PLAY] Playing VOD: {video_path.name} ({res})")
         
         #app_context.set_now_playing(self.channel, video_path.stem)
         
@@ -380,10 +382,10 @@ class DynamicWorker(BaseWorker):
                 input_path=video_path,
                 channel=self.channel
             )
-            self.logger.info(f"🔧 Transcoding VOD to match channel specs")
+            self.logger.info(f"[CONFIG] Transcoding VOD to match channel specs")
         else:
             encoding_args = ["-c:v", "copy", "-c:a", "copy"]
-            self.logger.info(f"🚀 Playing VOD in native resolution (copy mode)")
+            self.logger.info(f"[START] Playing VOD in native resolution (copy mode)")
         
         args = [
             "ffmpeg",
@@ -404,8 +406,9 @@ class DynamicWorker(BaseWorker):
         # 4. Execute and wait for completion
         self._execute_ffmpeg(args)
         
-        self.logger.info(f"✅ VOD finished: {video_path.name}. Returning to schedule/standby.")
+        self.logger.info(f"[OK] VOD finished: {video_path.name}. Returning to schedule/standby.")
         self.is_playing_vod = False
+        self.current_video = None
 
     def _get_entry_duration(self, video_path: str) -> float:
         """Get total duration of a video file."""
@@ -469,5 +472,5 @@ class DynamicWorker(BaseWorker):
 
     def play_now(self, video_path: str):
         """Public method to queue a video for immediate playback."""
-        self.logger.info(f"📬 Queueing video for playback: {video_path}")
+        self.logger.info(f"[MSG] Queueing video for playback: {video_path}")
         self.command_queue.put(("play_now", video_path))

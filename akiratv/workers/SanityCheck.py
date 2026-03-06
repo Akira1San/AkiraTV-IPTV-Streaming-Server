@@ -23,11 +23,11 @@ def probe_file(file_path):
 def check_folder(folder_path):
     path_obj = Path(folder_path)
     if not path_obj.exists():
-        print(f"❌ Error: Folder '{folder_path}' does not exist.")
+        print(f"[ERROR] Error: Folder '{folder_path}' does not exist.")
         return
 
-    print(f"🔍 Validating for AkiraTV Stream Compatibility...")
-    print(f"📂 Path: {path_obj.absolute()}")
+    print(f"[SEARCH] Validating for AkiraTV Stream Compatibility...")
+    print(f"[DIR] Path: {path_obj.absolute()}")
     print("="*80)
     
     for file in path_obj.glob("*.*"):
@@ -66,9 +66,9 @@ def check_folder(folder_path):
                 issues.append(f"Contains B-Frames (Lag Risk for -c copy)")
 
             if not issues:
-                print(f"✅ PERFECT  - {file.name}")
+                print(f"[OK] PERFECT  - {file.name}")
             else:
-                print(f"❌ RE-ENCODE - {file.name}")
+                print(f"[ERROR] RE-ENCODE - {file.name}")
                 for issue in issues:
                     print(f"    └─ {issue}")
             

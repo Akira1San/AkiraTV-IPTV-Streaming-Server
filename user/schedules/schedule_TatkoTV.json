@@ -1,636 +1,2856 @@
 {
-  "weekly": {
-    "monday": [
-      {
-        "time": "00:00:00",
-        "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "01:32:33",
-        "file": "C:/Videos/tatkotv3/Universal Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "03:12:02",
-        "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:56:33",
-        "file": "C:/Videos/tatkotv3/The Mechanic.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "06:36:38",
-        "file": "C:/Videos/tatkotv3/Transporter 3.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:20:37",
-        "file": "C:/Videos/tatkotv3/Transporter 2.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:48:50",
-        "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:26:27",
-        "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:58:41",
-        "file": "C:/Videos/tatkotv3/Escape from los angeles.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:35:15",
-        "file": "C:/Videos/tatkotv3/Escape from New York.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:10:22",
-        "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "17:40:25",
-        "file": "C:/Videos/tatkotv3/steven seagal/Out of Reach.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "19:02:30",
-        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "20:50:26",
-        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "22:22:35",
-        "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:54:36",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ],
-    "tuesday": [
-      {
-        "time": "01:28:01",
-        "file": "C:/Videos/tatkotv3/Face Off.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "03:46:57",
-        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:28:41",
-        "file": "C:/Videos/tatkotv3/Firepower.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:04:12",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 4.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:43:48",
-        "file": "C:/Videos/tatkotv3/The Mechanic 2 Resurrection.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:22:27",
-        "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:54:25",
-        "file": "C:/Videos/tatkotv3/steven seagal/Half Past Dead.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "13:32:58",
-        "file": "C:/Videos/tatkotv3/Gone in Sixty Seconds.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "15:30:55",
-        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "17:03:40",
-        "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "18:40:31",
-        "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "20:19:47",
-        "file": "C:/Videos/tatkotv3/Escape from los angeles.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:56:21",
-        "file": "C:/Videos/tatkotv3/Predator.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:42:57",
-        "file": "C:/Videos/tatkotv3/Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ],
-    "wednesday": [
-      {
-        "time": "01:21:34",
-        "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:52:55",
-        "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:22:58",
-        "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:52:28",
-        "file": "C:/Videos/tatkotv3/Firepower.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:28:00",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 3.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:58:20",
-        "file": "C:/Videos/tatkotv3/Escape from New York.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:33:27",
-        "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:05:25",
-        "file": "C:/Videos/tatkotv3/The quest.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "13:40:00",
-        "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "15:17:37",
-        "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:49:39",
-        "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "18:34:11",
-        "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "20:11:02",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:44:32",
-        "file": "C:/Videos/tatkotv3/Universal Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:24:01",
-        "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ],
-    "thursday": [
-      {
-        "time": "01:05:22",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop I.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:37:40",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 4.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:17:15",
-        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:58:59",
-        "file": "C:/Videos/tatkotv3/Transporter 2.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:27:12",
-        "file": "C:/Videos/tatkotv3/Universal Soldier Day of Reckoning.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:16:11",
-        "file": "C:/Videos/tatkotv3/steven seagal/Half Past Dead.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:54:44",
-        "file": "C:/Videos/tatkotv3/Escape from New York.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:29:52",
-        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:09:07",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 3.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "15:39:27",
-        "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "17:17:04",
-        "file": "C:/Videos/tatkotv3/The Mechanic 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "18:49:49",
-        "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "20:19:19",
-        "file": "C:/Videos/tatkotv3/Transporter 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:51:28",
-        "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:22:46",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ],
-    "friday": [
-      {
-        "time": "00:56:17",
-        "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:26:20",
-        "file": "C:/Videos/tatkotv3/Face Off.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:45:16",
-        "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "06:17:18",
-        "file": "C:/Videos/tatkotv3/Savage Dog.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:52:28",
-        "file": "C:/Videos/tatkotv3/The Tournament..mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:24:43",
-        "file": "C:/Videos/tatkotv3/Con Air.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:20:10",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop III.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:50:22",
-        "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:27:13",
-        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:15:09",
-        "file": "C:/Videos/tatkotv3/Escape from los angeles.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "17:51:43",
-        "file": "C:/Videos/tatkotv3/Soldier.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "19:30:20",
-        "file": "C:/Videos/tatkotv3/Gone in Sixty Seconds.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:28:17",
-        "file": "C:/Videos/tatkotv3/Predator.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:14:52",
-        "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ],
-    "saturday": [
-      {
-        "time": "00:54:09",
-        "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:35:52",
-        "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:07:51",
-        "file": "C:/Videos/tatkotv3/steven seagal/Out of Reach.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:29:55",
-        "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:11:17",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop II.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "08:44:42",
-        "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "10:17:15",
-        "file": "C:/Videos/tatkotv3/Death Warrant.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:42:40",
-        "file": "C:/Videos/tatkotv3/Savage Dog.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "13:17:51",
-        "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:49:09",
-        "file": "C:/Videos/tatkotv3/Death Wish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:37:04",
-        "file": "C:/Videos/tatkotv3/The Rock.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "18:47:58",
-        "file": "C:/Videos/tatkotv3/Transporter 2.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "20:16:12",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 4.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:55:47",
-        "file": "C:/Videos/tatkotv3/Cyborg Cop III.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "23:25:59",
-        "file": "C:/Videos/tatkotv3/The quest.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ],
-    "sunday": [
-      {
-        "time": "01:00:34",
-        "file": "C:/Videos/tatkotv3/Transporter 3.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "02:44:33",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 1.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "04:18:03",
-        "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "05:50:02",
-        "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "07:22:03",
-        "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "09:01:19",
-        "file": "C:/Videos/tatkotv3/Face Off.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "11:20:16",
-        "file": "C:/Videos/tatkotv3/Swordfish.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "12:59:31",
-        "file": "C:/Videos/tatkotv3/Con Air.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "14:54:58",
-        "file": "C:/Videos/tatkotv3/Universal Soldier Day of Reckoning.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "16:43:57",
-        "file": "C:/Videos/tatkotv3/steven seagal/Half Past Dead.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "18:22:30",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 2.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "19:50:27",
-        "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "21:23:01",
-        "file": "C:/Videos/tatkotv3/steven seagal/Out of Reach.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      },
-      {
-        "time": "22:45:05",
-        "file": "C:/Videos/tatkotv3/death wish/Death Wish 4.mp4",
-        "channel": "TatkoTV",
-        "source": "random"
-      }
-    ]
+  "weekly": {},
+  "calendar": {
+    "2026-03-06_friday": {
+      "date": "2026-03-06",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:00:00",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:44:31",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:55:03",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:34:19",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:10:52",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:03:10",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:11:51",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:41:21",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:14:02",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:46:09",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:09:45",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:41:58",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:24:38",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:54:01",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-07_saturday": {
+      "date": "2026-03-07",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:28:12",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:59:56",
+          "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:29:59",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:16:35",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:42:59",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:53:31",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:28:25",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:03:09",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:11:50",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:56:21",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:47:06",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:21:41",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:45:54",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:27:16",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-08_sunday": {
+      "date": "2026-03-08",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:59:23",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:37:00",
+          "file": "C:/Videos/tatkotv3/steven seagal/Under Siege.2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:16:39",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:59:54",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:46:35",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:29:53",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:22:12",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:58:44",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:54:59",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:03:40",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:33:10",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:05:23",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:55:59",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-09_monday": {
+      "date": "2026-03-09",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:47:29",
+          "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:18:47",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:29:19",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:00:41",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:32:41",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:56:17",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:34:12",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:00:36",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:32:19",
+          "file": "C:/Videos/tatkotv3/Terminator/Terminator 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:45:21",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:47:22",
+          "file": "C:/Videos/tatkotv3/The Bourne Identity.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:39:02",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:13:37",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:52:53",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-10_tuesday": {
+      "date": "2026-03-10",
+      "day": "Tuesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:30:30",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:59:05",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:42:20",
+          "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:14:21",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:03:03",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:49:44",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:36:20",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:05:00",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:41:51",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:26:23",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:58:24",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:47:22",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:16:51",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:07:27",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:45:23",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-11_wednesday": {
+      "date": "2026-03-11",
+      "day": "Wednesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:14:45",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:48:57",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:25:30",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:08:10",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:04:25",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:47:40",
+          "file": "C:/Videos/tatkotv3/The 13th Warrior.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:25:48",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:05:04",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:36:25",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:23:01",
+          "file": "C:/Videos/tatkotv3/The Bourne Identity.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:14:41",
+          "file": "C:/Videos/tatkotv3/The Channel.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:55:41",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:28:23",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:57:03",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-12_thursday": {
+      "date": "2026-03-12",
+      "day": "Thursday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:40:22",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:32:40",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:21:39",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:12:23",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:53:45",
+          "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:25:46",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:00:41",
+          "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:31:59",
+          "file": "C:/Videos/tatkotv3/Terminator/Terminator 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:45:01",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:17:02",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:51:13",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:17:37",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:55:14",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:34:30",
+          "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-13_friday": {
+      "date": "2026-03-13",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:16:14",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:39:50",
+          "file": "C:/Videos/tatkotv3/Commando.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:08:17",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:37:40",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:48:12",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:34:52",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:06:36",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:37:57",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:02:11",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:54:29",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:26:30",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:55:04",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:31:55",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:20:37",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:11:13",
+          "file": "C:/Videos/tatkotv3/steven seagal/Under Siege.2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-14_saturday": {
+      "date": "2026-03-14",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:50:52",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:30:08",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:02:22",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:39:59",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:17:54",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:47:17",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:30:36",
+          "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:02:34",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:13:06",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:36:41",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:00:55",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:02:56",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:34:39",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:19:11",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-15_sunday": {
+      "date": "2026-03-15",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:09:47",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:18:28",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:53:11",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:25:18",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:57:19",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:31:31",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:09:26",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:44:01",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:40:16",
+          "file": "C:/Videos/tatkotv3/The Channel.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:21:16",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:50:38",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:32:00",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:03:44",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:47:02",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-16_monday": {
+      "date": "2026-03-16",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:26:18",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:54:53",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:23:33",
+          "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:54:51",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:56:53",
+          "file": "C:/Videos/tatkotv3/Taken 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:29:17",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:01:24",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:32:46",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:21:44",
+          "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:53:45",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:02:26",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:43:48",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:18:00",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:08:44",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-17_tuesday": {
+      "date": "2026-03-17",
+      "day": "Tuesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:04:59",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:56:29",
+          "file": "C:/Videos/tatkotv3/Ninja Assassin.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:35:02",
+          "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:06:21",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:08:22",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:51:37",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:26:32",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:55:06",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:33:01",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:25:19",
+          "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:07:03",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:48:25",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:58:57",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:47:55",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-18_wednesday": {
+      "date": "2026-03-18",
+      "day": "Wednesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:38:31",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:02:06",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:34:07",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:58:21",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:31:03",
+          "file": "C:/Videos/tatkotv3/Taken 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:03:27",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:32:57",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:19:33",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:54:08",
+          "file": "C:/Videos/tatkotv3/steven seagal/Under Siege.2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:33:47",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:18:19",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:50:32",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:25:16",
+          "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:07:00",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:46:16",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-19_thursday": {
+      "date": "2026-03-19",
+      "day": "Thursday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:14:56",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:57:36",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:24:00",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:56:07",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:34:02",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:15:24",
+          "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:47:22",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:49:23",
+          "file": "C:/Videos/tatkotv3/Terminator/Terminator 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:02:25",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:53:09",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:21:44",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:04:59",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:53:41",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:38:13",
+          "file": "C:/Videos/tatkotv3/steven seagal/Under Siege.2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-20_friday": {
+      "date": "2026-03-20",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:17:52",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:52:03",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:28:36",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:20:06",
+          "file": "C:/Videos/tatkotv3/Taken 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:52:31",
+          "file": "C:/Videos/tatkotv3/Ninja Assassin.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:31:05",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:00:34",
+          "file": "C:/Videos/tatkotv3/The Bourne Identity.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:52:14",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:54:16",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:25:37",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:57:51",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:35:46",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:02:10",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:33:53",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-21_saturday": {
+      "date": "2026-03-21",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:03:16",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:35:58",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:13:35",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:04:19",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:51:00",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:34:18",
+          "file": "C:/Videos/tatkotv3/Terminator/Terminator 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:47:20",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:56:01",
+          "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:26:04",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:18:22",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:09:52",
+          "file": "C:/Videos/tatkotv3/The Channel.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:50:52",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:37:28",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-22_sunday": {
+      "date": "2026-03-22",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:08:49",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:35:13",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:37:14",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:14:05",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:42:40",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:19:12",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:51:54",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:21:24",
+          "file": "C:/Videos/tatkotv3/The 13th Warrior.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:59:32",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:48:14",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:17:37",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:06:35",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:41:19",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:32:49",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:04:32",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-23_monday": {
+      "date": "2026-03-23",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:00:47",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:32:54",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:59:18",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:30:40",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:05:15",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:55:59",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:30:54",
+          "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:12:38",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:36:13",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:19:28",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:58:44",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:32:56",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:05:09",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:33:44",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:10:35",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-24_tuesday": {
+      "date": "2026-03-24",
+      "day": "Tuesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:53:15",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:17:28",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:00:47",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:45:19",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:19:54",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:52:00",
+          "file": "C:/Videos/tatkotv3/Terminator/Terminator 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:05:02",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:34:24",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:03:54",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:52:37",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:24:20",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:14:56",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:25:28",
+          "file": "C:/Videos/tatkotv3/Commando.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:53:55",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-25_wednesday": {
+      "date": "2026-03-25",
+      "day": "Wednesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:40:31",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:19:47",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:08:46",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:00:16",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:26:39",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:01:34",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:52:19",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:26:54",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:10:12",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:44:24",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:20:57",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:52:40",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:24:41",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:53:15",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:39:56",
+          "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-26_thursday": {
+      "date": "2026-03-26",
+      "day": "Thursday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:09:59",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:02:17",
+          "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:34:19",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:23:01",
+          "file": "C:/Videos/tatkotv3/Commando.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:51:28",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:02:00",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:53:30",
+          "file": "C:/Videos/tatkotv3/The 13th Warrior.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:31:38",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:55:52",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:28:34",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:37:14",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:09:21",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:52:01",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-27_friday": {
+      "date": "2026-03-27",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:15:37",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "01:44:59",
+          "file": "C:/Videos/tatkotv3/steven seagal/Hard To Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:16:58",
+          "file": "C:/Videos/tatkotv3/The Bourne Identity.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:08:38",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:45:10",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:41:25",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:16:00",
+          "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:46:04",
+          "file": "C:/Videos/tatkotv3/steven seagal/Under Siege.2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:25:43",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:02:34",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:54:52",
+          "file": "C:/Videos/tatkotv3/The 13th Warrior.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:33:00",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:05:42",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:48:57",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:37:39",
+          "file": "C:/Videos/tatkotv3/Commando.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-28_saturday": {
+      "date": "2026-03-28",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:06:07",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:48:47",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:39:23",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:25:58",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:57:59",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:29:20",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Cobra.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:52:56",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:37:28",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:15:05",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:49:16",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:32:35",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:41:16",
+          "file": "C:/Videos/tatkotv3/Ninja Assassin.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:19:49",
+          "file": "C:/Videos/tatkotv3/steven seagal/Above the Law.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:59:05",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-29_sunday": {
+      "date": "2026-03-29",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:33:49",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:10:40",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:45:15",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:35:51",
+          "file": "C:/Videos/tatkotv3/The Channel.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:16:51",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:27:23",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:59:30",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:31:30",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:16:02",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:42:26",
+          "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:12:29",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:59:05",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:23:18",
+          "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:54:37",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-30_monday": {
+      "date": "2026-03-30",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:23:17",
+          "file": "C:/Videos/tatkotv3/steven seagal/Under Siege.2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:02:56",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:04:57",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:41:30",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:24:10",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:12:53",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:50:30",
+          "file": "C:/Videos/tatkotv3/Ninja Assassin.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:29:03",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:19:48",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:10:24",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:41:45",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:16:40",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:45:14",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:17:15",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:55:10",
+          "file": "C:/Videos/tatkotv3/The Channel.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-31_tuesday": {
+      "date": "2026-03-31",
+      "day": "Tuesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:36:10",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:28:28",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:39:00",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:41:01",
+          "file": "C:/Videos/tatkotv3/steven seagal/Exit Wounds.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:22:23",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:51:04",
+          "file": "C:/Videos/tatkotv3/Ninja Assassin.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:29:37",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:53:51",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/D-Tox.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:25:34",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:16:19",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:02:59",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:37:34",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:14:07",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:51:44",
+          "file": "C:/Videos/tatkotv3/Taken 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-01_wednesday": {
+      "date": "2026-04-01",
+      "day": "Wednesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:24:09",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:32:50",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:17:22",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:54:13",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Rambo First Blood Part II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:26:55",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:10:13",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:02:31",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:31:06",
+          "file": "C:/Videos/tatkotv3/The Bourne Identity.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:22:46",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:00:41",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:52:11",
+          "file": "C:/Videos/tatkotv3/Bloodsport.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:24:24",
+          "file": "C:/Videos/tatkotv3/Taken 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:13:23",
+          "file": "C:/Videos/tatkotv3/Kickboxer.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-02_thursday": {
+      "date": "2026-04-02",
+      "day": "Thursday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:51:00",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:15:13",
+          "file": "C:/Videos/tatkotv3/Taken 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:47:38",
+          "file": "C:/Videos/tatkotv3/steven seagal/Out For A Kill.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:17:41",
+          "file": "C:/Videos/tatkotv3/A Working Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:13:56",
+          "file": "C:/Videos/tatkotv3/On Deadly Ground.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:55:40",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:30:15",
+          "file": "C:/Videos/tatkotv3/Road House.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:20:59",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:47:23",
+          "file": "C:/Videos/tatkotv3/Road House 2024.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:39:41",
+          "file": "C:/Videos/tatkotv3/steven seagal/Marked For Death.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:09:11",
+          "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:41:13",
+          "file": "C:/Videos/tatkotv3/Spartacus.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:49:53",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:41:23",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-03_friday": {
+      "date": "2026-04-03",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:16:07",
+          "file": "C:/Videos/tatkotv3/Tiger Claws.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:45:29",
+          "file": "C:/Videos/tatkotv3/Tombstone.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:47:31",
+          "file": "C:/Videos/tatkotv3/The 13th Warrior.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:25:39",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "08:08:19",
+          "file": "C:/Videos/tatkotv3/Tiger Claws II.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:32:32",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:03:54",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:14:26",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:52:21",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:29:12",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:19:48",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Keeper.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:53:59",
+          "file": "C:/Videos/tatkotv3/death wish/Death Wish 5.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:26:06",
+          "file": "C:/Videos/tatkotv3/Terminator/Terminator 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:39:08",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-04_saturday": {
+      "date": "2026-04-04",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:22:23",
+          "file": "C:/Videos/tatkotv3/Predator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "03:08:59",
+          "file": "C:/Videos/tatkotv3/The Channel.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:49:59",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "06:24:42",
+          "file": "C:/Videos/tatkotv3/Taken 1.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:53:16",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:35:56",
+          "file": "C:/Videos/tatkotv3/The Bourne Identity.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "11:27:36",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:54:00",
+          "file": "C:/Videos/tatkotv3/Taken 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "14:26:25",
+          "file": "C:/Videos/tatkotv3/RoboCop 3.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "16:04:20",
+          "file": "C:/Videos/tatkotv3/Conan the Barbarian.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "18:14:52",
+          "file": "C:/Videos/tatkotv3/The Bourne Ultimatum.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:01:32",
+          "file": "C:/Videos/tatkotv3/steven seagal/Fire Down Below.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "21:46:04",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:20:59",
+          "file": "C:/Videos/tatkotv3/Terminator/The Terminator.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-05_sunday": {
+      "date": "2026-04-05",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:04:18",
+          "file": "C:/Videos/tatkotv3/Sylvester Stallone/Nighthawks.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "02:36:18",
+          "file": "C:/Videos/tatkotv3/steven seagal/Into The Sun.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "04:13:09",
+          "file": "C:/Videos/tatkotv3/wanted dead or alive.1987.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "05:56:24",
+          "file": "C:/Videos/tatkotv3/Ninja - Shadow of a Tear.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "07:31:08",
+          "file": "C:/Videos/tatkotv3/steven seagal/The Glimmer Man.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "09:02:30",
+          "file": "C:/Videos/tatkotv3/Prince of Persia The Sands of Time.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "10:51:12",
+          "file": "C:/Videos/tatkotv3/steven seagal/Ticker.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "12:23:14",
+          "file": "C:/Videos/tatkotv3/steven seagal/Belly of the Beast.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "13:54:32",
+          "file": "C:/Videos/tatkotv3/Sandokan la tigre di Mompracem.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "15:46:02",
+          "file": "C:/Videos/tatkotv3/The quest.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "17:20:37",
+          "file": "C:/Videos/tatkotv3/RoboCop 2.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "19:11:13",
+          "file": "C:/Videos/tatkotv3/The Bourne Supremacy.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "20:53:53",
+          "file": "C:/Videos/tatkotv3/steven seagal/Urban Justice.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "22:22:33",
+          "file": "C:/Videos/tatkotv3/Ninja.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        },
+        {
+          "time": "23:48:57",
+          "file": "C:/Videos/tatkotv3/steven seagal/Maximum Conviction.mp4",
+          "channel": "tatkotv",
+          "source": "random"
+        }
+      ]
+    }
   }
 }

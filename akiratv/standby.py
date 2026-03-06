@@ -80,7 +80,7 @@ def create_standby_video(duration=30, codec="h265", output_path=None, resolution
             str(output_path)
         ], check=True, capture_output=True, text=True)
         
-        print(f"✅ Created standby: {output_path.name} ({width}x{height})")
+        print(f"[OK] Created standby: {output_path.name} ({width}x{height})")
         
     finally:
         # Cleanup temp file
@@ -159,16 +159,16 @@ def add_end_card_to_video(
             str(output_path)
         ]
 
-        print(f"🎬 Adding end card to: {input_path.name}")
+        print(f"[PLAY] Adding end card to: {input_path.name}")
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         return str(output_path)
 
     except subprocess.CalledProcessError as e:
         error_msg = e.stderr.decode() if e.stderr else str(e)
-        print(f"❌ FFmpeg error: {error_msg}")
+        print(f"[ERROR] FFmpeg error: {error_msg}")
         raise
     except Exception as e:
-        print(f"❌ General error: {e}")
+        print(f"[ERROR] General error: {e}")
         raise
     finally:
         if overlay_img.exists():

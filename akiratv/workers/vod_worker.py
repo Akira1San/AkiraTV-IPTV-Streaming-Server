@@ -16,6 +16,7 @@ class VODWorker(BaseWorker):
         self.command_queue = command_queue
         self.use_dynamic_playlist = True  # A flag to identify this worker type
         self.video_to_play = None
+        self.current_video = None  # Track currently playing video
         self.temp_dir: Optional[Path] = None
         self.hls_dir: Optional[Path] = None
 
@@ -39,8 +40,10 @@ class VODWorker(BaseWorker):
 
             # If a video has been requested, play it
             if self.video_to_play:
+                self.current_video = self.video_to_play  # Track currently playing video
                 self._play_video(self.video_to_play)
                 self.video_to_play = None  # Reset the flag
+                self.current_video = None  # Video finished playing
             else:
                 # Nothing to do, just wait
                 time.sleep(1)

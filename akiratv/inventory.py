@@ -1,3 +1,4 @@
+
 #akiratv/inventory.py
 import json
 from pathlib import Path
@@ -17,7 +18,7 @@ class InventoryManager:
     def _load_inventory(self):
         """Loads the inventory from the JSON file and creates a lookup dictionary."""
         if not self.inventory_path.exists():
-            print(f"⚠️ Inventory file not found at {self.inventory_path}. Metadata lookups will fail.")
+            # print(f"Inventory file not found at {self.inventory_path}. Metadata lookups will fail.")
             return
 
         try:
@@ -30,33 +31,13 @@ class InventoryManager:
                 normalized_path = str(Path(item["path"])).lower()
                 self.path_lookup[normalized_path] = item
             
-            print(f"✅ Successfully loaded {len(self.inventory_data)} items from inventory.")
+            # print(f"Successfully loaded {len(self.inventory_data)} items from inventory.")
 
         except Exception as e:
-            print(f"❌ Failed to load inventory from {self.inventory_path}: {e}")
+            # print(f"Failed to load inventory from {self.inventory_path}: {e}")
             self.inventory_data = []
             self.path_lookup = {}
 
     def get_metadata(self, video_path: str) -> Optional[Dict[str, Any]]:
-        """
-        Retrieves metadata for a given video file path.
-        Returns None if the video is not found in the inventory.
-        """
         normalized_path = str(Path(video_path)).lower()
         return self.path_lookup.get(normalized_path)
-
-    def get_source_bitrate(self, video_path: str) -> str:
-        """Gets the overall source bitrate from the inventory."""
-        metadata = self.get_metadata(video_path)
-        if metadata and metadata.get("overall_bitrate"):
-            # Convert from bps to kbps
-            return f"{metadata['overall_bitrate'] // 1000}k"
-        return "1500k"  # Fallback
-
-    def get_source_fps(self, video_path: str) -> float:
-        """Gets the source FPS from the inventory's first video track."""
-        metadata = self.get_metadata(video_path)
-        if metadata and metadata.get("video_tracks"):
-            first_video_track = metadata["video_tracks"][0]
-            return float(first_video_track.get("fps", 23.976))
-        return 23.976  # Fallback

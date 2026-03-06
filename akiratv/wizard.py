@@ -252,7 +252,7 @@ class WeeklyScheduleWizard:
             current_day = self.selected_day
             current_time = self.selected_time
             
-            print(f"🎬 DEBUG: Adding to {current_day} at {current_time}")
+            print(f"[PLAY] DEBUG: Adding to {current_day} at {current_time}")
             
             for idx in video_list.curselection():
                 if idx < len(_video_paths):
@@ -494,7 +494,7 @@ class TimePickerWindow:
             messagebox.showwarning("No Video Selected", "Select a video first!")
             return
             
-        print(f"🎬 DEBUG: Adding to {self.day} at {self.time_slot}")
+        print(f"[PLAY] DEBUG: Adding to {self.day} at {self.time_slot}")
         
         for idx in self.video_list.curselection():
             if idx < len(self._video_paths):

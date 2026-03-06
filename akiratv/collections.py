@@ -40,7 +40,7 @@ def get_video_duration(video_path: str) -> float:
             print(f"⚠️  Empty duration output for: {safe_path}")
             return None
     except Exception as e:
-        print(f"❌ FFprobe failed for {video_path}: {e}")
+        print(f"[ERROR] FFprobe failed for {video_path}: {e}")
         return None
 
 # Predefined tags (user can add custom ones)

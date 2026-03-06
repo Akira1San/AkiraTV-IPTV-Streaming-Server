@@ -12,6 +12,12 @@ class LinearWorker(BaseWorker):
         super().__init__(channel, config, logger)
         self.schedule_entries = schedule_entries
         self.transcoding_service = transcoding_service
+    
+    def update_schedule(self, new_schedule_entries: List[Dict]):
+        """Update schedule entries in-place without restarting the stream."""
+        old_count = len(self.schedule_entries) if self.schedule_entries else 0
+        self.schedule_entries = new_schedule_entries
+        self.logger.info(f"Schedule updated in-place: {old_count} -> {len(new_schedule_entries)} entries")
         self.temp_dir: Optional[Path] = None
 
     def run(self):

@@ -49,7 +49,7 @@
       "enable_subtitles": false
     },
     "akiratv": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -94,6 +94,14 @@
       "transcoding": {
         "enabled": false
       }
+    },
+    "Test": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      },
+      "enable_subtitles": false
     }
   },
   "worker": {

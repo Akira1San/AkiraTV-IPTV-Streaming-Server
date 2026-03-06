@@ -80,7 +80,7 @@ class WeeklyScheduleWizard:
     def on_time_click(self, day, time_slot):
         self.selected_day = day
         self.selected_time = time_slot
-        print(f"✅ Selected: {day} at {time_slot}")
+        print(f"[OK] Selected: {day} at {time_slot}")
     
     def open_collection_picker(self):
         if not self.selected_day or not self.selected_time:
@@ -128,7 +128,7 @@ class WeeklyScheduleWizard:
             if time_str == time_slot:
                 btn.config(bg="lightblue")
         
-        print(f"✅ Added {Path(video_path).name} to {day} at {time_slot}")
+        print(f"[OK] Added {Path(video_path).name} to {day} at {time_slot}")
     
     def save_schedule(self):
         # Simple save

@@ -85,7 +85,7 @@ class Config:
         if not os.path.exists(path):
             logger.info(f"No config found at {path}, creating default...")
             cls._write_default(path)
-            logger.info(f"✅ Created default config at {path}")
+            logger.info(f"[OK] Created default config at {path}")
             logger.info("You can edit this file and reload without restarting the server.")
             # Return the default config instead of exiting
             return cls(cls.default_config())
@@ -94,14 +94,14 @@ class Config:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             # Only log config load once or when in debug mode
-            logger.debug(f"✅ Loaded config from {path}")
+            logger.debug(f"[OK] Loaded config from {path}")
             return cls(cls._merge_with_defaults(data))
         except json.JSONDecodeError as e:
-            logger.error(f"❌ Invalid JSON in {path}: {e}")
+            logger.error(f"[ERROR] Invalid JSON in {path}: {e}")
             logger.info("Using default config instead")
             return cls(cls.default_config())
         except Exception as e:
-            logger.error(f"❌ Failed to load config: {e}")
+            logger.error(f"[ERROR] Failed to load config: {e}")
             logger.info("Using default config instead")
             return cls(cls.default_config())
 
@@ -135,7 +135,7 @@ class Config:
         """Save current config to file"""
         with open(path, "w", encoding="utf-8") as f:
             json.dump(self.data, f, indent=2)
-        logger.info(f"✅ Config saved to {path}")
+        logger.info(f"[OK] Config saved to {path}")
 
     def get_channel_config(self, channel: str) -> dict:
         """Get merged config for a specific channel"""

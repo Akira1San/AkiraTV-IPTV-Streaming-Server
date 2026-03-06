@@ -135,7 +135,7 @@ class BaseWorker:
                                             # Only update if it's actually a new video file
                                             if self.current_video != filename:
                                                 self.current_video = filename
-                                                self.logger.info(f"🎬 NOW PLAYING: {filename}")
+                                                self.logger.info(f"[PLAY] NOW PLAYING: {filename}")
                                     except Exception:
                                         pass
 
