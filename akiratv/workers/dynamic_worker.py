@@ -28,6 +28,7 @@ class DynamicWorker(BaseWorker):
         self.current_schedule_index = 0
         self.target_resolution = self._get_channel_resolution()
         self.last_schedule_check = time.time()
+        self.error_thread = None  # Track error logging thread for cleanup
         
     def _get_channel_resolution(self) -> str:
         """Get the target resolution for this channel from config."""
@@ -238,16 +239,17 @@ class DynamicWorker(BaseWorker):
             self.watchdog = Watchdog(self.ffmpeg_process, self.logger, timeout_seconds=30)
             self.watchdog.start()
             
-            # Start error logging thread
+            # Start error logging thread with proper cleanup tracking
             def log_errors():
-                if self.ffmpeg_process.stderr:
+                if self.ffmpeg_process and self.ffmpeg_process.stderr:
                     for line in iter(self.ffmpeg_process.stderr.readline, b''):
+                        if not self.running:
+                            break  # Exit early if worker stopped
                         if line and self.watchdog:
                             self.watchdog.ping()
-                        # Basic error logging (could be more sophisticated)
             
-            error_thread = threading.Thread(target=log_errors, daemon=True)
-            error_thread.start()
+            self.error_thread = threading.Thread(target=log_errors, daemon=True)
+            self.error_thread.start()
             
         except Exception as e:
             self.logger.error(f"Failed to start FFmpeg: {e}")
@@ -432,6 +434,18 @@ class DynamicWorker(BaseWorker):
             # Stop watchdog
             if self.watchdog:
                 self.watchdog.running = False
+            
+            # Clean up error thread before terminating FFmpeg
+            if self.error_thread and self.error_thread.is_alive():
+                try:
+                    # Close stderr to unblock the thread's read operation
+                    if self.ffmpeg_process and self.ffmpeg_process.stderr:
+                        self.ffmpeg_process.stderr.close()
+                    self.error_thread.join(timeout=2)
+                except Exception as e:
+                    self.logger.warning(f"Error cleaning up error thread: {e}")
+                finally:
+                    self.error_thread = None
             
             # Terminate FFmpeg
             self.ffmpeg_process.terminate()
