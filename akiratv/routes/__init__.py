@@ -13,6 +13,7 @@ from .vod import router as vod_router
 from .playlist import router as playlist_router
 from .standby import router as standby_router
 from .websocket import websocket_endpoint
+from .fast_scheduler import router as fast_scheduler_router
 
 __all__ = [
     "lifecycle_router",
@@ -25,4 +26,5 @@ __all__ = [
     "playlist_router",
     "standby_router",
     "websocket_endpoint",
+    "fast_scheduler_router",
 ]
