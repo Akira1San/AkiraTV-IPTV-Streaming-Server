@@ -401,6 +401,16 @@ def restart_channel(channel: str):
     else:
         raise HTTPException(status_code=400, detail=result["error"])
 
+@app.post("/api/channels/{channel}/start", response_model=Response)
+def start_channel(channel: str):
+    """Start a specific channel worker (for stopped/enabled channels)"""
+    api = get_core_api()
+    result = api.start_channel(channel)
+    if result["success"]:
+        return Response(success=True, message=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["error"])
+
 # ========================================
 # CONFIGURATION ENDPOINTS
 # ========================================

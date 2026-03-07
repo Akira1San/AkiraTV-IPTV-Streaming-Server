@@ -562,6 +562,59 @@ class CoreAPI:
             logger.error(f"CoreAPI: {error_msg}")
             return {"success": False, "error": error_msg}
 
+    def start_channel(self, channel: str) -> Dict[str, Any]:
+        """
+        Start a specific channel worker (for stopped/enabled channels)
+        
+        Args:
+            channel: Channel name
+            
+        Returns:
+            {"success": bool, "message": str} or {"success": False, "error": str}
+        """
+        if not self._running:
+            return {"success": False, "error": "Engine not running"}
+        
+        if not self._engine:
+            return {"success": False, "error": "Engine not initialized"}
+        
+        # Check if channel exists and is enabled
+        channel_status = self.get_channel(channel)
+        if not channel_status:
+            return {"success": False, "error": f"Channel '{channel}' not found"}
+        
+        if not channel_status.enabled:
+            return {"success": False, "error": f"Channel '{channel}' is disabled. Enable it first."}
+        
+        # Check if channel is already running
+        if hasattr(self._engine, 'workers') and channel in self._engine.workers:
+            return {"success": False, "error": f"Channel '{channel}' is already running"}
+        
+        try:
+            # Get channel type from config
+            config = self.get_config()
+            channels_config = config.get("channels", {})
+            channel_type = channels_config.get(channel, {}).get("type", "linear")
+            
+            # Start the channel based on its type
+            if channel_type == "vod":
+                self._engine._start_vod_channel(channel)
+            elif channel_type == "dynamic":
+                self._engine._start_dynamic_channel(channel)
+            elif channel_type == "linear":
+                self._engine._start_linear_channel(channel)
+            else:
+                return {"success": False, "error": f"Unknown channel type '{channel_type}'"}
+            
+            self._emit("channel_started", {"channel": channel})
+            logger.info(f"CoreAPI: Channel '{channel}' started successfully")
+            return {"success": True, "message": f"Channel '{channel}' started successfully"}
+            
+        except Exception as e:
+            error_msg = f"Failed to start channel: {str(e)}"
+            logger.error(f"CoreAPI: {error_msg}")
+            return {"success": False, "error": error_msg}
+
     # ========================================
     # SCHEDULING
     # ========================================

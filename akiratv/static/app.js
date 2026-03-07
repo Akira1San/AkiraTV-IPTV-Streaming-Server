@@ -344,14 +344,19 @@ function displayChannels(channels, channelUrls) {
                     </div>
                     ${ch.enabled ? `
                         <div class="setting-row">
-                            <button class="btn-small btn-warning" onclick="stopChannelWorker('${ch.name}')" 
-                                    ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
-                                ${t('channels.stopChannel')}
-                            </button>
-                            <button class="btn-small btn-primary" onclick="restartChannel('${ch.name}')"
-                                    ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
-                                ${t('channels.restartChannel')}
-                            </button>
+                            ${ch.status !== 'running' ? `
+                                <button class="btn-small btn-success" onclick="startChannel('${ch.name}')">
+                                    ${t('channels.startChannel') || 'Start Channel'}
+                                </button>
+                            ` : `
+                                <button class="btn-small btn-warning" onclick="stopChannelWorker('${ch.name}')">
+                                    ${t('channels.stopChannel')}
+                                </button>
+                                <button class="btn-small btn-primary" onclick="restartChannel('${ch.name}')"
+                                        ${ch.status !== 'running' ? 'disabled title="Channel not running"' : ''}>
+                                    ${t('channels.restartChannel')}
+                                </button>
+                            `}
                         </div>
                     ` : ''}
                 </div>
@@ -967,6 +972,22 @@ async function stopChannelWorker(channel) {
         }
     } catch (error) {
         showToast('Failed to stop channel', 'error');
+    }
+}
+
+async function startChannel(channel) {
+    try {
+        showToast(`Starting channel '${channel}'...`, 'info');
+        const result = await apiCall(`/api/channels/${channel}/start`, 'POST');
+        if (result.success) {
+            showToast(result.message, 'success');
+            // Reload channels to update status
+            await loadChannels();
+        } else {
+            showToast(result.error || 'Failed to start channel', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to start channel', 'error');
     }
 }
 
