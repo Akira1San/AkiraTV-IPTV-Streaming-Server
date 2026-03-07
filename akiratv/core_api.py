@@ -545,17 +545,32 @@ class CoreAPI:
             import time
             time.sleep(1)
             
-            # Restart the channel by calling the engine's start method for this specific channel
-            if hasattr(self._engine, '_start_channel_worker'):
-                success = self._engine._start_channel_worker(channel)
-                if success:
+            # Restart the channel by calling the appropriate engine method based on channel type
+            channel_type = channel_status.type
+            
+            if channel_type == "linear":
+                start_method = "_start_linear_channel"
+            elif channel_type == "dynamic":
+                start_method = "_start_dynamic_channel"
+            elif channel_type == "vod":
+                start_method = "_start_vod_channel"
+            else:
+                return {"success": False, "error": f"Unknown channel type: {channel_type}"}
+            
+            if hasattr(self._engine, start_method):
+                getattr(self._engine, start_method)(channel)
+                # Give the worker time to start
+                time.sleep(0.5)
+                
+                # Verify the worker started successfully
+                if hasattr(self._engine, 'workers') and channel in self._engine.workers:
                     self._emit("channel_restarted", {"channel": channel})
                     logger.info(f"CoreAPI: Channel '{channel}' restarted successfully")
                     return {"success": True, "message": f"Channel '{channel}' restarted successfully"}
                 else:
-                    return {"success": False, "error": f"Failed to restart channel '{channel}'"}
+                    return {"success": False, "error": f"Failed to restart channel '{channel}' - worker not found after start"}
             else:
-                return {"success": False, "error": "Channel restart not supported by engine"}
+                return {"success": False, "error": f"Channel restart not supported for channel type: {channel_type}"}
                 
         except Exception as e:
             error_msg = f"Failed to restart channel: {str(e)}"
