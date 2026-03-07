@@ -118,19 +118,19 @@ This plan breaks down the refactoring of the AkiraTV API server from a monolithi
   - Test get_schedule_for_date with calendar and weekly schedules
   - _Requirements: 6.3, 6.4_
 
-- [ ] 8. Create playlist and standby routes modules
-  - [ ] 8.1 Create routes/playlist.py with playlist endpoints
+- [x] 8. Create playlist and standby routes modules
+  - [x] 8.1 Create routes/playlist.py with playlist endpoints
     - Create APIRouter with prefix="/api/playlist" and tag="Playlist"
     - Extract 3 playlist endpoints (create, get videos, play selected)
     - _Requirements: 2.8_
   
-  - [ ] 8.2 Create routes/standby.py with standby endpoint
+  - [x] 8.2 Create routes/standby.py with standby endpoint
     - Create APIRouter with prefix="/api/standby" and tag="Standby"
     - Extract standby creation endpoint
     - Import standby module and Counter for resolution detection
     - _Requirements: 2.9_
   
-  - [ ] 8.3 Register playlist and standby routers
+  - [x] 8.3 Register playlist and standby routers
     - Import both routers in api_server.py
     - Register using app.include_router()
     - Remove original endpoints from api_server.py
