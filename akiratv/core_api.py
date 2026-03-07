@@ -485,6 +485,11 @@ class CoreAPI:
             return {"success": False, "error": f"Channel '{channel}' not found"}
         
         try:
+            # For linear channels, mark as stopped to prevent auto-restart
+            if channel_status.type == "linear":
+                logger.info(f"CoreAPI: Marking linear channel '{channel}' as stopped")
+                self._engine.stopped_linear_channels.add(channel)
+            
             # Check if worker exists and is running
             if hasattr(self._engine, 'workers') and channel in self._engine.workers:
                 worker, thread = self._engine.workers[channel]
@@ -500,6 +505,13 @@ class CoreAPI:
                     logger.info(f"CoreAPI: Channel '{channel}' worker stopped")
                     return {"success": True, "message": f"Channel '{channel}' stopped"}
                 else:
+                    # For linear channels with None worker (auto-restart wrapper), 
+                    # we already marked it as stopped, so just remove from workers dict
+                    if channel_status.type == "linear":
+                        del self._engine.workers[channel]
+                        self._emit("channel_stopped", {"channel": channel})
+                        logger.info(f"CoreAPI: Linear channel '{channel}' stopped")
+                        return {"success": True, "message": f"Channel '{channel}' stopped"}
                     return {"success": False, "error": f"Channel '{channel}' worker not available"}
             else:
                 return {"success": True, "message": f"Channel '{channel}' is not running"}
@@ -611,13 +623,15 @@ class CoreAPI:
             channels_config = config.get("channels", {})
             channel_type = channels_config.get(channel, {}).get("type", "linear")
             
-            # Start the channel based on its type
-            if channel_type == "vod":
+            # For linear channels, remove from stopped list to allow restart
+            if channel_type == "linear":
+                if channel in self._engine.stopped_linear_channels:
+                    self._engine.stopped_linear_channels.remove(channel)
+                self._engine._start_linear_channel(channel)
+            elif channel_type == "vod":
                 self._engine._start_vod_channel(channel)
             elif channel_type == "dynamic":
                 self._engine._start_dynamic_channel(channel)
-            elif channel_type == "linear":
-                self._engine._start_linear_channel(channel)
             else:
                 return {"success": False, "error": f"Unknown channel type '{channel_type}'"}
             

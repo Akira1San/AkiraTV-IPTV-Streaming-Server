@@ -70,6 +70,8 @@ class AkiraTV:
         
         # NEW: Track restart state for linear channels
         self.linear_channel_configs = {}
+        # Track which linear channels should be stopped permanently
+        self.stopped_linear_channels = set()
 
     def start(self):
         """Main entry point - orchestrates all streaming operations"""
@@ -205,7 +207,7 @@ class AkiraTV:
 
     def _linear_worker_with_restart(self, channel_name: str):
         """Wrapper that restarts a linear worker when it exits"""
-        while self.running:
+        while self.running and channel_name not in self.stopped_linear_channels:
             try:
                 logger.info(f"[REFRESH] Starting/Restarting linear worker for {channel_name}...")
                 
@@ -236,7 +238,7 @@ class AkiraTV:
                 worker.run()
                 
                 # If we reach here, the worker has exited
-                if self.running:
+                if self.running and channel_name not in self.stopped_linear_channels:
                     logger.warning(f"⚠️ Linear worker for {channel_name} exited. Restarting in 10s...")
                     time.sleep(10)  # Cool-down period
                 else:
@@ -245,7 +247,7 @@ class AkiraTV:
                     
             except Exception as e:
                 logger.error(f"[ERROR] Error in linear worker for {channel_name}: {e}")
-                if self.running:
+                if self.running and channel_name not in self.stopped_linear_channels:
                     logger.info(f"Retrying in 10s...")
                     time.sleep(10)
                 else:
