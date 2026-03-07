@@ -158,8 +158,8 @@ This plan breaks down the refactoring of the AkiraTV API server from a monolithi
   - Test get_video_duration with valid and invalid paths
   - _Requirements: 2.10, 6.5_
 
-- [ ] 10. Create fast scheduler routes module
-  - [ ] 10.1 Create routes/fast_scheduler.py with fast scheduler endpoints
+- [x] 10. Create fast scheduler routes module
+  - [x] 10.1 Create routes/fast_scheduler.py with fast scheduler endpoints
     - Create APIRouter with prefix="/api/fast-schedule" and tag="Fast Scheduler"
     - Extract 9 fast scheduler endpoints
     - Move fast_schedulers cache dictionary
@@ -167,7 +167,7 @@ This plan breaks down the refactoring of the AkiraTV API server from a monolithi
     - Import FastScheduler class
     - _Requirements: 2.11, 6.6_
   
-  - [ ] 10.2 Register fast scheduler router in main api_server.py
+  - [x] 10.2 Register fast scheduler router in main api_server.py
     - Import fast_scheduler router
     - Register using app.include_router()
     - Remove original fast scheduler endpoints and helpers from api_server.py
