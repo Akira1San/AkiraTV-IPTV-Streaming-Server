@@ -15,6 +15,7 @@ class HttpServer:
         self.site = None
         self.public_url = None
         self.thread = None
+        self._loop = None  # Store event loop for proper shutdown
         self._logged_missing_channels = set()  # Track channels we've already logged
 
     async def hls_handler(self, request):
@@ -189,6 +190,7 @@ class HttpServer:
         import threading
         
         async def run_server():
+            self._loop = asyncio.get_event_loop()  # Store the event loop
             await self.start_async(directory, port, bind)
             # Keep the server running
             while True:
@@ -211,8 +213,23 @@ class HttpServer:
     def stop(self):
         """Stop the HTTP server."""
         if self.thread and self.thread.is_alive():
-            # Run the async stop method in the event loop
-            asyncio.run(self.stop_async())
+            # Run the async stop method in the SAME event loop used during start
+            if self._loop and not self._loop.is_closed():
+                # Use run_coroutine_threadsafe to run in the existing loop
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(
+                        asyncio.run_coroutine_threadsafe,
+                        self.stop_async(),
+                        self._loop
+                    )
+                    try:
+                        future.result(timeout=10)
+                    except Exception as e:
+                        print(f"[WARN] Error stopping HTTP server: {e}")
+            else:
+                # Fallback: loop is already closed, just mark thread as dead
+                print("[WARN] Event loop already closed, skipping HTTP server cleanup")
 
     async def channel_assets_handler(self, request):
         """Serve channel-specific files like logos."""
