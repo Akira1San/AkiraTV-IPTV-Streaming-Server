@@ -1872,6 +1872,12 @@ class SimpleSchedulerWizard:
     
     def load_collections_from_profile(self):
         """Load collections from current profile and update UI"""
+        # Clear added videos when switching profiles to avoid blacklist issues
+        # The blacklist is profile-specific, so we need to start fresh
+        self.added_videos.clear()
+        self.video_to_collection_map.clear()
+        self.update_added_list_display()
+        
         self.collections = load_collections(self.current_profile)
         self.collection_list.delete(0, tk.END)
         for col in self.collections:
