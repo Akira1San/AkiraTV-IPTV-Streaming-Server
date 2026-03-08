@@ -561,6 +561,9 @@ class CoreAPI:
             channel_type = channel_status.type
             
             if channel_type == "linear":
+                # Remove from stopped_linear_channels to allow the worker to run
+                if channel in self._engine.stopped_linear_channels:
+                    self._engine.stopped_linear_channels.remove(channel)
                 start_method = "_start_linear_channel"
             elif channel_type == "dynamic":
                 start_method = "_start_dynamic_channel"
