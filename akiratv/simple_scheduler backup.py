@@ -87,7 +87,7 @@ class SimpleSchedulerWizard:
         self.profile_dropdown.pack(side="left", padx=5)
         self.profile_dropdown.bind("<<ComboboxSelected>>", self.on_quick_profile_select)
         ttk.Button(profile_row1, text="Refresh", command=self.refresh_collections_dropdown).pack(side="left", padx=5)
-        ttk.Button(profile_row1, text="📁 Collection Wizard", command=self.launch_collection_wizard).pack(side="left", padx=5)
+        ttk.Button(profile_row1, text="[FOLDER] Collection Wizard", command=self.launch_collection_wizard).pack(side="left", padx=5)
         
         # Second row: Manual entry and theme selector
         profile_row2 = ttk.Frame(profile_frame)
@@ -153,7 +153,7 @@ class SimpleSchedulerWizard:
         action_frame = ttk.Frame(left_frame)
         action_frame.pack(pady=10)
         
-        ttk.Button(action_frame, text="🎲 Preview Random Week", 
+        ttk.Button(action_frame, text="[RAND] Preview Random Week", 
                   command=lambda: self.preview_schedule(mode="random")).pack(pady=2, fill="x")
 
         ttk.Button(action_frame, text="▶ Preview Sequential Week", 
@@ -161,7 +161,7 @@ class SimpleSchedulerWizard:
         
         ttk.Separator(action_frame, orient="horizontal").pack(fill="x", pady=10)
         
-        ttk.Button(action_frame, text="💾 Save Current Schedule", 
+        ttk.Button(action_frame, text="[SAVE] Save Current Schedule", 
                   command=self.save_current_schedule, state="disabled").pack(pady=2, fill="x")
         self.save_button = action_frame.winfo_children()[-1]  # Store reference to enable/disable
         

@@ -137,15 +137,15 @@ This plan breaks down the refactoring of the AkiraTV API server from a monolithi
     - Verify endpoints work
     - _Requirements: 2.8, 2.9, 4.3, 4.4_
 
-- [ ] 9. Create wizard routes module with helper function
-  - [ ] 9.1 Create routes/wizard.py with wizard endpoints
+- [x] 9. Create wizard routes module with helper function
+  - [x] 9.1 Create routes/wizard.py with wizard endpoints
     - Create APIRouter with prefix="/api/wizard" and tag="Wizard"
     - Extract 5 wizard endpoints (log, scan folder, check collection, create collection, create schedule)
     - Move get_video_duration() helper function
     - Import subprocess and json for FFprobe integration
     - _Requirements: 2.10, 6.5_
   
-  - [ ] 9.2 Register wizard router in main api_server.py
+  - [x] 9.2 Register wizard router in main api_server.py
     - Import wizard router
     - Register using app.include_router()
     - Remove original wizard endpoints and helper from api_server.py
@@ -196,10 +196,10 @@ This plan breaks down the refactoring of the AkiraTV API server from a monolithi
     - Verify VOD and WebSocket work
     - _Requirements: 2.12, 2.13, 4.3, 4.4_
 
-- [ ] 12. Checkpoint - Ensure all tests pass
+- [x] 12. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 13. Update routes/__init__.py to export all routers
+- [x] 13. Update routes/__init__.py to export all routers
   - Import all route modules
   - Export all routers in __all__ list
   - Verify all routers can be imported from routes package
@@ -209,15 +209,15 @@ This plan breaks down the refactoring of the AkiraTV API server from a monolithi
   - **Property 3: Module import independence**
   - **Validates: Requirements 7.1, 7.2**
 
-- [ ] 14. Refactor main api_server.py to minimal structure
-  - [ ] 14.1 Clean up main api_server.py
+- [x] 14. Refactor main api_server.py to minimal structure
+  - [x] 14.1 Clean up main api_server.py
     - Remove all extracted endpoint handlers
     - Remove all extracted helper functions
     - Keep only: FastAPI app initialization, middleware setup, static file mounting, router registration, root endpoints (/, /viewer, /health), startup/shutdown handlers, main entry point
     - Verify file is approximately 200 lines or less
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
   
-  - [ ] 14.2 Verify backward compatibility
+  - [x] 14.2 Verify backward compatibility
     - Test launch with: uvicorn akiratv.api_server:app --reload --port 8000
     - Test direct execution: python -m akiratv.api_server
     - Verify app variable can be imported

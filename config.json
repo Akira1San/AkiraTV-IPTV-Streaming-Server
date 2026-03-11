@@ -49,7 +49,7 @@
       "enable_subtitles": false
     },
     "akiratv": {
-      "enabled": false,
+      "enabled": true,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -102,6 +102,13 @@
         "enabled": false
       },
       "enable_subtitles": false
+    },
+    "Western": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
     }
   },
   "worker": {
@@ -114,5 +121,6 @@
   },
   "channel": "critters",
   "tmdb_api_key": "",
-  "omdb_api_key": "ebed58dc"
+  "omdb_api_key": "ebed58dc",
+  "test": "value"
 }

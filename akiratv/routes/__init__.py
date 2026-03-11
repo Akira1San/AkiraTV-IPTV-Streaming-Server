@@ -14,6 +14,7 @@ from .playlist import router as playlist_router
 from .standby import router as standby_router
 from .websocket import websocket_endpoint
 from .fast_scheduler import router as fast_scheduler_router
+from .wizard import router as wizard_router
 
 __all__ = [
     "lifecycle_router",
@@ -27,4 +28,5 @@ __all__ = [
     "standby_router",
     "websocket_endpoint",
     "fast_scheduler_router",
+    "wizard_router",
 ]
