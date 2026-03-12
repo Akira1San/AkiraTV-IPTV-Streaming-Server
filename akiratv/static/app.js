@@ -244,11 +244,17 @@ async function loadChannels() {
         // Update filter counts
         updateFilterCounts(channels);
         
-        // Display channels (filtered if search is active)
-        displayChannels(channels, channelUrls);
+        // Display channels (only if channelsGrid exists, e.g., on main page)
+        const channelsGrid = document.getElementById('channelsGrid');
+        if (channelsGrid) {
+            displayChannels(channels, channelUrls);
+        }
         
-        // Setup search functionality
-        setupChannelSearch();
+        // Setup search functionality (only if search input exists)
+        const searchInput = document.getElementById('channelSearch');
+        if (searchInput) {
+            setupChannelSearch();
+        }
         
         // Refresh channel dropdown for playlist controls
         await loadChannelDropdown();
@@ -261,8 +267,16 @@ async function loadChannels() {
 function displayChannels(channels, channelUrls) {
     const grid = document.getElementById('channelsGrid');
     
+    // Skip if channelsGrid doesn't exist (e.g., on VOD page)
+    if (!grid) {
+        return;
+    }
+    
+    // Get search term safely
+    const searchInput = document.getElementById('channelSearch');
+    const searchTerm = searchInput ? searchInput.value.trim() : '';
+    
     if (channels.length === 0) {
-        const searchTerm = document.getElementById('channelSearch').value.trim();
         if (searchTerm) {
             grid.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-secondary);">${t('channels.noResults')}</div>`;
         } else {
@@ -282,7 +296,6 @@ function displayChannels(channels, channelUrls) {
         const urls = channelUrls[ch.name] || {};
         
         // Highlight search term in channel name
-        const searchTerm = document.getElementById('channelSearch').value.trim();
         let displayName = ch.name;
         if (searchTerm) {
             const regex = new RegExp(`(${searchTerm})`, 'gi');
@@ -384,6 +397,11 @@ function setupChannelSearch() {
     const clearBtn = document.getElementById('searchClearBtn');
     const resultsInfo = document.getElementById('searchResultsInfo');
     
+    // Skip if elements don't exist
+    if (!searchInput || !clearBtn) {
+        return;
+    }
+    
     // Search input event
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.trim();
@@ -465,9 +483,14 @@ function updateFilterCounts(channels) {
     const enabledCount = channels.filter(ch => ch.enabled).length;
     const disabledCount = channels.filter(ch => !ch.enabled).length;
     
-    document.getElementById('countAll').textContent = allCount;
-    document.getElementById('countEnabled').textContent = enabledCount;
-    document.getElementById('countDisabled').textContent = disabledCount;
+    // Check if elements exist before setting textContent (for pages without channel filters like VOD)
+    const countAllEl = document.getElementById('countAll');
+    const countEnabledEl = document.getElementById('countEnabled');
+    const countDisabledEl = document.getElementById('countDisabled');
+    
+    if (countAllEl) countAllEl.textContent = allCount;
+    if (countEnabledEl) countEnabledEl.textContent = enabledCount;
+    if (countDisabledEl) countDisabledEl.textContent = disabledCount;
 }
 
 function setChannelFilter(filter) {
