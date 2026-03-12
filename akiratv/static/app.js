@@ -1270,6 +1270,11 @@ function showConfigTab(tabName) {
     // Show selected tab
     document.getElementById(tabName + 'Tab').classList.add('active');
     document.querySelector(`[onclick="showConfigTab('${tabName}')"]`).classList.add('active');
+    
+    // Load info data when info tab is shown
+    if (tabName === 'info') {
+        loadInfoData();
+    }
 }
 
 async function loadConfigurationData() {
@@ -1312,6 +1317,48 @@ async function loadConfigurationData() {
     } catch (error) {
         console.error('Failed to load configuration:', error);
         showToast('Failed to load configuration', 'error');
+    }
+}
+
+async function loadInfoData() {
+    try {
+        // Get engine status
+        const statusResult = await apiCall('/api/lifecycle/status');
+        const engineStatus = statusResult.running ? 'Running' : 'Stopped';
+        document.getElementById('infoEngineStatus').textContent = engineStatus;
+        document.getElementById('infoEngineStatus').className = 'status-value ' + (statusResult.running ? 'status-active' : 'status-inactive');
+        
+        // Get channels
+        const channelsResult = await apiCall('/api/channels/channels');
+        const channels = channelsResult.channels || {};
+        const enabledChannels = Object.values(channels).filter(ch => ch.enabled).length;
+        const totalChannels = Object.keys(channels).length;
+        document.getElementById('infoChannelCount').textContent = `${enabledChannels} enabled / ${totalChannels} total`;
+        
+        // Get config for storage and transcoding
+        const config = await apiCall('/api/config');
+        
+        // Storage mode
+        const storage = config.storage || {};
+        const storageType = storage.type || 'disk';
+        document.getElementById('infoStorageMode').textContent = storageType === 'ram' ? 'RAM Disk' : 'Disk';
+        
+        // Transcoding status
+        let transcodingEnabled = false;
+        for (const channel of Object.values(channels)) {
+            if (channel.transcoding?.enabled) {
+                transcodingEnabled = true;
+                break;
+            }
+        }
+        document.getElementById('infoTranscoding').textContent = transcodingEnabled ? 'Enabled' : 'Disabled (using -c copy)';
+        
+    } catch (error) {
+        console.error('Failed to load info data:', error);
+        document.getElementById('infoEngineStatus').textContent = 'Error';
+        document.getElementById('infoChannelCount').textContent = 'Error';
+        document.getElementById('infoStorageMode').textContent = 'Error';
+        document.getElementById('infoTranscoding').textContent = 'Error';
     }
 }
 

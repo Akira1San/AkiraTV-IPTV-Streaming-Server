@@ -371,24 +371,53 @@
                     <div id="infoTab" class="config-tab-content">
                         <div class="info-content">
                             <div class="app-logo">
+                                <img src="/user/logo.png" alt="AkiraTV Logo" class="logo-image">
                                 <h2>AkiraTV — Local IPTV Streamer</h2>
+                                <p class="version">Version 2.0.0</p>
+                            </div>
+                            
+                            <!-- System Status -->
+                            <div class="system-status">
+                                <h3>System Status</h3>
+                                <div class="status-grid">
+                                    <div class="status-item">
+                                        <span class="status-label">Engine:</span>
+                                        <span class="status-value" id="infoEngineStatus">Loading...</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">Channels:</span>
+                                        <span class="status-value" id="infoChannelCount">Loading...</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">Storage:</span>
+                                        <span class="status-value" id="infoStorageMode">Loading...</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">Transcoding:</span>
+                                        <span class="status-value" id="infoTranscoding">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="features-list">
+                                <h3>Features</h3>
                                 <div class="feature-item">✅ Multi-channel linear TV streaming</div>
                                 <div class="feature-item">✅ Per-channel schedules (weekly/daily)</div>
                                 <div class="feature-item">✅ Live-TV seeking (join mid-program)</div>
                                 <div class="feature-item">✅ EPG with Kodi XMLTV support</div>
                                 <div class="feature-item">✅ Channel logos & program descriptions</div>
-                                <div class="feature-item">✅ Global sharing via Ngrok</div>
-                                <div class="feature-item">✅ RAM-disk acceleration (ImDisk)</div>
-                                <div class="feature-item">✅ HLS streaming with -c copy (zero CPU)</div>
+                                <div class="feature-item">✅ Global sharing via Ngrok/Tailscale</div>
+                                <div class="feature-item">✅ RAM-disk & disk storage modes</div>
+                                <div class="feature-item">✅ HLS streaming (transcode or -c copy)</div>
                                 <div class="feature-item">✅ Bumper-free continuous playback</div>
                                 <div class="feature-item">✅ Dark theme & responsive UI</div>
+                                <div class="feature-item">✅ Bilingual (English/Bulgarian)</div>
+                                <div class="feature-item">✅ REST API with Swagger docs</div>
+                                <div class="feature-item">✅ WebSocket real-time updates</div>
                             </div>
                             
                             <div class="app-footer">
-                                <p>© 2025 AkiraTV</p>
+                                <p>© 2026 AkiraTV</p>
                                 <p><a href="https://github.com/yourname/akiratv" target="_blank">GitHub Repository</a></p>
                             </div>
                         </div>

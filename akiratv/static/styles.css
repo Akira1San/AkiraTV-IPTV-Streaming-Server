@@ -1102,10 +1102,77 @@ input:checked + .toggle-slider:before {
 }
 
 .app-logo h2 {
-    margin: 0 0 15px 0;
+    margin: 10px 0 15px 0;
     color: var(--accent);
     font-size: 20px;
     font-weight: 700;
+}
+
+.logo-image {
+    max-width: 200px;
+    max-height: 80px;
+    margin-bottom: 10px;
+}
+
+.app-logo .version {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+/* System Status Section */
+.system-status {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+.system-status h3 {
+    margin: 0 0 12px 0;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.status-label {
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.status-value {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-active {
+    color: #4caf50;
+}
+
+.status-inactive {
+    color: #f44336;
+}
+
+.features-list h3 {
+    margin: 15px 0 10px 0;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .features-list {
