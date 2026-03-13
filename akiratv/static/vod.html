@@ -121,6 +121,38 @@
                 <div class="now-playing-channel" id="nowPlayingChannel">-</div>
             </div>
         </div>
+
+        <!-- Embedded Video Player -->
+        <div class="vod-embedded-player" id="vodEmbeddedPlayer" style="display: none;">
+            <div class="embedded-player-header">
+                <span id="embeddedPlayerTitle">Now Playing</span>
+                <button class="btn btn-danger btn-small" onclick="stopEmbeddedPlayer()">
+                    <span>⏹️ Stop</span>
+                </button>
+            </div>
+            <div class="embedded-video-container">
+                <video id="vodVideoPlayer" controls></video>
+            </div>
+            <div class="embedded-player-controls">
+                <div class="progress-container">
+                    <input type="range" id="videoProgress" class="video-progress" value="0" min="0" max="100">
+                    <div class="progress-time">
+                        <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+                    </div>
+                </div>
+                <div class="player-buttons">
+                    <button class="btn btn-secondary btn-small" onclick="seekRelative(-10)">
+                        <span>⏪ 10s</span>
+                    </button>
+                    <button class="btn btn-secondary btn-small" id="playPauseBtn" onclick="togglePlayPause()">
+                        <span id="playPauseIcon">⏸️</span>
+                    </button>
+                    <button class="btn btn-secondary btn-small" onclick="seekRelative(10)">
+                        <span>10s ⏩</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Video Details Modal -->
@@ -170,6 +202,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
     <script src="/static/translations.js"></script>
     <script src="/static/app.js"></script>
     <script src="/static/vod.js"></script>

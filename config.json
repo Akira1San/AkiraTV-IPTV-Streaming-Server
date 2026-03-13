@@ -1,13 +1,13 @@
 {
   "ffmpeg": {
-    "hwaccel": "none",
+    "hwaccel": "cuda",
     "enable_subtitles": false,
     "transcoding": {
       "enabled": false,
       "bitrate": "auto",
       "custom_bitrate": "1500k",
-      "video_quality": "720p",
-      "encoder": "auto",
+      "video_quality": "source",
+      "encoder": "nvenc",
       "audio_quality": "copy",
       "fps": "auto",
       "threads": "2",

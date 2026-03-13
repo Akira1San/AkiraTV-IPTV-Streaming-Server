@@ -558,6 +558,9 @@ async function doPlayVideo(video, channel, startPosition = 0) {
             
             // Start periodic position saving (every 30 seconds)
             startPositionSaving(video.path, channel);
+            
+            // Load embedded player with HLS stream
+            loadEmbeddedPlayer(channel, video.path, startPosition);
         } else {
             showToast(t('vod.playbackFailed') + ': ' + (result.error || result.message || 'Unknown error'), 'error');
         }
@@ -841,3 +844,329 @@ window.onclick = function(event) {
         hideVideoDetails();
     }
 }
+
+// ============================================
+// EMBEDDED PLAYER FUNCTIONS (Phase 6)
+// ============================================
+
+let hlsPlayer = null;
+let embeddedPlayer = {
+    video: null,
+    channel: null,
+    videoPath: null,
+    isPlaying: false,
+    saveInterval: null
+};
+
+// Initialize embedded player
+function initEmbeddedPlayer() {
+    embeddedPlayer.video = document.getElementById('vodVideoPlayer');
+    
+    if (!embeddedPlayer.video) {
+        console.error('Video element not found');
+        return;
+    }
+    
+    // Add event listeners
+    embeddedPlayer.video.addEventListener('play', function() {
+        embeddedPlayer.isPlaying = true;
+        updatePlayPauseButton();
+    });
+    
+    embeddedPlayer.video.addEventListener('pause', function() {
+        embeddedPlayer.isPlaying = false;
+        updatePlayPauseButton();
+        // Save position when paused
+        saveCurrentPosition();
+    });
+    
+    embeddedPlayer.video.addEventListener('ended', function() {
+        embeddedPlayer.isPlaying = false;
+        updatePlayPauseButton();
+        // Video ended - clear position
+        clearVideoPosition();
+    });
+    
+    embeddedPlayer.video.addEventListener('timeupdate', function() {
+        updateProgressBar();
+    });
+    
+    embeddedPlayer.video.addEventListener('loadedmetadata', function() {
+        updateTimeDisplay();
+    });
+    
+    // Progress bar seek
+    const progressBar = document.getElementById('videoProgress');
+    if (progressBar) {
+        progressBar.addEventListener('input', function() {
+            const video = embeddedPlayer.video;
+            if (video && video.duration) {
+                const seekTime = (this.value / 100) * video.duration;
+                video.currentTime = seekTime;
+            }
+        });
+    }
+}
+
+// Load HLS stream for channel
+function loadEmbeddedPlayer(channelName, videoPath, startPosition = 0) {
+    // Initialize video element if not done
+    if (!embeddedPlayer.video) {
+        initEmbeddedPlayer();
+    }
+    
+    const video = embeddedPlayer.video;
+    if (!video) return;
+    
+    embeddedPlayer.channel = channelName;
+    embeddedPlayer.videoPath = videoPath;
+    
+    // Get HLS URL for the channel
+    const config = getServerConfig();
+    const hlsUrl = `http://${config.host}:${config.port}/hls/${channelName}/index.m3u8`;
+    
+    console.log('Loading HLS:', hlsUrl);
+    
+    // Destroy existing HLS player
+    if (hlsPlayer) {
+        hlsPlayer.destroy();
+        hlsPlayer = null;
+    }
+    
+    if (Hls.isSupported()) {
+        hlsPlayer = new Hls();
+        hlsPlayer.loadSource(hlsUrl);
+        hlsPlayer.attachMedia(video);
+        
+        hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function() {
+            console.log('HLS manifest loaded');
+            video.play().catch(e => console.error('Autoplay failed:', e));
+            
+            // Seek to start position if provided
+            if (startPosition > 0) {
+                video.currentTime = startPosition;
+            }
+            
+            // Start periodic position saving
+            startPositionSaving();
+        });
+        
+        hlsPlayer.on(Hls.Events.ERROR, function(event, data) {
+            console.error('HLS error:', data);
+            if (data.fatal) {
+                switch (data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                        console.log('Fatal network error, trying to recover...');
+                        hlsPlayer.startLoad();
+                        break;
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                        console.log('Fatal media error, trying to recover...');
+                        hlsPlayer.recoverMediaError();
+                        break;
+                    default:
+                        console.log('Fatal error, destroying player');
+                        hlsPlayer.destroy();
+                        break;
+                }
+            }
+        });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support (Safari)
+        video.src = hlsUrl;
+        video.addEventListener('loadedmetadata', function() {
+            if (startPosition > 0) {
+                video.currentTime = startPosition;
+            }
+            video.play().catch(e => console.error('Autoplay failed:', e));
+            startPositionSaving();
+        });
+    } else {
+        console.error('HLS is not supported in this browser');
+        showToast('HLS playback not supported in this browser', 'error');
+    }
+    
+    // Show embedded player
+    showEmbeddedPlayer();
+}
+
+// Show embedded player UI
+function showEmbeddedPlayer() {
+    const playerDiv = document.getElementById('vodEmbeddedPlayer');
+    if (playerDiv) {
+        playerDiv.style.display = 'block';
+    }
+}
+
+// Hide embedded player UI
+function hideEmbeddedPlayer() {
+    const playerDiv = document.getElementById('vodEmbeddedPlayer');
+    if (playerDiv) {
+        playerDiv.style.display = 'none';
+    }
+}
+
+// Stop embedded player
+function stopEmbeddedPlayer() {
+    // Save position before stopping
+    saveCurrentPosition();
+    
+    // Stop position saving
+    stopPositionSaving();
+    
+    // Stop video
+    if (embeddedPlayer.video) {
+        embeddedPlayer.video.pause();
+    }
+    
+    // Destroy HLS player
+    if (hlsPlayer) {
+        hlsPlayer.destroy();
+        hlsPlayer = null;
+    }
+    
+    // Stop channel on server
+    if (embeddedPlayer.channel) {
+        apiCall(`/api/channels/${embeddedPlayer.channel}/stop`, 'POST').catch(e => console.error('Failed to stop channel:', e));
+    }
+    
+    // Reset state
+    embeddedPlayer.channel = null;
+    embeddedPlayer.videoPath = null;
+    embeddedPlayer.isPlaying = false;
+    
+    // Hide player
+    hideEmbeddedPlayer();
+    
+    showToast('Playback stopped', 'info');
+}
+
+// Toggle play/pause
+function togglePlayPause() {
+    const video = embeddedPlayer.video;
+    if (!video) return;
+    
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
+}
+
+// Update play/pause button icon
+function updatePlayPauseButton() {
+    const btn = document.getElementById('playPauseIcon');
+    if (btn) {
+        btn.textContent = embeddedPlayer.isPlaying ? '⏸️' : '▶️';
+    }
+}
+
+// Seek relative (forward/backward seconds)
+function seekRelative(seconds) {
+    const video = embeddedPlayer.video;
+    if (!video) return;
+    
+    video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+}
+
+// Update progress bar
+function updateProgressBar() {
+    const video = embeddedPlayer.video;
+    const progressBar = document.getElementById('videoProgress');
+    
+    if (video && progressBar) {
+        const percentage = (video.currentTime / video.duration) * 100;
+        progressBar.value = percentage || 0;
+    }
+}
+
+// Update time display
+function updateTimeDisplay() {
+    const video = embeddedPlayer.video;
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalTimeEl = document.getElementById('totalTime');
+    
+    if (video) {
+        if (currentTimeEl) currentTimeEl.textContent = formatTime(video.currentTime);
+        if (totalTimeEl) totalTimeEl.textContent = formatTime(video.duration);
+    }
+}
+
+// Format time in MM:SS or HH:MM:SS
+function formatTime(seconds) {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hrs > 0) {
+        return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Start periodic position saving
+function startPositionSaving() {
+    stopPositionSaving(); // Clear any existing interval
+    
+    embeddedPlayer.saveInterval = setInterval(function() {
+        if (embeddedPlayer.isPlaying && embeddedPlayer.video && embeddedPlayer.videoPath) {
+            const position = embeddedPlayer.video.currentTime;
+            savePositionToServer(embeddedPlayer.videoPath, position);
+        }
+    }, 10000); // Save every 10 seconds
+}
+
+// Stop periodic position saving
+function stopPositionSaving() {
+    if (embeddedPlayer.saveInterval) {
+        clearInterval(embeddedPlayer.saveInterval);
+        embeddedPlayer.saveInterval = null;
+    }
+}
+
+// Save current position to server
+function saveCurrentPosition() {
+    if (embeddedPlayer.video && embeddedPlayer.videoPath) {
+        const position = embeddedPlayer.video.currentTime;
+        savePositionToServer(embeddedPlayer.videoPath, position);
+    }
+}
+
+// Save position via API
+async function savePositionToServer(videoPath, position) {
+    try {
+        await fetch(`/api/vod/position?video_path=${encodeURIComponent(videoPath)}&position=${position}`, {
+            method: 'POST'
+        });
+    } catch (e) {
+        console.error('Failed to save position:', e);
+    }
+}
+
+// Clear video position (when video ends)
+async function clearVideoPosition() {
+    if (embeddedPlayer.videoPath) {
+        try {
+            await fetch(`/api/vod/position/${encodeURIComponent(embeddedPlayer.videoPath)}`, {
+                method: 'DELETE'
+            });
+        } catch (e) {
+            console.error('Failed to clear position:', e);
+        }
+    }
+}
+
+// Get server configuration
+function getServerConfig() {
+    // Default to localhost:8081
+    return {
+        host: 'localhost',
+        port: 8081
+    };
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initEmbeddedPlayer();
+});
