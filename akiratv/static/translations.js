@@ -145,6 +145,9 @@ const translations = {
         'vod.resume': 'Resume',
         'vod.startPosition': 'Or enter custom start time:',
         'vod.clearPosition': 'Clear saved position',
+        'vod.selectVideoFirst': 'Please select a video first',
+        'vod.noSavedPosition': 'No saved position found',
+        'vod.startAt': 'Start at:',
         
         // Wizard
         'wizard.title': '🧙‍♂️ Collection & Scheduler Wizard',
@@ -310,6 +313,9 @@ const translations = {
         'vod.resume': 'Продължи',
         'vod.startPosition': 'Или въведи начално време:',
         'vod.clearPosition': 'Изчисти запазената позиция',
+        'vod.selectVideoFirst': 'Моля първо изберете видео',
+        'vod.noSavedPosition': 'Няма запазена позиция',
+        'vod.startAt': 'Старт в:',
         
         // Wizard
         'wizard.title': '🧙‍♂️ Помощник за колекции и програми',

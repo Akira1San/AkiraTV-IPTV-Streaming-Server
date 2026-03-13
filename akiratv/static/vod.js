@@ -7,7 +7,10 @@ let vodData = {
     selectedVideo: null,
     currentlyPlaying: null,
     vodChannels: [],
-    positionSaveInterval: null  // For periodic position saving
+    positionSaveInterval: null,  // For periodic position saving
+    lastSelectedVideoPath: null,  // Track last selected video for resume
+    lastSavedPosition: null,  // Track saved position for current video
+    currentVideoDuration: 0  // Duration of current video in seconds
 };
 
 // Initialize the VOD page
@@ -115,9 +118,20 @@ async function loadVodChannels() {
                 select.appendChild(option);
             });
         }
+        
+        // Add event listener for channel selection change
+        select.addEventListener('change', onChannelSelectionChange);
+        
     } catch (error) {
         console.error('Failed to load VOD channels:', error);
     }
+}
+
+// Handle channel selection change
+async function onChannelSelectionChange() {
+    // When channel is selected, we don't have a video yet
+    // The buttons will be enabled when a video is selected from the library
+    updatePlaybackButtons(null);
 }
 
 // Load video library from collections
@@ -138,6 +152,206 @@ async function loadVideoLibrary() {
         console.error('Failed to load video library:', error);
         document.getElementById('vodLibrary').innerHTML = 
             '<div class="vod-error">Failed to load video library. Please check your collections.</div>';
+    }
+}
+
+// Update playback buttons based on current selection
+async function updatePlaybackButtons(video) {
+    const resumeBtn = document.getElementById('resumeBtn');
+    const startOverBtn = document.getElementById('startOverBtn');
+    const resumePositionSpan = document.getElementById('resumePosition');
+    const selectedChannel = document.getElementById('vodChannelSelect').value;
+    
+    if (!video || !selectedChannel) {
+        // Disable buttons if no video or channel selected
+        if (resumeBtn) resumeBtn.disabled = true;
+        if (startOverBtn) startOverBtn.disabled = true;
+        if (resumePositionSpan) resumePositionSpan.textContent = '';
+        vodData.lastSelectedVideoPath = null;
+        vodData.lastSavedPosition = null;
+        // Hide time slider
+        const timeSliderContainer = document.getElementById('timeSliderContainer');
+        if (timeSliderContainer) timeSliderContainer.style.display = 'none';
+        return;
+    }
+    
+    // Store the video path for later use
+    vodData.lastSelectedVideoPath = video.path;
+    
+    // Try to get saved position for this video
+    try {
+        const posResponse = await fetch(`/api/vod/position/${encodeURIComponent(video.path)}`);
+        const posData = await posResponse.json();
+        
+        if (posData.success && posData.position !== null) {
+            vodData.lastSavedPosition = posData.position;
+            
+            // Enable Resume button with position info
+            if (resumeBtn) resumeBtn.disabled = false;
+            if (resumePositionSpan) {
+                resumePositionSpan.textContent = ` (${formatTime(posData.position)})`;
+                resumePositionSpan.className = 'resume-position';
+            }
+            // Enable Start Over button
+            if (startOverBtn) startOverBtn.disabled = false;
+        } else {
+            // No saved position - only enable Start Over (which just plays from beginning)
+            vodData.lastSavedPosition = null;
+            if (resumeBtn) resumeBtn.disabled = true;
+            if (resumePositionSpan) resumePositionSpan.textContent = '';
+            if (startOverBtn) startOverBtn.disabled = false;
+        }
+    } catch (e) {
+        console.log('Error getting saved position:', e);
+        if (resumeBtn) resumeBtn.disabled = true;
+        if (startOverBtn) startOverBtn.disabled = false;
+        if (resumePositionSpan) resumePositionSpan.textContent = '';
+    }
+    
+    // Show time slider for custom start position
+    updateTimeSlider(video);
+}
+
+// Resume from saved position
+async function resumeFromSavedPosition() {
+    const selectedChannel = document.getElementById('vodChannelSelect').value;
+    const videoPath = vodData.lastSelectedVideoPath;
+    const savedPosition = vodData.lastSavedPosition;
+    
+    if (!selectedChannel) {
+        alert(t('vod.selectChannelFirst'));
+        return;
+    }
+    
+    if (!videoPath) {
+        alert(t('vod.selectVideoFirst') || 'Please select a video first');
+        return;
+    }
+    
+    if (savedPosition === null || savedPosition === undefined) {
+        alert(t('vod.noSavedPosition') || 'No saved position found');
+        return;
+    }
+    
+    // Find the video object
+    const video = vodData.videos.find(v => v.path === videoPath);
+    if (!video) {
+        alert(t('vod.videoNotFound'));
+        return;
+    }
+    
+    // Play from saved position
+    await doPlayVideo(video, selectedChannel, savedPosition);
+}
+
+// Start over - clear position and play from beginning
+async function startOverVideo() {
+    const selectedChannel = document.getElementById('vodChannelSelect').value;
+    const videoPath = vodData.lastSelectedVideoPath;
+    
+    if (!selectedChannel) {
+        alert(t('vod.selectChannelFirst'));
+        return;
+    }
+    
+    if (!videoPath) {
+        alert(t('vod.selectVideoFirst') || 'Please select a video first');
+        return;
+    }
+    
+    // Find the video object
+    const video = vodData.videos.find(v => v.path === videoPath);
+    if (!video) {
+        alert(t('vod.videoNotFound'));
+        return;
+    }
+    
+    // First, try to remove the saved position
+    try {
+        await fetch(`/api/vod/position/${encodeURIComponent(videoPath)}`, {
+            method: 'DELETE'
+        });
+    } catch (e) {
+        console.log('Could not remove position:', e);
+    }
+    
+    // Update button states
+    vodData.lastSavedPosition = null;
+    const resumePositionSpan = document.getElementById('resumePosition');
+    if (resumePositionSpan) resumePositionSpan.textContent = '';
+    const resumeBtn = document.getElementById('resumeBtn');
+    if (resumeBtn) resumeBtn.disabled = true;
+    
+    // Play from beginning (forceStart = true)
+    await doPlayVideo(video, selectedChannel, 0);
+}
+
+// Update time slider value display
+function updateTimeSliderValue(value) {
+    const timeSliderValue = document.getElementById('timeSliderValue');
+    if (timeSliderValue) {
+        timeSliderValue.textContent = formatTime(parseFloat(value));
+    }
+}
+
+// Play from time slider position
+async function playFromTimeSlider() {
+    const selectedChannel = document.getElementById('vodChannelSelect').value;
+    const videoPath = vodData.lastSelectedVideoPath;
+    
+    if (!selectedChannel) {
+        alert(t('vod.selectChannelFirst'));
+        return;
+    }
+    
+    if (!videoPath) {
+        alert(t('vod.selectVideoFirst') || 'Please select a video first');
+        return;
+    }
+    
+    // Get the time slider value
+    const timeSlider = document.getElementById('timeSlider');
+    const startPosition = timeSlider ? parseFloat(timeSlider.value) : 0;
+    
+    // Find the video object
+    const video = vodData.videos.find(v => v.path === videoPath);
+    if (!video) {
+        alert(t('vod.videoNotFound'));
+        return;
+    }
+    
+    // Play from selected position
+    await doPlayVideo(video, selectedChannel, startPosition);
+}
+
+// Show/hide time slider based on video selection
+function updateTimeSlider(video) {
+    const timeSliderContainer = document.getElementById('timeSliderContainer');
+    const timeSlider = document.getElementById('timeSlider');
+    const timeSliderValue = document.getElementById('timeSliderValue');
+    
+    if (!video || !video.duration) {
+        // Hide time slider if no video or no duration
+        if (timeSliderContainer) timeSliderContainer.style.display = 'none';
+        vodData.currentVideoDuration = 0;
+        return;
+    }
+    
+    // Show time slider
+    if (timeSliderContainer) timeSliderContainer.style.display = 'flex';
+    
+    // Set duration
+    vodData.currentVideoDuration = video.duration;
+    
+    // Configure slider
+    if (timeSlider) {
+        timeSlider.max = video.duration;
+        timeSlider.value = 0;
+    }
+    
+    // Update display
+    if (timeSliderValue) {
+        timeSliderValue.textContent = '0:00';
     }
 }
 
@@ -421,6 +635,9 @@ function showVideoDetails(videoId) {
     
     vodData.selectedVideo = video;
     
+    // Update playback buttons for this video
+    updatePlaybackButtons(video);
+    
     // Populate modal
     document.getElementById('modalVideoTitle').textContent = video.name;
     document.getElementById('modalVideoDescription').textContent = video.description || 'No description available';
@@ -500,6 +717,9 @@ async function playVideo(videoId, forceStart = false) {
         alert(t('vod.videoNotFound'));
         return;
     }
+    
+    // Update the playback buttons with this video's position info
+    await updatePlaybackButtons(video);
     
     if (!selectedChannel) {
         alert(t('vod.selectChannelFirst'));

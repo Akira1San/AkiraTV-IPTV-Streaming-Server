@@ -94,6 +94,22 @@
                 <select id="vodChannelSelect" class="vod-channel-select">
                     <option value="" data-i18n="vod.noChannel">No VOD channels available</option>
                 </select>
+                <button id="resumeBtn" class="btn btn-primary btn-small" onclick="resumeFromSavedPosition()" disabled>
+                    <span data-i18n="vod.resume">▶️ Resume</span>
+                    <span id="resumePosition" class="resume-position"></span>
+                </button>
+                <button id="startOverBtn" class="btn btn-secondary btn-small" onclick="startOverVideo()" disabled>
+                    <span data-i18n="vod.startOver">🔄 Start Over</span>
+                </button>
+                <!-- Time Slider for custom start position -->
+                <div class="time-slider-container" id="timeSliderContainer" style="display: none;">
+                    <label for="timeSlider" data-i18n="vod.startAt">Start at:</label>
+                    <input type="range" id="timeSlider" class="time-slider" value="0" min="0" max="100" oninput="updateTimeSliderValue(this.value)">
+                    <span id="timeSliderValue" class="time-slider-value">0:00</span>
+                    <button class="btn btn-primary btn-small" onclick="playFromTimeSlider()">
+                        <span>▶️ Play</span>
+                    </button>
+                </div>
                 <button id="stopCurrentBtn" class="btn btn-danger btn-small" onclick="stopCurrentVideo()" disabled>
                     <span data-i18n="vod.stopCurrent">⏹️ Stop Current</span>
                 </button>
