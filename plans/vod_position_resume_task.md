@@ -186,3 +186,15 @@ video.addEventListener('timeupdate', () => {
 - Existing seek implementation in `dynamic_worker.py:195`
 - Fast Scheduler checkpoint system (`fast_scheduler.py:306`)
 - HLS.js documentation: https://hls-js.netlify.app/
+
+---
+
+## Future Enhancement: Manual Start Position Buttons
+
+Add "Resume" and "Start Over" buttons next to channel selector in Video Library for external players (Kodi/IPTV).
+
+- [ ] **7.1** Update vod.html - Add "Resume" and "Start Over" buttons in channel selection area
+- [ ] **7.2** Update vod.js - Add functions to handle button clicks
+  - Resume: Get saved position and play from there
+  - Start Over: Clear saved position and play from beginning
+- [ ] **7.3** Show saved position time next to Resume button
