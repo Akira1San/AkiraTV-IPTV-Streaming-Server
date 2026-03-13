@@ -234,7 +234,7 @@ def get_channel_url(channel: str, api=Depends(get_core_api)):
 @router.post("/channels/{channel}/play", response_model=Response)
 def play_now(channel: str, request: PlayNowRequest, api=Depends(get_core_api)):
     """Play video on VOD/Dynamic channel"""
-    result = api.play_now(channel, request.video_path)
+    result = api.play_now(channel, request.video_path, request.start_position)
     if result["success"]:
         return Response(success=True, message=result["message"])
     else:

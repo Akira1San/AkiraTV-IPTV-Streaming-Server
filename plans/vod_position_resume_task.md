@@ -107,6 +107,68 @@ Allow users to:
 - Default: If saved position exists, prompt user with "Resume from X:XX?" or "Start Over"
 - Manual input: Accept formats like "30", "30:00", "1:30:00"
 
+## Phase 5: Embedded Player with Seek Controls (NEW)
+
+### Overview
+Add an embedded HLS video player with playback controls to the VOD page, allowing users to watch directly in the browser with seek functionality.
+
+### Tasks
+
+- [ ] **5.1** Add HLS.js library to vod.html
+  - Include HLS.js from CDN for HLS stream playback
+
+- [ ] **5.2** Update vod.html - Add video player element
+  - Add `<video>` element with controls
+  - Add embedded player section that shows when video is playing
+
+- [ ] **5.3** Update vod.js - Implement embedded player
+  - Add function to initialize HLS player
+  - Load channel HLS stream when video starts playing
+  - Handle play/pause/stop controls
+
+- [ ] **5.4** Add progress bar with seek functionality
+  - Show current time / duration
+  - Allow seeking to different positions
+  - Send seek requests to server (restart with new position)
+
+- [ ] **5.5** Add pause/stop buttons to VOD controls
+  - Add pause button next to play button
+  - Add stop button to stop playback
+  - Update now playing section with controls
+
+- [ ] **5.6** Implement periodic position saving during playback
+  - Save position every 10 seconds while playing
+  - Use HLS.js timeupdate event to track position
+  - Save final position when video ends or is stopped
+
+### Technical Implementation
+
+#### Frontend (vod.js)
+```javascript
+// Initialize HLS player
+let hlsPlayer = null;
+
+function initPlayer(channelName) {
+    const video = document.getElementById('vodVideoPlayer');
+    const hlsUrl = getChannelStreamUrl(channelName);
+    
+    if (Hls.isSupported()) {
+        hlsPlayer = new Hls();
+        hlsPlayer.loadSource(hlsUrl);
+        hlsPlayer.attachMedia(video);
+    }
+}
+
+// Save position periodically
+video.addEventListener('timeupdate', () => {
+    savePositionPeriodically(video.currentTime);
+});
+```
+
+#### API Enhancement
+- Need endpoint to get current playback position from server
+- Need way to seek by restarting with new position
+
 ## Related Files
 
 - `akiratv/models.py` - Request models
@@ -114,7 +176,7 @@ Allow users to:
 - `akiratv/routes/vod.py` - VOD endpoints (extend)
 - `akiratv/core_api.py` - Core API
 - `akiratv/workers/vod_worker.py` - VOD playback worker
-- `akiratv/video_positions.py` - NEW: Position management
+- `akiratv/video_positions.py` - Position management
 - `akiratv/static/vod.js` - VOD UI JavaScript
 - `akiratv/static/vod.html` - VOD UI HTML
 
@@ -123,3 +185,4 @@ Allow users to:
 - Existing seek implementation in `linear_worker.py:103-105`
 - Existing seek implementation in `dynamic_worker.py:195`
 - Fast Scheduler checkpoint system (`fast_scheduler.py:306`)
+- HLS.js documentation: https://hls-js.netlify.app/

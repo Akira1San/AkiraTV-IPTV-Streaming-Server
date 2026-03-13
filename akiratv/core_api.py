@@ -374,13 +374,14 @@ class CoreAPI:
             "dashboard": f"http://{ip}:{port}/dashboard"
         }
 
-    def play_now(self, channel: str, video_path: str) -> Dict[str, Any]:
+    def play_now(self, channel: str, video_path: str, start_position: float = 0) -> Dict[str, Any]:
         """
         Play video on VOD or Dynamic channel immediately
         
         Args:
             channel: Channel name
             video_path: Full path to video file
+            start_position: Start position in seconds (default 0)
             
         Returns:
             {"success": bool, "message": str} or {"success": False, "error": str}
@@ -404,9 +405,9 @@ class CoreAPI:
             return {"success": False, "error": f"Channel '{channel}' is not VOD or Dynamic type"}
         
         try:
-            self._engine.enqueue_play_now(channel, video_path)
-            self._emit("video_queued", {"channel": channel, "video": video_file.name})
-            logger.info(f"CoreAPI: Queued {video_file.name} on {channel}")
+            self._engine.enqueue_play_now(channel, video_path, start_position)
+            self._emit("video_queued", {"channel": channel, "video": video_file.name, "start_position": start_position})
+            logger.info(f"CoreAPI: Queued {video_file.name} on {channel} (start: {start_position}s)")
             return {"success": True, "message": f"Queued {video_file.name}"}
         except Exception as e:
             error_msg = f"Failed to queue video: {str(e)}"

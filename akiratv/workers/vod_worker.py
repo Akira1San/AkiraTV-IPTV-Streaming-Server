@@ -16,6 +16,7 @@ class VODWorker(BaseWorker):
         self.command_queue = command_queue
         self.use_dynamic_playlist = True  # A flag to identify this worker type
         self.video_to_play = None
+        self.start_position = 0  # Track start position for resume feature
         self.current_video = None  # Track currently playing video
         self.temp_dir: Optional[Path] = None
         self.hls_dir: Optional[Path] = None
@@ -30,10 +31,12 @@ class VODWorker(BaseWorker):
             # Check for a new command from the queue
             try:
                 # Get a command with a timeout so the loop doesn't block forever
-                cmd, video_path = self.command_queue.get(timeout=0.5)
+                # Command format: ("play_now", video_path, start_position)
+                cmd, video_path, start_position = self.command_queue.get(timeout=0.5)
                 if cmd == "play_now" and video_path:
-                    self.logger.info(f"Received 'play_now' command for: {video_path}")
+                    self.logger.info(f"Received 'play_now' command for: {video_path} (start: {start_position}s)")
                     self.video_to_play = video_path  # Set the flag
+                    self.start_position = start_position  # Set start position
             except:
                 # No command received in the timeout period, just loop again
                 pass
@@ -41,18 +44,19 @@ class VODWorker(BaseWorker):
             # If a video has been requested, play it
             if self.video_to_play:
                 self.current_video = self.video_to_play  # Track currently playing video
-                self._play_video(self.video_to_play)
+                self._play_video(self.video_to_play, self.start_position)
                 self.video_to_play = None  # Reset the flag
+                self.start_position = 0  # Reset start position
                 self.current_video = None  # Video finished playing
             else:
                 # Nothing to do, just wait
                 time.sleep(1)
 
-    def _play_video(self, video_path: str):
+    def _play_video(self, video_path: str, start_position: float = 0):
         """Orchestrates the video playback process."""
         try:
             self._setup_phase(video_path)
-            self._streaming_phase(video_path)
+            self._streaming_phase(video_path, start_position)
             self._monitoring_phase()
         except Exception as e:
             self._handle_runtime_error(e)
@@ -97,11 +101,11 @@ class VODWorker(BaseWorker):
                 except Exception as e:
                     self.logger.warning(f"Failed to delete {f}: {e}")
 
-    def _streaming_phase(self, video_path: str):
+    def _streaming_phase(self, video_path: str, start_position: float = 0):
         """Streaming phase: Start FFmpeg process."""
         self.logger.info(f"Entering STREAMING phase for {self.channel}...")
         
-        args = self._build_ffmpeg_args(video_path)
+        args = self._build_ffmpeg_args(video_path, start_position)
         
         self.logger.info(f"Calling _execute_ffmpeg for {self.channel}...")
         self._execute_ffmpeg(args)
@@ -139,7 +143,7 @@ class VODWorker(BaseWorker):
         
         self.logger.info(f"VOD stream for {self.channel} has ended.")
 
-    def _build_ffmpeg_args(self, video_path: str) -> List[str]:
+    def _build_ffmpeg_args(self, video_path: str, start_position: float = 0) -> List[str]:
         """Build FFmpeg arguments for VOD streaming."""
         # Get CHANNEL-SPECIFIC config (respects overrides!)
         channel_config = self.config.get_channel_config(self.channel)
@@ -156,8 +160,15 @@ class VODWorker(BaseWorker):
         hls_conf = self.config.data["output"]["hls"]
         segment_time = hls_conf.get("segment_time", 6)
 
-        # Build FFmpeg command
-        args = ["ffmpeg", "-re", "-i", str(video_path)]
+        # Build FFmpeg command - add -ss for start position BEFORE -i for faster seeking (input seeking)
+        args = ["ffmpeg", "-re"]
+        
+        # Add -ss before -i for input seeking (faster)
+        if start_position > 0:
+            args.extend(["-ss", str(start_position)])
+            self.logger.info(f"Start position: {start_position}s (input seeking)")
+        
+        args.extend(["-i", str(video_path)])
         self.logger.info(f"Input video: {video_path}")
         self.logger.info(f"Subtitle file: {subtitle_path}")
 
@@ -308,9 +319,9 @@ class VODWorker(BaseWorker):
         copy_thread = threading.Thread(target=copy_and_manage_segments, daemon=True)
         copy_thread.start()
 
-    def play_now(self, video_path: str):
+    def play_now(self, video_path: str, start_position: float = 0):
         """Public method to queue a play_now command. Should not be called directly by UI."""
-        self.command_queue.put(("play_now", video_path))
+        self.command_queue.put(("play_now", video_path, start_position))
 
     def _find_external_subtitle(self, video_path: Path) -> Optional[Path]:
         """

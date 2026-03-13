@@ -139,6 +139,12 @@ const translations = {
         'vod.videoStopped': 'Video stopped',
         'vod.stopFailed': 'Failed to stop video',
         'vod.stopError': 'Error stopping video',
+        'vod.resumePlayback': 'Resume Playback',
+        'vod.resumeFrom': 'Resume from',
+        'vod.startOver': 'Start Over',
+        'vod.resume': 'Resume',
+        'vod.startPosition': 'Or enter custom start time:',
+        'vod.clearPosition': 'Clear saved position',
         
         // Wizard
         'wizard.title': '🧙‍♂️ Collection & Scheduler Wizard',
@@ -298,6 +304,12 @@ const translations = {
         'vod.videoStopped': 'Видеото е спряно',
         'vod.stopFailed': 'Неуспешно спиране на видеото',
         'vod.stopError': 'Грешка при спиране на видеото',
+        'vod.resumePlayback': 'Продължи гледането',
+        'vod.resumeFrom': 'Продължи от',
+        'vod.startOver': 'Започни отначало',
+        'vod.resume': 'Продължи',
+        'vod.startPosition': 'Или въведи начално време:',
+        'vod.clearPosition': 'Изчисти запазената позиция',
         
         // Wizard
         'wizard.title': '🧙‍♂️ Помощник за колекции и програми',

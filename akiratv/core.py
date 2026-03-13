@@ -397,7 +397,7 @@ class AkiraTV:
         else:
             logger.warning("No channels were updated - may need to restart workers.")
 
-    def play_now(self, channel: str, video_path: str):
+    def play_now(self, channel: str, video_path: str, start_position: float = 0):
         """Sends a play_now command to a VOD or Dynamic worker."""
         if channel not in self.workers:
             logger.warning(f"⚠️ Channel '{channel}' not found. Cannot play video.")
@@ -406,11 +406,11 @@ class AkiraTV:
         worker, _ = self.workers[channel]
 
         if isinstance(worker, VODWorker):
-            logger.info(f"[PLAY] Sending 'play_now' command to VOD channel '{channel}'.")
-            worker.play_now(video_path)
+            logger.info(f"[PLAY] Sending 'play_now' command to VOD channel '{channel}' (start: {start_position}s).")
+            worker.play_now(video_path, start_position)
         elif hasattr(worker, 'play_now'):  # DynamicWorker also has play_now
-            logger.info(f"[PLAY] Sending 'play_now' command to Dynamic channel '{channel}'.")
-            worker.play_now(video_path)
+            logger.info(f"[PLAY] Sending 'play_now' command to Dynamic channel '{channel}' (start: {start_position}s).")
+            worker.play_now(video_path, start_position)
         else:
             logger.warning(f"⚠️ Channel '{channel}' does not support play_now commands.")
 
@@ -418,19 +418,19 @@ class AkiraTV:
         self._command_thread_running = True
         while self._command_thread_running:
             try:
-                cmd, channel, video_path = self.command_queue.get(timeout=0.2)
+                cmd, channel, video_path, start_position = self.command_queue.get(timeout=0.2)
             except Exception:
                 continue
 
             if cmd == "play_now":
-                self.play_now(channel, video_path)
-                print("[MSG] Command received:", cmd, channel)
+                self.play_now(channel, video_path, start_position)
+                print("[MSG] Command received:", cmd, channel, f"(start: {start_position}s)")
 
     def process_commands(self):
         while not self.command_queue.empty():
-            cmd, channel, path = self.command_queue.get()
+            cmd, channel, path, start_position = self.command_queue.get()
             if cmd == "play_now":
-                self.play_now(channel, path)
+                self.play_now(channel, path, start_position)
 
-    def enqueue_play_now(self, channel, video_path):
-        self.command_queue.put(("play_now", channel, video_path))
+    def enqueue_play_now(self, channel, video_path, start_position: float = 0):
+        self.command_queue.put(("play_now", channel, video_path, start_position))

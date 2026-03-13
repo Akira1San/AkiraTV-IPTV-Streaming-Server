@@ -6,6 +6,51 @@
     box-sizing: border-box;
 }
 
+/* Form Group */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Resume Dialog */
+.resume-options {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+#resumeDialog .modal-content {
+    max-width: 400px;
+}
+
+#resumeDialog .modal-body p {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
 :root {
     --bg-primary: #0f0f0f;
     --bg-secondary: #1a1a1a;

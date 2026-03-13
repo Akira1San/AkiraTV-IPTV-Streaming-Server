@@ -67,3 +67,87 @@ def get_video_details(video_id: str):
         return {"success": True, "video": {}}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get video details: {str(e)}")
+
+# Video Position Management Endpoints
+from akiratv.video_positions import (
+    load_positions, get_position, save_position, remove_position, clear_all_positions
+)
+
+@router.get("/positions")
+def get_all_positions():
+    """Get all saved video positions"""
+    try:
+        positions = load_positions()
+        return {
+            "success": True,
+            "positions": positions,
+            "count": len(positions)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get positions: {str(e)}")
+
+@router.get("/position/{video_path}")
+def get_video_position(video_path: str):
+    """Get the saved position for a specific video"""
+    try:
+        # Decode the video path from URL encoding
+        import urllib.parse
+        decoded_path = urllib.parse.unquote(video_path)
+        position = get_position(decoded_path)
+        
+        if position is not None:
+            return {
+                "success": True,
+                "video_path": decoded_path,
+                "position": position
+            }
+        else:
+            return {
+                "success": True,
+                "video_path": decoded_path,
+                "position": None,
+                "message": "No saved position found"
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get position: {str(e)}")
+
+@router.post("/position")
+def save_video_position(video_path: str, position: float):
+    """Save the playback position for a video"""
+    try:
+        # Decode the video path from URL encoding
+        import urllib.parse
+        decoded_path = urllib.parse.unquote(video_path)
+        
+        success = save_position(decoded_path, position)
+        
+        if success:
+            return {
+                "success": True,
+                "message": f"Position saved for {decoded_path}",
+                "position": position
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to save position")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save position: {str(e)}")
+
+@router.delete("/position/{video_path}")
+def delete_video_position(video_path: str):
+    """Delete the saved position for a video"""
+    try:
+        # Decode the video path from URL encoding
+        import urllib.parse
+        decoded_path = urllib.parse.unquote(video_path)
+        
+        success = remove_position(decoded_path)
+        
+        if success:
+            return {
+                "success": True,
+                "message": f"Position removed for {decoded_path}"
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to remove position")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to remove position: {str(e)}")

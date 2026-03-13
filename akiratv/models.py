@@ -8,6 +8,7 @@ from typing import Optional, List, Dict, Any
 
 class PlayNowRequest(BaseModel):
     video_path: str = Field(..., description="Full path to video file")
+    start_position: Optional[float] = Field(0, description="Start position in seconds")
 
 
 class ConfigUpdateRequest(BaseModel):

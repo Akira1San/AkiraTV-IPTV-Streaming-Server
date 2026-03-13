@@ -59,10 +59,10 @@ class DynamicWorker(BaseWorker):
                 # Check for VOD interruption first
                 if not self.command_queue.empty():
                     try:
-                        cmd, video_path = self.command_queue.get_nowait()
+                        cmd, video_path, start_position = self.command_queue.get_nowait()
                         if cmd == "play_now":
-                            self.logger.info(f"[HOT] VOD interruption: {video_path}")
-                            self._switch_to_vod(video_path)
+                            self.logger.info(f"[HOT] VOD interruption: {video_path} (start: {start_position}s)")
+                            self._switch_to_vod(video_path, start_position)
                             continue  # After VOD, check schedule again
                     except:
                         pass
@@ -350,7 +350,7 @@ class DynamicWorker(BaseWorker):
             self.logger.warning(f"FFmpeg process died unexpectedly. Will restart...")
             time.sleep(2)
 
-    def _switch_to_vod(self, video_path: str):
+    def _switch_to_vod(self, video_path: str, start_position: float = 0):
         """Kill current content and play a VOD, then return to schedule/standby."""
         # 1. Stop current FFmpeg
         self._stop_current_ffmpeg()
@@ -368,7 +368,7 @@ class DynamicWorker(BaseWorker):
         stats = self.inventory_manager.get_source_details(str(video_path))
         if stats:
             res = f"{stats.get('width', '?')}x{stats.get('height', '?')}"
-            self.logger.info(f"[PLAY] Playing VOD: {video_path.name} ({res})")
+            self.logger.info(f"[PLAY] Playing VOD: {video_path.name} ({res}) (start: {start_position}s)")
         
         #app_context.set_now_playing(self.channel, video_path.stem)
         
@@ -484,7 +484,7 @@ class DynamicWorker(BaseWorker):
         self.logger.error("No standby files found!")
         return Path("assets/standby/default_standby.mp4")  # Return path even if doesn't exist
 
-    def play_now(self, video_path: str):
+    def play_now(self, video_path: str, start_position: float = 0):
         """Public method to queue a video for immediate playback."""
-        self.logger.info(f"[MSG] Queueing video for playback: {video_path}")
-        self.command_queue.put(("play_now", video_path))
+        self.logger.info(f"[MSG] Queueing video for playback: {video_path} (start: {start_position}s)")
+        self.command_queue.put(("play_now", video_path, start_position))
