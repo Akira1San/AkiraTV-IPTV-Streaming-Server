@@ -162,8 +162,8 @@ async function updatePlaybackButtons(video) {
     const resumePositionSpan = document.getElementById('resumePosition');
     const selectedChannel = document.getElementById('vodChannelSelect').value;
     
-    if (!video || !selectedChannel) {
-        // Disable buttons if no video or channel selected
+    if (!video) {
+        // Disable buttons if no video selected
         if (resumeBtn) resumeBtn.disabled = true;
         if (startOverBtn) startOverBtn.disabled = true;
         if (resumePositionSpan) resumePositionSpan.textContent = '';
@@ -178,7 +178,18 @@ async function updatePlaybackButtons(video) {
     // Store the video path for later use
     vodData.lastSelectedVideoPath = video.path;
     
-    // Try to get saved position for this video
+    // Show time slider for custom start position (even without channel selected)
+    updateTimeSlider(video);
+    
+    // If no channel selected yet, just enable Start Over and return
+    if (!selectedChannel) {
+        if (resumeBtn) resumeBtn.disabled = true;
+        if (startOverBtn) startOverBtn.disabled = false;  // Start Over always available
+        if (resumePositionSpan) resumePositionSpan.textContent = '';
+        return;
+    }
+    
+    // Channel is selected - check for saved position
     try {
         const posResponse = await fetch(`/api/vod/position/${encodeURIComponent(video.path)}`);
         const posData = await posResponse.json();
@@ -195,7 +206,7 @@ async function updatePlaybackButtons(video) {
             // Enable Start Over button
             if (startOverBtn) startOverBtn.disabled = false;
         } else {
-            // No saved position - only enable Start Over (which just plays from beginning)
+            // No saved position
             vodData.lastSavedPosition = null;
             if (resumeBtn) resumeBtn.disabled = true;
             if (resumePositionSpan) resumePositionSpan.textContent = '';
@@ -207,9 +218,6 @@ async function updatePlaybackButtons(video) {
         if (startOverBtn) startOverBtn.disabled = false;
         if (resumePositionSpan) resumePositionSpan.textContent = '';
     }
-    
-    // Show time slider for custom start position
-    updateTimeSlider(video);
 }
 
 // Resume from saved position
@@ -727,10 +735,20 @@ async function playVideo(videoId, forceStart = false) {
     }
     
     try {
-        // If not forcing start, check for saved position
+        // Check if time slider has a custom position set
         let startPosition = 0;
+        const timeSlider = document.getElementById('timeSlider');
+        const timeSliderContainer = document.getElementById('timeSliderContainer');
         
-        if (!forceStart) {
+        // If time slider is visible and has a value > 0, use it
+        if (timeSlider && timeSliderContainer && 
+            timeSliderContainer.style.display !== 'none' && 
+            parseFloat(timeSlider.value) > 0) {
+            startPosition = parseFloat(timeSlider.value);
+        }
+        
+        // If not using custom slider position and not forcing start, check for saved position
+        if (startPosition === 0 && !forceStart) {
             // Try to get saved position
             try {
                 const posResponse = await fetch(`/api/vod/position/${encodeURIComponent(video.path)}`);
@@ -743,8 +761,8 @@ async function playVideo(videoId, forceStart = false) {
             }
         }
         
-        // If there's a saved position and not forcing start, show resume dialog
-        if (startPosition > 0 && !forceStart) {
+        // If there's a saved position and not forcing start and no custom position, show resume dialog
+        if (startPosition > 0 && !forceStart && parseFloat(timeSlider?.value || 0) === 0) {
             showResumeDialog(video, selectedChannel, startPosition);
             return;
         }
