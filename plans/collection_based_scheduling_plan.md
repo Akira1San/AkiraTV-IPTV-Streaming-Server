@@ -2,11 +2,13 @@
 
 ## Overview
 
-Change the schedule.json format to store collection references + relative video paths instead of full video file paths. This makes schedules more portable and resilient to file location changes.
+Change the schedule.json format to use collection_id references instead of full video file paths. **Collections format remains unchanged** - only schedule format changes.
+
+**IMPORTANT**: Old schedules with full file paths must be regenerated after implementation.
 
 ## Current System
 
-### Collections Structure (Current)
+### Collections Structure (UNCHANGED)
 Location: `user/collections/collections_{channel}.json`
 
 **IMPORTANT**: Each "collection" = ONE movie (single video entry). The `name` field is the movie title.
@@ -28,6 +30,8 @@ Location: `user/collections/collections_{channel}.json`
   ]
 }
 ```
+
+**Collections remain unchanged** - they continue to store absolute paths in `videos[].path`.
 
 ### Current Schedule Format
 Location: `user/schedules/schedule_{channel}.json`
@@ -71,28 +75,12 @@ Location: `user/schedules/schedule_{channel}.json`
 
 ## Proposed Solution
 
-### Updated Collection Format
-
-Add `folder_name` field to store base path, and make video paths relative:
-
-```json
-{
-  "collections": [
-    {
-      "id": "into_the_sun",
-      "name": "Into The Sun",  // Movie title (unchanged)
-      "folder_name": "C:/Videos/tatkotv3/steven seagal/",  // NEW: Base folder
-      "videos": [
-        { "path": "Into The Sun.mp4", "duration": 5400 }  // RELATIVE path
-      ]
-    }
-  ]
-}
-```
+### Collections Format (UNCHANGED)
+Collections remain as they are - no changes needed.
 
 ### New Schedule Format
 
-Store `collection_id` only (since each collection = one video):
+Store `collection_id` only (no video paths in schedule):
 
 ```json
 {
@@ -111,80 +99,54 @@ Store `collection_id` only (since each collection = one video):
 }
 ```
 
-**Resolution at runtime:**
+**Path Resolution at runtime:**
 1. Look up collection by `collection_id`
-2. Get `folder_name` from collection
-3. Use first video in collection: `folder_name` + `videos[0].path` = full path
+2. Get absolute path from `videos[0].path` in collection
+3. NO fallback - if collection not found, log error and skip entry
 
-**No backward compatibility** - old schedules with full paths must be re-generated.
+**IMPORTANT**: No backward compatibility in schedule format. Old schedules with full paths must be regenerated using the Simple Scheduler.
 
 ---
 
 ## Implementation Steps
 
-### Phase 1: Create Migration Tool for Collections
+### Phase 1: Update Schedule Generation
 
-**IMPORTANT**: Existing collections have absolute paths. Run migration before making other changes.
-
-1. **Create migration script** - File: `akiratv/migrate_collections.py`
-   - Load all collection JSON files from `user/collections/`
-   - For each collection:
-     - Extract folder from existing absolute path (e.g., "C:/Videos/tatkotv3/steven seagal/")
-     - Add `folder_name` field
-     - Convert video path to relative (just filename)
-   - Save updated collections
+1. **Modify `akiratv/simple_scheduler.py`**
+   - Update `_generate_random_schedule()` (line ~1285)
+   - Update `_generate_sequential_schedule()` (line ~1524)
+   - Store `collection_id` only in new schedule entries (NO file path)
 
 ```python
-# Migration logic:
-import os
-from pathlib import Path
-
-def migrate_collection(collection):
-    videos = collection.get("videos", [])
-    if videos and videos[0].get("path"):
-        old_path = videos[0]["path"]
-        # Extract folder and filename
-        path_obj = Path(old_path)
-        folder = str(path_obj.parent) + "/"  # "C:/Videos/tatkotv3/steven seagal/"
-        filename = path_obj.name  # "Into The Sun.mp4"
-        
-        collection["folder_name"] = folder
-        videos[0]["path"] = filename
-    return collection
+# New schedule entry format:
+entry = {
+    "time": time_str,
+    "collection_id": collection.get("id"),  # ONLY the ID reference
+    "channel": target_channel,
+    "source": "random"
+}
+# NO file or fallback_file field - paths stay in collections
 ```
 
-### Phase 2: Update Collection Creation
+2. **Modify `akiratv/fast_scheduler.py`**
+   - Update schedule entry creation to use collection_id only
 
-2. **Modify `akiratv/collection_wizard.py`** - When creating new collections, automatically set `folder_name` and use relative paths
+### Phase 2: Update Schedule Loading
 
-3. **Modify `akiratv/collections.py`** - Update scan_folder to store folder_name and relative paths
-
-### Phase 2: Update Schedule Generation
-
-3. **Modify `simple_scheduler.py`**
-   - Update `_generate_random_schedule()` (line ~1409)
-   - Update `_generate_sequential_schedule()` (line ~1524)
-   - Store `collection_id` only instead of full `file` path
-   - Keep `fallback_file` for backward compatibility
-
-4. **Modify `fast_scheduler.py`**
-   - Update schedule entry creation to use collection references
-   - Store collection_id only instead of full path
-
-### Phase 3: Update Schedule Loading
-
-5. **Modify `scheduler.py`**
+3. **Modify `akiratv/scheduler.py`**
    - Update `get_full_todays_schedule()` (line ~16)
    - Update `get_current_schedule_for_channel()` (line ~156)
-   - Add function `resolve_collection_to_path(collection_id, video_filename)`
-   - Fallback to `file` or `fallback_file` field if collection not found
+   - Add function `resolve_collection_to_path(collection_id)`
+   - Runtime resolution: look up collection by ID, get path from collection
+   - If collection not found: log error, skip entry (no backward compat)
 
-6. **Update `fast_scheduler.py`**
+4. **Update `fast_scheduler.py`**
    - Modify `get_current_entry()` to resolve collection references
+   - Apply same resolution logic
 
-### Phase 4: API Updates
+### Phase 3: API Updates
 
-7. **Modify `api_server.py`**
+5. **Modify `akiratv/api_server.py`**
    - Update schedule loading endpoints to resolve paths
    - Ensure API responses include full video paths for playback
 
@@ -200,57 +162,47 @@ def resolve_collection_to_path(collection_id: str, collections: list) -> str:
     Resolve collection_id to full video path.
     
     Since each collection = one video, we use the first video in the collection.
+    NO fallback to file paths - if collection not found, return None.
     
     Args:
         collection_id: The collection identifier (e.g., "into_the_sun")
         collections: List of collection dictionaries
     
     Returns:
-        Full path to video file
+        Full path to video file, or None if not found
     """
     for collection in collections:
         if collection.get("id") == collection_id:
-            folder_name = collection.get("folder_name", "")
             videos = collection.get("videos", [])
             if videos:
                 # Use first (and usually only) video in collection
-                return folder_name + videos[0].get("path", "")
-    return None  # Or raise exception
+                return videos[0].get("path", "")
+    return None  # Collection not found - will be logged/skipped
 ```
 
-### Modify: _generate_random_schedule() in simple_scheduler.py
+### Old Schedule Entry Format (MUST BE REGENERATED)
 
-```python
-# OLD (line ~1285):
-entry = {
-    "time": time_str,
-    "file": video["path"],
-    "channel": target_channel,
-    "source": "random"
-}
+Old schedules have full paths in `file` field - these must be regenerated:
 
-# NEW:
-entry = {
-    "time": time_str,
-    "collection_id": collection.get("id"),
-    "channel": target_channel,
-    "source": "random"
+```json
+{
+  "time": "01:34:54",
+  "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
+  "channel": "TatkoTV",
+  "source": "random"
 }
 ```
+
+**Action required**: Run Simple Scheduler to regenerate old schedules with `collection_id` format.
 
 ---
 
 ## Testing Plan
 
-1. **Migration Test**
-   - Run migration tool on existing collections
-   - Verify folder_name is added and paths are relative
-
-2. **Integration Tests**
-   - Generate new schedule with collection_id
-   - Play schedule and verify correct videos play
-
-3. **Verify no full paths in schedule**
+1. **Backward Compatibility Test**
+   - Note: Old schedules with full paths will NOT work - must be regenerated
+   - Generate new schedule with `collection_id` only
+   - Verify videos play correctly via collection lookup
 
 ---
 
@@ -258,28 +210,93 @@ entry = {
 
 | File | Changes |
 |------|---------|
-| `akiratv/migrate_collections.py` | NEW - One-time migration script for existing collections |
-| `akiratv/collection_wizard.py` | Add `folder_name` field when creating new collections |
-| `akiratv/collections.py` | Update scan_folder to store folder_name and relative paths |
 | `akiratv/simple_scheduler.py` | Use `collection_id` only in entries |
 | `akiratv/scheduler.py` | Add resolve function |
-| `akiratv/fast_scheduler.py` | Use collection references |
+| `akiratv/fast_scheduler.py` | Use collection_id references |
 | `akiratv/api_server.py` | Resolve paths in API |
-
----
 
 ## Migration Strategy
 
-**No backward compatibility** - Old schedules with full paths must be re-generated using the Simple Scheduler.
+**Old schedules MUST be regenerated** - Schedules with full paths in `file` field will no longer work. Use Simple Scheduler to regenerate all schedules after implementing changes.
 
 ---
 
 ## Benefits
 
-1. **No full paths in schedules** - Only `collection_id` stored, no absolute paths
-2. **Portability**: Schedules are portable across systems
-3. **Flexibility**: Move video folders without breaking schedules (update folder_name in collection)
-4. **Efficiency**: Smaller schedule files (no redundant paths)
+1. **No video paths in schedules** - Only `collection_id` stored, completely portable
+2. **Clean separation** - Collections hold paths, schedules only hold references
+3. **Smaller schedule files** - No redundant path storage
+4. **Future-proof** - Can update collection paths without breaking schedules
+
+---
+
+## Drawbacks / Considerations
+
+### 1. Old Schedules Break
+- Existing schedules with `file` paths will stop working
+- Must regenerate ALL schedules via Simple Scheduler after deployment
+- If you have manually edited schedules, those changes are lost
+
+### 2. Collection Dependency
+- If a collection is deleted/renamed, scheduled entries fail silently
+- Need to regenerate schedule after deleting collections
+- More complex error handling needed in scheduler
+
+### 3. Runtime Lookup Overhead
+
+**What happens now vs what will happen:**
+
+**CURRENT (no overhead):**
+```json
+{
+  "time": "01:34:54",
+  "file": "C:/Videos/tatkotv3/Into The Sun.mp4",
+  "channel": "TatkoTV"
+}
+```
+Scheduler reads `file` directly - O(1) access, no processing needed.
+
+**NEW (with lookup):**
+```json
+{
+  "time": "01:34:54",
+  "collection_id": "into_the_sun",
+  "channel": "TatkoTV"
+}
+```
+Scheduler must:
+1. Load collections JSON from disk (or use cached)
+2. Loop through collections to find matching ID
+3. Extract path from `videos[0].path`
+
+**Performance impact:**
+- Collection lookup: O(n) where n = number of collections
+- For 1000 collections, ~1000 iterations per schedule entry
+- Disk I/O if collections not cached
+
+**When it happens:**
+- When schedule is loaded at startup
+- When getting next scheduled item
+- NOT during video playback (only at schedule resolution time)
+
+**Reality check:**
+- Even with 1000 collections, loop takes <1ms
+- Collections can be cached in memory after first load
+- Schedule is loaded once, not per-video
+- This overhead is negligible for typical use (<100 collections)
+
+### 4. No Manual Schedule Editing
+- Can't manually add/edit schedule entries without a collection ID
+- Reduces flexibility for one-off scheduling
+
+### Mitigation Strategies
+
+| Drawback | Mitigation |
+|----------|------------|
+| Old schedules break | One-time regeneration after deployment |
+| Collection dependency | Add validation on schedule load, warn user |
+| Runtime lookup | Cache collections in memory |
+| No manual editing | Can add a "direct file" mode later if needed |
 
 ---
 
@@ -287,6 +304,7 @@ entry = {
 
 - Each "collection" is one movie (single video entry)
 - The `name` field in collection = movie title (used by XMLTV for programme title)
-- The `folder_name` field is new - stores base path for resolving relative paths
-- Schedule only needs `collection_id` - uses first video in collection
+- Schedule uses `collection_id` to reference collections
+- Video paths stay in collections (absolute paths)
+- NO fallback paths in schedule - must regenerate old schedules
 - Consider adding a `version` field to schedule.json for format versioning

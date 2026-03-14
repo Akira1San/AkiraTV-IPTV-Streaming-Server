@@ -800,9 +800,7 @@ class AkiraTVApp:
             self.stats_labels["status"].set("Stopped")
         print("DEBUG: akiratv_instance.stop() has returned.")
 
-    def open_wizard(self):
-        from ..wizard import launch_wizard
-        launch_wizard()
+        pass  # Wizard removed - use web UI at /api/wizard
 
     def open_collection_wizard(self):
         from ..collection_wizard import CollectionWizard
