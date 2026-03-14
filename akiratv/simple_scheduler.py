@@ -1319,6 +1319,7 @@ class SimpleSchedulerWizard:
                 
                 calendar[calendar_key]["entries"].append({
                     "time": time_str,
+                    "file": video["path"],
                     "collection_id": video["collection"]["id"],
                     "channel": target_channel,
                     "source": "random"
@@ -1349,6 +1350,7 @@ class SimpleSchedulerWizard:
                 
                 calendar[calendar_key]["entries"].append({
                     "time": time_str,
+                    "file": video["path"],
                     "collection_id": video["collection"]["id"],
                     "channel": target_channel,
                     "source": "sequential"
