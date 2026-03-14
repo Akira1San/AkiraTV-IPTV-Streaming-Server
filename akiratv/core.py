@@ -400,10 +400,17 @@ class AkiraTV:
     def play_now(self, channel: str, video_path: str, start_position: float = 0):
         """Sends a play_now command to a VOD or Dynamic worker."""
         if channel not in self.workers:
-            logger.warning(f"⚠️ Channel '{channel}' not found. Cannot play video.")
+            logger.warning(f"⚠️ Channel '{channel}' not found in workers dictionary. Cannot play video.")
+            logger.warning(f"Available workers: {list(self.workers.keys())}")
             return
 
         worker, _ = self.workers[channel]
+        
+        if worker is None:
+            logger.error(f"⚠️ Channel '{channel}' worker is None (not running). Cannot play video.")
+            return
+        
+        logger.info(f"[PLAY] Worker found for channel '{channel}': {type(worker).__name__}")
 
         if isinstance(worker, VODWorker):
             logger.info(f"[PLAY] Sending 'play_now' command to VOD channel '{channel}' (start: {start_position}s).")

@@ -24,6 +24,7 @@ class VODWorker(BaseWorker):
     def run(self):
         """Main execution for a VOD channel."""
         if not self.initialize_worker():
+            self.logger.error(f"VOD worker initialization failed for channel '{self.channel}'. Worker exiting.")
             return
         
         self.logger.info(f"VOD channel '{self.channel}' is running and waiting for commands.")
@@ -33,13 +34,22 @@ class VODWorker(BaseWorker):
                 # Get a command with a timeout so the loop doesn't block forever
                 # Command format: ("play_now", video_path, start_position)
                 cmd, video_path, start_position = self.command_queue.get(timeout=0.5)
+                self.logger.debug(f"VOD worker got command from queue: {cmd}, {video_path}, {start_position}")
                 if cmd == "play_now" and video_path:
                     self.logger.info(f"Received 'play_now' command for: {video_path} (start: {start_position}s)")
                     self.video_to_play = video_path  # Set the flag
                     self.start_position = start_position  # Set start position
-            except:
-                # No command received in the timeout period, just loop again
-                pass
+            except Exception as e:
+                # Log any exceptions that occur - but don't treat queue.Empty as an error
+                import queue
+                if isinstance(e, queue.Empty):
+                    # No command received in the timeout period, just loop again
+                    pass
+                else:
+                    self.logger.warning(f"VOD worker error processing command: {e}")
+                    # Don't silently pass - log the exception details
+                    import traceback
+                    self.logger.warning(f"Traceback: {traceback.format_exc()}")
 
             # If a video has been requested, play it
             if self.video_to_play:

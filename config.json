@@ -1,6 +1,6 @@
 {
   "ffmpeg": {
-    "hwaccel": "cuda",
+    "hwaccel": "none",
     "enable_subtitles": false,
     "transcoding": {
       "enabled": false,
@@ -96,7 +96,7 @@
       }
     },
     "Test": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear",
       "transcoding": {
         "enabled": false
