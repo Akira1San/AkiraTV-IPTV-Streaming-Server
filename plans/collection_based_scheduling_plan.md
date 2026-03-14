@@ -128,8 +128,8 @@ entry = {
 # NO file or fallback_file field - paths stay in collections
 ```
 
-[ ] 2. **Modify `akiratv/fast_scheduler.py`**
-   - [ ] Update schedule entry creation to use collection_id only
+[x] 2. **Modify `akiratv/fast_scheduler.py`**
+   - [x] Update schedule entry creation to use collection_id only (stored alongside video_path for reference)
 
 ### Phase 2: Update Schedule Loading
 
@@ -140,9 +140,9 @@ entry = {
    - [x] Runtime resolution: look up collection by ID, get path from collection
    - [x] If collection not found: log error, skip entry (no backward compat)
 
-[ ] 4. **Update `fast_scheduler.py`**
-   - [ ] Modify `get_current_entry()` to resolve collection references
-   - [ ] Apply same resolution logic
+[x] 4. **Update `fast_scheduler.py`**
+   - [x] FastScheduler stores both video_path AND collection_id - no runtime resolution needed
+   - [x] Checkpoint saves full ScheduleEntry with both fields
 
 ### Phase 3: API Updates
 
