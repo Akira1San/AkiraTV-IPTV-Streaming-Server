@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkiraTV - Collection & Scheduler Wizard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <a href="/" style="text-decoration: none; color: inherit;">AkiraTV</a>
+            </div>
+            <div class="header-controls">
+                <div class="language-switcher">
+                    <button class="lang-btn active" id="langEn" onclick="switchLanguage('en')">EN</button>
+                    <button class="lang-btn" id="langBg" onclick="switchLanguage('bg')">БГ</button>
+                </div>
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Checking...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="wizard-navigation">
+            <button class="btn btn-secondary" onclick="window.location.href='/'">
+                <span>← Back to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- Collection & Scheduler Wizard -->
+        <div class="section">
+            <div class="section-title" data-i18n="wizard.title">🧙‍♂️ Collection & Scheduler Wizard</div>
+            
+            <div class="wizard-intro">
+                <p data-i18n="wizard.description">Create collections and schedules easily through the web interface. Perfect for new users who want to get started quickly without using command-line tools.</p>
+            </div>
+            
+            <div class="wizard-actions">
+                <div class="wizard-card">
+                    <div class="wizard-card-icon">📁</div>
+                    <div class="wizard-card-content">
+                        <h3 data-i18n="wizard.collection.title">Create Collection</h3>
+                        <p data-i18n="wizard.collection.description">Scan video folders and create organized collections for your channels. Automatically detects video files and generates metadata.</p>
+                        <button class="btn btn-primary wizard-btn" onclick="showCollectionWizard()">
+                            <span data-i18n="wizard.collection.button">🚀 Create Collection</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="wizard-card">
+                    <div class="wizard-card-icon">📅</div>
+                    <div class="wizard-card-content">
+                        <h3 data-i18n="wizard.scheduler.title">Create Schedule</h3>
+                        <p data-i18n="wizard.scheduler.description">Build weekly programming schedules for your channels. Drag and drop videos to create professional TV schedules.</p>
+                        <button class="btn btn-primary wizard-btn" onclick="showSchedulerWizard()">
+                            <span data-i18n="wizard.scheduler.button">📺 Create Schedule</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="wizard-card">
+                    <div class="wizard-card-icon">⚡</div>
+                    <div class="wizard-card-content">
+                        <h3>Fast Scheduler</h3>
+                        <p>Create dynamic, on-the-fly schedules from your collections without JSON files. Perfect for quick channel setup with automatic bumpers and trailers.</p>
+                        <button class="btn btn-primary wizard-btn" onclick="showFastSchedulerWizard()">
+                            <span>⚡ Fast Schedule</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Wizard Modal -->
+    <div class="modal wizard-modal" id="collectionWizardModal">
+        <div class="modal-content wizard-modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="wizard.collection.modalTitle">📁 Collection Wizard</h3>
+                <button class="modal-close" onclick="hideCollectionWizard()">&times;</button>
+            </div>
+            <div class="modal-body wizard-modal-body" id="collectionWizardBody">
+                <div class="wizard-loading">
+                    <div class="loading"></div>
+                    <span data-i18n="wizard.loading">Loading wizard...</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideCollectionWizard()">
+                    <span data-i18n="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn-primary" id="collectionWizardNext" onclick="collectionWizardNext()" disabled>
+                    <span data-i18n="wizard.next">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheduler Wizard Modal -->
+    <div class="modal wizard-modal" id="schedulerWizardModal">
+        <div class="modal-content wizard-modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="wizard.scheduler.modalTitle">📅 Scheduler Wizard</h3>
+                <button class="modal-close" onclick="hideSchedulerWizard()">&times;</button>
+            </div>
+            <div class="modal-body wizard-modal-body" id="schedulerWizardBody">
+                <div class="wizard-loading">
+                    <div class="loading"></div>
+                    <span data-i18n="wizard.loading">Loading wizard...</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideSchedulerWizard()">
+                    <span data-i18n="common.cancel">Cancel</span>
+                </button>
+                <button class="btn btn-primary" id="schedulerWizardNext" onclick="schedulerWizardNext()" disabled>
+                    <span data-i18n="wizard.next">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fast Scheduler Modal -->
+    <div class="modal wizard-modal" id="fastSchedulerModal">
+        <div class="modal-content wizard-modal-content">
+            <div class="modal-header">
+                <h3>⚡ Fast Scheduler</h3>
+                <button class="modal-close" onclick="hideFastScheduler()">&times;</button>
+            </div>
+            <div class="modal-body wizard-modal-body" id="fastSchedulerBody">
+                <div class="wizard-loading">
+                    <div class="loading"></div>
+                    <span>Loading Fast Scheduler...</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideFastScheduler()">Cancel</button>
+                <button class="btn btn-primary" id="fastSchedulerAction" onclick="executeFastScheduler()" disabled>
+                    Generate Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/translations.js"></script>
+    <script src="/static/app.js"></script>
+    <script src="/static/wizard.js"></script>
+</body>
+</html>

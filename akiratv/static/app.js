@@ -1537,6 +1537,11 @@ function openVODLibrary() {
     window.open('/static/vod.html', '_blank');
 }
 
+// Open Wizard in separate page
+function openWizard() {
+    window.open('/wizard', '_blank');
+}
+
 // ========================================
 // FAST SCHEDULER FUNCTIONS
 // ========================================

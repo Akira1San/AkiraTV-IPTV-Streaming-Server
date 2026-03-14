@@ -261,6 +261,16 @@ def viewer_page():
     else:
         return {"error": "Viewer page not found"}
 
+@app.get("/wizard")
+def wizard_page():
+    """Serve the Collection & Scheduler Wizard UI"""
+    wizard_path = Path(__file__).parent / "static" / "wizard.html"
+    if wizard_path.exists():
+        with open(wizard_path, 'r', encoding='utf-8') as f:
+            return HTMLResponse(content=f.read())
+    else:
+        return {"error": "Wizard page not found"}
+
 # ========================================
 # MAIN ENTRY POINT
 # ========================================
