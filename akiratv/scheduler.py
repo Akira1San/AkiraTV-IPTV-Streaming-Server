@@ -1,17 +1,131 @@
 # akiratv/scheduler.py
 import json
 from datetime import datetime, date, timedelta
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 import logging
 
 BASE_DIR = Path(__file__).resolve().parents[1]  # C:\AkiraTV\AkiraTV
 USER_DIR = BASE_DIR / "user"
 SCHEDULE_DIR = USER_DIR / "schedules"
+COLLECTIONS_DIR = USER_DIR / "collections"
 
 SCHEDULE_DIR.mkdir(parents=True, exist_ok=True)
 
 logger = logging.getLogger("AkiraTV")
+
+# Cache for collections to avoid repeated disk reads
+_collections_cache: Dict[str, List[Dict]] = {}
+
+
+def load_collections_for_channel(channel_name: str) -> List[Dict]:
+    """
+    Load collections for a specific channel/profile.
+    
+    Args:
+        channel_name: The channel/profile name (e.g., "TatkoTV")
+    
+    Returns:
+        List of collection dictionaries
+    """
+    global _collections_cache
+    
+    # Check cache first
+    if channel_name in _collections_cache:
+        return _collections_cache[channel_name]
+    
+    # Try different file naming conventions
+    possible_files = [
+        COLLECTIONS_DIR / f"collections_{channel_name}.json",
+        COLLECTIONS_DIR / f"{channel_name}.json",
+    ]
+    
+    collections = []
+    for collection_file in possible_files:
+        if collection_file.exists():
+            try:
+                with open(collection_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    collections = data.get("collections", [])
+                    _collections_cache[channel_name] = collections
+                    logger.info(f"Loaded {len(collections)} collections from {collection_file.name}")
+                    return collections
+            except Exception as e:
+                logger.error(f"Failed to load collections from {collection_file}: {e}")
+    
+    # No file found - try to find any matching collection file
+    if COLLECTIONS_DIR.exists():
+        for json_file in COLLECTIONS_DIR.glob("*.json"):
+            # Check if filename contains the channel name
+            if channel_name.lower() in json_file.stem.lower():
+                try:
+                    with open(json_file, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        collections = data.get("collections", [])
+                        _collections_cache[channel_name] = collections
+                        logger.info(f"Loaded {len(collections)} collections from {json_file.name}")
+                        return collections
+                except Exception as e:
+                    logger.error(f"Failed to load collections from {json_file}: {e}")
+    
+    logger.warning(f"No collection file found for channel: {channel_name}")
+    return []
+
+
+def resolve_collection_to_path(collection_id: str, channel_name: str = None) -> Optional[str]:
+    """
+    Resolve collection_id to full video path.
+    
+    Since each collection = one video, we use the first video in the collection.
+    NO fallback to file paths - if collection not found, return None.
+    
+    Args:
+        collection_id: The collection identifier (e.g., "into_the_sun")
+        channel_name: Optional channel name to narrow search (e.g., "TatkoTV")
+    
+    Returns:
+        Full path to video file, or None if not found
+    """
+    global _collections_cache
+    
+    # If channel specified, try that specific file first
+    if channel_name:
+        collections = load_collections_for_channel(channel_name)
+        for collection in collections:
+            if collection.get("id") == collection_id:
+                videos = collection.get("videos", [])
+                if videos:
+                    return videos[0].get("path", "")
+    
+    # Search all cached collections
+    for cached_collections in _collections_cache.values():
+        for collection in cached_collections:
+            if collection.get("id") == collection_id:
+                videos = collection.get("videos", [])
+                if videos:
+                    return videos[0].get("path", "")
+    
+    # Try loading from all collection files
+    if COLLECTIONS_DIR.exists():
+        for collection_file in COLLECTIONS_DIR.glob("collections_*.json"):
+            try:
+                with open(collection_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    collections = data.get("collections", [])
+                    # Add to cache
+                    channel = collection_file.stem.replace("collections_", "")
+                    _collections_cache[channel] = collections
+                    
+                    for collection in collections:
+                        if collection.get("id") == collection_id:
+                            videos = collection.get("videos", [])
+                            if videos:
+                                return videos[0].get("path", "")
+            except Exception as e:
+                logger.error(f"Failed to search collections in {collection_file}: {e}")
+    
+    logger.error(f"Collection not found: {collection_id}")
+    return None
 
 def get_full_todays_schedule() -> List[Dict[str, Any]]:
     """
@@ -300,14 +414,21 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     if not entries:
         return []
 
+    # Validate entries and resolve collection_id to file path
+    validated_entries = _validate_entries(entries, source=f"schedule:{channel}")
+    
+    if not validated_entries:
+        logger.warning(f"No valid entries found after validation for channel '{channel}'")
+        return []
+
     # Sort by time
-    entries.sort(key=lambda x: x["time"])
+    validated_entries.sort(key=lambda x: x["time"])
 
     # Find current entry (last one that started before now)
     current_entry_index = -1
     current_dt = datetime.now()
     
-    for i, entry in enumerate(entries):
+    for i, entry in enumerate(validated_entries):
         try:
             entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             current_time = current_dt.time()
@@ -336,24 +457,50 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     # Return from current entry onward
     if current_entry_index >= 0:
         logger.info(f"Found {current_entry_index + 1} past schedule entry(ies), starting from entry {current_entry_index + 1}")
-        return entries[current_entry_index:]
+        return validated_entries[current_entry_index:]
     else:
         # No past entries found - check if there are any future entries for today
-        if entries:
+        if validated_entries:
             # Return entries but log that we're starting from beginning
-            logger.info(f"No past entries found. Starting from beginning (first entry at {entries[0].get('time', 'unknown')})")
-        return entries  # Start from beginning if no past entries
+            logger.info(f"No past entries found. Starting from beginning (first entry at {validated_entries[0].get('time', 'unknown')})")
+        return validated_entries  # Start from beginning if no past entries
 
 
 def _validate_entries(entries: List[Dict], source: str) -> List[Dict]:
-    """Ensure each entry has required fields."""
+    """
+    Ensure each entry has required fields.
+    
+    Supports both:
+    - Legacy format: {"time": "...", "file": "path/to/video.mp4", ...}
+    - Collection-based format: {"time": "...", "collection_id": "collection_id", ...}
+    
+    For collection-based entries, the collection_id is resolved to a file path.
+    """
     valid = []
     for i, entry in enumerate(entries):
         try:
             if not isinstance(entry, dict):
                 raise ValueError("not a dictionary")
-            if "time" not in entry or "file" not in entry:
-                raise ValueError("missing 'time' or 'file'")
+            
+            # Check for required fields - either "file" or "collection_id"
+            has_file = "file" in entry
+            has_collection_id = "collection_id" in entry
+            
+            if not has_file and not has_collection_id:
+                raise ValueError("missing 'time' and either 'file' or 'collection_id'")
+            if "time" not in entry:
+                raise ValueError("missing 'time'")
+            
+            # Resolve collection_id to file path if needed
+            if has_collection_id and not has_file:
+                channel = entry.get("channel", "default")
+                file_path = resolve_collection_to_path(entry["collection_id"], channel)
+                if file_path:
+                    entry["file"] = file_path
+                    logger.debug(f"Resolved collection_id '{entry['collection_id']}' to '{file_path}'")
+                else:
+                    raise ValueError(f"collection_id '{entry['collection_id']}' not found")
+            
             if "channel" not in entry:
                 entry["channel"] = "default"
             if "tags" not in entry:

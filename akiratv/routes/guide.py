@@ -8,6 +8,7 @@ from pathlib import Path
 import json
 
 from ..core_api import get_api
+from ..scheduler import resolve_collection_to_path
 
 router = APIRouter(prefix="/api/guide", tags=["TV Guide"])
 
@@ -54,6 +55,73 @@ def get_schedule_for_date(schedule_data: dict, date_str: str, day_name: str) -> 
         return weekly_entries
     
     return []
+
+
+def get_program_file_path(program: dict, channel_name: str = None) -> str:
+    """
+    Get the full file path from a program entry.
+    
+    Supports both old format (file field) and new format (collection_id field).
+    
+    Args:
+        program: Schedule entry dict with either 'file' or 'collection_id'
+        channel_name: Optional channel name to help resolve collection
+    
+    Returns:
+        Full path to video file, or empty string if not found
+    """
+    # Check for new collection_id format first
+    collection_id = program.get("collection_id")
+    if collection_id:
+        file_path = resolve_collection_to_path(collection_id, channel_name)
+        if file_path:
+            return file_path
+        # If collection not found, log and return empty
+        print(f"Warning: Collection not found: {collection_id}")
+        return ""
+    
+    # Fall back to old file format (for backward compatibility)
+    return program.get("file", "")
+
+
+def get_program_display_name(program: dict, channel_name: str = None) -> str:
+    """
+    Get the display name from a program entry.
+    
+    Uses collection name if available, otherwise falls back to file stem.
+    
+    Args:
+        program: Schedule entry dict
+        channel_name: Optional channel name
+    
+    Returns:
+        Display name for the program
+    """
+    # Check for collection_id to get collection name
+    collection_id = program.get("collection_id")
+    if collection_id:
+        # Try to get collection name from collections
+        from pathlib import Path
+        collections_dir = Path("user/collections")
+        if collections_dir.exists():
+            for collection_file in collections_dir.glob("collections_*.json"):
+                try:
+                    with open(collection_file, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        for collection in data.get("collections", []):
+                            if collection.get("id") == collection_id:
+                                return collection.get("name", collection_id)
+                except Exception:
+                    pass
+        # If collection not found, use collection_id as display name
+        return collection_id.replace("_", " ").title()
+    
+    # Fall back to file name stem
+    file_path = program.get("file", "")
+    if file_path:
+        return Path(file_path).stem
+    
+    return "Unknown"
 
 # ========================================
 # GUIDE ENDPOINTS
@@ -140,11 +208,11 @@ def get_tv_guide(api = Depends(get_core_api)):
                 
                 # Format programs for display
                 if current_program:
-                    current_program["display_name"] = Path(current_program["file"]).stem
+                    current_program["display_name"] = get_program_display_name(current_program, channel_name)
                     current_program["duration_estimate"] = "~90 min"  # Could be calculated from file
                 
                 if next_program:
-                    next_program["display_name"] = Path(next_program["file"]).stem
+                    next_program["display_name"] = get_program_display_name(next_program, channel_name)
                     next_program["duration_estimate"] = "~90 min"
                 
                 # Get next few programs for the guide
@@ -160,7 +228,7 @@ def get_tv_guide(api = Depends(get_core_api)):
                 # Get next 5 programs
                 for i in range(max(0, current_index), min(len(sorted_schedule), current_index + 6)):
                     program = sorted_schedule[i].copy()
-                    program["display_name"] = Path(program["file"]).stem
+                    program["display_name"] = get_program_display_name(program, channel_name)
                     program["is_current"] = (i == current_index)
                     upcoming_programs.append(program)
                 
@@ -257,7 +325,7 @@ def get_weekly_tv_guide(api = Depends(get_core_api)):
                     formatted_programs = []
                     for i, program in enumerate(sorted_programs):
                         formatted_program = program.copy()
-                        formatted_program["display_name"] = Path(program["file"]).stem
+                        formatted_program["display_name"] = get_program_display_name(program, channel_name)
                         formatted_program["duration_estimate"] = "~90 min"
                         
                         # Mark current program if it's today and currently playing
@@ -358,7 +426,7 @@ def get_guide_for_date(date_str: str, api = Depends(get_core_api)):
                 formatted_schedule = []
                 for program in sorted_schedule:
                     formatted_program = program.copy()
-                    formatted_program["display_name"] = Path(program["file"]).stem
+                    formatted_program["display_name"] = get_program_display_name(program, channel_name)
                     formatted_program["duration_estimate"] = "~90 min"
                     formatted_schedule.append(formatted_program)
                 

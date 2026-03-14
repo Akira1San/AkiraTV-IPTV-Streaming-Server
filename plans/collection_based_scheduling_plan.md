@@ -112,10 +112,10 @@ Store `collection_id` only (no video paths in schedule):
 
 ### Phase 1: Update Schedule Generation
 
-1. **Modify `akiratv/simple_scheduler.py`**
-   - Update `_generate_random_schedule()` (line ~1285)
-   - Update `_generate_sequential_schedule()` (line ~1524)
-   - Store `collection_id` only in new schedule entries (NO file path)
+[x] 1. **Modify `akiratv/simple_scheduler.py`**
+   - [x] Update `_generate_random_schedule()` (line ~1285)
+   - [x] Update `_generate_sequential_schedule()` (line ~1524)
+   - [x] Store `collection_id` only in new schedule entries (NO file path)
 
 ```python
 # New schedule entry format:
@@ -128,27 +128,27 @@ entry = {
 # NO file or fallback_file field - paths stay in collections
 ```
 
-2. **Modify `akiratv/fast_scheduler.py`**
-   - Update schedule entry creation to use collection_id only
+[ ] 2. **Modify `akiratv/fast_scheduler.py`**
+   - [ ] Update schedule entry creation to use collection_id only
 
 ### Phase 2: Update Schedule Loading
 
-3. **Modify `akiratv/scheduler.py`**
-   - Update `get_full_todays_schedule()` (line ~16)
-   - Update `get_current_schedule_for_channel()` (line ~156)
-   - Add function `resolve_collection_to_path(collection_id)`
-   - Runtime resolution: look up collection by ID, get path from collection
-   - If collection not found: log error, skip entry (no backward compat)
+[x] 3. **Modify `akiratv/scheduler.py`**
+   - [x] Update `get_full_todays_schedule()` (line ~16)
+   - [x] Update `get_current_schedule_for_channel()` (line ~156)
+   - [x] Add function `resolve_collection_to_path(collection_id)`
+   - [x] Runtime resolution: look up collection by ID, get path from collection
+   - [x] If collection not found: log error, skip entry (no backward compat)
 
-4. **Update `fast_scheduler.py`**
-   - Modify `get_current_entry()` to resolve collection references
-   - Apply same resolution logic
+[ ] 4. **Update `fast_scheduler.py`**
+   - [ ] Modify `get_current_entry()` to resolve collection references
+   - [ ] Apply same resolution logic
 
 ### Phase 3: API Updates
 
-5. **Modify `akiratv/api_server.py`**
-   - Update schedule loading endpoints to resolve paths
-   - Ensure API responses include full video paths for playback
+[x] 5. **Modify `akiratv/api_server.py`**
+   - [x] Update schedule loading endpoints to resolve paths
+   - [x] Ensure API responses include full video paths for playback
 
 ---
 
