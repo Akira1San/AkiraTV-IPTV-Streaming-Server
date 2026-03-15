@@ -1275,6 +1275,11 @@ function showConfigTab(tabName) {
     if (tabName === 'info') {
         loadInfoData();
     }
+    
+    // Load collections status when collections tab is shown
+    if (tabName === 'collections') {
+        loadCollectionStatus();
+    }
 }
 
 async function loadConfigurationData() {
@@ -1360,6 +1365,89 @@ async function loadInfoData() {
         document.getElementById('infoStorageMode').textContent = 'Error';
         document.getElementById('infoTranscoding').textContent = 'Error';
     }
+}
+
+// ============================================
+// Path Fixer Functions (for Android Migration)
+// ============================================
+
+async function loadCollectionStatus() {
+    const statusDiv = document.getElementById('collectionStatus');
+    if (!statusDiv) return;
+    
+    try {
+        // Try to get list of collection files
+        const response = await fetch('/api/library/collections');
+        let collectionsInfo = '<p>Collection files found:</p><ul>';
+        
+        // For now, just show a placeholder
+        collectionsInfo += '<li>Check user/collections/ directory</li>';
+        collectionsInfo += '</ul>';
+        collectionsInfo += '<p><strong>Tip:</strong> Use the Path Fixer below to update Windows paths to Android USB paths.</p>';
+        
+        statusDiv.innerHTML = collectionsInfo;
+    } catch (error) {
+        statusDiv.innerHTML = '<p>Error loading collection status: ' + error.message + '</p>';
+    }
+}
+
+async function fixPaths() {
+    const oldPrefix = document.getElementById('oldPathPrefix')?.value;
+    const newPrefix = document.getElementById('newPathPrefix')?.value;
+    const resultDiv = document.getElementById('fixPathsResult');
+    
+    if (!oldPrefix || !newPrefix) {
+        resultDiv.innerHTML = '<span style="color: red;">Please enter both old and new path prefixes.</span>';
+        return;
+    }
+    
+    resultDiv.innerHTML = '<span>Fixing paths...</span>';
+    
+    try {
+        const response = await fetch('/api/config/fix-paths', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ oldPrefix, newPrefix })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            resultDiv.innerHTML = `<span style="color: green;">✅ Fixed ${result.fixed} collection(s)!</span>`;
+        } else {
+            resultDiv.innerHTML = `<span style="color: red;">❌ Error: ${result.error}</span>`;
+        }
+    } catch (error) {
+        resultDiv.innerHTML = `<span style="color: red;">❌ Error: ${error.message}</span>`;
+    }
+}
+
+function autoDetectUSB() {
+    // Try to detect common Android USB paths
+    const commonPaths = [
+        '/storage/sdcard0',
+        '/storage/sdcard1',
+        '/storage/emulated/0',
+        '/storage/0000-0000',  // Common USB pattern
+    ];
+    
+    // For Android, we'd need an API endpoint to detect actual USB
+    // For now, show a message
+    const newPrefixInput = document.getElementById('newPathPrefix');
+    
+    // Check if we can get USB path from API
+    fetch('/api/monitoring/system')
+        .then(res => res.json())
+        .then(sysInfo => {
+            // On Android, we could pass USB path via config
+            // For now, suggest common patterns
+            newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
+            alert('Auto-detect: On Android, USB is typically at /storage/XXXX-XXXX/.\n\nPlease enter the full path to your AkiraTV/videos folder.');
+        })
+        .catch(() => {
+            newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
+            alert('Auto-detect: On Android, USB is typically at /storage/XXXX-XXXX/.\n\nPlease enter the full path to your AkiraTV/videos folder.');
+        });
 }
 
 function toggleStoragePath() {

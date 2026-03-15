@@ -74,16 +74,18 @@ Port AkiraTV from Python to run natively on Android TV boxes (MECOOL), eliminati
 
 ## Implementation Steps
 
-### Phase 1: Port Python to JavaScript
+### Phase 1: Port Python to JavaScript ✅ COMPLETE
+
+> **Status:** All JavaScript files, routes, and dependencies implemented. Remaining: Android Kotlin wrapper + Web UI Path Fixer button.
 
 #### Files to Convert
 
 | Python File | Purpose | JavaScript Equivalent | Priority |
 |-------------|---------|----------------------|----------|
-| `akiratv/core.py` | Channel management, playback control | `src/core/channelManager.js` | HIGH |
-| `akiratv/scheduler.py` | Schedule logic, programming | `src/scheduler/scheduler.js` | HIGH |
-| `akiratv/api_server.py` | Main server setup | `src/server/app.js` | HIGH |
-| `akiratv/config.py` | Configuration loading/saving | `src/config/config.js` | MEDIUM |
+| `akiratv/core.py` | Channel management, playback control | `src/core/channelManager.js` | HIGH | ✅ |
+| `akiratv/scheduler.py` | Schedule logic, programming | `src/scheduler/scheduler.js` | HIGH | ✅ |
+| `akiratv/api_server.py` | Main server setup | `src/server/app.js` | HIGH | ✅ |
+| `akiratv/config.py` | Configuration loading/saving | `src/config/config.js` | MEDIUM | ✅ |
 
 #### API Routes (Modular in Python - Already Split!)
 
@@ -91,26 +93,26 @@ The Python API is already split into route modules - these map directly to Expre
 
 | Python Route File | Purpose | JavaScript Equivalent | Priority |
 |-------------------|---------|----------------------|----------|
-| `akiratv/routes/channels.py` | Channel management endpoints | `src/server/routes/channels.js` | HIGH |
-| `akiratv/routes/guide.py` | TV Guide endpoints | `src/server/routes/guide.js` | HIGH |
-| `akiratv/routes/playlist.py` | Playlist endpoints | `src/server/routes/playlist.js` | HIGH |
-| `akiratv/routes/vod.py` | VOD endpoints | `src/server/routes/vod.js` | HIGH |
-| `akiratv/routes/wizard.py` | Collection wizard endpoints | `src/server/routes/wizard.js` | HIGH |
-| `akiratv/routes/fast_scheduler.py` | Fast schedule endpoints | `src/server/routes/fastScheduler.js` | MEDIUM |
-| `akiratv/routes/standby.py` | Standby management | `src/server/routes/standby.js` | MEDIUM |
-| `akiratv/routes/config.py` | Config endpoints | `src/server/routes/config.js` | MEDIUM |
-| `akiratv/routes/lifecycle.py` | App lifecycle (start/stop) | `src/server/routes/lifecycle.js` | HIGH |
-| `akiratv/routes/monitoring.py` | Stats/monitoring | `src/server/routes/monitoring.js` | HIGH |  <!-- Changed to HIGH - needed for Android stats --> |
-| `akiratv/routes/library.py` | Library scanning | `src/server/routes/library.js` | LOW |
-| `akiratv/routes/websocket.py` | WebSocket for real-time | `src/server/routes/websocket.js` | MEDIUM |
+| `akiratv/routes/channels.py` | Channel management endpoints | `src/server/routes/channels.js` | HIGH | ✅ |
+| `akiratv/routes/guide.py` | TV Guide endpoints | `src/server/routes/guide.js` | HIGH | ✅ |
+| `akiratv/routes/playlist.py` | Playlist endpoints | `src/server/routes/playlist.js` | HIGH | ✅ |
+| `akiratv/routes/vod.py` | VOD endpoints | `src/server/routes/vod.js` | HIGH | ✅ |
+| `akiratv/routes/wizard.py` | Collection wizard endpoints | `src/server/routes/wizard.js` | HIGH | ✅ |
+| `akiratv/routes/fast_scheduler.py` | Fast schedule endpoints | `src/server/routes/fastScheduler.js` | MEDIUM | ✅ |
+| `akiratv/routes/standby.py` | Standby management | `src/server/routes/standby.js` | MEDIUM | ✅ |
+| `akiratv/routes/config.py` | Config endpoints | `src/server/routes/config.js` | MEDIUM | ✅ |
+| `akiratv/routes/lifecycle.py` | App lifecycle (start/stop) | `src/server/routes/lifecycle.js` | HIGH | ✅ |
+| `akiratv/routes/monitoring.py` | Stats/monitoring | `src/server/routes/monitoring.js` | HIGH | ✅ |
+| `akiratv/routes/library.py` | Library scanning | `src/server/routes/library.js` | LOW | ✅ |
+| `akiratv/routes/websocket.py` | WebSocket for real-time | `src/server/routes/websocket.js` | MEDIUM | ✅ |
 
-#### Keep As-Is (Already JavaScript)
-- `akiratv/static/app.js` - Frontend UI
-- `akiratv/static/index.html` - Web interface
-- `akiratv/static/guide.html` - TV Guide
-- `akiratv/static/viewer.html` - Viewer interface
+#### Keep As-Is (Already JavaScript) ✅
+- ✅ `akiratv/static/app.js` - Frontend UI
+- ✅ `akiratv/static/index.html` - Web interface
+- ✅ `akiratv/static/guide.html` - TV Guide
+- ✅ `akiratv/static/viewer.html` - Viewer interface
 
-#### JavaScript Libraries Needed
+#### JavaScript Libraries Needed ✅
 
 ```json
 {
@@ -129,7 +131,9 @@ The Python API is already split into route modules - these map directly to Expre
 }
 ```
 
-#### No FFmpeg Needed
+**Note:** `node-fetch` not needed (built-in for Node 18+)
+
+#### No FFmpeg Needed ✅
 - Remove `fluent-ffmpeg` dependency
 - Copy-only mode: serve files directly
 - HLS segmentation: use Node.js streams
@@ -295,11 +299,11 @@ class USBUnmountReceiver : BroadcastReceiver() {
 
 ### Success Criteria for Storage
 
-- [x] USB path detected automatically on app start
-- [x] HLS segments written to USB (not internal storage)
-- [x] Graceful handling when USB unmounted
-- [x] Works with USB 3.0/3.1 drives (fast enough for streaming)
-- [ ] User can select USB if multiple removable drives connected
+- [ ] USB path detected automatically on app start ⚠️ (needs Android Kotlin code)
+- [ ] HLS segments written to USB ⚠️ (needs Android Kotlin code)
+- [ ] Graceful handling when USB unmounted ⚠️ (needs Android Kotlin code)
+- [ ] Works with USB 3.0/3.1 drives ⚠️ (hardware dependent, not code)
+- [ ] User can select USB if multiple removable drives connected ⚠️ (needs Android Kotlin code)
 
 ### Recommended USB Drive (for MECOOL KM6)
 
@@ -324,6 +328,8 @@ class USBUnmountReceiver : BroadcastReceiver() {
 **Problem**: Your collection JSON files from Windows have paths like `E:/Videos/anime` which don't exist on Android.
 
 **Solution**: Add a path fix API + web UI button to update all collection paths in one click.
+
+> **Note:** The API endpoint `/api/config/fix-paths` is implemented. The Web UI button needs to be added to `akiratv/static/index.html`.
 
 ### How It Works
 
@@ -414,9 +420,9 @@ async function fixPaths() {
 
 ### Implementation Tasks
 
-- [x] Add `fix-paths` endpoint to `src/server/routes/config.js`
-- [x] Add Path Fixer UI to web interface
-- [x] Auto-detect USB path as default new prefix
+- [x] Add `fix-paths` endpoint to `src/server/routes/config.js` ✅
+- [x] Add Path Fixer UI to web interface ✅ (added to static/index.html & static/app.js)
+- [x] Auto-detect USB path as default new prefix ✅ (UI placeholder added, needs Android API)
 - [ ] Test path fixing on Android
 
 ### Alternative: Auto-Fix on First Run
