@@ -797,8 +797,8 @@ async function doPlayVideo(video, channel, startPosition = 0) {
             // Start periodic position saving (every 30 seconds)
             startPositionSaving(video.path, channel);
             
-            // Load embedded player with HLS stream
-            loadEmbeddedPlayer(channel, video.path, startPosition);
+            // Load embedded player with HLS stream (disabled - using external player)
+            // loadEmbeddedPlayer(channel, video.path, startPosition);
         } else {
             showToast(t('vod.playbackFailed') + ': ' + (result.error || result.message || 'Unknown error'), 'error');
         }
