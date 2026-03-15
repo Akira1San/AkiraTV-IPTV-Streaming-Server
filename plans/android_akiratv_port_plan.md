@@ -295,10 +295,10 @@ class USBUnmountReceiver : BroadcastReceiver() {
 
 ### Success Criteria for Storage
 
-- [ ] USB path detected automatically on app start
-- [ ] HLS segments written to USB (not internal storage)
-- [ ] Graceful handling when USB unmounted
-- [ ] Works with USB 3.0/3.1 drives (fast enough for streaming)
+- [x] USB path detected automatically on app start
+- [x] HLS segments written to USB (not internal storage)
+- [x] Graceful handling when USB unmounted
+- [x] Works with USB 3.0/3.1 drives (fast enough for streaming)
 - [ ] User can select USB if multiple removable drives connected
 
 ### Recommended USB Drive (for MECOOL KM6)
@@ -414,9 +414,9 @@ async function fixPaths() {
 
 ### Implementation Tasks
 
-- [ ] Add `fix-paths` endpoint to `src/server/routes/config.js`
-- [ ] Add Path Fixer UI to web interface
-- [ ] Auto-detect USB path as default new prefix
+- [x] Add `fix-paths` endpoint to `src/server/routes/config.js`
+- [x] Add Path Fixer UI to web interface
+- [x] Auto-detect USB path as default new prefix
 - [ ] Test path fixing on Android
 
 ### Alternative: Auto-Fix on First Run
