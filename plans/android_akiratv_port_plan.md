@@ -1059,14 +1059,14 @@ module.exports = FFmpegHelper;
 - [ ] 4.4 Update build.gradle with Node.js support
 
 #### 5.0 Create Android Kotlin Files
-- [ ] 5.1 Create AkiraTVService - Background service
-- [ ] 5.2 Create MainActivity - Start/Stop buttons UI
-- [ ] 5.3 Create activity_main.xml - Layout with buttons
-- [ ] 5.4 Create USBHelper - USB detection & path handling
-- [ ] 5.5 Create USBUnmountReceiver - Handle USB removal
-- [ ] 5.6 Create SystemMonitor - CPU/RAM/Battery stats
-- [ ] 5.7 Create NodeRunner - Node.js bridge
-- [ ] 5.8 Update AndroidManifest - Permissions & components
+- [x] 5.1 Create AkiraTVService - Background service
+- [x] 5.2 Create MainActivity - Start/Stop buttons UI
+- [x] 5.3 Create activity_main.xml - Layout with buttons
+- [x] 5.4 Create USBHelper - USB detection & path handling
+- [x] 5.5 Create USBUnmountReceiver - Handle USB removal
+- [x] 5.6 Create SystemMonitor - CPU/RAM/Battery stats
+- [x] 5.7 Create NodeRunner - Node.js bridge
+- [x] 5.8 Update AndroidManifest - Permissions & components
 
 #### 6.0 Integrate Node.js
 - [ ] 6.1 Add Node.js runtime to assets
