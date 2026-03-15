@@ -1069,23 +1069,23 @@ module.exports = FFmpegHelper;
 - [x] 5.8 Update AndroidManifest - Permissions & components
 
 #### 6.0 Integrate Node.js
-- [ ] 6.1 Add Node.js runtime to assets
+- [x] 6.1 Add Node.js runtime to assets
 - [ ] 6.2 Test Node.js execution
-- [ ] 6.3 Configure environment variables for paths
+- [x] 6.3 Configure environment variables for paths
 
 ### Phase 3: Web UI & Features
 
 #### 7.0 Copy and Adapt Web UI Files
-- [ ] 7.1 Copy `akiratv/static/` to `assets/akiratv/static/`
-- [ ] 7.2 Copy `akiratv/web_ui.html` to assets
-- [ ] 7.3 Add Path Fixer section to web UI
-- [ ] 7.4 Add System Status tab to web UI
-- [ ] 7.5 Update paths in HTML files for Android
+- [x] 7.1 Copy `akiratv/static/` to `assets/akiratv/static/`
+- [x] 7.2 Copy `akiratv/web_ui.html` to assets
+- [x] 7.3 Add Path Fixer section to web UI
+- [x] 7.4 Add System Status tab to web UI
+- [x] 7.5 Update paths in HTML files for Android
 
 ### Phase 4: Testing & Deployment
 
 #### 8.0 Build and Test
-- [ ] 8.1 Build debug APK
+- [x] 8.1 Build debug APK
 - [ ] 8.2 Install on MECOOL KM6
 - [ ] 8.3 Test Start Server button
 - [ ] 8.4 Test Stop Server button
