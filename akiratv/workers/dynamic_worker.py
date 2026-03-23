@@ -1,7 +1,26 @@
 # akiratv/workers/dynamic_worker.py
+"""
+DynamicWorker: A hybrid worker that follows a schedule but allows interruptions.
+
+Logging Prefix Convention:
+----------------------------
+This module uses optional prefixes to indicate message categories:
+[HOT]      - VOD interruption / immediate playback
+[TV]       - Scheduled broadcast content
+[OK]       - Successful completion of an operation
+[STANDBY]  - Standby mode related messages
+[START]    - Starting video playback
+[PLAY]     - VOD playback actions
+[CONFIG]   - Configuration and transcoding settings
+[MSG]      - Queue and message handling
+
+Messages without prefixes are general informational or error logs.
+"""
+
 import threading
 import time
 import subprocess
+import queue
 from pathlib import Path
 from typing import Optional, List, Dict
 from datetime import datetime, date, timedelta
@@ -16,7 +35,7 @@ class DynamicWorker(BaseWorker):
     VOD interruptions temporarily override the schedule.
     """
     
-    def __init__(self, channel, config, logger, transcoding_service, 
+    def __init__(self, channel, config, logger, transcoding_service,
                  inventory_manager, command_queue, schedule_entries=None):
         super().__init__(channel, config, logger)
         self.transcoding_service = transcoding_service
@@ -29,6 +48,8 @@ class DynamicWorker(BaseWorker):
         self.target_resolution = self._get_channel_resolution()
         self.last_schedule_check = time.time()
         self.error_thread = None  # Track error logging thread for cleanup
+        self.hls_dir = self.config.get_hls_output_path(self.channel)
+        self.is_in_standby = False
         
     def _get_channel_resolution(self) -> str:
         """Get the target resolution for this channel from config."""
@@ -57,15 +78,14 @@ class DynamicWorker(BaseWorker):
                     self._refresh_schedule()
                 
                 # Check for VOD interruption first
-                if not self.command_queue.empty():
-                    try:
-                        cmd, video_path, start_position = self.command_queue.get_nowait()
-                        if cmd == "play_now":
-                            self.logger.info(f"[HOT] VOD interruption: {video_path} (start: {start_position}s)")
-                            self._switch_to_vod(video_path, start_position)
-                            continue  # After VOD, check schedule again
-                    except:
-                        pass
+                try:
+                    cmd, video_path, start_position = self.command_queue.get_nowait()
+                    if cmd == "play_now":
+                        self.logger.info(f"[HOT] VOD interruption: {video_path} (start: {start_position}s)")
+                        self._switch_to_vod(video_path, start_position)
+                        continue  # After VOD, check schedule again
+                except queue.Empty:
+                    pass
                 
                 # Check if we should play schedule or standby
                 now = datetime.now()
@@ -130,21 +150,6 @@ class DynamicWorker(BaseWorker):
         except Exception as e:
             self.logger.error(f"Failed to refresh schedule: {e}")
 
-    def _manage_schedule_or_standby(self):
-        """Decide whether to play schedule or standby."""
-        now = datetime.now()
-        
-        # Find current schedule entry
-        current_schedule = self._get_current_schedule_entry(now)
-        
-        if current_schedule:
-            # Play scheduled content
-            self._play_scheduled_content(current_schedule, now)
-        else:
-            # No active schedule, play standby
-            if not hasattr(self, 'is_in_standby') or not self.is_in_standby:
-                self._start_standby()
-
     def _get_current_schedule_entry(self, current_time: datetime) -> Optional[Dict]:
         """Find which schedule entry should be playing now."""
         if not self.schedule_entries:
@@ -176,9 +181,11 @@ class DynamicWorker(BaseWorker):
         # Calculate seek time
         seek_time = self._calculate_seek_time(entry, current_time)
         
-        hls_path = self.config.get_hls_output_path(self.channel)
+        # Clean up old HLS segments before starting
+        self._cleanup_hls_directory()
+        
         hls_conf = self.config.data["output"]["hls"]
-        playlist_filename = (hls_path.resolve() / "index.m3u8").as_posix()
+        playlist_filename = (self.hls_dir.resolve() / "index.m3u8").as_posix()
         
         # ALWAYS use native playback for scheduled content (like VOD)
         encoding_args = ["-c:v", "copy", "-c:a", "copy"]
@@ -286,9 +293,11 @@ class DynamicWorker(BaseWorker):
             time.sleep(10)
             return
         
-        hls_path = self.config.get_hls_output_path(self.channel)
+        # Clean up old HLS segments before starting
+        self._cleanup_hls_directory()
+        
         hls_conf = self.config.data["output"]["hls"]
-        playlist_filename = (hls_path.resolve() / "index.m3u8").as_posix()
+        playlist_filename = (self.hls_dir.resolve() / "index.m3u8").as_posix()
         
         encoding_args = self.transcoding_service.get_encoding_args(
             input_path=standby_file,
@@ -322,34 +331,6 @@ class DynamicWorker(BaseWorker):
         self.logger.info(f"[OK] Standby mode active for {self.channel}")
         self.is_in_standby = True
 
-    def _monitor_and_handle_commands(self):
-        """Monitor FFmpeg and check command queue."""
-        while self.running and self.ffmpeg_process and self.ffmpeg_process.poll() is None:
-            # Check for VOD commands
-            try:
-                cmd, video_path = self.command_queue.get(timeout=0.5)
-                
-                if cmd == "play_now":
-                    self.logger.info(f"[HOT] Play Now triggered: {video_path}")
-                    self._switch_to_vod(video_path)
-                    return  # Exit monitoring loop after VOD switch
-                    
-            except:
-                # Queue is empty, continue monitoring
-                pass
-            
-            # Check if scheduled video has ended and we should switch
-            if not self.is_playing_vod and not self.is_in_standby:
-                if self.ffmpeg_process.poll() is not None:
-                    self.logger.info("Scheduled video ended, checking schedule...")
-                    time.sleep(0.5)  # Small delay before checking schedule again
-                    return  # Exit to check schedule in main loop
-        
-        # If FFmpeg exited and we're not playing VOD, we need to restart
-        if not self.is_playing_vod and self.ffmpeg_process and self.ffmpeg_process.poll() is not None:
-            self.logger.warning(f"FFmpeg process died unexpectedly. Will restart...")
-            time.sleep(2)
-
     def _switch_to_vod(self, video_path: str, start_position: float = 0):
         """Kill current content and play a VOD, then return to schedule/standby."""
         # 1. Stop current FFmpeg
@@ -372,10 +353,12 @@ class DynamicWorker(BaseWorker):
         
         #app_context.set_now_playing(self.channel, video_path.stem)
         
-        # 3. Build VOD args
-        hls_path = self.config.get_hls_output_path(self.channel)
+        # 3. Clean up old HLS segments before starting
+        self._cleanup_hls_directory()
+        
+        # 4. Build VOD args
         hls_conf = self.config.data["output"]["hls"]
-        playlist_filename = (hls_path.resolve() / "index.m3u8").as_posix()
+        playlist_filename = (self.hls_dir.resolve() / "index.m3u8").as_posix()
         
         transcode_enabled = self.config.data.get("ffmpeg", {}).get("transcoding", {}).get("enabled", False)
         
@@ -441,7 +424,7 @@ class DynamicWorker(BaseWorker):
                     # Close stderr to unblock the thread's read operation
                     if self.ffmpeg_process and self.ffmpeg_process.stderr:
                         self.ffmpeg_process.stderr.close()
-                    self.error_thread.join(timeout=2)
+                    self.error_thread.join(timeout=5)
                 except Exception as e:
                     self.logger.warning(f"Error cleaning up error thread: {e}")
                 finally:
@@ -473,16 +456,25 @@ class DynamicWorker(BaseWorker):
             self.logger.info(f"Using default standby: {default_standby.name}")
             return default_standby
         
-        # Last resort: try any standby file
+        # Last resort: try any standby file (sorted for deterministic selection)
         standby_dir = Path("assets/standby")
         if standby_dir.exists():
-            standby_files = list(standby_dir.glob("*.mp4"))
+            standby_files = sorted(standby_dir.glob("*.mp4"), key=lambda p: p.name)
             if standby_files:
                 self.logger.warning(f"No matching standby found, using: {standby_files[0].name}")
                 return standby_files[0]
         
         self.logger.error("No standby files found!")
         return Path("assets/standby/default_standby.mp4")  # Return path even if doesn't exist
+
+    def _cleanup_hls_directory(self):
+        """Clean up old segments in the HLS directory."""
+        if self.hls_dir and self.hls_dir.exists():
+            for f in self.hls_dir.glob("*"):
+                try:
+                    f.unlink()
+                except Exception as e:
+                    self.logger.warning(f"Failed to delete {f}: {e}")
 
     def play_now(self, video_path: str, start_position: float = 0):
         """Public method to queue a video for immediate playback."""
