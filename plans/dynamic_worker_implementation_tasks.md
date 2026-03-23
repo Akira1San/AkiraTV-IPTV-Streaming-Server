@@ -319,9 +319,49 @@ Create documentation for channel config options:
 
 ---
 
+## Integration Tasks
+
+### 15. Implement Now Playing / Next Video Overlay in Kodi
+**Priority:** Low (Feature)
+**Related:** Player-side display to show now playing and upcoming video information without transcoding.
+
+**Problem:** Want to display "Now Playing: [video title]" and "Next: [video title]" as an on-screen overlay in Kodi. Since `-c copy` mode is used for performance, text cannot be burned into the video stream.
+
+**Solution:** Use player-side overlay approach:
+1. Enable `app_context.set_now_playing()` calls in DynamicWorker to publish now/next info to the API
+2. Create/update Kodi addon to fetch this data from AkiraTV API (WebSocket or HTTP endpoint)
+3. Render overlay in Kodi UI using the addon
+
+**Implementation Steps:**
+
+1. **Enable now/next tracking in DynamicWorker:**
+   - Uncomment `app_context.set_now_playing()` calls in:
+     - `_play_scheduled_content()` (line 240-243)
+     - `_switch_to_vod()` (line 395-396)
+   - Also consider adding "next video" updates when schedule changes
+
+2. **Ensure API exposes now/next data:**
+   - Verify `app_context.set_now_playing()` updates a global state
+   - Add endpoint or WebSocket to broadcast this state to clients
+   - May need to add `next_program` field (see `BaseWorker.update_now_next()`)
+
+3. **Modify Kodi addon:**
+   - Add overlay UI element (e.g., using Kodi's `ControlLabel` or similar)
+   - Poll or subscribe to AkiraTV API for now/next updates
+   - Display overlay with semi-transparent background, auto-hide after few seconds
+
+4. **Testing:**
+   - Verify now playing updates correctly during scheduled playback
+   - Verify next video info updates when schedule changes
+   - Test overlay appearance and timing in Kodi
+
+**Alternative:** If player-side overlay is not feasible, consider enabling transcoding with `drawtext` filter for burned-in text (requires significant CPU).
+
+---
+
 ## Performance Tasks
 
-### 15. Add Backpressure to Main Loop
+### 16. Add Backpressure to Main Loop (renumbered from 15)
 **Priority:** Low
 
 **Problem:** Main loop spins when in standby with no schedule changes, causing unnecessary CPU usage.
@@ -336,11 +376,11 @@ if self.is_in_standby and self.command_queue.empty():
 
 ## Summary
 
-**Total Tasks:** 15
+**Total Tasks:** 16
 **Critical (block testing):** 5 (tasks 1, 2, 3, 4, 12)
 **High priority:** 3 (tasks 6, 7, 8)
-**Medium priority:** 4 (tasks 9, 10, 11, 15)
-**Low priority:** 3 (tasks 13, 14)
+**Medium priority:** 4 (tasks 9, 10, 11, 16)
+**Low priority:** 4 (tasks 13, 14, 15)
 
 **Estimated effort:** 4-8 hours for critical + high priority fixes.
 
@@ -350,9 +390,9 @@ if self.is_in_standby and self.command_queue.empty():
 
 1. **Phase 1 (Critical):** Tasks 1, 2, 3, 4, 12 - Make the worker run without crashes
 2. **Phase 2 (Important):** Tasks 6, 7, 8 - Fix resource leaks and add validation
-3. **Phase 3 (Polish):** Tasks 9, 10, 15 - Code quality and performance
+3. **Phase 3 (Polish):** Tasks 9, 10, 16 - Code quality and performance
 4. **Phase 4 (Documentation):** Task 14 - Document configuration
-5. **Phase 5 (Testing):** Task 13 - Add unit tests
+5. **Phase 5 (Testing):** Tasks 13, 15 - Add unit tests and integration features
 
 ---
 
