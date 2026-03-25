@@ -412,6 +412,12 @@ if self.is_in_standby and self.command_queue.empty():
 **Bug Identified:** HLS segments are not being deleted between videos. After multiple videos, 35+ segments accumulated. Playlist shows `#EXT-X-DISCONTINUITY` and correct segment list, but old segments remain on disk.
 **Status:** Task 5 added to fix segment deletion.
 
+**Regression (2023-10-25):** After implementing Task 5 (delete all files in HLS directory), videos stopped after the first video. Kodi player would error when the playlist file (`index.m3u8`) was deleted during cleanup, causing playback to halt even though the worker continued.
+
+**Fix Applied:** Modified `_cleanup_hls_directory()` to only delete segment files (`seg_*.ts`) and preserve the playlist. This prevents segment accumulation while keeping the playlist always present, avoiding player 404 errors.
+
+**Commit:** bd8ad64 - "Fix HLS segment cleanup: only delete seg_*.ts, preserve playlist"
+
 ---
 
 ## Notes
