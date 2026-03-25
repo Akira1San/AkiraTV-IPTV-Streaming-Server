@@ -475,13 +475,14 @@ class DynamicWorker(BaseWorker):
         return Path("assets/standby/default_standby.mp4")  # Return path even if doesn't exist
 
     def _cleanup_hls_directory(self):
-        """Clean up old segments in the HLS directory."""
+        """Clean up old HLS segments before starting new playback."""
         if self.hls_dir and self.hls_dir.exists():
-            for f in self.hls_dir.glob("*"):
+            # Only delete segment files - keep playlist to avoid player 404
+            for f in self.hls_dir.glob("seg_*.ts"):
                 try:
                     f.unlink()
                 except Exception as e:
-                    self.logger.warning(f"Failed to delete {f}: {e}")
+                    self.logger.warning(f"Failed to delete segment {f.name}: {e}")
 
     def play_now(self, video_path: str, start_position: float = 0):
         """Public method to queue a video for immediate playback."""
