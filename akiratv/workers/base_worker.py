@@ -103,84 +103,91 @@ class BaseWorker:
             self.watchdog.start()
 
             def log_errors():
-                if self.ffmpeg_process.stderr:
-                    for line in iter(self.ffmpeg_process.stderr.readline, b''):
-                        if line:
-                            if self.watchdog:
-                                self.watchdog.ping()
+                try:
+                    if self.ffmpeg_process.stderr:
+                        for line in iter(self.ffmpeg_process.stderr.readline, b''):
+                            if line:
+                                if self.watchdog:
+                                    self.watchdog.ping()
 
-                            try:
                                 try:
-                                    decoded_line = line.decode('utf-8').strip()
-                                except UnicodeDecodeError:
-                                    decoded_line = line.decode('cp1252', errors='replace').strip()
-                                
-                                # === 1. DETECT NOW PLAYING ===
-                                if "Opening '" in decoded_line:
                                     try:
-                                        start = decoded_line.find("'") + 1
-                                        end = decoded_line.rfind("'")
-                                        path_str = decoded_line[start:end]
-                                        
-                                        filename = Path(path_str).name
-                                        
-                                        # Filter out: HLS segments, playlists, and temp files
-                                        if not any([
-                                            filename.startswith("seg_"),      # HLS segments
-                                            filename.endswith(".m3u8"),       # Playlist files
-                                            filename.endswith(".tmp"),        # Temp files
-                                            filename.endswith(".ts"),         # Individual TS files
-                                            "playlist" in filename.lower()    # Any playlist-related files
-                                        ]):
-                                            # Only update if it's actually a new video file
-                                            if self.current_video != filename:
-                                                self.current_video = filename
-                                                self.logger.info(f"[PLAY] NOW PLAYING: {filename}")
-                                    except Exception:
+                                        decoded_line = line.decode('utf-8').strip()
+                                    except UnicodeDecodeError:
+                                        decoded_line = line.decode('cp1252', errors='replace').strip()
+                                    
+                                    # === 1. DETECT NOW PLAYING ===
+                                    if "Opening '" in decoded_line:
+                                        try:
+                                            start = decoded_line.find("'") + 1
+                                            end = decoded_line.rfind("'")
+                                            path_str = decoded_line[start:end]
+                                            
+                                            filename = Path(path_str).name
+                                            
+                                            # Filter out: HLS segments, playlists, and temp files
+                                            if not any([
+                                                filename.startswith("seg_"),      # HLS segments
+                                                filename.endswith(".m3u8"),       # Playlist files
+                                                filename.endswith(".tmp"),        # Temp files
+                                                filename.endswith(".ts"),         # Individual TS files
+                                                "playlist" in filename.lower()    # Any playlist-related files
+                                            ]):
+                                                # Only update if it's actually a new video file
+                                                if self.current_video != filename:
+                                                    self.current_video = filename
+                                                    self.logger.info(f"[PLAY] NOW PLAYING: {filename}")
+                                        except Exception:
+                                            pass
+
+                                    # === 2. HARMLESS INFO (FILTER OUT) ===
+                                    elif any(phrase in decoded_line for phrase in [
+                                        "Auto-inserting h264_mp4toannexb",
+                                        "Auto-inserting hevc_mp4toannexb",
+                                        "Automatically inserted bitstream filter"
+                                    ]):
+                                        # These are normal FFmpeg info messages, not errors
                                         pass
 
-                                # === 2. HARMLESS INFO (FILTER OUT) ===
-                                elif any(phrase in decoded_line for phrase in [
-                                    "Auto-inserting h264_mp4toannexb",
-                                    "Auto-inserting hevc_mp4toannexb",
-                                    "Automatically inserted bitstream filter"
-                                ]):
-                                    # These are normal FFmpeg info messages, not errors
-                                    pass
+                                    # === 3. HARMLESS WARNINGS (DOWNGRADE TO DEBUG) ===
+                                    elif "Non-monotonic DTS" in decoded_line or "non-monotonic" in decoded_line.lower():
+                                        # These are common with concat and usually harmless
+                                        # Only log as debug to avoid log spam
+                                        if self.logger.isEnabledFor(10):  # DEBUG level
+                                            self.logger.debug(f"[{self.current_video}] {decoded_line}")
 
-                                # === 3. HARMLESS WARNINGS (DOWNGRADE TO DEBUG) ===
-                                elif "Non-monotonic DTS" in decoded_line or "non-monotonic" in decoded_line.lower():
-                                    # These are common with concat and usually harmless
-                                    # Only log as debug to avoid log spam
-                                    if self.logger.isEnabledFor(10):  # DEBUG level
-                                        self.logger.debug(f"[{self.current_video}] {decoded_line}")
+                                    # === 4. REAL ERRORS (WITH CONTEXT) ===
+                                    elif any(keyword in decoded_line.lower() for keyword in [
+                                        "error opening",
+                                        "invalid data",
+                                        "no such file",
+                                        "permission denied",
+                                        "could not",
+                                        "failed to",
+                                        "cannot"
+                                    ]) and "error" in decoded_line.lower():
+                                        # Only log actual errors with context
+                                        self.logger.error(f"⚠️ ERROR in [{self.current_video}]: {decoded_line}")
 
-                                # === 4. REAL ERRORS (WITH CONTEXT) ===
-                                elif any(keyword in decoded_line.lower() for keyword in [
-                                    "error opening",
-                                    "invalid data",
-                                    "no such file",
-                                    "permission denied",
-                                    "could not",
-                                    "failed to",
-                                    "cannot"
-                                ]) and "error" in decoded_line.lower():
-                                    # Only log actual errors with context
-                                    self.logger.error(f"⚠️ ERROR in [{self.current_video}]: {decoded_line}")
+                                    # === 5. STREAM INFO (WHEN NEW FILE STARTS) ===
+                                    elif "Stream #" in decoded_line and self.current_video != "Unknown":
+                                        # Log stream info only when a new file is opened
+                                        # This helps understand what's being processed
+                                        pass  # Could add debug logging here if needed
 
-                                # === 5. STREAM INFO (WHEN NEW FILE STARTS) ===
-                                elif "Stream #" in decoded_line and self.current_video != "Unknown":
-                                    # Log stream info only when a new file is opened
-                                    # This helps understand what's being processed
-                                    pass  # Could add debug logging here if needed
+                                    # === 6. CLEANUP LOGS ===
+                                    elif "Deleting old segment" in decoded_line:
+                                        # Normal HLS cleanup
+                                        pass
 
-                                # === 6. CLEANUP LOGS ===
-                                elif "Deleting old segment" in decoded_line:
-                                    # Normal HLS cleanup
-                                    pass
-
-                            except Exception as e:
-                                self.logger.error(f"Error decoding FFmpeg output: {e}")
+                                except Exception as e:
+                                    self.logger.error(f"Error decoding FFmpeg output: {e}")
+                except ValueError:
+                    # This can happen when stderr pipe is closed while reading (Windows-specific)
+                    pass
+                except Exception:
+                    # Catch any other exceptions to prevent thread crash
+                    pass
             
             error_thread = threading.Thread(target=log_errors, daemon=True)
             error_thread.start()

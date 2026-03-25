@@ -248,12 +248,19 @@ class DynamicWorker(BaseWorker):
             
             # Start error logging thread with proper cleanup tracking
             def log_errors():
-                if self.ffmpeg_process and self.ffmpeg_process.stderr:
-                    for line in iter(self.ffmpeg_process.stderr.readline, b''):
-                        if not self.running:
-                            break  # Exit early if worker stopped
-                        if line and self.watchdog:
-                            self.watchdog.ping()
+                try:
+                    if self.ffmpeg_process and self.ffmpeg_process.stderr:
+                        for line in iter(self.ffmpeg_process.stderr.readline, b''):
+                            if not self.running:
+                                break  # Exit early if worker stopped
+                            if line and self.watchdog:
+                                self.watchdog.ping()
+                except ValueError:
+                    # This can happen when stderr pipe is closed while reading (Windows-specific)
+                    pass
+                except Exception:
+                    # Catch any other exceptions to prevent thread crash
+                    pass
             
             self.error_thread = threading.Thread(target=log_errors, daemon=True)
             self.error_thread.start()
