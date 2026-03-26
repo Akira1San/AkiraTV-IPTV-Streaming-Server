@@ -2486,8 +2486,30 @@ class SimpleSchedulerWizard:
         """Save the generated schedule to file"""
         schedule_filename = SCHEDULE_DIR / f"schedule_{target_channel}.json"
 
+        # Check if this is a daypart schedule
+        if "daypart_config" in new_schedule:
+            # Daypart mode: save daypart config with empty weekly/calendar sections
+            daypart_data = new_schedule["daypart_config"]
+            enabled = new_schedule.get("enabled", False)
+
+            final_schedule = {
+                "daypart_config": daypart_data,
+                "enabled": enabled,
+                "weekly": {},
+                "calendar": {}
+            }
+
+            with open(schedule_filename, "w", encoding="utf-8") as f:
+                json.dump(final_schedule, f, indent=2, ensure_ascii=False)
+
+            # Count blocks for status message
+            time_blocks = daypart_data.get("time_blocks", [])
+            marathons = daypart_data.get("marathons", [])
+            gap_filler = daypart_data.get("gap_filler", {})
+            episodic_status = " (with episodic)" if self.episodic_var.get() else ""
+            messagebox.showinfo("Success", f"Daypart schedule for '{target_channel}': {len(time_blocks)} time blocks, {len(marathons)} marathons saved!{episodic_status}")
         # Check if this is a calendar schedule
-        if "calendar" in new_schedule:
+        elif "calendar" in new_schedule:
             # Calendar mode: save with both calendar and weekly sections
             calendar_data = new_schedule["calendar"]
             weekly_data = new_schedule.get("weekly", {})

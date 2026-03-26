@@ -279,6 +279,7 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     - Calendar format: "2026-12-25_wednesday" with date, day, and entries
     - Weekly format: standard day-of-week scheduling
     - Fast Scheduler: Dynamic in-memory schedules (checked first)
+    - Daypart Scheduler: Time-block based scheduling (checked after Fast Scheduler)
     """
     # First, check if there's a Fast Scheduler for this channel
     try:
@@ -351,10 +352,47 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
                 logger.info(f"Fast Scheduler provided {len(fast_entries)} entries for channel '{channel}'")
                 return fast_entries
             else:
-                logger.info(f"Fast Scheduler has no future entries for channel '{channel}', falling back to JSON")
+                logger.info(f"Fast Scheduler has no future entries for channel '{channel}', falling back to daypart or JSON")
                 
     except Exception as e:
         logger.debug(f"Fast Scheduler not available for channel '{channel}': {e}")
+    
+    # Check for daypart scheduling
+    try:
+        # Load daypart config for this channel
+        daypart_config = load_daypart_config(channel)
+        if daypart_config and daypart_config.get("enabled", False):
+            logger.info(f"Using Daypart Scheduler for channel '{channel}'")
+            
+            # Get available videos for this channel
+            collections = load_collections_for_channel(channel)
+            available_videos = []
+            for col in collections:
+                for video in col.get("videos", []):
+                    # Add collection info to video for daypart scheduler
+                    video_with_collection = video.copy()
+                    video_with_collection["collection"] = col
+                    available_videos.append(video_with_collection)
+            
+            # Generate daypart schedule for today
+            from datetime import date
+            today = date.today()
+            daypart_entries = generate_daypart_schedule(
+                daypart_config,
+                available_videos,
+                channel,
+                today
+            )
+            
+            if daypart_entries:
+                logger.info(f"Daypart Scheduler provided {len(daypart_entries)} entries for channel '{channel}'")
+                return daypart_entries
+            else:
+                logger.warning(f"Daypart Scheduler generated no entries for channel '{channel}', falling back to JSON")
+        else:
+            logger.debug(f"Daypart scheduling not enabled or not configured for channel '{channel}'")
+    except Exception as e:
+        logger.error(f"Error using Daypart Scheduler for channel '{channel}': {e}", exc_info=True)
     
     # Fallback to traditional JSON schedule loading
     current_dt = datetime.now()

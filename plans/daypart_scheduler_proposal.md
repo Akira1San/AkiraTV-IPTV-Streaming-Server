@@ -701,35 +701,35 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
 
 **Deliverable**: Complete UI for daypart configuration [x] COMPLETED
 
-### Phase 3: Schedule Generation Integration (Week 5-6) [-]
+### Phase 3: Schedule Generation Integration (Week 5-6) [x]
 
 **Tasks**:
 1. Extend `scheduler.py`:
    - Add `generate_daypart_schedule()` function
    - Modify `get_current_schedule_for_channel()` to detect and use daypart config
    - Ensure daypart entries are properly formatted for workers
-   [ ] Pending
+    [x] Completed
 
 2. Connect UI to generation:
    - "Generate Preview" button calls daypart scheduler
    - Display preview in timeline and list
    - Show statistics (total blocks, gap segments, estimated runtime)
-   [x] Completed (UI side, needs scheduler integration)
+    [x] Completed (UI side, needs scheduler integration)
 
 3. Save integration:
    - "Save Schedule" writes daypart config + generated entries
    - Maintain separate weekly/calendar sections (empty when daypart active)
    - Update `_save_schedule()` in simple_scheduler.py
-   [ ] Pending
+    [x] Completed
 
 4. Validation:
    - Ensure blocks don't overlap (UI validation)
    - Ensure total block time ≤ 24 hours
    - Validate time formats (HH:MM, 00:00-24:00)
    - Check for orphaned gaps at day boundaries
-   [x] Completed (UI side)
+    [x] Completed (UI side)
 
-**Deliverable**: Working end-to-end daypart scheduling [In Progress]
+**Deliverable**: Working end-to-end daypart scheduling [Completed]
 
 ### Phase 4: Advanced Features & Polish (Week 7-8)
 
@@ -758,6 +758,10 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
    - Undo/redo for block edits
    - Tooltips and help text
    [ ] Pending (basic reordering implemented)
+5. Code organization:
+   - Separate daypart scheduler code from simple_scheduler.py into its own module
+   - Refactor imports and dependencies
+   [ ] Pending
 
 5. Error handling:
    - Clear validation messages
