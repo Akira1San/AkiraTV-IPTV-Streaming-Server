@@ -17,6 +17,9 @@ logger = logging.getLogger("AkiraTV")
 # Cache for collections to avoid repeated disk reads
 _collections_cache: Dict[str, List[Dict]] = {}
 
+# Daypart Scheduler
+from .daypart_scheduler import DaypartScheduler, generate_daypart_schedule, load_daypart_config
+
 
 def load_collections_for_channel(channel_name: str) -> List[Dict]:
     """

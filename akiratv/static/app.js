@@ -1423,30 +1423,40 @@ async function fixPaths() {
 }
 
 function autoDetectUSB() {
-    // Try to detect common Android USB paths
-    const commonPaths = [
-        '/storage/sdcard0',
-        '/storage/sdcard1',
-        '/storage/emulated/0',
-        '/storage/0000-0000',  // Common USB pattern
-    ];
-    
-    // For Android, we'd need an API endpoint to detect actual USB
-    // For now, show a message
+    // Try to get USB path from API (set by Android)
     const newPrefixInput = document.getElementById('newPathPrefix');
+    const resultDiv = document.getElementById('fixPathsResult');
     
-    // Check if we can get USB path from API
-    fetch('/api/monitoring/system')
+    // First try to get USB path from config API
+    fetch('/api/config/usb-path')
         .then(res => res.json())
-        .then(sysInfo => {
-            // On Android, we could pass USB path via config
-            // For now, suggest common patterns
-            newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
-            alert('Auto-detect: On Android, USB is typically at /storage/XXXX-XXXX/.\n\nPlease enter the full path to your AkiraTV/videos folder.');
+        .then(data => {
+            if (data.usbPath) {
+                // USB path is configured, use it
+                const videoPath = data.usbPath + '/AkiraTV/videos';
+                newPrefixInput.value = videoPath;
+                resultDiv.innerHTML = `<span style="color: green;">✅ USB detected: ${data.usbPath}</span>`;
+            } else {
+                // No USB configured, check monitoring API for Android system info
+                return fetch('/api/monitoring/system');
+            }
         })
-        .catch(() => {
+        .then(res => res ? res.json() : null)
+        .then(sysInfo => {
+            if (sysInfo && sysInfo.platform === 'android') {
+                // On Android, suggest common USB paths
+                newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
+                resultDiv.innerHTML = `<span style="color: orange;">⚠️ USB not configured. Please enter the path to your USB drive manually, or configure it in Android settings.</span>`;
+            } else {
+                // Not on Android or no USB detected
+                newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
+                resultDiv.innerHTML = `<span style="color: orange;">⚠️ Run this on Android TV to auto-detect USB path.</span>`;
+            }
+        })
+        .catch(error => {
+            console.error('Auto-detect error:', error);
             newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
-            alert('Auto-detect: On Android, USB is typically at /storage/XXXX-XXXX/.\n\nPlease enter the full path to your AkiraTV/videos folder.');
+            resultDiv.innerHTML = `<span style="color: red;">❌ Error detecting USB: ${error.message}</span>`;
         });
 }
 

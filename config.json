@@ -81,7 +81,7 @@
       "enable_subtitles": false
     },
     "asian_vids": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -96,8 +96,8 @@
       }
     },
     "Test": {
-      "enabled": false,
-      "type": "linear",
+      "enabled": true,
+      "type": "dynamic",
       "transcoding": {
         "enabled": false
       },

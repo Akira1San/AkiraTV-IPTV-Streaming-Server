@@ -1,1433 +1,106 @@
 {
   "weekly": {},
   "calendar": {
-    "2026-02-27_friday": {
-      "date": "2026-02-27",
-      "day": "Friday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:00:00",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "01:41:42",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:38:08",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:22:50",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:39:50",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:23:56",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:50:07",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:58:15",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:32:40",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:21:16",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:02:12",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:39:06",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:53:36",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:32:58",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-02-28_saturday": {
-      "date": "2026-02-28",
-      "day": "Saturday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "01:25:47",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:07:24",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:04:34",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:01:44",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:26:57",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:56:33",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:40:39",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:17:32",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:34:32",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:42:40",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:24:22",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:09:42",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:42:31",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-01_sunday": {
-      "date": "2026-03-01",
-      "day": "Sunday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:31:07",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:15:49",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:12:15",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:53:11",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:50:22",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:24:47",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:01:41",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:26:54",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:56:30",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:40:36",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:48:44",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:45:53",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:27:31",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:51:02",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-02_monday": {
-      "date": "2026-03-02",
-      "day": "Monday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:36:22",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:20:32",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:59:54",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:44:36",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:25:32",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:14:08",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:11:18",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:53:00",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:19:11",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:56:04",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:25:40",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:50:54",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "20:27:48",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:24:14",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-03_tuesday": {
-      "date": "2026-03-03",
-      "day": "Tuesday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:32:22",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:16:28",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:58:05",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:30:54",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:15:36",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:50:02",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:04:31",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:01:41",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:54:30",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:31:23",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:28:32",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:54:43",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:35:39",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:12:34",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-04_wednesday": {
-      "date": "2026-03-04",
-      "day": "Wednesday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:51:56",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:33:38",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:30:04",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:15:24",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:00:06",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:41:44",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:11:20",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:19:28",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:08:04",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:52:13",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:45:02",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "20:10:15",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:36:26",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:50:56",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-05_thursday": {
-      "date": "2026-03-05",
-      "day": "Thursday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "01:48:05",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:25:00",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:48:31",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:27:53",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:09:35",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:50:31",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:34:37",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:42:44",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:39:55",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:09:31",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:26:31",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:03:24",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:56:12",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-06_friday": {
-      "date": "2026-03-06",
-      "day": "Friday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:41:32",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:15:58",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:52:52",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:50:01",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:22:51",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:07:33",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:22:02",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:47:16",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:13:27",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:21:35",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:03:12",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:47:22",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:28:18",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:16:54",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-07_saturday": {
-      "date": "2026-03-07",
-      "day": "Saturday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:56:16",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:37:58",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:23:18",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:16:07",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:52:59",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:16:30",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:31:00",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:07:54",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:33:08",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:30:18",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:56:29",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:30:54",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:27:20",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:12:03",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-08_sunday": {
-      "date": "2026-03-08",
-      "day": "Sunday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:41:39",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:38:48",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:22:54",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:07:04",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:46:26",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:31:46",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:24:34",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:13:11",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:54:06",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:51:17",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:16:30",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:53:23",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:49:49",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:22:38",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-09_monday": {
-      "date": "2026-03-09",
-      "day": "Monday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "01:07:20",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:24:20",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:58:46",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:35:40",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:17:22",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:40:53",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:25:03",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:33:11",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:18:31",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:57:53",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:55:02",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "20:21:13",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:14:02",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-10_tuesday": {
-      "date": "2026-03-10",
-      "day": "Tuesday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:10:28",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "01:40:04",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:28:40",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:25:50",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:51:04",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:23:53",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:47:24",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:29:01",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:13:11",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:54:07",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:31:00",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:12:42",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "20:29:42",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:13:48",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:50:42",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-11_wednesday": {
-      "date": "2026-03-11",
-      "day": "Wednesday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "01:36:02",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:10:28",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:06:54",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:55:30",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:52:39",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:17:53",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:15:03",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:07:51",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:52:01",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:33:38",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:48:08",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:20:57",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:01:53",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-12_thursday": {
-      "date": "2026-03-12",
-      "day": "Thursday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "00:46:35",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:54:43",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:40:03",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:21:45",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:58:38",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:55:04",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:29:30",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:59:06",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:43:12",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:31:48",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:08:42",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:32:13",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:11:35",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:04:24",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
-    "2026-03-13_friday": {
-      "date": "2026-03-13",
-      "day": "Friday",
-      "description": "Auto-generated calendar schedule",
-      "entries": [
-        {
-          "time": "01:21:24",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:02:20",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:47:40",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:02:10",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:59:20",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:36:13",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:10:38",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:54:48",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:20:59",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:50:35",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:47:44",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "20:32:26",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:55:57",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:44:33",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        }
-      ]
-    },
     "2026-03-14_saturday": {
       "date": "2026-03-14",
       "day": "Saturday",
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "01:17:23",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:56:45",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:38:27",
+          "time": "00:00:00",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "06:31:15",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:12:11",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:53:49",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:39:09",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:16:03",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:00:13",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:56:39",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:04:47",
+          "time": "01:52:48",
           "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:30:00",
+          "time": "03:18:01",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:14:27",
           "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "22:27:10",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "time": "07:11:37",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:51:00",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:35:09",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:20:30",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:34:59",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:19:05",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:00:47",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:41:43",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:18:36",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:44:47",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1439,86 +112,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:24:20",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "01:58:45",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:35:38",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:20:20",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:37:20",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:19:02",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:42:33",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:57:03",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:23:14",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:02:36",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:59:03",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:35:57",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:16:53",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:42:06",
+          "time": "00:26:25",
           "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:34:32",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:23:08",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:20:18",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:37:18",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:06:54",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:51:04",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:23:53",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:03:15",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:48:36",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:45:02",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:19:27",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:16:37",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:57:33",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1530,80 +217,93 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:50:14",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:43:02",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:15:51",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:45:28",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:42:37",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:19:30",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:36:30",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:20:36",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:02:13",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:47:33",
+          "time": "01:50:21",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "19:02:03",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "time": "04:04:51",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:36:28",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "time": "05:28:22",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "22:33:38",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "time": "07:25:32",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:02:26",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:51:02",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:17:13",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:54:06",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:26:55",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:06:17",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:14:25",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:56:07",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:40:13",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1615,86 +315,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:14:34",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:03:10",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:42:33",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:50:40",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:34:50",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:01:01",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:30:38",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:12:20",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:09:29",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:05:55",
+          "time": "00:24:23",
           "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "17:50:37",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "time": "02:09:05",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "19:23:27",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "time": "03:50:42",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "21:00:19",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "time": "06:05:12",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "22:45:39",
+          "time": "07:34:48",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:31:58",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:29:08",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:25:34",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:42:34",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:19:29",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:00:24",
           "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:34:50",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:27:38",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:51:09",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1706,86 +420,93 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:20:05",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "time": "01:23:58",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "01:45:18",
+          "time": "03:00:51",
           "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "03:29:24",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "time": "04:44:57",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "05:08:46",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:50:23",
+          "time": "06:30:17",
           "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "08:58:31",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "time": "08:38:25",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "11:15:31",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:45:07",
+          "time": "10:20:02",
           "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "14:42:17",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:30:53",
+          "time": "12:17:12",
           "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "18:15:35",
+          "time": "14:01:54",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:31:30",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:20:06",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:30:05",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "time": "19:34:36",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "21:53:36",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "time": "21:31:46",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "23:30:30",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "time": "23:13:28",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1797,86 +518,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:56:41",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "time": "00:54:24",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "02:33:34",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:17:40",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:59:22",
+          "time": "02:20:35",
           "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "07:55:48",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:36:44",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:22:04",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:56:30",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:04:37",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:34:13",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:59:27",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:44:09",
+          "time": "04:17:01",
           "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "21:23:31",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:05:08",
+          "time": "05:56:24",
           "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:29:13",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:52:44",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:17:57",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:52:22",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:45:11",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:30:31",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:12:08",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:00:44",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:15:14",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:44:50",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1888,86 +623,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:37:57",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:54:58",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:52:07",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:33:49",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:22:25",
+          "time": "00:21:44",
           "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "10:19:35",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:00:31",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:37:24",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:33:50",
+          "time": "02:18:55",
           "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "17:17:56",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "time": "04:03:00",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "18:52:21",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "time": "06:20:01",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:15:52",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:55:15",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:39:24",
+          "time": "08:00:57",
           "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:27:08",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:59:57",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:41:39",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:05:10",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:02:20",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:41:42",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:26:24",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:15:00",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:11:26",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -1979,86 +728,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "01:05:36",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:22:36",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:07:56",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:05:05",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:37:55",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:14:49",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:56:31",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:45:07",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:29:49",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:37:57",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:35:07",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:00:20",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:23:51",
+          "time": "00:48:20",
           "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "23:53:27",
+          "time": "02:17:57",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:15:07",
           "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:51:59",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:37:20",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:21:25",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:02:21",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:43:59",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:09:12",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:06:21",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:29:52",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:22:41",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:07:23",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:41:48",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2070,80 +833,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "01:30:20",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:56:31",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:38:09",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:52:39",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:45:27",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:02:27",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:46:33",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:42:59",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:24:41",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:08:51",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:57:27",
+          "time": "00:56:18",
           "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "21:36:49",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "time": "02:35:40",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "23:11:15",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "time": "04:52:40",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:49:07",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:25:59",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:34:07",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:15:03",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:12:13",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:37:26",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:03:37",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:33:14",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:56:45",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:40:54",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:38:04",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2155,86 +938,93 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:56:35",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "time": "01:52:34",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "02:53:45",
+          "time": "03:31:56",
           "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "04:38:27",
+          "time": "05:16:38",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:01:58",
           "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "06:11:16",
+          "time": "08:34:47",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:09:12",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:02:01",
           "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "08:19:24",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:16:33",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:57:29",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:11:59",
+          "time": "14:10:09",
           "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "15:48:52",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "time": "15:47:01",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "17:14:05",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "time": "17:31:07",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "19:10:31",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "20:40:07",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "22:03:38",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:52:14",
+          "time": "19:08:02",
           "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:49:39",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:30:35",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2246,80 +1036,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "01:33:52",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "time": "00:14:45",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "03:19:12",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "time": "02:03:21",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "04:58:34",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:32:59",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:41:07",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:25:49",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:22:59",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "14:15:48",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "15:52:42",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:25:31",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:02:24",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:19:24",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:00:20",
+          "time": "04:17:50",
           "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:59:33",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:56:43",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:21:56",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:54:45",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:47:34",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:17:10",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:25:17",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:02:10",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:59:20",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:44:02",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:25:39",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2331,80 +1141,93 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:42:02",
+          "time": "01:10:59",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:45:25",
           "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "02:30:38",
+          "time": "04:34:01",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "04:45:08",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "time": "06:48:30",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "06:14:44",
-          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "time": "08:14:42",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "08:11:54",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "time": "09:51:36",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "09:51:16",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "time": "11:16:49",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "11:14:47",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "time": "12:57:45",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "12:59:29",
+          "time": "14:30:34",
           "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "15:07:37",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "time": "16:38:42",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "16:52:57",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "18:50:07",
+          "time": "18:35:08",
           "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:34:17",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "time": "20:19:18",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "22:15:54",
+          "time": "22:16:28",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2416,86 +1239,107 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:08:43",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "time": "00:09:16",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "01:43:08",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "time": "01:32:48",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "03:15:57",
-          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "05:12:23",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:26:53",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:03:46",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:43:08",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:12:44",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:56:50",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "16:04:58",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:31:09",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "19:48:09",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "21:32:19",
-          "file": "C:/Videos/asian_vids/Project A.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "23:17:39",
+          "time": "03:17:30",
           "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:06:06",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:20:35",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:55:01",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:40:21",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:06:32",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:48:09",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:25:04",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:22:13",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:01:35",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:42:31",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:15:20",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:40:34",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2507,80 +1351,93 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "01:06:15",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "02:59:04",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:33:29",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:14:25",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "07:39:38",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:03:09",
+          "time": "01:57:34",
           "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "11:00:19",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "time": "03:54:44",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "12:37:12",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "time": "05:43:20",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "14:51:42",
+          "time": "07:28:02",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:20:50",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:50:27",
           "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "16:48:08",
+          "time": "12:46:53",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:30:59",
           "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "18:29:45",
-          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "time": "16:12:36",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:46:46",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "time": "17:38:47",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "22:23:40",
-          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "time": "19:20:29",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:28:37",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:09:33",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2592,92 +1449,100 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "00:03:02",
-          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "01:29:13",
-          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "03:10:55",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:55:38",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:30:03",
-          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:02:52",
-          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "09:46:58",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "11:35:34",
+          "time": "01:24:03",
           "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "13:00:47",
-          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "time": "02:49:16",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "15:15:17",
-          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "time": "05:06:16",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "16:52:10",
-          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "time": "06:45:38",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "18:33:05",
+          "time": "08:30:20",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:14:30",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:48:55",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:21:45",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "20:25:54",
-          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "time": "15:14:33",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "22:23:04",
-          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "time": "16:58:39",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "23:52:40",
+          "time": "18:47:15",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:24:08",
           "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:09:28",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:50:24",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
           "channel": "asian_vids",
           "source": "random"
         }
@@ -2689,80 +1554,1633 @@
       "description": "Auto-generated calendar schedule",
       "entries": [
         {
-          "time": "01:38:00",
-          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "time": "01:16:35",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "03:19:38",
-          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "04:43:09",
-          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "06:51:17",
-          "file": "C:/Videos/asian_vids/Long Quan.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "08:28:11",
-          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "10:12:21",
-          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "12:00:57",
-          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "13:45:39",
+          "time": "02:58:17",
           "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "16:02:39",
-          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
-          "channel": "asian_vids",
-          "source": "random"
-        },
-        {
-          "time": "17:27:52",
+          "time": "05:15:18",
           "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "19:24:18",
+          "time": "07:11:44",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:53:21",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:22:57",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:59:52",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:23:23",
           "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "21:38:48",
-          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "time": "15:37:52",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
           "channel": "asian_vids",
           "source": "random"
         },
         {
-          "time": "23:13:13",
+          "time": "17:30:41",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:14:51",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:54:13",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:51:22",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-30_monday": {
+      "date": "2026-03-30",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:59:30",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:32:19",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:57:32",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:38:28",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:34:54",
           "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:19:00",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:48:36",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:45:47",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:27:24",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:12:44",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:54:26",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:08:56",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:45:49",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:30:31",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-03-31_tuesday": {
+      "date": "2026-03-31",
+      "day": "Tuesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:47:31",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:44:40",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:24:03",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:58:28",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:24:39",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:01:33",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:31:10",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:15:15",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:56:53",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:54:03",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:46:51",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:28:34",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:17:10",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:58:05",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-01_wednesday": {
+      "date": "2026-04-01",
+      "day": "Wednesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:42:48",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:28:08",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:53:21",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:30:14",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:14:23",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:22:31",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:48:42",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:05:43",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:42:37",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:21:59",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:45:30",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:00:00",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:41:37",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-02_thursday": {
+      "date": "2026-04-02",
+      "day": "Thursday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:22:33",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:06:39",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:03:48",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:00:15",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:57:25",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:41:35",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:16:00",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:08:48",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:54:08",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:31:03",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:56:16",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:25:52",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:52:03",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:24:53",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-03_friday": {
+      "date": "2026-04-03",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:13:29",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "01:58:11",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:39:53",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:03:24",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:44:20",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:58:49",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:55:59",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:37:36",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:21:42",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:01:04",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:45:14",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:30:34",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:07:28",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:37:05",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-04_saturday": {
+      "date": "2026-04-04",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:09:54",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:07:04",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:59:52",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:08:00",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:48:56",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:14:09",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:51:02",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:08:02",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:49:44",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:04:14",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:45:52",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:30:34",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:56:45",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:36:07",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-05_sunday": {
+      "date": "2026-04-05",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:21:27",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:54:16",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:47:05",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:23:59",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:21:09",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:29:17",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:25:43",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:06:39",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:50:45",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:47:54",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:29:37",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:04:02",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:48:12",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-06_monday": {
+      "date": "2026-04-06",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:14:23",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "01:39:36",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:03:07",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:44:44",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:24:07",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:53:43",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:30:37",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:27:47",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:44:47",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:25:43",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:22:10",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:36:39",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:21:21",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:58:14",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-07_tuesday": {
+      "date": "2026-04-07",
+      "day": "Tuesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:43:34",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:27:40",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:51:11",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:17:22",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:56:45",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:40:54",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:17:49",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:06:25",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:14:32",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:39:46",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:36:56",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:06:32",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:48:09",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:29:51",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-08_wednesday": {
+      "date": "2026-04-08",
+      "day": "Wednesday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:10:47",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:03:36",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:38:01",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "05:35:10",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:49:40",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:29:02",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:25:29",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:09:38",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:54:58",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:11:59",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:56:05",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:40:47",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:10:23",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:35:36",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-09_thursday": {
+      "date": "2026-04-09",
+      "day": "Thursday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:12:30",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:49:23",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:42:12",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:15:01",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:12:11",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:20:19",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:34:48",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:31:15",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:28:24",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:45:24",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:08:55",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:53:01",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:34:38",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-10_friday": {
+      "date": "2026-04-10",
+      "day": "Friday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:09:04",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:53:46",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:35:28",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:20:48",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "07:57:41",
+          "file": "C:/Videos/asian_vids/Master With Cracked Fingers.mp4",
+          "collection_id": "master_with_cracked_fingers",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:22:54",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:49:05",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:57:13",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:38:09",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:10:58",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:08:08",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:22:37",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:06:43",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "23:46:05",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-11_saturday": {
+      "date": "2026-04-11",
+      "day": "Saturday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "01:43:15",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:17:41",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:47:17",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:28:54",
+          "file": "C:/Videos/asian_vids/Project A.mp4",
+          "collection_id": "project_a",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:14:14",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "09:58:56",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:15:57",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "13:52:51",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "15:49:17",
+          "file": "C:/Videos/asian_vids/Fist of Legend.mp4",
+          "collection_id": "fist_of_legend",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "17:30:13",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:03:02",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:44:44",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:52:52",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-12_sunday": {
+      "date": "2026-04-12",
+      "day": "Sunday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:45:41",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "02:42:51",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:57:20",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:45:56",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:22:49",
+          "file": "C:/Videos/asian_vids/Twin Dragons.mp4",
+          "collection_id": "twin_dragons",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:07:31",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "11:31:02",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:57:14",
+          "file": "C:/Videos/asian_vids/The Young Master.mp4",
+          "collection_id": "the_young_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:38:51",
+          "file": "C:/Videos/asian_vids/Armour of God 2 Operation Condor.mp4",
+          "collection_id": "armour_of_god_2_operation_condor",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:36:00",
+          "file": "C:/Videos/asian_vids/Project Wolf Hunting.mp4",
+          "collection_id": "project_wolf_hunting",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:32:27",
+          "file": "C:/Videos/asian_vids/Rumble in the Bronx.mp4",
+          "collection_id": "rumble_in_the_bronx",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "20:02:03",
+          "file": "C:/Videos/asian_vids/Wheels on Meals.mp4",
+          "collection_id": "wheels_on_meals",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:46:09",
+          "file": "C:/Videos/asian_vids/Fearless.mp4",
+          "collection_id": "fearless",
+          "channel": "asian_vids",
+          "source": "random"
+        }
+      ]
+    },
+    "2026-04-13_monday": {
+      "date": "2026-04-13",
+      "day": "Monday",
+      "description": "Auto-generated calendar schedule",
+      "entries": [
+        {
+          "time": "00:03:09",
+          "file": "C:/Videos/asian_vids/Winners And Sinners.mp4",
+          "collection_id": "winners_and_sinners",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "01:47:19",
+          "file": "C:/Videos/asian_vids/Dragons Forever.mp4",
+          "collection_id": "dragons_forever",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "03:21:44",
+          "file": "C:/Videos/asian_vids/Dragon Fist.mp4",
+          "collection_id": "dragon_fist",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "04:54:33",
+          "file": "C:/Videos/asian_vids/Black Mask.mp4",
+          "collection_id": "black_mask",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "06:33:55",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China II.mp4",
+          "collection_id": "once_upon_a_time_in_china_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "08:26:44",
+          "file": "C:/Videos/asian_vids/Hard Boiled.mp4",
+          "collection_id": "hard_boiled",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "10:34:52",
+          "file": "C:/Videos/asian_vids/Swordsman II.mp4",
+          "collection_id": "swordsman_ii",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "12:23:28",
+          "file": "C:/Videos/asian_vids/Long Quan.mp4",
+          "collection_id": "long_quan",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "14:00:22",
+          "file": "C:/Videos/asian_vids/Once Upon a Time in China I.mp4",
+          "collection_id": "once_upon_a_time_in_china_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "16:14:52",
+          "file": "C:/Videos/asian_vids/Who Am I.mp4",
+          "collection_id": "who_am_i",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "18:12:02",
+          "file": "C:/Videos/asian_vids/The Tai-Chi Master.mp4",
+          "collection_id": "the_tai-chi_master",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "19:48:55",
+          "file": "C:/Videos/asian_vids/Millionaires Express.mp4",
+          "collection_id": "millionaires_express",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "21:30:37",
+          "file": "C:/Videos/asian_vids/Duel to the Death.mp4",
+          "collection_id": "duel_to_the_death",
+          "channel": "asian_vids",
+          "source": "random"
+        },
+        {
+          "time": "22:54:08",
+          "file": "C:/Videos/asian_vids/Wolf Warrior.mp4",
+          "collection_id": "wolf_warrior",
           "channel": "asian_vids",
           "source": "random"
         }

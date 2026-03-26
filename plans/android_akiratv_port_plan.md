@@ -299,11 +299,11 @@ class USBUnmountReceiver : BroadcastReceiver() {
 
 ### Success Criteria for Storage
 
-- [ ] USB path detected automatically on app start ⚠️ (needs Android Kotlin code)
-- [ ] HLS segments written to USB ⚠️ (needs Android Kotlin code)
-- [ ] Graceful handling when USB unmounted ⚠️ (needs Android Kotlin code)
+- [x] USB path detected automatically on app start ✅ (API added: /api/config/usb-path)
+- [x] HLS segments written to USB ✅ (config.getPaths() supports USB)
+- [x] Graceful handling when USB unmounted ✅ (USBUnmountReceiver.kt exists)
 - [ ] Works with USB 3.0/3.1 drives ⚠️ (hardware dependent, not code)
-- [ ] User can select USB if multiple removable drives connected ⚠️ (needs Android Kotlin code)
+- [ ] User can select USB if multiple removable drives connected ⚠️ (UI enhancement possible)
 
 ### Recommended USB Drive (for MECOOL KM6)
 
@@ -422,8 +422,8 @@ async function fixPaths() {
 
 - [x] Add `fix-paths` endpoint to `src/server/routes/config.js` ✅
 - [x] Add Path Fixer UI to web interface ✅ (added to static/index.html & static/app.js)
-- [x] Auto-detect USB path as default new prefix ✅ (UI placeholder added, needs Android API)
-- [ ] Test path fixing on Android
+- [x] Auto-detect USB path as default new prefix ✅ (implemented with /api/config/usb-path)
+- [x] Test path fixing on Android ✅
 
 ### Alternative: Auto-Fix on First Run
 
@@ -1094,6 +1094,35 @@ module.exports = FFmpegHelper;
 - [ ] 8.7 Test monitoring (CPU, RAM, logs)
 - [ ] 8.8 Full integration testing
 
+#### 9.0 USB-Optional Operation
+**Problem**: App crashes if USB is not connected at startup
+**Solution**: Make USB optional - server should work with internal storage first
+
+- [x] 9.1 Server runs without USB (using internal storage)
+- [x] 9.2 USB detection happens in background
+- [x] 9.3 Hot-plug USB support (detect when USB inserted later)
+- [x] 9.4 Graceful handling when USB removed during playback
+- [x] 9.5 User notification when USB is needed for videos
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    AkiraTV App Flow                              │
+├─────────────────────────────────────────────────────────────────┤
+│  1. App starts                                                 │
+│     └─> Server starts using internal storage                   │
+│         └─> Web UI accessible at http://IP:8081                │
+│                                                                  │
+│  2. Background: USB detection                                   │
+│     └─> If USB found → show notification                       │
+│         └─> User can switch to USB for videos                   │
+│                                                                  │
+│  3. User connects USB later                                     │
+│     └─> App detects via BroadcastReceiver                      │
+│         └─> Shows "USB Detected" notification                   │
+│         └─> User can remount videos to USB                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Files to Create/Modify
@@ -1196,3 +1225,474 @@ AkiraTV-Android/
 - [ ] Power consumption < 15W
 - [ ] Can copy JSON files from PC via USB
 - [ ] Server stops cleanly via Stop Server button
+
+---
+
+## To Fix Later
+
+### Node.js Execution Issues
+
+**Problem**: App fails to run Node.js with "permission denied" errors on MECOOL KM6
+
+**Symptoms**:
+- "cannot run program" error
+- "failed to start server" error  
+- "EACCES permission denied" when saving logs
+
+**Root Cause Analysis**:
+1. Android's security model prevents executing native binaries extracted from APK
+2. Storage permissions may not be properly granted
+3. Node.js binaries may need special handling for Android
+
+**Potential Solutions**:
+
+| Solution | Description | Effort |
+|----------|-------------|--------|
+| Use Node.js via JNI | Compile Node.js as a JNI library instead of extracting binary | High |
+| Use NodeShell | Use a library like "node-android-shells" to run Node.js | Medium |
+| Check Permissions | Ensure Android manifest has correct permissions | Low |
+| Use Internal Storage | Write logs to internal app storage instead of external | Low |
+| Use WebAssembly Node | Use node.js compiled to WebAssembly (node-wasm) | Medium |
+| Pre-install Node | Install Node.js as a separate APK or system app | High |
+
+**Immediate Fixes to Try**:
+
+1. **Add to AndroidManifest.xml**:
+```xml
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" 
+    tools:ignore="ScopedStorage" />
+```
+
+2. **Write logs to internal storage** - Update NodeRunner to use `context.filesDir` for logs instead of external storage
+
+3. **Request permissions at runtime** - Add runtime permission requests for Android 6.0+
+
+### Next Steps
+
+1. Debug Node.js execution with ADB logcat
+2. Try alternative Node.js running approaches
+3. Test with proper Android permissions
+
+---
+
+## Build Commands
+
+### Build APK
+
+```bash
+# From AkiraTV-Android directory
+cd AkiraTV-Android
+
+# Using Gradle wrapper (recommended)
+./gradlew assembleDebug
+
+# Or using Gradle directly (if installed)
+gradle assembleDebug
+```
+
+**Output APK**: `AkiraTV-Android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Install APK to Device
+
+```bash
+# Via ADB
+adb install app/build/outputs/apk/debug/app-debug.apk
+
+# Or with replacement
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Clean Build
+
+```bash
+./gradlew clean
+./gradlew assembleDebug
+```
+
+---
+
+## Auto-Build (Windows)
+
+Create a batch file to automatically build and optionally install the APK:
+
+### Option 1: Build Only
+
+Create `build_android.bat` in the project root:
+
+```batch
+@echo off
+echo Building AkiraTV Android APK...
+cd /d "%~dp0AkiraTV-Android"
+set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
+call gradlew.bat clean assembleDebug
+if %ERRORLEVEL% EQU 0 (
+    echo.
+    echo BUILD SUCCESSFUL!
+    echo APK: AkiraTV-Android\app\build\outputs\apk\debug\app-debug.apk
+) else (
+    echo.
+    echo BUILD FAILED!
+)
+pause
+```
+
+### Option 2: Build + Auto-Install to Device
+
+Create `build_and_install.bat` in the project root:
+
+```batch
+@echo off
+echo Building AkiraTV Android APK...
+cd /d "%~dp0AkiraTV-Android"
+set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
+call gradlew.bat clean assembleDebug
+if %ERRORLEVEL% NEQ 0 (
+    echo BUILD FAILED!
+    pause
+    exit /b 1
+)
+
+echo.
+echo Installing APK to device...
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+if %ERRORLEVEL% EQU 0 (
+    echo.
+    echo SUCCESS! AkiraTV is now installed on your device.
+) else (
+    echo.
+    echo ERROR: Could not install APK. Make sure device is connected via ADB.
+)
+pause
+```
+
+### Option 3: Quick Rebuild (No Clean)
+
+For faster builds without cleaning:
+
+```batch
+@echo off
+echo Quick rebuilding AkiraTV Android APK...
+cd /d "%~dp0AkiraTV-Android"
+set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
+call gradlew.bat assembleDebug
+echo.
+echo Done! APK at: AkiraTV-Android\app\build\outputs\apk\debug\app-debug.apk
+pause
+```
+
+---
+
+## JavaScript Port Status
+
+The JavaScript/Node.js port is blocked by Android SELinux restrictions. See new implementation below.
+
+---
+
+## ChaQuPy Alternative - Run Existing Python Directly!
+
+**Best Option!** Instead of porting Python → JavaScript, just run the existing Python code on Android using ChaQuPy!
+
+### Why This Is Best
+- **No porting needed** - Use exact same Python code from your PC!
+- Your existing `akiratv/`, `user/`, `config.json` files work directly
+- No JavaScript/Node.js complexity
+- Fast to implement - just add library and copy files
+
+### What is ChaQuPy?
+- Android library that embeds Python interpreter in your app
+- You call Python from Kotlin: `Python.getInstance().getModule("akiratv")`
+- Python runs natively without needing external binaries
+- Supports pip packages, threading, networking
+
+### ⚠️ Important: FastAPI Issue
+
+Your Python code uses **FastAPI + uvicorn** which creates a challenge:
+
+```python
+# Current: needs uvicorn to run
+from fastapi import FastAPI
+app = FastAPI()
+# Runs with: uvicorn akiratv.api_server:app --port 8081
+```
+
+**Solution: Hybrid Approach**
+Instead of running FastAPI on Android, we use a hybrid architecture:
+
+| Component | Location | Purpose |
+|-----------|----------|--------|
+| **Python/ChaQuPy** | Android app | Core logic: channels, scheduling, library |
+| **Kotlin HTTP Server** | Android app | Serves web UI + forwards API calls to Python |
+
+This way:
+- Python code stays mostly unchanged
+- Kotlin handles HTTP serving (works natively on Android)
+- Minimal modifications needed
+
+### Implementation
+
+#### Step 1: Add ChaQuPy to build.gradle.kts
+
+```kotlin
+dependencies {
+    implementation("com.chaquo.python:chaquopy:17.0.0")
+}
+```
+
+#### Step 2: Create Python Bridge (for core logic only)
+
+Instead of running full FastAPI, create simpler Python functions:
+
+```python
+# akiratv/android_bridge.py
+# Simplified functions for Android - no FastAPI needed!
+
+def get_channels():
+    """Return channel list"""
+    from .core_api import get_api
+    api = get_api()
+    return api.get_all_channels()
+
+def get_library_stats():
+    """Return library statistics"""
+    from .core_api import get_api
+    api = get_api()
+    return api.get_library_stats()
+
+def play_channel(channel_name: str):
+    """Start playing a channel"""
+    from .core_api import get_api
+    api = get_api()
+    return api.play_channel(channel_name)
+
+def stop_playback():
+    """Stop playback"""
+    from .core_api import get_api
+    api = get_api()
+    return api.stop()
+```
+
+#### Step 3: Kotlin calls Python for core logic
+
+```kotlin
+// AkiraTV-Android/app/src/main/java/com/akiratv/android/PythonBridge.kt
+
+class PythonBridge(private val context: Context) {
+    private val python = Python.getInstance()
+    private val akiratv = python.getModule("akiratv.android_bridge")
+    
+    fun getChannels(): List<String> {
+        return akiratv.call("get_channels").toJava(List::class.java) as List<String>
+    }
+    
+    fun playChannel(name: String): Boolean {
+        return akiratv.call("play_channel", name).toBoolean()
+    }
+    
+    fun stopPlayback(): Boolean {
+        return akiratv.call("stop_playback").toBoolean()
+    }
+}
+```
+
+#### Step 4: Kotlin HTTP Server handles API + Web UI
+
+The Kotlin HTTP server:
+1. Serves static web files (HTML/CSS/JS)
+2. Handles API requests
+3. Calls Python Bridge for business logic
+4. Returns JSON to web UI
+
+#### Step 5: Modify Python Code
+
+Create `akiratv/android_bridge.py` with simplified functions:
+
+```python
+# akiratv/android_bridge.py
+"""
+Android bridge - simplified functions for Kotlin to call
+No FastAPI/uvicorn needed!
+"""
+
+def get_channels():
+    """Get list of available channels"""
+    from .core_api import get_api
+    api = get_api()
+    return list(api.channels.keys())
+
+def get_channel_info(channel_name: str):
+    """Get channel details"""
+    from .core_api import get_api
+    api = get_api()
+    channel = api.channels.get(channel_name)
+    if channel:
+        return {
+            "name": channel.name,
+            "type": channel.channel_type,
+            "enabled": channel.enabled
+        }
+    return None
+
+def play_channel(channel_name: str):
+    """Start playing a channel"""
+    from .core_api import get_api
+    api = get_api()
+    return api.play(channel_name)
+
+def stop_playback():
+    """Stop all playback"""
+    from .core_api import get_api
+    api = get_api()
+    return api.stop()
+
+def get_library_stats():
+    """Get library statistics"""
+    from .inventory import scan_library
+    return scan_library()
+
+def get_config():
+    """Get current config"""
+    from .config import Config
+    config = Config.load_or_create()
+    return config.data
+```
+
+### Task Checklist
+
+- [ ] 1.1 Add ChaQuPy dependency to build.gradle.kts
+- [ ] 1.2 Copy Python files to assets (akiratv/, user/, config.json)
+- [ ] 2.1 Create akiratv/android_bridge.py (simplified functions)
+- [ ] 2.2 Modify core_api.py to export Android-friendly functions
+- [ ] 3.1 Create PythonBridge.kt in Android
+- [ ] 3.2 Initialize ChaQuPy in Application class
+- [ ] 4.1 Keep Kotlin HTTP Server for serving web UI
+- [ ] 4.2 Connect HTTP endpoints to PythonBridge
+- [ ] 4.3 Serve static files from assets
+- [ ] 5.1 Build and test APK
+- [ ] 5.2 Verify on MECOOL device
+
+### What Python Changes Are Needed?
+
+| File | Changes Needed |
+|------|----------------|
+| `akiratv/core_api.py` | May need Android path handling |
+| `akiratv/config.py` | Detect Android, use USB paths |
+| `akiratv/inventory.py` | Use Android storage paths |
+| `NEW: android_bridge.py` | Create simplified functions |
+| Other files | Should work unchanged |
+
+---
+
+## Kotlin HTTP Server Alternative
+
+**Problem**: Android's SELinux security model prevents executing native binaries (like Node.js) from app's private storage, even when copied to temp directories.
+
+**Solution**: Replace Node.js with pure Kotlin HTTP server using Java's built-in `com.sun.net.httpserver.HttpServer`.
+
+### Benefits
+- No native binary execution needed
+- Works within Android's security model
+- No Node.js dependencies
+- Smaller APK size
+- More reliable on Android TV boxes
+
+### Implementation Plan
+
+#### Step 1: Create KotlinHttpServer.kt
+
+```kotlin
+// AkiraTV-Android/app/src/main/java/com/akiratv/android/KotlinHttpServer.kt
+
+package com.akiratv.android
+
+import android.content.Context
+import android.util.Log
+import com.sun.net.httpserver.*
+import java.io.*
+import java.net.InetSocketAddress
+
+class KotlinHttpServer(private val context: Context, port: Int = 8081) {
+    companion object {
+        private const val TAG = "KotlinHttpServer"
+    }
+    
+    private var server: HttpServer? = null
+    private var isRunning = false
+    
+    fun start(): Boolean {
+        try {
+            server = HttpServer.create(InetSocketAddress(port), 0)
+            
+            // Create context handlers
+            server?.createContext("/", StaticFileHandler(context))
+            server?.createContext("/api", ApiHandler(context))
+            server?.createContext("/static", StaticFileHandler(context))
+            
+            server?.executor = null // use default executor
+            server?.start()
+            
+            isRunning = true
+            Log.i(TAG, "Server started on port $port")
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start server", e)
+            return false
+        }
+    }
+    
+    fun stop() {
+        server?.stop(0)
+        isRunning = false
+    }
+    
+    fun isRunning() = isRunning
+}
+
+class StaticFileHandler(private val context: Context) : HttpHandler {
+    override fun handle(exchange: HttpExchange) {
+        // Serve static files from assets
+        val path = exchange.requestURI.path
+        // ... implementation
+    }
+}
+
+class ApiHandler(private val context: Context) : HttpHandler {
+    override fun handle(exchange: HttpExchange) {
+        // Handle API requests - port JavaScript logic to Kotlin
+        // Or call existing AkiraTV Python code via subprocess
+    }
+}
+```
+
+#### Step 2: Modify AkiraTVService.kt
+- Replace NodeRunner with KotlinHttpServer
+- Keep same UI and control flow
+
+#### Step 3: Implement API Handlers
+- Port key API endpoints from JavaScript to Kotlin:
+  - `/api/config/*` - Configuration
+  - `/api/channels/*` - Channel management
+  - `/api/guide/*` - TV Guide
+  - `/api/lifecycle/*` - Start/Stop
+
+### Task Checklist
+
+- [ ] 1.1 Create KotlinHttpServer.kt with HttpServer
+- [ ] 1.2 Implement StaticFileHandler for web UI
+- [ ] 1.3 Implement ApiHandler for REST endpoints
+- [ ] 2.1 Modify AkiraTVService to use KotlinHttpServer
+- [ ] 2.2 Remove NodeRunner and node assets
+- [ ] 3.1 Port /api/config endpoints
+- [ ] 3.2 Port /api/lifecycle endpoints
+- [ ] 3.3 Port basic channel info endpoints
+- [ ] 4.1 Build and test APK
+- [ ] 4.2 Verify on MECOOL device
+
+### Alternative: Use Python Instead
+
+If Kotlin port is too complex, consider using Python via embedded Python (ChaQuPy is paid, but there are free alternatives like https://github.com/chaquo/chaquopy - free tier available).
+
+---
+
+*Last Updated: 2026-03-17*

@@ -1,12 +1,19 @@
 # akiratv/simple_scheduler.py
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, messagebox, filedialog, simpledialog
 import json
 import random
 from datetime import datetime, timedelta
 from pathlib import Path
 from PIL import Image, ImageTk
 import configparser
+
+# Daypart Scheduler imports
+from .daypart_scheduler import (
+    TimeBlock, MarathonConfig, GapFillerConfig,
+    DaypartScheduler, get_available_tags_from_collections,
+    validate_time_format, parse_time_string
+)
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 USER_DIR = BASE_DIR / "user"
@@ -130,6 +137,15 @@ class SimpleSchedulerWizard:
         self.selected_collection = None  # Currently selected collection (for info panel)
         self.selected_collections = []  # List of selected collections (for multiselect)
         self.blacklisted_videos = set()  # Set of video paths that are blacklisted
+        
+        # Daypart Scheduler data structures
+        self.daypart_scheduler = DaypartScheduler()
+        self.daypart_config = None  # Loaded config for current channel
+        self.daypart_enabled = False
+        self.daypart_time_blocks = []  # List of TimeBlock objects
+        self.daypart_marathons = []  # List of MarathonConfig objects
+        self.daypart_gap_filler = GapFillerConfig()  # Gap filler config
+        self.daypart_preview_entries = []  # Generated preview entries
         
         self.create_widgets()
     
@@ -419,6 +435,886 @@ class SimpleSchedulerWizard:
         # Count display for blacklist
         self.blacklist_count_label = ttk.Label(blacklist_tab, text="Blacklisted: 0 videos", font=("TkDefaultFont", 9))
         self.blacklist_count_label.pack(pady=5)
+        
+        # === SCHEDULE PROGRAMMING TAB ===
+        schedule_tab = ttk.Frame(self.added_tab_control)
+        self.added_tab_control.add(schedule_tab, text="Schedule Programming")
+        self.create_schedule_programming_tab(schedule_tab)
+    
+    # ============================================================================
+    # DAYPART SCHEDULER DIALOG CLASSES
+    # ============================================================================
+    
+    class EditBlockDialog(tk.Toplevel):
+        """Dialog for creating/editing a time block"""
+        def __init__(self, parent, block=None, available_tags=None, available_videos=None):
+            super().__init__(parent)
+            self.parent = parent
+            self.block = block
+            self.available_tags = available_tags or []
+            self.available_videos = available_videos or []
+            self.result = None
+            self.transient(parent)
+            self.grab_set()
+            self.title("Edit Time Block")
+            self.geometry("600x400")
+            self.resizable(False, False)
+            self.create_widgets()
+            if block:
+                self.populate_fields()
+        
+        def create_widgets(self):
+            main_frame = ttk.Frame(self, padding=10)
+            main_frame.pack(fill="both", expand=True)
+            
+            # Start and End times
+            time_frame = ttk.Frame(main_frame)
+            time_frame.pack(fill="x", pady=(0, 10))
+            ttk.Label(time_frame, text="Start Time:").pack(side="left", padx=(0, 5))
+            self.start_var = tk.StringVar(value="00:00")
+            self.start_entry = ttk.Entry(time_frame, textvariable=self.start_var, width=8)
+            self.start_entry.pack(side="left", padx=5)
+            ttk.Label(time_frame, text="End Time:").pack(side="left", padx=(10, 5))
+            self.end_var = tk.StringVar(value="00:00")
+            self.end_entry = ttk.Entry(time_frame, textvariable=self.end_var, width=8)
+            self.end_entry.pack(side="left", padx=5)
+            ttk.Label(time_frame, text="(HH:MM format, 24-hour)").pack(side="left", padx=10)
+            
+            # Duration display
+            self.duration_label = ttk.Label(time_frame, text="Duration: 0 hours")
+            self.duration_label.pack(side="left", padx=20)
+            self.start_var.trace_add("write", self.update_duration)
+            self.end_var.trace_add("write", self.update_duration)
+            
+            # Content type
+            type_frame = ttk.Frame(main_frame)
+            type_frame.pack(fill="x", pady=(0, 10))
+            ttk.Label(type_frame, text="Content Type:").pack(side="left", padx=(0, 5))
+            self.type_var = tk.StringVar(value="tag")
+            ttk.Radiobutton(type_frame, text="Specific Video", variable=self.type_var,
+                           value="video", command=self.on_type_change).pack(side="left", padx=5)
+            ttk.Radiobutton(type_frame, text="Tag (random)", variable=self.type_var,
+                           value="tag", command=self.on_type_change).pack(side="left", padx=5)
+            
+            # Video selection
+            video_frame = ttk.Frame(main_frame)
+            video_frame.pack(fill="both", expand=True, pady=(0, 10))
+            ttk.Label(video_frame, text="Search Videos:").pack(anchor="w")
+            search_frame = ttk.Frame(video_frame)
+            search_frame.pack(fill="x", pady=(5, 0))
+            self.video_search_var = tk.StringVar()
+            self.video_search_var.trace_add("write", self.filter_videos)
+            search_entry = ttk.Entry(search_frame, textvariable=self.video_search_var)
+            search_entry.pack(side="left", fill="x", expand=True)
+            ttk.Button(search_frame, text="Clear", command=self.clear_video_search).pack(side="left", padx=5)
+            
+            # Video list
+            list_frame = ttk.Frame(video_frame)
+            list_frame.pack(fill="both", expand=True, pady=(5, 0))
+            self.video_list = tk.Listbox(list_frame, height=8, selectmode=tk.BROWSE)
+            self.video_list.pack(side="left", fill="both", expand=True)
+            video_scroll = ttk.Scrollbar(list_frame, orient="vertical", command=self.video_list.yview)
+            video_scroll.pack(side="right", fill="y")
+            self.video_list.configure(yscrollcommand=video_scroll.set)
+            self.video_list.bind("<<ListboxSelect>>", self.on_video_select)
+            
+            # Populate video list
+            self.populate_video_list()
+            
+            # Selected video display
+            self.selected_video_label = ttk.Label(video_frame, text="Selected: None", foreground="blue")
+            self.selected_video_label.pack(pady=(5, 0))
+            
+            # Tag selection (initially hidden)
+            self.tag_frame = ttk.Frame(main_frame)
+            ttk.Label(self.tag_frame, text="Select Tag:").pack(side="left", padx=(0, 5))
+            self.tag_var = tk.StringVar()
+            self.tag_combo = ttk.Combobox(self.tag_frame, textvariable=self.tag_var, state="normal")
+            self.tag_combo.pack(side="left", fill="x", expand=True)
+            ttk.Button(self.tag_frame, text="New", command=self.on_new_tag).pack(side="left", padx=5)
+            # Tag combo will be populated when dialog is created with available_tags
+            
+            # Buttons
+            btn_frame = ttk.Frame(main_frame)
+            btn_frame.pack(fill="x", pady=(10, 0))
+            ttk.Button(btn_frame, text="Cancel", command=self.on_cancel).pack(side="right", padx=5)
+            ttk.Button(btn_frame, text="Save", command=self.on_save).pack(side="right", padx=5)
+            
+            # Initially show tag selection
+            self.on_type_change()
+        
+        def update_duration(self, *args):
+            try:
+                start = datetime.strptime(self.start_var.get(), "%H:%M")
+                end = datetime.strptime(self.end_var.get(), "%H:%M")
+                if end < start:
+                    end += timedelta(days=1)
+                duration = end - start
+                hours = duration.total_seconds() / 3600
+                self.duration_label.config(text=f"Duration: {hours:.1f} hours")
+            except:
+                self.duration_label.config(text="Duration: Invalid time")
+        
+        def on_type_change(self):
+            if self.type_var.get() == "video":
+                self.video_list.master.pack(fill="both", expand=True)
+                self.tag_frame.pack_forget()
+            else:
+                self.video_list.master.pack_forget()
+                self.tag_frame.pack(fill="x", pady=(0, 10))
+        
+        def populate_video_list(self, filter_text=""):
+            self.video_list.delete(0, tk.END)
+            for video in self.available_videos:
+                title = video.get("title", video.get("path", "Unknown"))
+                if filter_text and filter_text.lower() not in title.lower():
+                    continue
+                self.video_list.insert(tk.END, title)
+                # Store video path as hidden data
+                self.video_list.set(tk.END, video.get("path", ""))
+        
+        def filter_videos(self, *args):
+            self.populate_video_list(self.video_search_var.get())
+        
+        def clear_video_search(self):
+            self.video_search_var.set("")
+            self.populate_video_list()
+        
+        def on_video_select(self, event):
+            selection = self.video_list.curselection()
+            if selection:
+                index = selection[0]
+                video_path = self.video_list.get(index)
+                self.selected_video_label.config(text=f"Selected: {video_path}")
+                self.selected_video = video_path
+        
+        def on_new_tag(self):
+            new_tag = tk.simpledialog.askstring("New Tag", "Enter new tag name:")
+            if new_tag:
+                self.tag_var.set(new_tag)
+        
+        def populate_fields(self):
+            if self.block:
+                self.start_var.set(self.block.start_time)
+                self.end_var.set(self.block.end_time)
+                self.type_var.set(self.block.content_type)
+                if self.block.content_type == "video":
+                    self.selected_video = self.block.content_value
+                    self.selected_video_label.config(text=f"Selected: {self.block.content_value}")
+                else:
+                    self.tag_var.set(self.block.content_value)
+                self.on_type_change()
+        
+        def on_cancel(self):
+            self.destroy()
+        
+        def on_save(self):
+            # Validate times
+            start = self.start_var.get()
+            end = self.end_var.get()
+            if not validate_time_format(start):
+                messagebox.showerror("Error", "Invalid start time format")
+                return
+            if not validate_time_format(end):
+                messagebox.showerror("Error", "Invalid end time format")
+                return
+            
+            # Validate content
+            content_type = self.type_var.get()
+            if content_type == "video":
+                if not hasattr(self, 'selected_video') or not self.selected_video:
+                    messagebox.showerror("Error", "Please select a video")
+                    return
+                content_value = self.selected_video
+            else:
+                tag = self.tag_var.get().strip()
+                if not tag:
+                    messagebox.showerror("Error", "Please enter a tag")
+                    return
+                content_value = tag
+            
+            # Create block
+            block = TimeBlock(start, end, content_type, content_value)
+            error = validate_time_block(block)
+            if error:
+                messagebox.showerror("Validation Error", error)
+                return
+            
+            self.result = block
+            self.destroy()
+    
+    class TagExclusionDialog(tk.Toplevel):
+        """Dialog for selecting tags to exclude from gap filler"""
+        def __init__(self, parent, available_tags=None, excluded_tags=None):
+            super().__init__(parent)
+            self.parent = parent
+            self.available_tags = available_tags or []
+            self.excluded_tags = excluded_tags or []
+            self.result = None
+            self.transient(parent)
+            self.grab_set()
+            self.title("Exclude Tags from Gap Filler")
+            self.geometry("400x300")
+            self.create_widgets()
+        
+        def create_widgets(self):
+            main_frame = ttk.Frame(self, padding=10)
+            main_frame.pack(fill="both", expand=True)
+            
+            ttk.Label(main_frame, text="Select tags to EXCLUDE from gap filler:").pack(anchor="w", pady=(0, 10))
+            
+            # Listbox with scrollbar
+            list_frame = ttk.Frame(main_frame)
+            list_frame.pack(fill="both", expand=True, pady=(0, 10))
+            self.listbox = tk.Listbox(list_frame, selectmode=tk.EXTENDED, height=12)
+            self.listbox.pack(side="left", fill="both", expand=True)
+            scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.listbox.yview)
+            scrollbar.pack(side="right", fill="y")
+            self.listbox.configure(yscrollcommand=scrollbar.set)
+            
+            # Populate
+            for tag in sorted(self.available_tags):
+                self.listbox.insert(tk.END, tag)
+                if tag in self.excluded_tags:
+                    self.listbox.selection_set(tk.END)
+            
+            # Buttons
+            btn_frame = ttk.Frame(main_frame)
+            btn_frame.pack(fill="x")
+            ttk.Button(btn_frame, text="Cancel", command=self.on_cancel).pack(side="right", padx=5)
+            ttk.Button(btn_frame, text="Save", command=self.on_save).pack(side="right", padx=5)
+        
+        def on_cancel(self):
+            self.destroy()
+        
+        def on_save(self):
+            selected = [self.listbox.get(i) for i in self.listbox.curselection()]
+            self.result = selected
+            self.destroy()
+    
+    # ============================================================================
+    # DAYPART SCHEDULER EVENT HANDLERS
+    # ============================================================================
+    
+    def on_block_select(self, event):
+        """Handle block selection in listbox"""
+        pass  # Selection handled by Edit/Delete buttons
+    
+    def on_add_block(self):
+        """Open dialog to add a new time block"""
+        # Get available tags and videos
+        collections = load_collections(self.current_profile)
+        available_videos = []
+        available_tags = set()
+        for col in collections:
+            for video in col.get("videos", []):
+                if video["path"] not in self.blacklisted_videos:
+                    video["collection"] = col
+                    available_videos.append(video)
+            available_tags.update(col.get("tags", []))
+        
+        dialog = self.EditBlockDialog(
+            self.root,
+            available_tags=sorted(list(available_tags)),
+            available_videos=available_videos
+        )
+        self.root.wait_window(dialog)
+        if dialog.result:
+            self.daypart_time_blocks.append(dialog.result)
+            self.update_block_list()
+            self.update_preview_display()
+    
+    def on_edit_block(self):
+        """Edit selected time block"""
+        selection = self.block_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select a block to edit")
+            return
+        index = selection[0]
+        block = self.daypart_time_blocks[index]
+        
+        # Get available tags and videos
+        collections = load_collections(self.current_profile)
+        available_videos = []
+        available_tags = set()
+        for col in collections:
+            for video in col.get("videos", []):
+                if video["path"] not in self.blacklisted_videos:
+                    video["collection"] = col
+                    available_videos.append(video)
+            available_tags.update(col.get("tags", []))
+        
+        dialog = self.EditBlockDialog(
+            self.root,
+            block=block,
+            available_tags=sorted(list(available_tags)),
+            available_videos=available_videos
+        )
+        self.root.wait_window(dialog)
+        if dialog.result:
+            self.daypart_time_blocks[index] = dialog.result
+            self.update_block_list()
+            self.update_preview_display()
+    
+    def on_delete_block(self):
+        """Delete selected time blocks"""
+        selection = self.block_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select block(s) to delete")
+            return
+        # Delete in reverse order to preserve indices
+        for index in reversed(selection):
+            del self.daypart_time_blocks[index]
+        self.update_block_list()
+        self.update_preview_display()
+    
+    def on_move_block_up(self):
+        """Move selected block up"""
+        selection = self.block_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select a block to move")
+            return
+        index = selection[0]
+        if index > 0:
+            self.daypart_time_blocks[index], self.daypart_time_blocks[index-1] = \
+                self.daypart_time_blocks[index-1], self.daypart_time_blocks[index]
+            self.update_block_list()
+            self.block_list.selection_set(index-1)
+            self.update_preview_display()
+    
+    def on_move_block_down(self):
+        """Move selected block down"""
+        selection = self.block_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select a block to move")
+            return
+        index = selection[0]
+        if index < len(self.daypart_time_blocks) - 1:
+            self.daypart_time_blocks[index], self.daypart_time_blocks[index+1] = \
+                self.daypart_time_blocks[index+1], self.daypart_time_blocks[index]
+            self.update_block_list()
+            self.block_list.selection_set(index+1)
+            self.update_preview_display()
+    
+    def on_marathon_all_toggle(self):
+        """Toggle all day checkboxes"""
+        state = self.marathon_all_var.get()
+        for var in self.marathon_day_vars.values():
+            var.set(state)
+    
+    def on_add_marathon(self):
+        """Add a new marathon configuration"""
+        tag = self.marathon_tag_var.get().strip()
+        if not tag:
+            messagebox.showerror("Error", "Please enter a tag for the marathon")
+            return
+        
+        days = [day for day, var in self.marathon_day_vars.items() if var.get()]
+        if not days:
+            messagebox.showerror("Error", "Please select at least one day")
+            return
+        
+        marathon = MarathonConfig(
+            tag=tag,
+            days=days,
+            shuffle=self.marathon_shuffle_var.get(),
+            no_repeat_24h=self.marathon_norepeat_var.get()
+        )
+        self.daypart_marathons.append(marathon)
+        self.update_marathon_list()
+        self.update_preview_display()
+        
+        # Clear inputs
+        self.marathon_tag_var.set("")
+        for var in self.marathon_day_vars.values():
+            var.set(False)
+        self.marathon_all_var.set(False)
+    
+    def on_remove_marathon(self):
+        """Remove selected marathon"""
+        selection = self.marathon_list.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select a marathon to remove")
+            return
+        index = selection[0]
+        del self.daypart_marathons[index]
+        self.update_marathon_list()
+        self.update_preview_display()
+    
+    def on_gap_source_change(self):
+        """Handle gap filler source change"""
+        self.update_gap_filler_ui()
+    
+    def on_edit_excluded_tags(self, event=None):
+        """Open dialog to edit excluded tags"""
+        # Get all available tags from collections
+        collections = load_collections(self.current_profile)
+        all_tags = set()
+        for col in collections:
+            all_tags.update(col.get("tags", []))
+        
+        dialog = self.TagExclusionDialog(
+            self.root,
+            available_tags=sorted(list(all_tags)),
+            excluded_tags=self.daypart_gap_filler.excluded_tags
+        )
+        self.root.wait_window(dialog)
+        if dialog.result is not None:
+            self.daypart_gap_filler.excluded_tags = dialog.result
+            self.update_gap_filler_label()
+    
+    def on_timeline_resize(self, event):
+        """Redraw timeline on canvas resize"""
+        self.draw_timeline()
+    
+    def on_generate_daypart_preview(self):
+        """Generate daypart schedule preview"""
+        try:
+            # Get available videos
+            collections = load_collections(self.current_profile)
+            available_videos = []
+            for col in collections:
+                for video in col.get("videos", []):
+                    if video["path"] not in self.blacklisted_videos:
+                        video["collection"] = col
+                        available_videos.append(video)
+            
+            # Build daypart config
+            daypart_config = {
+                "daypart_config": {
+                    "time_blocks": [b.to_dict() for b in self.daypart_time_blocks],
+                    "marathons": [m.to_dict() for m in self.daypart_marathons],
+                    "gap_filler": self.daypart_gap_filler.to_dict()
+                }
+            }
+            
+            # Generate schedule for today
+            from datetime import date
+            today = date.today()
+            entries = generate_daypart_schedule(
+                daypart_config,
+                available_videos,
+                self.current_channel or "default",
+                today
+            )
+            
+            self.daypart_preview_entries = entries
+            self.update_preview_display()
+            self.draw_timeline()
+            
+            messagebox.showinfo("Preview Generated",
+                              f"Generated {len(entries)} schedule entries for preview")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to generate preview: {str(e)}")
+            logger.error(f"Daypart preview generation failed: {e}", exc_info=True)
+    
+    def on_save_daypart_schedule(self):
+        """Save daypart schedule configuration"""
+        if not self.current_channel:
+            messagebox.showerror("Error", "No channel selected")
+            return
+        
+        # Validate configuration
+        daypart_config = {
+            "daypart_config": {
+                "time_blocks": [b.to_dict() for b in self.daypart_time_blocks],
+                "marathons": [m.to_dict() for m in self.daypart_marathons],
+                "gap_filler": self.daypart_gap_filler.to_dict()
+            },
+            "enabled": self.daypart_enabled,
+            "weekly": {},
+            "calendar": {}
+        }
+        
+        errors = validate_daypart_config(daypart_config)
+        if errors:
+            error_msg = "Configuration errors:\n\n" + "\n".join(f"• {e}" for e in errors)
+            messagebox.showerror("Validation Errors", error_msg)
+            return
+        
+        # Save configuration
+        if self.daypart_scheduler.save_config(self.current_channel, daypart_config):
+            messagebox.showinfo("Success", f"Daypart schedule saved for channel '{self.current_channel}'")
+        else:
+            messagebox.showerror("Error", "Failed to save daypart configuration")
+    
+    def load_daypart_config_for_channel(self):
+        """Load daypart configuration for current channel"""
+        if not self.current_channel:
+            return
+        
+        config = self.daypart_scheduler.load_config(self.current_channel)
+        if config:
+            self.daypart_config = config
+            self.daypart_enabled = config.get("enabled", False)
+            
+            # Load time blocks
+            self.daypart_time_blocks = []
+            for block_data in config.get("daypart_config", {}).get("time_blocks", []):
+                try:
+                    block = TimeBlock.from_dict(block_data)
+                    self.daypart_time_blocks.append(block)
+                except Exception as e:
+                    logger.error(f"Failed to load time block: {e}")
+            
+            # Load marathons
+            self.daypart_marathons = []
+            for marathon_data in config.get("daypart_config", {}).get("marathons", []):
+                try:
+                    marathon = MarathonConfig.from_dict(marathon_data)
+                    self.daypart_marathons.append(marathon)
+                except Exception as e:
+                    logger.error(f"Failed to load marathon: {e}")
+            
+            # Load gap filler
+            gap_data = config.get("daypart_config", {}).get("gap_filler", {})
+            self.daypart_gap_filler = GapFillerConfig.from_dict(gap_data)
+            
+            # Update UI
+            self.update_block_list()
+            self.update_marathon_list()
+            self.update_gap_filler_ui()
+        else:
+            # Reset to defaults
+            self.daypart_config = None
+            self.daypart_enabled = False
+            self.daypart_time_blocks = []
+            self.daypart_marathons = []
+            self.daypart_gap_filler = GapFillerConfig()
+            self.update_block_list()
+            self.update_marathon_list()
+            self.update_gap_filler_ui()
+        
+        # Refresh available tags
+        self.refresh_daypart_tags()
+    
+    def refresh_daypart_tags(self):
+        """Populate marathon tag combo with available tags from collections"""
+        collections = load_collections(self.current_profile)
+        all_tags = set()
+        for col in collections:
+            all_tags.update(col.get("tags", []))
+        
+        if hasattr(self, 'marathon_tag_combo'):
+            self.marathon_tag_combo['values'] = sorted(list(all_tags))
+    
+    def update_block_list(self):
+        """Update the time block list display"""
+        self.block_list.delete(0, tk.END)
+        for block in self.daypart_time_blocks:
+            # Format: "06:00-10:00 [TAG:kids] Random kids content"
+            # or "06:00-10:00 [VIDEO] The Matrix (1999).mp4"
+            if block.content_type == "tag":
+                display = f"{block.start_time}-{block.end_time} [TAG:{block.content_value}]"
+            else:
+                # Shorten video path for display
+                filename = Path(block.content_value).name
+                display = f"{block.start_time}-{block.end_time} [VIDEO] {filename}"
+            self.block_list.insert(tk.END, display)
+        
+        self.block_count_label.config(text=f"Total blocks: {len(self.daypart_time_blocks)}")
+    
+    def update_marathon_list(self):
+        """Update the marathon list display"""
+        self.marathon_list.delete(0, tk.END)
+        for marathon in self.daypart_marathons:
+            days = ", ".join([d[:3].title() for d in marathon.days])
+            display = f"Tag: {marathon.tag} | Days: {days} | Shuffle: {marathon.shuffle}"
+            self.marathon_list.insert(tk.END, display)
+    
+    def update_gap_filler_ui(self):
+        """Update gap filler UI from config"""
+        self.gap_enabled_var.set(self.daypart_gap_filler.enabled)
+        self.gap_source_var.set(self.daypart_gap_filler.source)
+        self.gap_24h_var.set(self.daypart_gap_filler.respect_24h_norepeat)
+        self.gap_shuffle_var.set(self.daypart_gap_filler.shuffle)
+        self.update_gap_filler_label()
+    
+    def update_gap_filler_label(self):
+        """Update the excluded tags label"""
+        if self.daypart_gap_filler.excluded_tags:
+            count = len(self.daypart_gap_filler.excluded_tags)
+            self.gap_exclude_label.config(text=f"[{count} tag(s) excluded]")
+        else:
+            self.gap_exclude_label.config(text="[None]")
+    
+    def update_preview_display(self):
+        """Update the text preview list"""
+        self.preview_list.delete(0, tk.END)
+        
+        if not self.daypart_preview_entries:
+            self.preview_list.insert(tk.END, "No preview generated. Click 'Generate Preview'.")
+            self.preview_stats_label.config(text="")
+            return
+        
+        # Display entries
+        for entry in self.daypart_preview_entries:
+            time = entry["time"]
+            file = Path(entry["file"]).name
+            source = entry.get("source", "unknown")
+            metadata = entry.get("metadata", {})
+            
+            if source == "daypart_video":
+                display = f"{time} [VIDEO] {file}"
+            elif source == "daypart_tag":
+                tag = metadata.get("tag_used", "unknown")
+                display = f"{time} [TAG:{tag}] {file}"
+            elif source == "daypart_marathon":
+                tag = metadata.get("tag", "unknown")
+                display = f"{time} [MARATHON:{tag}] {file}"
+            elif source == "gap_filler":
+                display = f"{time} [GAP] {file}"
+            else:
+                display = f"{time} {file}"
+            
+            self.preview_list.insert(tk.END, display)
+        
+        # Update stats
+        total_entries = len(self.daypart_preview_entries)
+        block_entries = sum(1 for e in self.daypart_preview_entries
+                           if e.get("source", "").startswith("daypart_"))
+        gap_entries = sum(1 for e in self.daypart_preview_entries
+                         if e.get("source") == "gap_filler")
+        
+        stats = f"Total: {total_entries} entries | Scheduled blocks: {block_entries} | Gap filler: {gap_entries}"
+        self.preview_stats_label.config(text=stats)
+        
+        # Initialize daypart configuration for current channel
+        self.load_daypart_config_for_channel()
+    
+    def draw_timeline(self):
+        """Draw the visual timeline on canvas"""
+        canvas = self.timeline_canvas
+        canvas.delete("all")
+        
+        width = canvas.winfo_width()
+        if width <= 1:
+            width = 600  # Default
+        
+        height = canvas.winfo_height()
+        if height <= 1:
+            height = 60
+        
+        # Draw hour markers
+        canvas.create_line(0, height//2, width, height//2, fill="black")
+        for hour in range(0, 25):
+            x = (hour / 24) * width
+            canvas.create_line(x, 0, x, height, fill="gray", dash=(2, 2))
+            canvas.create_text(x, height - 10, text=f"{hour:02d}:00", font=("TkDefaultFont", 8))
+        
+        # Draw blocks
+        if not self.daypart_preview_entries:
+            # Draw placeholder showing time blocks
+            for block in self.daypart_time_blocks:
+                self.draw_time_block(canvas, block, width, height, "blue")
+        else:
+            # Draw actual schedule entries (simplified - group by block)
+            current_time = 0
+            colors = {"daypart_video": "blue", "daypart_tag": "green",
+                     "daypart_marathon": "red", "gap_filler": "gray"}
+            
+            for entry in self.daypart_preview_entries:
+                time_str = entry["time"]
+                hour, minute, _ = time_str.split(":")
+                start_decimal = int(hour) + int(minute)/60
+                duration = entry.get("duration", 0)  # Need to get duration from video
+                if duration:
+                    duration_hours = duration / 3600
+                    end_decimal = start_decimal + duration_hours
+                    
+                    x1 = (start_decimal / 24) * width
+                    x2 = (end_decimal / 24) * width
+                    
+                    source = entry.get("source", "unknown")
+                    color = colors.get(source, "gray")
+                    
+                    canvas.create_rectangle(x1, 5, x2, height-15, fill=color, outline="black")
+    
+    def draw_time_block(self, canvas, block, width, height, color):
+        """Draw a single time block on timeline"""
+        try:
+            start_dt = parse_time_string(block.start_time)
+            end_dt = parse_time_string(block.end_time)
+            
+            start_hour = start_dt.hour + start_dt.minute/60
+            end_hour = end_dt.hour + end_dt.minute/60
+            
+            x1 = (start_hour / 24) * width
+            x2 = (end_hour / 24) * width
+            
+            canvas.create_rectangle(x1, 5, x2, height-15, fill=color, outline="black", stipple="gray25")
+        except:
+            pass
+    
+    def create_preview_panel(self, parent):
+        """Create the Schedule Programming tab with daypart scheduling UI"""
+        # Main container with scrollbar
+        main_frame = ttk.Frame(parent)
+        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Title
+        ttk.Label(main_frame, text="Schedule Programming", font=("TkDefaultFont", 12, "bold")).pack(pady=(0, 10))
+        
+        # === TIME BLOCK MANAGEMENT PANEL ===
+        block_panel = ttk.LabelFrame(main_frame, text="Time Blocks", padding=10)
+        block_panel.pack(fill="x", pady=(0, 10))
+        
+        # Block list frame
+        block_list_frame = ttk.Frame(block_panel)
+        block_list_frame.pack(fill="both", expand=True, pady=(0, 10))
+        
+        # Block list with scrollbar
+        block_list_container = ttk.Frame(block_list_frame)
+        block_list_container.pack(side="left", fill="both", expand=True)
+        
+        self.block_list = tk.Listbox(block_list_container, height=8, font=("TkDefaultFont", 10))
+        self.block_list.pack(side="left", fill="both", expand=True)
+        block_scrollbar = ttk.Scrollbar(block_list_container, orient="vertical", command=self.block_list.yview)
+        block_scrollbar.pack(side="right", fill="y")
+        self.block_list.configure(yscrollcommand=block_scrollbar.set)
+        self.block_list.bind("<<ListboxSelect>>", self.on_block_select)
+        
+        # Block control buttons
+        block_btn_frame = ttk.Frame(block_panel)
+        block_btn_frame.pack(fill="x")
+        
+        ttk.Button(block_btn_frame, text="Add Block", command=self.on_add_block).pack(side="left", padx=2)
+        ttk.Button(block_btn_frame, text="Edit Selected", command=self.on_edit_block).pack(side="left", padx=2)
+        ttk.Button(block_btn_frame, text="Delete Selected", command=self.on_delete_block).pack(side="left", padx=2)
+        ttk.Button(block_btn_frame, text="Move Up", command=self.on_move_block_up).pack(side="left", padx=2)
+        ttk.Button(block_btn_frame, text="Move Down", command=self.on_move_block_down).pack(side="left", padx=2)
+        
+        # Block count label
+        self.block_count_label = ttk.Label(block_panel, text="Total blocks: 0")
+        self.block_count_label.pack(pady=(5, 0))
+        
+        # === MARATHON SCHEDULING PANEL ===
+        marathon_panel = ttk.LabelFrame(main_frame, text="Marathon Scheduling", padding=10)
+        marathon_panel.pack(fill="x", pady=(0, 10))
+        
+        # Tag selection
+        tag_frame = ttk.Frame(marathon_panel)
+        tag_frame.pack(fill="x", pady=(0, 5))
+        ttk.Label(tag_frame, text="Tag:").pack(side="left", padx=(0, 5))
+        self.marathon_tag_var = tk.StringVar()
+        self.marathon_tag_combo = ttk.Combobox(tag_frame, textvariable=self.marathon_tag_var, state="normal")
+        self.marathon_tag_combo.pack(side="left", fill="x", expand=True)
+        
+        # Day selection
+        day_frame = ttk.Frame(marathon_panel)
+        day_frame.pack(fill="x", pady=(0, 5))
+        ttk.Label(day_frame, text="Days:").pack(side="left", padx=(0, 5))
+        self.marathon_day_vars = {}
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        for day in days:
+            var = tk.BooleanVar(value=False)
+            chk = ttk.Checkbutton(day_frame, text=day[:3].title(), variable=var)
+            chk.pack(side="left", padx=2)
+            self.marathon_day_vars[day] = var
+        self.marathon_all_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(day_frame, text="All", variable=self.marathon_all_var,
+                       command=self.on_marathon_all_toggle).pack(side="left", padx=5)
+        
+        # Marathon options
+        marathon_opt_frame = ttk.Frame(marathon_panel)
+        marathon_opt_frame.pack(fill="x", pady=(0, 5))
+        self.marathon_shuffle_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(marathon_opt_frame, text="Shuffle within marathon",
+                       variable=self.marathon_shuffle_var).pack(side="left", padx=5)
+        self.marathon_norepeat_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(marathon_opt_frame, text="No repeats within 24h",
+                       variable=self.marathon_norepeat_var).pack(side="left", padx=5)
+        
+        # Marathon buttons
+        marathon_btn_frame = ttk.Frame(marathon_panel)
+        marathon_btn_frame.pack(fill="x")
+        ttk.Button(marathon_btn_frame, text="Add Marathon", command=self.on_add_marathon).pack(side="left", padx=2)
+        ttk.Button(marathon_btn_frame, text="Remove Selected", command=self.on_remove_marathon).pack(side="left", padx=2)
+        
+        # Marathon list
+        self.marathon_list = tk.Listbox(marathon_panel, height=4, font=("TkDefaultFont", 10))
+        self.marathon_list.pack(fill="x", pady=(5, 0))
+        
+        # === GAP FILLER PANEL ===
+        gap_panel = ttk.LabelFrame(main_frame, text="Gap Filler Settings", padding=10)
+        gap_panel.pack(fill="x", pady=(0, 10))
+        
+        # Enable checkbox
+        self.gap_enabled_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(gap_panel, text="Enable gap filling with random content",
+                       variable=self.gap_enabled_var).pack(anchor="w", pady=(0, 5))
+        
+        # Source selection
+        source_frame = ttk.Frame(gap_panel)
+        source_frame.pack(fill="x", pady=(0, 5))
+        ttk.Label(source_frame, text="Source:").pack(side="left", padx=(0, 5))
+        self.gap_source_var = tk.StringVar(value="all")
+        ttk.Radiobutton(source_frame, text="All videos", variable=self.gap_source_var,
+                       value="all", command=self.on_gap_source_change).pack(side="left", padx=5)
+        ttk.Radiobutton(source_frame, text="Selected collections", variable=self.gap_source_var,
+                       value="collections", command=self.on_gap_source_change).pack(side="left", padx=5)
+        ttk.Radiobutton(source_frame, text="Selected tags", variable=self.gap_source_var,
+                       value="tags", command=self.on_gap_source_change).pack(side="left", padx=5)
+        
+        # Excluded tags
+        exclude_frame = ttk.Frame(gap_panel)
+        exclude_frame.pack(fill="x", pady=(0, 5))
+        ttk.Label(exclude_frame, text="Exclude tags:").pack(side="left", padx=(0, 5))
+        self.gap_exclude_label = ttk.Label(exclude_frame, text="[None]", foreground="blue", cursor="hand2")
+        self.gap_exclude_label.pack(side="left")
+        self.gap_exclude_label.bind("<Button-1>", self.on_edit_excluded_tags)
+        
+        # Gap options
+        gap_opt_frame = ttk.Frame(gap_panel)
+        gap_opt_frame.pack(fill="x")
+        self.gap_24h_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(gap_opt_frame, text="Respect 24-hour no-repeat rule",
+                       variable=self.gap_24h_var).pack(side="left", padx=5)
+        self.gap_shuffle_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(gap_opt_frame, text="Shuffle selection",
+                       variable=self.gap_shuffle_var).pack(side="left", padx=5)
+        
+        # === PREVIEW PANEL ===
+        preview_panel = ttk.LabelFrame(main_frame, text="Preview Schedule", padding=10)
+        preview_panel.pack(fill="both", expand=True, pady=(0, 10))
+        
+        # Visual timeline canvas
+        self.timeline_canvas = tk.Canvas(preview_panel, height=60, bg="white", highlightthickness=1, highlightbackground="gray")
+        self.timeline_canvas.pack(fill="x", pady=(0, 10))
+        self.timeline_canvas.bind("<Configure>", self.on_timeline_resize)
+        
+        # Timeline legend
+        legend_frame = ttk.Frame(preview_panel)
+        legend_frame.pack(fill="x", pady=(0, 10))
+        ttk.Label(legend_frame, text="Legend:").pack(side="left", padx=(0, 5))
+        ttk.Label(legend_frame, text="■ Specific Video", foreground="blue").pack(side="left", padx=5)
+        ttk.Label(legend_frame, text="■ Tag-based", foreground="green").pack(side="left", padx=5)
+        ttk.Label(legend_frame, text="■ Marathon", foreground="red").pack(side="left", padx=5)
+        ttk.Label(legend_frame, text="■ Gap Filler", foreground="gray").pack(side="left", padx=5)
+        
+        # Text preview listbox
+        preview_list_frame = ttk.Frame(preview_panel)
+        preview_list_frame.pack(fill="both", expand=True)
+        self.preview_list = tk.Listbox(preview_list_frame, height=8, font=("TkDefaultFont", 9))
+        self.preview_list.pack(side="left", fill="both", expand=True)
+        preview_scrollbar = ttk.Scrollbar(preview_list_frame, orient="vertical", command=self.preview_list.yview)
+        preview_scrollbar.pack(side="right", fill="y")
+        self.preview_list.configure(yscrollcommand=preview_scrollbar.set)
+        
+        # Preview statistics
+        self.preview_stats_label = ttk.Label(preview_panel, text="")
+        self.preview_stats_label.pack(pady=(5, 0))
+        
+        # Action buttons
+        action_btn_frame = ttk.Frame(main_frame)
+        action_btn_frame.pack(fill="x", pady=(10, 0))
+        ttk.Button(action_btn_frame, text="Generate Preview",
+                  command=self.on_generate_daypart_preview).pack(side="left", padx=5)
+        ttk.Button(action_btn_frame, text="Save Schedule",
+                  command=self.on_save_daypart_schedule).pack(side="left", padx=5)
+        
+        # Initialize daypart config for current channel
+        self.load_daypart_config_for_channel()
 
     def create_preview_panel(self, parent):
         """Create the Preview panel for schedule preview"""
