@@ -1840,6 +1840,14 @@ Your API key will be saved for future use.""")
             # Save the tags back to the collection
             collection["tags"] = tags
 
+        # If exactly one collection is selected, update the tags_var to reflect the change
+        if len(self.selected_indices) == 1:
+            idx = next(iter(self.selected_indices))
+            coll = self.collections[idx]
+            tags_list = coll.get("tags", [])
+            # Sort tags alphabetically for consistent display (case-insensitive)
+            tags_sorted = sorted(tags_list, key=lambda x: x.lower())
+            self.metadata_vars["tags_var"].set(", ".join(tags_sorted))
 
 
     def normalize_name(self, text: str) -> str:
@@ -1879,10 +1887,17 @@ Your API key will be saved for future use.""")
                 collection["genre"] = []
                 
             tags_str = self.metadata_vars["tags_var"].get().strip()
-            if tags_str:
-                collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
+            if len(self.selected_indices) == 1:
+                # Single selection: use tags field value (empty clears tags)
+                if tags_str:
+                    collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
+                else:
+                    collection["tags"] = []
             else:
-                collection["tags"] = []
+                # Multiple selections: only update tags if tags_str is non-empty
+                if tags_str:
+                    collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
+                # else: leave collection["tags"] unchanged
 
             year_str = self.metadata_vars["year_var"].get().strip()
             if year_str:
