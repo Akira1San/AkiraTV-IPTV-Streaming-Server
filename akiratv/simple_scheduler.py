@@ -119,7 +119,7 @@ class SimpleSchedulerWizard:
     def __init__(self, root):
         self.root = root
         self.root.title("AkiraTV — Simple Random Scheduler")
-        self.root.geometry("1600x900")
+        self.root.geometry("1800x1000")
         
         # Theme settings
         self.style = ttk.Style()
