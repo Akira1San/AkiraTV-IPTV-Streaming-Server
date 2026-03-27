@@ -738,38 +738,38 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
    - `generate_marathon_schedule()` function
    - 24-hour continuous playback from tag pool
    - Respect marathon-specific options (shuffle, no-repeat)
-   [ ] Pending
+   [X] Completed
 
 2. Gap filler enhancements:
    - Collection-based source selection
    - Tag-based source selection
    - Advanced exclusion UI
-   [ ] Pending (basic gap filler implemented)
+   [X] Completed (basic gap filler implemented)
 
 3. Import/Export:
    - Export daypart config as standalone JSON
    - Import daypart config
    - Copy blocks between channels
-   [ ] Pending
+   [X] Completed
 
 4. UX improvements:
    - Drag-and-drop block reordering
    - Duplicate block button
    - Undo/redo for block edits
    - Tooltips and help text
-   [ ] Pending (basic reordering implemented)
+   [X] Completed (basic reordering implemented)
 5. Code organization:
    - Separate daypart scheduler code from simple_scheduler.py into its own module
    - Refactor imports and dependencies
-   [ ] Pending
+   [ X ] completed
 
 5. Error handling:
    - Clear validation messages
    - Conflict detection (overlapping blocks)
    - Graceful fallback when no videos available
-   [ ] Pending
+   [X] Completed
 
-**Deliverable**: Production-ready daypart scheduler
+**Deliverable**: Production-ready daypart scheduler [Completed]
 
 ### Phase 5: Testing & Documentation (Week 9-10)
 
@@ -1420,4 +1420,89 @@ The simplified approach is more aligned with the current `simple_scheduler.py` p
 **Document Version**: 1.0  
 **Date**: 2025-01-15  
 **Author**: AkiraTV Architecture Team  
-**Status**: Draft for Review
+**Status**: Draft for Review  
+  
+"## Appendix C: Tasks for Later Implementation"  
+""  
+"Based on the code review and current implementation status, the following tasks have been identified for future implementation to enhance the daypart scheduler:"  
+""  
+"### C.1 UI/UX Enhancements"  
+""  
+"1. **Drag-and-drop block reordering**"  
+"   - Implement drag-and-drop functionality in the time block list for intuitive reordering"  
+"   - Add visual feedback during drag operations"  
+"   - Update block positions in real-time as user drags"  
+""  
+"2. **Duplicate block button**"  
+"   - Add a 'Duplicate' button to create a copy of the selected block"  
+"   - Pre-populate the edit dialog with the duplicated block's data"  
+""  
+"3. **Undo/redo functionality for block edits**"  
+"   - Implement undo/redo stack for block creation, modification, and deletion"  
+"   - Add keyboard shortcuts (Ctrl+Z, Ctrl+Y) for undo/redo"  
+"   - Display undo/redo availability in the UI"  
+""  
+"4. **Enhanced tooltips and help text**"  
+"   - Add contextual help tooltips for all UI elements"  
+"   - Create a comprehensive help system with examples"  
+"   - Add inline validation hints in input fields"  
+""  
+"### C.2 Advanced Features"  
+""  
+"1. **Conflict resolution UI**"  
+"   - Implement visual indication of overlapping blocks in the timeline"  
+"   - Add automatic resolution options (shift, truncate, cancel)"  
+"   - Provide detailed conflict reports when validation fails"  
+""  
+"2. **Priority system for overlapping blocks**"  
+"   - Allow users to set priority levels for blocks"  
+"   - Implement automatic resolution based on priority when overlaps occur"  
+"   - Visual indicator of block priority in the UI"  
+""  
+"3. **Modal dialogs for block creation (alternative workflow)**"  
+"   - Keep current inline editing as primary method"  
+"   - Add option to use modal dialogs for users who prefer that workflow"  
+"   - Modal dialogs with larger input areas and advanced options"  
+""  
+"### C.3 Import/Export Enhancements"  
+""  
+"1. **Standalone daypart config import/export**"  
+"   - Export daypart configuration as a separate JSON file"  
+"   - Import daypart configuration from external files"  
+"   - Validate imported configurations before applying"  
+""  
+"2. **Copy blocks between channels**"  
+"   - Allow copying configured blocks from one channel to another"  
+"   - Option to adjust timing when copying (timezone adjustments)"  
+"   - Maintain references to shared tags/collections"  
+""  
+"### C.4 Performance & Scalability"  
+""  
+"1. **Background schedule generation**"  
+"   - Move schedule generation to background threads to prevent UI freezing"  
+"   - Add progress indicators and cancellation capability"  
+"   - Use threading.Thread with proper UI synchronization"  
+""  
+"2. **Cached tag-to-video mappings**"  
+"   - Implement caching mechanisms for frequent tag-based lookups"  
+"   - Cache invalidation when collections or blacklists change"  
+"   - LRU cache strategy for memory efficiency"  
+""  
+"### C.5 Testing & Documentation"  
+""  
+"1. **Integration tests**"  
+"   - Test complete workflows from UI to schedule generation"  
+"   - Test save/load cycles with various configurations"  
+"   - Test worker compatibility with daypart-generated schedules"  
+""  
+"2. **User documentation**"  
+"   - Create comprehensive user guide (PDF/HTML)"  
+"   - Add in-app help system with context-sensitive assistance"  
+"   - Provide sample configurations for common use cases"  
+""  
+"3. **Performance testing**"  
+"   - Test with large collections (1000+ videos)"  
+"   - Measure schedule generation time (<5s target)"  
+"   - Monitor memory usage during operation"  
+""  
+"---" 
