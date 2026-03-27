@@ -572,9 +572,7 @@ class SimpleSchedulerWizard:
                 title = video.get("title", video.get("path", "Unknown"))
                 if filter_text and filter_text.lower() not in title.lower():
                     continue
-                self.video_list.insert(tk.END, title)
-                # Store video path as hidden data
-                self.video_list.set(tk.END, video.get("path", ""))
+                self.video_list.insert(tk.END, video.get("path", ""))
         
         def filter_videos(self, *args):
             self.populate_video_list(self.video_search_var.get())
