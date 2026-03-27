@@ -376,33 +376,36 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
     
     # Filter videos by content type
     if block.content_type == "video":
-        # Specific video - find it
-        video = None
-        for v in available_videos:
-            if v["path"] == block.content_value:
-                video = v
-                break
+        # Specific video(s) - may be multiple (semicolon-separated)
+        video_paths = [v.strip() for v in block.content_value.split(";") if v.strip()]
         
-        if not video:
-            logger.warning(f"[{channel}] Video not found: {block.content_value}")
-            return entries
-        
-        # Play the video (may overrun into next block - that's OK)
-        entry = {
-            "time": current_time.strftime("%H:%M:%S"),
-            "file": video["path"],
-            "collection_id": video.get("collection", {}).get("id", "unknown"),
-            "channel": channel,
-            "source": "daypart_video",
-            "daypart_block_id": block.block_id,
-            "metadata": {
-                "scheduled_type": "video",
-                "block_start": block.start_time,
-                "block_end": block.end_time
+        for video_path in video_paths:
+            video = None
+            for v in available_videos:
+                if v["path"] == video_path:
+                    video = v
+                    break
+            
+            if not video:
+                logger.warning(f"[{channel}] Video not found: {video_path}")
+                continue
+            
+            # Play the video (may overrun into next block - that's OK)
+            entry = {
+                "time": current_time.strftime("%H:%M:%S"),
+                "file": video["path"],
+                "collection_id": video.get("collection", {}).get("id", "unknown"),
+                "channel": channel,
+                "source": "daypart_video",
+                "daypart_block_id": block.block_id,
+                "metadata": {
+                    "scheduled_type": "video",
+                    "block_start": block.start_time,
+                    "block_end": block.end_time
+                }
             }
-        }
-        entries.append(entry)
-        current_time += timedelta(seconds=video["duration"])
+            entries.append(entry)
+            current_time += timedelta(seconds=video["duration"])
         
     elif block.content_type == "tag":
         # Tag-based random selection

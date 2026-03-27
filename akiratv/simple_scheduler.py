@@ -514,7 +514,7 @@ class SimpleSchedulerWizard:
             # Video list
             list_frame = ttk.Frame(video_frame)
             list_frame.pack(fill="both", expand=True, pady=(5, 0))
-            self.video_list = tk.Listbox(list_frame, height=8, selectmode=tk.BROWSE)
+            self.video_list = tk.Listbox(list_frame, height=8, selectmode=tk.EXTENDED)
             self.video_list.pack(side="left", fill="both", expand=True)
             video_scroll = ttk.Scrollbar(list_frame, orient="vertical", command=self.video_list.yview)
             video_scroll.pack(side="right", fill="y")
@@ -584,10 +584,16 @@ class SimpleSchedulerWizard:
         def on_video_select(self, event):
             selection = self.video_list.curselection()
             if selection:
-                index = selection[0]
-                video_path = self.video_list.get(index)
-                self.selected_video_label.config(text=f"Selected: {video_path}")
-                self.selected_video = video_path
+                # Get all selected video paths
+                video_paths = [self.video_list.get(i) for i in selection]
+                # Store as semicolon-separated string
+                self.selected_videos = video_paths
+                # Display count or list
+                if len(video_paths) == 1:
+                    display_text = f"Selected: {video_paths[0]}"
+                else:
+                    display_text = f"Selected: {len(video_paths)} videos"
+                self.selected_video_label.config(text=display_text)
         
         def on_new_tag(self):
             new_tag = tk.simpledialog.askstring("New Tag", "Enter new tag name:")
@@ -600,8 +606,14 @@ class SimpleSchedulerWizard:
                 self.end_var.set(self.block.end_time)
                 self.type_var.set(self.block.content_type)
                 if self.block.content_type == "video":
-                    self.selected_video = self.block.content_value
-                    self.selected_video_label.config(text=f"Selected: {self.block.content_value}")
+                    # Handle multiple videos (semicolon-separated)
+                    videos = self.block.content_value.split(";")
+                    self.selected_videos = videos
+                    if len(videos) == 1:
+                        display_text = f"Selected: {videos[0]}"
+                    else:
+                        display_text = f"Selected: {len(videos)} videos"
+                    self.selected_video_label.config(text=display_text)
                 else:
                     self.tag_var.set(self.block.content_value)
                 self.on_type_change()
@@ -623,10 +635,11 @@ class SimpleSchedulerWizard:
             # Validate content
             content_type = self.type_var.get()
             if content_type == "video":
-                if not hasattr(self, 'selected_video') or not self.selected_video:
-                    messagebox.showerror("Error", "Please select a video")
+                if not hasattr(self, 'selected_videos') or not self.selected_videos:
+                    messagebox.showerror("Error", "Please select at least one video")
                     return
-                content_value = self.selected_video
+                # Store multiple videos as semicolon-separated string
+                content_value = ";".join(self.selected_videos)
             else:
                 tag = self.tag_var.get().strip()
                 if not tag:
