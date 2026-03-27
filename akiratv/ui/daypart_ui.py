@@ -429,35 +429,8 @@ class DaypartSchedulerUI:
                        variable=self.app.gap_shuffle_var).pack(side="left", padx=5)
         
         # === PREVIEW PANEL ===
-        preview_panel = ttk.LabelFrame(main_frame, text="Preview Schedule", padding=10)
-        preview_panel.pack(fill="both", expand=True, pady=(0, 10))
-        
-        # Visual timeline canvas
-        self.app.timeline_canvas = tk.Canvas(preview_panel, height=60, bg="white", highlightthickness=1, highlightbackground="gray")
-        self.app.timeline_canvas.pack(fill="x", pady=(0, 10))
-        self.app.timeline_canvas.bind("<Configure>", self.app.on_timeline_resize)
-        
-        # Timeline legend
-        legend_frame = ttk.Frame(preview_panel)
-        legend_frame.pack(fill="x", pady=(0, 10))
-        ttk.Label(legend_frame, text="Legend:").pack(side="left", padx=(0, 5))
-        ttk.Label(legend_frame, text="■ Specific Video", foreground="blue").pack(side="left", padx=5)
-        ttk.Label(legend_frame, text="■ Tag-based", foreground="green").pack(side="left", padx=5)
-        ttk.Label(legend_frame, text="■ Marathon", foreground="red").pack(side="left", padx=5)
-        ttk.Label(legend_frame, text="■ Gap Filler", foreground="gray").pack(side="left", padx=5)
-        
-        # Text preview listbox
-        preview_list_frame = ttk.Frame(preview_panel)
-        preview_list_frame.pack(fill="both", expand=True)
-        self.app.daypart_preview_list = tk.Listbox(preview_list_frame, height=8, font=("TkDefaultFont", 9))
-        self.app.daypart_preview_list.pack(side="left", fill="both", expand=True)
-        preview_scrollbar = ttk.Scrollbar(preview_list_frame, orient="vertical", command=self.app.daypart_preview_list.yview)
-        preview_scrollbar.pack(side="right", fill="y")
-        self.app.daypart_preview_list.configure(yscrollcommand=preview_scrollbar.set)
-        
-        # Preview statistics
-        self.app.preview_stats_label = ttk.Label(preview_panel, text="")
-        self.app.preview_stats_label.pack(pady=(5, 0))
+        # Note: Preview is displayed in the main Schedule Preview panel on the right
+        # Click "Generate Preview" button below to see the schedule preview
         
         # Action buttons
         action_btn_frame = ttk.Frame(main_frame)
