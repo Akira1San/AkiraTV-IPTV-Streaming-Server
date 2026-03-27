@@ -744,7 +744,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
    - Collection-based source selection
    - Tag-based source selection
    - Advanced exclusion UI
-   [X] Completed (basic gap filler implemented)
+   [X] Basic UI implemented (radio buttons, exclusion dialog)
+   [ ] Full filtering logic in scheduler NOT connected
 
 3. Import/Export:
    - Export daypart config as standalone JSON
@@ -757,11 +758,13 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
    - Duplicate block button
    - Undo/redo for block edits
    - Tooltips and help text
-   [X] Completed (basic reordering implemented)
+   [X] Basic Move Up/Down implemented
+   [ ] Drag-drop, duplicate, undo/redo NOT implemented
+
 5. Code organization:
    - Separate daypart scheduler code from simple_scheduler.py into its own module
    - Refactor imports and dependencies
-   [ X ] completed
+   [X] Completed
 
 5. Error handling:
    - Clear validation messages
@@ -769,7 +772,7 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
    - Graceful fallback when no videos available
    [X] Completed
 
-**Deliverable**: Production-ready daypart scheduler [Completed]
+**Deliverable**: Production-ready daypart scheduler [Partial - some features remaining]
 
 ### Phase 5: Testing & Documentation (Week 9-10)
 
