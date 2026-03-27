@@ -12,8 +12,11 @@ import configparser
 from .daypart_scheduler import (
     TimeBlock, MarathonConfig, GapFillerConfig,
     DaypartScheduler, get_available_tags_from_collections,
-    validate_time_format, parse_time_string
+    validate_time_format, parse_time_string, validate_time_block
 )
+
+# Daypart UI imports
+from .ui.daypart_ui import EditBlockDialog, TagExclusionDialog, create_daypart_tab
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 USER_DIR = BASE_DIR / "user"
@@ -439,7 +442,7 @@ class SimpleSchedulerWizard:
         # === SCHEDULE PROGRAMMING TAB ===
         schedule_tab = ttk.Frame(self.added_tab_control)
         self.added_tab_control.add(schedule_tab, text="Schedule Programming")
-        self.create_schedule_programming_tab(schedule_tab)
+        create_daypart_tab(schedule_tab, self)
     
     # ============================================================================
     # DAYPART SCHEDULER DIALOG CLASSES
@@ -1146,7 +1149,7 @@ class SimpleSchedulerWizard:
         except:
             pass
     
-    def create_preview_panel(self, parent):
+    def create_daypart_panel(self, parent):
         """Create the Schedule Programming tab with daypart scheduling UI"""
         # Main container with scrollbar
         main_frame = ttk.Frame(parent)
