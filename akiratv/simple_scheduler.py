@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, simpledialog
 import json
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from pathlib import Path
 from PIL import Image, ImageTk
 import configparser
@@ -12,8 +12,11 @@ import configparser
 from .daypart_scheduler import (
     TimeBlock, MarathonConfig, GapFillerConfig,
     DaypartScheduler, get_available_tags_from_collections,
-    validate_time_format, parse_time_string, validate_time_block
+    validate_time_format, parse_time_string, validate_time_block,
+    generate_daypart_schedule
 )
+import logging
+logger = logging.getLogger(__name__)
 
 # Daypart UI imports
 from .ui.daypart_ui import EditBlockDialog, TagExclusionDialog, create_daypart_tab
@@ -958,7 +961,6 @@ class SimpleSchedulerWizard:
             }
             
             # Generate schedule for today
-            from datetime import date
             today = date.today()
             entries = generate_daypart_schedule(
                 daypart_config,
