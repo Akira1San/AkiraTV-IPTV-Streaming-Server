@@ -971,7 +971,7 @@ class SimpleSchedulerWizard:
             
             self.daypart_preview_entries = entries
             self.update_preview_display()
-            self.draw_timeline()
+            # Note: Timeline is drawn in main preview panel via update_preview_display
             
             messagebox.showinfo("Preview Generated",
                               f"Generated {len(entries)} schedule entries for preview")
