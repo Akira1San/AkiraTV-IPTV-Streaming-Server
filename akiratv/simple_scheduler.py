@@ -489,6 +489,9 @@ class SimpleSchedulerWizard:
             self.start_var.trace_add("write", self.update_duration)
             self.end_var.trace_add("write", self.update_duration)
             
+            # Auto end time button
+            ttk.Button(time_frame, text="Auto End", command=self.auto_end_time).pack(side="left", padx=5)
+            
             # Content type
             type_frame = ttk.Frame(main_frame)
             type_frame.pack(fill="x", pady=(0, 10))
@@ -557,6 +560,52 @@ class SimpleSchedulerWizard:
                 self.duration_label.config(text=f"Duration: {hours:.1f} hours")
             except:
                 self.duration_label.config(text="Duration: Invalid time")
+        
+        def auto_end_time(self):
+            """Calculate and set end time based on selected video duration"""
+            if not hasattr(self, 'selected_videos') or not self.selected_videos:
+                messagebox.showwarning("No Video", "Please select a video first")
+                return
+            
+            try:
+                start_time = self.start_var.get()
+                if not validate_time_format(start_time):
+                    messagebox.showerror("Error", "Invalid start time format")
+                    return
+                
+                # Calculate total duration of all selected videos
+                total_seconds = 0
+                missing_duration = []
+                
+                for video_path in self.selected_videos:
+                    # Find video in available_videos
+                    video = next((v for v in self.available_videos if v.get("path") == video_path), None)
+                    if video and "duration" in video:
+                        total_seconds += video["duration"]
+                    else:
+                        missing_duration.append(video_path)
+                
+                if missing_duration:
+                    messagebox.showwarning("Missing Duration", 
+                        f"Could not find duration for: {len(missing_duration)} video(s)")
+                
+                if total_seconds == 0:
+                    messagebox.showwarning("No Duration", "No video durations found")
+                    return
+                
+                # Calculate end time
+                start_dt = datetime.strptime(start_time, "%H:%M")
+                end_dt = start_dt + timedelta(seconds=total_seconds)
+                end_time = end_dt.strftime("%H:%M")
+                
+                self.end_var.set(end_time)
+                
+                # Show duration
+                hours = total_seconds / 3600
+                self.duration_label.config(text=f"Duration: {hours:.1f} hours (calculated)")
+                
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to calculate end time: {e}")
         
         def on_type_change(self):
             if self.type_var.get() == "video":
