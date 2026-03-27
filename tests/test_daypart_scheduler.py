@@ -526,5 +526,226 @@ class TestGetAvailableTags:
         assert tags == ["drama"]
 
 
+class TestScheduleGeneration:
+    """Integration tests for schedule generation functions"""
+    
+    def test_generate_block_schedule_tag_based(self):
+        """Test tag-based block schedule generation"""
+        from akiratv.daypart_scheduler import TimeBlock, generate_block_schedule
+        
+        # Create mock available videos
+        available_videos = [
+            {"path": "/video1.mp4", "duration": 600, "tags": ["kids"]},
+            {"path": "/video2.mp4", "duration": 600, "tags": ["kids"]},
+            {"path": "/video3.mp4", "duration": 600, "tags": ["horror"]}
+        ]
+        
+        block = TimeBlock("06:00", "08:00", "tag", "kids")
+        entries = generate_block_schedule(block, available_videos, [], "test_channel")
+        
+        assert len(entries) >= 1  # At least one entry to fill time
+        for entry in entries:
+            assert entry["source"] == "daypart_tag"
+            assert entry["metadata"]["tag_used"] == "kids"
+    
+    def test_generate_block_schedule_specific_video(self):
+        """Test specific video block schedule generation"""
+        from akiratv.daypart_scheduler import TimeBlock, generate_block_schedule
+        
+        available_videos = [
+            {"path": "/video1.mp4", "duration": 120, "tags": ["action"], "collection": {"id": "col1"}}
+        ]
+        
+        block = TimeBlock("10:00", "12:00", "video", "/video1.mp4")
+        entries = generate_block_schedule(block, available_videos, [], "test_channel")
+        
+        assert len(entries) == 1
+        assert entries[0]["file"] == "/video1.mp4"
+        assert entries[0]["source"] == "daypart_video"
+    
+    def test_generate_marathon_schedule(self):
+        """Test marathon schedule generation"""
+        from akiratv.daypart_scheduler import MarathonConfig, generate_marathon_schedule
+        
+        available_videos = [
+            {"path": "/v1.mp4", "duration": 3600, "tags": ["80s"]},
+            {"path": "/v2.mp4", "duration": 3600, "tags": ["80s"]},
+            {"path": "/v3.mp4", "duration": 3600, "tags": ["80s"]}
+        ]
+        
+        marathon = MarathonConfig("80s", ["friday"])
+        entries = generate_marathon_schedule("80s", available_videos, marathon, [], "test_channel")
+        
+        # Marathon should fill 24 hours
+        assert len(entries) > 0
+        for entry in entries:
+            assert entry["source"] == "daypart_marathon"
+    
+    def test_fill_gaps_with_random_all_source(self):
+        """Test gap filling with source='all'"""
+        from akiratv.daypart_scheduler import GapFillerConfig, fill_gaps_with_random
+        
+        gaps = [("10:00", "12:00")]
+        available_videos = [
+            {"path": "/v1.mp4", "duration": 1800, "tags": ["action"], "collection": {"id": "col1"}},
+            {"path": "/v2.mp4", "duration": 1800, "tags": ["comedy"], "collection": {"id": "col2"}}
+        ]
+        
+        config = GapFillerConfig(enabled=True, source="all")
+        entries = fill_gaps_with_random(gaps, available_videos, config, [], "test_channel")
+        
+        assert len(entries) > 0
+        assert all(e["source"] == "gap_filler" for e in entries)
+    
+    def test_fill_gaps_with_random_collections_filter(self):
+        """Test gap filling with collection filtering"""
+        from akiratv.daypart_scheduler import GapFillerConfig, fill_gaps_with_random
+        
+        gaps = [("10:00", "12:00")]
+        available_videos = [
+            {"path": "/v1.mp4", "duration": 1800, "tags": ["action"], "collection": {"id": "col1"}},
+            {"path": "/v2.mp4", "duration": 1800, "tags": ["comedy"], "collection": {"id": "col2"}},
+            {"path": "/v3.mp4", "duration": 1800, "tags": ["drama"], "collection": {"id": "col3"}}
+        ]
+        
+        # Filter to only col1
+        config = GapFillerConfig(enabled=True, source="collections", collection_ids=["col1"])
+        entries = fill_gaps_with_random(gaps, available_videos, config, [], "test_channel")
+        
+        # All entries should be from col1
+        for entry in entries:
+            assert entry["collection_id"] == "col1"
+    
+    def test_fill_gaps_with_random_tags_filter(self):
+        """Test gap filling with tag filtering"""
+        from akiratv.daypart_scheduler import GapFillerConfig, fill_gaps_with_random
+        
+        gaps = [("10:00", "12:00")]
+        available_videos = [
+            {"path": "/v1.mp4", "duration": 1800, "tags": ["action"], "collection": {"id": "col1"}},
+            {"path": "/v2.mp4", "duration": 1800, "tags": ["comedy"], "collection": {"id": "col2"}},
+            {"path": "/v3.mp4", "duration": 1800, "tags": ["action", "comedy"], "collection": {"id": "col3"}}
+        ]
+        
+        # Filter to only action tag
+        config = GapFillerConfig(enabled=True, source="tags", tags=["action"])
+        entries = fill_gaps_with_random(gaps, available_videos, config, [], "test_channel")
+        
+        # All entries should have action tag
+        for entry in entries:
+            # Get the video that was selected
+            video = next((v for v in available_videos if v["path"] == entry["file"]), None)
+            assert video is not None and "action" in video["tags"]
+    
+    def test_fill_gaps_with_excluded_tags(self):
+        """Test gap filling respects excluded tags"""
+        from akiratv.daypart_scheduler import GapFillerConfig, fill_gaps_with_random
+        
+        # Use a 2-hour gap with 2 videos to ensure we don't exhaust candidates
+        gaps = [("10:00", "12:00")]
+        available_videos = [
+            {"path": "/horror1.mp4", "duration": 3600, "tags": ["horror"], "collection": {"id": "c1"}},
+            {"path": "/action1.mp4", "duration": 3600, "tags": ["action"], "collection": {"id": "c2"}}
+        ]
+        
+        # Exclude horror
+        config = GapFillerConfig(enabled=True, source="all", excluded_tags=["horror"], respect_24h_norepeat=False)
+        entries = fill_gaps_with_random(gaps, available_videos, config, [], "test_channel")
+        
+        # No horror videos should be selected
+        for entry in entries:
+            assert "/horror" not in entry["file"]
+    
+    def test_generate_daypart_schedule_full(self):
+        """Test complete daypart schedule generation"""
+        from akiratv.daypart_scheduler import generate_daypart_schedule, TimeBlock, generate_block_schedule
+        from datetime import date
+        
+        daypart_config = {
+            "daypart_config": {
+                "time_blocks": [
+                    {
+                        "block_id": "block1",
+                        "start_time": "06:00",
+                        "end_time": "10:00",
+                        "content_type": "tag",
+                        "content_value": "kids",
+                        "duration_seconds": 14400
+                    }
+                ],
+                "marathons": [],
+                "gap_filler": {
+                    "enabled": True,
+                    "source": "all",
+                    "excluded_tags": [],
+                    "respect_24h_norepeat": True,
+                    "shuffle": True
+                }
+            }
+        }
+        
+        available_videos = [
+            {"path": "/k1.mp4", "duration": 7200, "tags": ["kids"], "collection": {"id": "c1"}},
+            {"path": "/k2.mp4", "duration": 7200, "tags": ["kids"], "collection": {"id": "c1"}},
+            {"path": "/a1.mp4", "duration": 3600, "tags": ["action"], "collection": {"id": "c2"}}
+        ]
+        
+        entries = generate_daypart_schedule(daypart_config, available_videos, "test_channel", date.today())
+        
+        # Should have entries - either from time block or gap filler
+        assert len(entries) > 0
+    
+    def test_generate_daypart_schedule_marathon_day(self):
+        """Test daypart schedule on marathon day"""
+        from akiratv.daypart_scheduler import generate_daypart_schedule
+        from datetime import date
+        
+        # Use a fixed date that's a Friday
+        test_date = date(2025, 1, 3)  # This is a Friday
+        
+        daypart_config = {
+            "daypart_config": {
+                "time_blocks": [
+                    {
+                        "block_id": "block1",
+                        "start_time": "06:00",
+                        "end_time": "10:00",
+                        "content_type": "tag",
+                        "content_value": "kids",
+                        "duration_seconds": 14400
+                    }
+                ],
+                "marathons": [
+                    {
+                        "tag": "80s",
+                        "days": ["friday"],
+                        "enabled": True,
+                        "shuffle": True,
+                        "no_repeat_24h": True
+                    }
+                ],
+                "gap_filler": {
+                    "enabled": True,
+                    "source": "all"
+                }
+            }
+        }
+        
+        # Use longer videos to fill more of the 24-hour period
+        available_videos = [
+            {"path": "/v1.mp4", "duration": 28800, "tags": ["80s"], "collection": {"id": "c1"}},  # 8 hours
+            {"path": "/v2.mp4", "duration": 28800, "tags": ["80s"], "collection": {"id": "c1"}},  # 8 hours
+            {"path": "/v3.mp4", "duration": 28800, "tags": ["80s"], "collection": {"id": "c1"}},  # 8 hours
+        ]
+        
+        entries = generate_daypart_schedule(daypart_config, available_videos, "test_channel", test_date)
+        
+        # Should have entries from marathon on Friday
+        assert len(entries) > 0
+        # At least some entries should be marathon entries
+        marathon_entries = [e for e in entries if e.get("source") == "daypart_marathon"]
+        assert len(marathon_entries) > 0, f"Expected marathon entries but got: {entries}"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

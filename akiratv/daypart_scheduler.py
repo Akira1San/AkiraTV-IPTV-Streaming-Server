@@ -159,17 +159,20 @@ class GapFillerConfig:
     Args:
         enabled: Enable automatic gap filling
         source: "all", "collections", or "tags"
+        collection_ids: List of collection IDs to use when source="collections"
+        tags: List of tags to use when source="tags"
         excluded_tags: List of tags to exclude from gap filling
         respect_24h_norepeat: Apply 24-hour no-repeat rule
         shuffle: Randomize selection
     """
     def __init__(self, enabled: bool = True, source: str = "all",
+                 collection_ids: list = None, tags: list = None,
                  excluded_tags: list = None, respect_24h_norepeat: bool = True,
                  shuffle: bool = True):
         self.enabled = enabled
         self.source = source  # "all", "collections", "tags"
-        self.collection_ids = []  # If source="collections"
-        self.tags = []  # If source="tags"
+        self.collection_ids = collection_ids or []  # If source="collections"
+        self.tags = tags or []  # If source="tags"
         self.excluded_tags = excluded_tags or []
         self.respect_24h_norepeat = respect_24h_norepeat
         self.shuffle = shuffle
@@ -187,6 +190,19 @@ class GapFillerConfig:
             "respect_24h_norepeat": self.respect_24h_norepeat,
             "shuffle": self.shuffle
         }
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'GapFillerConfig':
+        """Create GapFillerConfig from dictionary"""
+        return cls(
+            enabled=data.get("enabled", True),
+            source=data.get("source", "all"),
+            collection_ids=data.get("collection_ids", []),
+            tags=data.get("tags", []),
+            excluded_tags=data.get("excluded_tags", []),
+            respect_24h_norepeat=data.get("respect_24h_norepeat", True),
+            shuffle=data.get("shuffle", True)
+        )
 
 
 # ============================================================================
@@ -550,6 +566,26 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
     
     gap_entries = []
     
+    # Pre-filter available videos based on gap filler source
+    filtered_videos = available_videos.copy()
+    
+    # Apply source-based filtering (collections or tags)
+    if gap_filler_config.source == "collections" and gap_filler_config.collection_ids:
+        # Filter to only include videos from specified collections
+        filtered_videos = [v for v in filtered_videos 
+                          if v.get("collection", {}).get("id", "") in gap_filler_config.collection_ids]
+        logger.debug(f"[{channel}] Gap filler: filtered to {len(filtered_videos)} videos from collections {gap_filler_config.collection_ids}")
+    elif gap_filler_config.source == "tags" and gap_filler_config.tags:
+        # Filter to only include videos with specified tags
+        filtered_videos = [v for v in filtered_videos
+                          if any(tag in v.get("tags", []) for tag in gap_filler_config.tags)]
+        logger.debug(f"[{channel}] Gap filler: filtered to {len(filtered_videos)} videos with tags {gap_filler_config.tags}")
+    
+    # If no videos match the filter, fall back to all videos
+    if not filtered_videos:
+        logger.warning(f"[{channel}] Gap filler: No videos match source filter, using all videos")
+        filtered_videos = available_videos.copy()
+    
     for gap_start, gap_end in gaps:
         gap_duration = calculate_duration(gap_start, gap_end)
         current_time = parse_time_string(gap_start)
@@ -563,8 +599,8 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
         gap_recent = [] if gap_filler_config.respect_24h_norepeat else None
         
         while current_time < end_time:
-            # Filter available videos
-            candidates = available_videos.copy()
+            # Filter available videos (use pre-filtered list)
+            candidates = filtered_videos.copy()
             
             # Apply excluded tags
             if gap_filler_config.excluded_tags:
@@ -573,8 +609,8 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
             
             if not candidates:
                 # Emergency: try without exclusions
-                candidates = available_videos
-                logger.warning(f"[{channel}] Gap filler: No candidates after exclusions, using all videos")
+                candidates = filtered_videos
+                logger.warning(f"[{channel}] Gap filler: No candidates after exclusions, using filtered videos")
             
             # Apply 24h no-repeat rule
             if gap_filler_config.respect_24h_norepeat:
@@ -584,7 +620,7 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
                 if not candidates:
                     # Reset recent videos and try again
                     logger.info(f"[{channel}] Gap filler: All videos used in last 24h, resetting")
-                    candidates = available_videos
+                    candidates = filtered_videos
                     recent_videos.clear()
             
             if not candidates:
@@ -654,7 +690,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     is_marathon_day = False
     weekday = target_date.weekday()  # 0=Monday
     
-    for marathon in daypart_config.get("marathons", []):
+    daypart_inner = daypart_config.get("daypart_config", {})
+    
+    for marathon in daypart_inner.get("marathons", []):
         if not marathon.get("enabled", True):
             continue
         
@@ -662,10 +700,12 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         if weekday in get_weekday_indices(marathon_days):
             is_marathon_day = True
             logger.info(f"[{channel}] Marathon day for tag '{marathon['tag']}'")
+            # Convert dict to MarathonConfig
+            marathon_cfg = MarathonConfig.from_dict(marathon)
             marathon_entries = generate_marathon_schedule(
                 marathon["tag"], 
                 available_videos,
-                marathon_config=marathon,
+                marathon_config=marathon_cfg,
                 recent_videos=recent_videos,
                 channel=channel
             )
@@ -674,7 +714,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     
     # 2. If not marathon day, apply time blocks
     if not is_marathon_day:
-        time_blocks = daypart_config.get("time_blocks", [])
+        daypart_inner = daypart_config.get("daypart_config", {})
+        time_blocks = daypart_inner.get("time_blocks", [])
         for block_data in time_blocks:
             block = TimeBlock.from_dict(block_data)
             block_entries = generate_block_schedule(
@@ -687,10 +728,10 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     
     # 3. Detect and fill gaps (only if not marathon day and gap filler enabled)
     if not is_marathon_day:
-        gap_filler_config = GapFillerConfig.from_dict(daypart_config.get("gap_filler", {}))
+        gap_filler_config = GapFillerConfig.from_dict(daypart_inner.get("gap_filler", {}))
         
         if gap_filler_config.enabled:
-            time_blocks = [TimeBlock.from_dict(b) for b in daypart_config.get("time_blocks", [])]
+            time_blocks = [TimeBlock.from_dict(b) for b in daypart_inner.get("time_blocks", [])]
             gaps = detect_gaps(time_blocks)
             
             if gaps:
