@@ -300,6 +300,12 @@ class SimpleSchedulerWizard:
         
         self.info_duration = ttk.Label(metadata_frame, text="Duration: -", font=("TkDefaultFont", 9))
         self.info_duration.pack(anchor="w", pady=2)
+        
+        # Action buttons in Video Info panel
+        action_frame = ttk.Frame(info_container)
+        action_frame.pack(fill="x", pady=(15, 0))
+        ttk.Button(action_frame, text="Save Schedule", command=self.on_save_daypart_schedule).pack(fill="x", pady=2)
+        ttk.Button(action_frame, text="Generate Preview", command=self.on_generate_daypart_preview).pack(fill="x", pady=2)
 
     def create_collection_panel(self, parent):
         """Create the Collection panel with tabs for collections and standby"""
