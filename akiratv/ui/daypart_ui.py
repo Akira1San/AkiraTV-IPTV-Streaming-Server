@@ -7,7 +7,8 @@ Extracted from simple_scheduler.py to improve modularity.
 """
 
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import ttk, messagebox, simpledialog, filedialog
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -335,6 +336,7 @@ class DaypartSchedulerUI:
         ttk.Button(block_btn_frame, text="Delete Selected", command=self.app.on_delete_block).pack(side="left", padx=2)
         ttk.Button(block_btn_frame, text="Move Up", command=self.app.on_move_block_up).pack(side="left", padx=2)
         ttk.Button(block_btn_frame, text="Move Down", command=self.app.on_move_block_down).pack(side="left", padx=2)
+        ttk.Button(block_btn_frame, text="Copy to Channel", command=self.on_copy_blocks_to_channel).pack(side="left", padx=10)
         
         # Block count label
         self.app.block_count_label = ttk.Label(block_panel, text="Total blocks: 0")
@@ -465,10 +467,203 @@ class DaypartSchedulerUI:
         ttk.Button(action_btn_frame, text="Save Schedule",
                   command=self.app.on_save_daypart_schedule).pack(side="left", padx=5)
         
+        # Export/Import buttons
+        ttk.Button(action_btn_frame, text="Export Config",
+                  command=self.on_export_daypart_config).pack(side="left", padx=5)
+        ttk.Button(action_btn_frame, text="Import Config",
+                  command=self.on_import_daypart_config).pack(side="left", padx=5)
+        
         # Initialize daypart config for current channel
         self.app.load_daypart_config_for_channel()
         
         return main_frame
+    
+    def on_export_daypart_config(self):
+        """Export daypart configuration to a standalone JSON file"""
+        try:
+            # Build export data
+            export_data = {
+                "version": "1.0",
+                "export_date": datetime.now().isoformat(),
+                "daypart_config": {
+                    "time_blocks": [b.to_dict() for b in self.app.daypart_time_blocks],
+                    "marathons": [m.to_dict() for m in self.app.daypart_marathons],
+                    "gap_filler": self.app.daypart_gap_filler.to_dict()
+                }
+            }
+            
+            # Ask user for save location
+            file_path = filedialog.asksaveasfilename(
+                title="Export Daypart Configuration",
+                defaultextension=".json",
+                filetypes=["JSON files (*.json)", "All files (*.*)"],
+                initialfile=f"daypart_config_{self.app.current_channel or 'export'}.json"
+            )
+            
+            if not file_path:
+                return  # User cancelled
+            
+            # Write to file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(export_data, f, indent=2)
+            
+            messagebox.showinfo("Export Successful", 
+                f"Daypart configuration exported to:\n{file_path}")
+            
+        except Exception as e:
+            messagebox.showerror("Export Error", f"Failed to export: {str(e)}")
+            import logging
+            logging.getLogger("AkiraTV").error(f"Daypart export failed: {e}", exc_info=True)
+    
+    def on_import_daypart_config(self):
+        """Import daypart configuration from a standalone JSON file"""
+        try:
+            # Ask user for file to import
+            file_path = filedialog.askopenfilename(
+                title="Import Daypart Configuration",
+                filetypes=["JSON files (*.json)", "All files (*.*)"]
+            )
+            
+            if not file_path:
+                return  # User cancelled
+            
+            # Read file
+            with open(file_path, 'r', encoding='utf-8') as f:
+                import_data = json.load(f)
+            
+            # Validate import data structure
+            if "daypart_config" not in import_data:
+                messagebox.showerror("Import Error", "Invalid file format: missing 'daypart_config' key")
+                return
+            
+            daypart_config = import_data["daypart_config"]
+            
+            # Import time blocks
+            self.app.daypart_time_blocks = []
+            from ..daypart_scheduler import TimeBlock
+            for block_data in daypart_config.get("time_blocks", []):
+                try:
+                    block = TimeBlock.from_dict(block_data)
+                    self.app.daypart_time_blocks.append(block)
+                except Exception as e:
+                    import logging
+                    logging.getLogger("AkiraTV").warning(f"Failed to import block: {e}")
+            
+            # Import marathons
+            self.app.daypart_marathons = []
+            from ..daypart_scheduler import MarathonConfig
+            for marathon_data in daypart_config.get("marathons", []):
+                try:
+                    marathon = MarathonConfig.from_dict(marathon_data)
+                    self.app.daypart_marathons.append(marathon)
+                except Exception as e:
+                    import logging
+                    logging.getLogger("AkiraTV").warning(f"Failed to import marathon: {e}")
+            
+            # Import gap filler
+            from ..daypart_scheduler import GapFillerConfig
+            gap_data = daypart_config.get("gap_filler", {})
+            self.app.daypart_gap_filler = GapFillerConfig.from_dict(gap_data)
+            
+            # Update UI
+            self.app.update_block_list()
+            self.app.update_marathon_list()
+            self.app.update_gap_filler_ui()
+            self.app.update_preview_display()
+            
+            # Show import summary
+            block_count = len(self.app.daypart_time_blocks)
+            marathon_count = len(self.app.daypart_marathons)
+            messagebox.showinfo("Import Successful", 
+                f"Imported:\n• {block_count} time block(s)\n• {marathon_count} marathon(s)\n• Gap filler settings")
+            
+        except json.JSONDecodeError as e:
+            messagebox.showerror("Import Error", f"Invalid JSON format: {str(e)}")
+        except Exception as e:
+            messagebox.showerror("Import Error", f"Failed to import: {str(e)}")
+            import logging
+            logging.getLogger("AkiraTV").error(f"Daypart import failed: {e}", exc_info=True)
+    
+    def on_copy_blocks_to_channel(self):
+        """Copy current daypart blocks to another channel"""
+        if not self.app.daypart_time_blocks and not self.app.daypart_marathons:
+            messagebox.showwarning("Nothing to Copy", "No time blocks or marathons to copy")
+            return
+        
+        # Get list of available channels
+        from ..scheduler import load_channels
+        channels = load_channels()
+        
+        if not channels:
+            messagebox.showwarning("No Channels", "No channels available to copy to")
+            return
+        
+        # Create a simple selection dialog
+        dialog = tk.Toplevel(self.app.root)
+        dialog.title("Copy to Channel")
+        dialog.geometry("300x200")
+        dialog.transient(self.app.root)
+        dialog.grab_set()
+        
+        frame = ttk.Frame(dialog, padding=10)
+        frame.pack(fill="both", expand=True)
+        
+        ttk.Label(frame, text="Select destination channel:").pack(pady=(0, 10))
+        
+        # Channel list
+        channel_var = tk.StringVar()
+        channel_combo = ttk.Combobox(frame, textvariable=channel_var, state="readonly")
+        channel_combo['values'] = [ch.get("name", "Unknown") for ch in channels]
+        if channels:
+            channel_combo.current(0)
+        channel_combo.pack(fill="x", pady=(0, 10))
+        
+        # Options
+        copy_var = tk.StringVar(value="all")
+        ttk.Radiobutton(frame, text="Copy all (blocks, marathons, gap filler)", 
+                       variable=copy_var, value="all").pack(anchor="w")
+        ttk.Radiobutton(frame, text="Copy time blocks only", 
+                       variable=copy_var, value="blocks").pack(anchor="w")
+        ttk.Radiobutton(frame, text="Copy marathons only", 
+                       variable=copy_var, value="marathons").pack(anchor="w")
+        
+        # Buttons
+        btn_frame = ttk.Frame(frame)
+        btn_frame.pack(pady=(10, 0))
+        ttk.Button(btn_frame, text="Cancel", command=dialog.destroy).pack(side="left", padx=5)
+        ttk.Button(btn_frame, text="Copy", 
+                  command=lambda: self.do_copy_blocks(dialog, channel_var.get(), copy_var.get())).pack(side="left", padx=5)
+    
+    def do_copy_blocks(self, dialog, channel_name, copy_option):
+        """Perform the actual copy operation"""
+        try:
+            from ..daypart_scheduler import TimeBlock, MarathonConfig, GapFillerConfig
+            
+            # Load existing config for target channel
+            config = self.app.daypart_scheduler.load_config(channel_name) or {}
+            
+            if copy_option in ("all", "blocks"):
+                config["daypart_config"] = config.get("daypart_config", {})
+                config["daypart_config"]["time_blocks"] = [b.to_dict() for b in self.app.daypart_time_blocks]
+            
+            if copy_option in ("all", "marathons"):
+                config["daypart_config"] = config.get("daypart_config", {})
+                config["daypart_config"]["marathons"] = [m.to_dict() for m in self.app.daypart_marathons]
+                config["daypart_config"]["gap_filler"] = self.app.daypart_gap_filler.to_dict()
+            
+            # Save to target channel
+            if self.app.daypart_scheduler.save_config(channel_name, config):
+                messagebox.showinfo("Copy Successful", 
+                    f"Copied daypart configuration to channel '{channel_name}'")
+            else:
+                messagebox.showerror("Copy Failed", "Failed to save configuration")
+            
+            dialog.destroy()
+            
+        except Exception as e:
+            messagebox.showerror("Copy Error", f"Failed to copy: {str(e)}")
+            import logging
+            logging.getLogger("AkiraTV").error(f"Copy to channel failed: {e}", exc_info=True)
 
 
 def create_daypart_tab(parent, scheduler_app):
