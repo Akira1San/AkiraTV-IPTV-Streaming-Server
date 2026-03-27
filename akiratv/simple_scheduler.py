@@ -460,8 +460,8 @@ class SimpleSchedulerWizard:
             self.transient(parent)
             self.grab_set()
             self.title("Edit Time Block")
-            self.geometry("600x400")
-            self.resizable(False, False)
+            self.geometry("700x500")
+            self.resizable(True, True)
             self.create_widgets()
             if block:
                 self.populate_fields()
