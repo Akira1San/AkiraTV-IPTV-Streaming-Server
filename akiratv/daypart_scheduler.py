@@ -66,13 +66,14 @@ class TimeBlock:
     """
     def __init__(self, start_time: str, end_time: str, 
                  content_type: str, content_value: str, 
-                 block_id: str = None, days: list = None):
+                 block_id: str = None, days: list = None, video_count: str = None):
         self.block_id = block_id or f"block_{uuid.uuid4().hex[:8]}"
         self.start_time = start_time
         self.end_time = end_time
         self.content_type = content_type  # "video" or "tag"
         self.content_value = content_value
         self.days = days or []  # List of days for tag blocks
+        self.video_count = video_count  # "single", "2", "3", "all", etc.
         
     def __repr__(self):
         return f"TimeBlock({self.start_time}-{self.end_time}, {self.content_type}={self.content_value})"
@@ -100,6 +101,8 @@ class TimeBlock:
         }
         if self.days:
             result["days"] = self.days
+        if self.video_count:
+            result["video_count"] = self.video_count
         return result
     
     @classmethod
@@ -111,7 +114,8 @@ class TimeBlock:
             content_type=data["content_type"],
             content_value=data["content_value"],
             block_id=data.get("block_id"),
-            days=data.get("days", [])
+            days=data.get("days", []),
+            video_count=data.get("video_count")
         )
 
 
@@ -346,6 +350,24 @@ def validate_time_block(block: TimeBlock) -> Optional[str]:
     if block.content_type not in ["video", "tag"]:
         return f"Invalid content_type: {block.content_type}"
     
+    # Validate tag blocks have valid video_count
+    if block.content_type == "tag":
+        content = block.content_value
+        parts = content.split("|")
+        tag = parts[0] if parts else block.content_value
+        
+        # Extract video_count
+        video_count = getattr(block, 'video_count', None)
+        if not video_count and len(parts) >= 3:
+            video_count = parts[2]
+        if not video_count:
+            video_count = "single"
+        
+        # Validate video_count is valid
+        valid_counts = ["single", "all", "2", "3", "4", "5"]
+        if video_count not in valid_counts:
+            return f"Invalid video_count: {video_count}. Must be one of: {valid_counts}"
+    
     if not block.content_value:
         return "Content value cannot be empty"
     
@@ -414,7 +436,18 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         
     elif block.content_type == "tag":
         # Tag-based random selection
-        tag = block.content_value
+        # Parse content_value: "tag_name|days|video_count" or "tag_name|days" or just "tag_name"
+        content = block.content_value
+        parts = content.split("|")
+        tag = parts[0]
+        
+        # Extract video_count from block or from content_value
+        video_count = getattr(block, 'video_count', None)
+        if not video_count and len(parts) >= 3:
+            video_count = parts[2]
+        if not video_count:
+            video_count = "single"
+        
         # Check collection tags (videos inherit tags from their collection)
         tag_videos = [v for v in available_videos if tag in v.get("collection", {}).get("tags", [])]
         
@@ -422,8 +455,23 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             logger.warning(f"[{channel}] No videos found for tag: {tag}")
             return entries
         
+        # Determine max videos to play
+        max_videos = None
+        if video_count == "all":
+            max_videos = len(tag_videos)
+        elif video_count != "single":
+            try:
+                max_videos = int(video_count)
+            except (ValueError, TypeError):
+                max_videos = None
+        
         # Fill the block with videos from this tag
+        video_index = 0
         while current_time < end_time:
+            # Check if we've reached the video count limit
+            if max_videos is not None and video_index >= max_videos:
+                break
+            
             # Filter by 24h rule
             candidates = tag_videos.copy()
             if recent_videos:
@@ -448,6 +496,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
                 "metadata": {
                     "scheduled_type": "tag",
                     "tag_used": tag,
+                    "video_count": video_count,
                     "block_start": block.start_time,
                     "block_end": block.end_time
                 }
@@ -459,6 +508,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
                 recent_videos.append((selected["path"], current_time))
             
             current_time += timedelta(seconds=selected["duration"])
+            video_index += 1
     
     return entries
 
@@ -729,8 +779,16 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         for block_data in time_blocks:
             block = TimeBlock.from_dict(block_data)
             
-            # Check if tag block has specific days
+            # Parse days from content_value if not set (for backward compatibility)
+            # Format: "tag_name|monday,tuesday,friday|single"
             block_days = block.days if hasattr(block, 'days') and block.days else None
+            
+            if not block_days and block.content_type == "tag":
+                # Try to extract days from content_value
+                content_parts = block.content_value.split("|")
+                if len(content_parts) >= 2:
+                    days_str = content_parts[1]
+                    block_days = [d.strip() for d in days_str.split(",") if d.strip()]
             
             if block.content_type == "tag" and block_days:
                 # Tag block with specific days - check if today is in the list

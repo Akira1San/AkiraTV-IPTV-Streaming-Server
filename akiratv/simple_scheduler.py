@@ -19,7 +19,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Daypart UI imports
-from .ui.daypart_ui import EditBlockDialog, TagExclusionDialog, create_daypart_tab
+# Note: EditBlockDialog is defined locally in SimpleSchedulerWizard class
+from .ui.daypart_ui import TagExclusionDialog, create_daypart_tab
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 USER_DIR = BASE_DIR / "user"
@@ -513,6 +514,18 @@ class SimpleSchedulerWizard:
             tag_scroll.pack(side="right", fill="y")
             self.tag_video_list.configure(yscrollcommand=tag_scroll.set)
             
+            # Video count selection (for tag mode) - NEW
+            count_frame = ttk.Frame(main_frame)
+            count_frame.pack(fill="x", pady=(0, 10))
+            ttk.Label(count_frame, text="Play:").pack(side="left", padx=(0, 5))
+            self.video_count_var = tk.StringVar(value="single")
+            count_combo = ttk.Combobox(count_frame, textvariable=self.video_count_var, 
+                                      values=["single", "2", "3", "4", "5", "all"], 
+                                      state="readonly", width=12)
+            count_combo.pack(side="left", padx=5)
+            count_combo.bind("<<ComboboxSelected>>", self.on_video_count_change)
+            ttk.Label(count_frame, text="video(s) from tag").pack(side="left", padx=5)
+            
             # Day selection (for tag blocks - like marathon)
             day_frame = ttk.Frame(main_frame)
             day_frame.pack(fill="x", pady=(0, 10))
@@ -727,6 +740,61 @@ class SimpleSchedulerWizard:
                     display = f"{title} [{duration_str}]"
                     self.tag_video_list.insert(tk.END, display)
         
+        def on_video_count_change(self, event=None):
+            """Auto-calculate end time based on video count and tag videos"""
+            content_type = self.type_var.get()
+            if content_type != "tag":
+                return
+            
+            tag = self.tag_var.get().strip()
+            video_count = self.video_count_var.get()
+            
+            if not tag:
+                return
+            
+            # Find videos with this tag
+            tag_videos = [v for v in self.available_videos 
+                          if tag in v.get("collection", {}).get("tags", [])]
+            
+            if not tag_videos:
+                return
+            
+            # Calculate total duration based on video count
+            if video_count == "single":
+                # For single, use the first video or calculate dynamically at runtime
+                # Keep the original end time behavior
+                return
+            
+            import random
+            # Shuffle for random selection
+            shuffled = tag_videos.copy()
+            random.shuffle(shuffled)
+            
+            # Get number of videos to calculate
+            if video_count == "all":
+                count = len(shuffled)
+            else:
+                count = int(video_count)
+            
+            # Calculate total duration
+            total_seconds = sum(v.get("duration", 0) for v in shuffled[:count])
+            
+            if total_seconds == 0:
+                return
+            
+            # Calculate end time
+            start = self.start_var.get()
+            try:
+                start_dt = datetime.strptime(start, "%H:%M")
+                end_dt = start_dt + timedelta(seconds=total_seconds)
+                end_time = end_dt.strftime("%H:%M")
+                self.end_var.set(end_time)
+                
+                hours = total_seconds / 3600
+                self.duration_label.config(text=f"Duration: {hours:.1f} hours (auto-calculated)")
+            except Exception as e:
+                pass
+        
         def on_all_days_toggle(self):
             """Toggle all day checkboxes"""
             state = self.all_days_var.get()
@@ -797,18 +865,35 @@ class SimpleSchedulerWizard:
                         display_text = f"Selected: {len(videos)} videos"
                     self.selected_video_label.config(text=display_text)
                 else:
-                    # Tag mode: extract tag name and days from content_value
-                    # Format: "tag_name|monday,tuesday,friday"
+                    # Tag mode: extract tag name, days, and video_count from content_value
+                    # Format: "tag_name|monday,tuesday,friday|single" or old format: "tag_name|monday,tuesday,friday"
                     content = self.block.content_value
-                    if "|" in content:
-                        tag_name, days_str = content.split("|", 1)
+                    parts = content.split("|")
+                    
+                    if len(parts) >= 3:
+                        # New format: tag_name|days|video_count
+                        tag_name = parts[0]
+                        days_str = parts[1]
+                        video_count = parts[2]
                         self.tag_var.set(tag_name)
+                        self.video_count_var.set(video_count)
+                        # Set day checkboxes
+                        selected_days = set(days_str.split(","))
+                        for day, var in self.day_vars.items():
+                            var.set(day in selected_days)
+                    elif len(parts) == 2:
+                        # Old format: tag_name|days
+                        tag_name = parts[0]
+                        days_str = parts[1]
+                        self.tag_var.set(tag_name)
+                        self.video_count_var.set("single")  # Default
                         # Set day checkboxes
                         selected_days = set(days_str.split(","))
                         for day, var in self.day_vars.items():
                             var.set(day in selected_days)
                     else:
                         self.tag_var.set(content)
+                        self.video_count_var.set("single")  # Default
                 self.on_type_change()
         
         def on_cancel(self):
@@ -835,6 +920,7 @@ class SimpleSchedulerWizard:
                     messagebox.showerror("Error", "Please select at least one video")
                     return
                 content_value = ";".join(self.selected_videos)
+                video_count = None
             else:
                 # Tag mode: only require tag and start time
                 tag = self.tag_var.get().strip()
@@ -844,13 +930,17 @@ class SimpleSchedulerWizard:
                 if not selected_days:
                     messagebox.showerror("Error", "Please select at least one day")
                     return
-                # Store tag with selected days: "tag_name|monday,tuesday,friday"
-                content_value = f"{tag}|{','.join(selected_days)}"
-                # For tag mode, set end time to start time (duration is calculated at runtime)
-                end = start  # Will be calculated at runtime based on random video
+                
+                # Get video count
+                video_count = self.video_count_var.get()
+                
+                # Store tag with selected days and video count: "tag_name|monday,tuesday,friday|single"
+                content_value = f"{tag}|{','.join(selected_days)}|{video_count}"
+                # End time is now set by auto-calculate or user can set manually
+                end = self.end_var.get()
             
-            # Create block
-            block = TimeBlock(start, end, content_type, content_value)
+            # Create block with video_count
+            block = TimeBlock(start, end, content_type, content_value, video_count=video_count)
             
             # Skip validation for tag blocks (duration is calculated at runtime)
             if content_type == "video":
@@ -1128,7 +1218,7 @@ class SimpleSchedulerWizard:
         self.draw_timeline()
     
     def on_generate_daypart_preview(self):
-        """Generate daypart schedule preview for the week"""
+        """Generate daypart schedule preview for today (24 hours)"""
         try:
             # Get available videos
             collections = load_collections(self.current_profile)
@@ -1148,38 +1238,27 @@ class SimpleSchedulerWizard:
                 }
             }
             
-            # Generate schedule for the entire week (Monday-Sunday)
-            all_entries = []
-            today = date.today()
-            # Find start of week (Monday)
-            days_ahead = today.weekday()
-            monday = today - timedelta(days=days_ahead)
+            # Generate schedule for just TODAY (24 hours only)
+            target_date = date.today()
+            day_name = target_date.strftime("%A").lower()  # "monday", "tuesday", etc.
             
-            for i in range(7):
-                target_date = monday + timedelta(days=i)
-                day_name = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"][i]
-                
-                entries = generate_daypart_schedule(
-                    daypart_config,
-                    available_videos,
-                    self.current_channel or "default",
-                    target_date
-                )
-                
-                # Add day name to each entry
-                for entry in entries:
-                    entry["day"] = day_name
-                
-                all_entries.extend(entries)
+            entries = generate_daypart_schedule(
+                daypart_config,
+                available_videos,
+                self.current_channel or "default",
+                target_date
+            )
             
-            self.daypart_preview_entries = all_entries
-            print(f"[DEBUG] Generated {len(all_entries)} entries for week, calling update_preview_display")
+            # Add day name to each entry
+            for entry in entries:
+                entry["day"] = day_name
+            
+            self.daypart_preview_entries = entries
             self.update_preview_display()
             
             messagebox.showinfo("Preview Generated",
-                              f"Generated {len(all_entries)} schedule entries for the week")
+                              f"Generated {len(entries)} schedule entries for {day_name.title()} (24 hours)")
         except Exception as e:
-            print(f"[DEBUG] Exception in on_generate_daypart_preview: {e}")
             messagebox.showerror("Error", f"Failed to generate preview: {str(e)}")
             logger.error(f"Daypart preview generation failed: {e}", exc_info=True)
     
@@ -1364,9 +1443,6 @@ class SimpleSchedulerWizard:
         
         stats = f"Total: {total_entries} entries | Scheduled blocks: {block_entries} | Gap filler: {gap_entries}"
         self.preview_stats_label.config(text=stats)
-        
-        # Initialize daypart configuration for current channel
-        self.load_daypart_config_for_channel()
     
     def draw_timeline(self):
         """Draw the visual timeline on canvas"""
