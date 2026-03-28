@@ -2059,6 +2059,36 @@ class SimpleSchedulerWizard:
     
     def update_preview_display(self, event=None):
         """Update the preview listbox with the selected day's schedule"""
+        # First check for daypart preview entries
+        if self.daypart_preview_entries:
+            self.preview_list.delete(0, tk.END)
+            for entry in self.daypart_preview_entries:
+                time = entry["time"]
+                file = Path(entry["file"]).name
+                source = entry.get("source", "unknown")
+                metadata = entry.get("metadata", {})
+                
+                if source == "daypart_video":
+                    display = f"{time} [VIDEO] {file}"
+                elif source == "daypart_tag":
+                    tag = metadata.get("tag_used", "unknown")
+                    display = f"{time} [TAG:{tag}] {file}"
+                elif source == "daypart_marathon":
+                    tag = metadata.get("tag", "unknown")
+                    display = f"{time} [MARATHON:{tag}] {file}"
+                elif source == "gap_filler":
+                    display = f"{time} [GAP] {file}"
+                else:
+                    display = f"{time} {file}"
+                
+                self.preview_list.insert(tk.END, display)
+            
+            # Update preview info label if it exists
+            if hasattr(self, 'preview_info'):
+                self.preview_info.config(text=f"Daypart Preview: {len(self.daypart_preview_entries)} entries")
+            return
+        
+        # Fall back to current_schedule logic
         if not self.current_schedule:
             self.preview_list.delete(0, tk.END)
             return
