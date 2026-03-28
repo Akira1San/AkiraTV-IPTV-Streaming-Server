@@ -131,7 +131,7 @@ class SimpleSchedulerWizard:
         
         # Data structures
         self.collections = []
-        self.current_profile = "collections"  # Default profile
+        self.current_profile = "akiratv"  # Default profile (matches collections_akiratv.json)
         self.current_schedule = None  # Store generated schedule for preview
         self.current_channel = None
         self.current_mode = None
@@ -479,7 +479,56 @@ class SimpleSchedulerWizard:
             main_frame = ttk.Frame(self, padding=10)
             main_frame.pack(fill="both", expand=True)
             
-            # Start and End times
+            # Content type
+            type_frame = ttk.Frame(main_frame)
+            type_frame.pack(fill="x", pady=(0, 10))
+            ttk.Label(type_frame, text="Content Type:").pack(side="left", padx=(0, 5))
+            self.type_var = tk.StringVar(value="tag")
+            ttk.Radiobutton(type_frame, text="Tag (random)", variable=self.type_var,
+                           value="tag", command=self.on_type_change).pack(side="left", padx=5)
+            ttk.Radiobutton(type_frame, text="Specific Video", variable=self.type_var,
+                           value="video", command=self.on_type_change).pack(side="left", padx=5)
+            
+            # Tag selection (shown for tag mode)
+            self.tag_frame = ttk.Frame(main_frame)
+            self.tag_frame.pack(fill="x", pady=(0, 10))
+            ttk.Label(self.tag_frame, text="Select Tag:").pack(side="left", padx=(0, 5))
+            self.tag_var = tk.StringVar()
+            self.tag_combo = ttk.Combobox(self.tag_frame, textvariable=self.tag_var, state="normal")
+            self.tag_combo.pack(side="left", fill="x", expand=True)
+            self.tag_var.trace_add("write", self.on_tag_select)  # Update video list when tag changes
+            ttk.Button(self.tag_frame, text="New", command=self.on_new_tag).pack(side="left", padx=5)
+            # Populate tag combo with available tags
+            self.tag_combo['values'] = self.available_tags
+            
+            # Tag video list (shown for tag mode - list of videos with this tag)
+            self.tag_video_list_frame = ttk.Frame(main_frame)
+            # Video list for tag
+            ttk.Label(self.tag_video_list_frame, text="Videos with this tag:").pack(anchor="w")
+            tag_list_frame = ttk.Frame(self.tag_video_list_frame)
+            tag_list_frame.pack(fill="both", expand=True, pady=(5, 0))
+            self.tag_video_list = tk.Listbox(tag_list_frame, height=8)
+            self.tag_video_list.pack(side="left", fill="both", expand=True)
+            tag_scroll = ttk.Scrollbar(tag_list_frame, orient="vertical", command=self.tag_video_list.yview)
+            tag_scroll.pack(side="right", fill="y")
+            self.tag_video_list.configure(yscrollcommand=tag_scroll.set)
+            
+            # Day selection (for tag blocks - like marathon)
+            day_frame = ttk.Frame(main_frame)
+            day_frame.pack(fill="x", pady=(0, 10))
+            ttk.Label(day_frame, text="Days:").pack(side="left", padx=(0, 5))
+            self.day_vars = {}
+            days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+            for day in days:
+                var = tk.BooleanVar(value=False)
+                chk = ttk.Checkbutton(day_frame, text=day[:3].title(), variable=var)
+                chk.pack(side="left", padx=2)
+                self.day_vars[day] = var
+            self.all_days_var = tk.BooleanVar(value=False)
+            ttk.Checkbutton(day_frame, text="All", variable=self.all_days_var,
+                           command=self.on_all_days_toggle).pack(side="left", padx=5)
+            
+            # Start Time (for both video and tag)
             time_frame = ttk.Frame(main_frame)
             time_frame.pack(fill="x", pady=(0, 10))
             ttk.Label(time_frame, text="Start Time:").pack(side="left", padx=(0, 5))
@@ -487,10 +536,13 @@ class SimpleSchedulerWizard:
             self.start_entry = ttk.Entry(time_frame, textvariable=self.start_var, width=8)
             self.start_entry.pack(side="left", padx=5)
             ttk.Label(time_frame, text="End Time:").pack(side="left", padx=(10, 5))
-            self.end_var = tk.StringVar(value="00:00")
+            self.end_var = tk.StringVar(value="01:00")  # Default to 1 hour for video mode
             self.end_entry = ttk.Entry(time_frame, textvariable=self.end_var, width=8)
             self.end_entry.pack(side="left", padx=5)
             ttk.Label(time_frame, text="(HH:MM format, 24-hour)").pack(side="left", padx=10)
+            
+            # Auto start button (for tags - pick random video and calculate start)
+            # ttk.Button(time_frame, text="Auto (pick video)", command=self.auto_for_tag).pack(side="left", padx=5)
             
             # Duration display
             self.duration_label = ttk.Label(time_frame, text="Duration: 0 hours")
@@ -498,24 +550,11 @@ class SimpleSchedulerWizard:
             self.start_var.trace_add("write", self.update_duration)
             self.end_var.trace_add("write", self.update_duration)
             
-            # Auto end time button
-            ttk.Button(time_frame, text="Auto End", command=self.auto_end_time).pack(side="left", padx=5)
-            
-            # Content type
-            type_frame = ttk.Frame(main_frame)
-            type_frame.pack(fill="x", pady=(0, 10))
-            ttk.Label(type_frame, text="Content Type:").pack(side="left", padx=(0, 5))
-            self.type_var = tk.StringVar(value="tag")
-            ttk.Radiobutton(type_frame, text="Specific Video", variable=self.type_var,
-                           value="video", command=self.on_type_change).pack(side="left", padx=5)
-            ttk.Radiobutton(type_frame, text="Tag (random)", variable=self.type_var,
-                           value="tag", command=self.on_type_change).pack(side="left", padx=5)
-            
-            # Video selection
-            video_frame = ttk.Frame(main_frame)
-            video_frame.pack(fill="both", expand=True, pady=(0, 10))
-            ttk.Label(video_frame, text="Search Videos:").pack(anchor="w")
-            search_frame = ttk.Frame(video_frame)
+            # Video selection (shown for video mode)
+            self.video_frame = ttk.Frame(main_frame)
+            self.video_frame.pack(fill="both", expand=True, pady=(0, 10))
+            ttk.Label(self.video_frame, text="Search Videos:").pack(anchor="w")
+            search_frame = ttk.Frame(self.video_frame)
             search_frame.pack(fill="x", pady=(5, 0))
             self.video_search_var = tk.StringVar()
             self.video_search_var.trace_add("write", self.filter_videos)
@@ -524,7 +563,7 @@ class SimpleSchedulerWizard:
             ttk.Button(search_frame, text="Clear", command=self.clear_video_search).pack(side="left", padx=5)
             
             # Video list
-            list_frame = ttk.Frame(video_frame)
+            list_frame = ttk.Frame(self.video_frame)
             list_frame.pack(fill="both", expand=True, pady=(5, 0))
             self.video_list = tk.Listbox(list_frame, height=8, selectmode=tk.EXTENDED)
             self.video_list.pack(side="left", fill="both", expand=True)
@@ -537,17 +576,8 @@ class SimpleSchedulerWizard:
             self.populate_video_list()
             
             # Selected video display
-            self.selected_video_label = ttk.Label(video_frame, text="Selected: None", foreground="blue")
+            self.selected_video_label = ttk.Label(self.video_frame, text="Selected: None", foreground="blue")
             self.selected_video_label.pack(pady=(5, 0))
-            
-            # Tag selection (initially hidden)
-            self.tag_frame = ttk.Frame(main_frame)
-            ttk.Label(self.tag_frame, text="Select Tag:").pack(side="left", padx=(0, 5))
-            self.tag_var = tk.StringVar()
-            self.tag_combo = ttk.Combobox(self.tag_frame, textvariable=self.tag_var, state="normal")
-            self.tag_combo.pack(side="left", fill="x", expand=True)
-            ttk.Button(self.tag_frame, text="New", command=self.on_new_tag).pack(side="left", padx=5)
-            # Tag combo will be populated when dialog is created with available_tags
             
             # Buttons
             btn_frame = ttk.Frame(main_frame)
@@ -617,12 +647,31 @@ class SimpleSchedulerWizard:
                 messagebox.showerror("Error", f"Failed to calculate end time: {e}")
         
         def on_type_change(self):
-            if self.type_var.get() == "video":
-                self.video_list.master.pack(fill="both", expand=True)
+            content_type = self.type_var.get()
+            
+            if content_type == "video":
+                # Show video selection
+                self.video_frame.pack(fill="both", expand=True, pady=(0, 10))
+                # Hide tag video list
+                if hasattr(self, 'tag_video_list_frame'):
+                    self.tag_video_list_frame.pack_forget()
+                # Hide tag frame
                 self.tag_frame.pack_forget()
+                # Show end time for video mode
+                self.end_entry.pack(side="left", padx=5)
+                # Populate all videos
+                self.populate_video_list()
             else:
-                self.video_list.master.pack_forget()
+                # Hide video selection
+                self.video_frame.pack_forget()
+                # Show tag frame
                 self.tag_frame.pack(fill="x", pady=(0, 10))
+                # Hide end time for tag mode (will be calculated at runtime)
+                self.end_entry.pack_forget()
+                # Show tag video list
+                self.tag_video_list_frame.pack(fill="both", expand=True, pady=(0, 10))
+                # Update video list based on selected tag
+                self.populate_tag_videos()
         
         def populate_video_list(self, filter_text=""):
             self.video_list.delete(0, tk.END)
@@ -658,6 +707,81 @@ class SimpleSchedulerWizard:
             if new_tag:
                 self.tag_var.set(new_tag)
         
+        def on_tag_select(self, *args):
+            """Update video list when tag selection changes"""
+            self.populate_tag_videos()
+        
+        def populate_tag_videos(self):
+            """Populate video list with videos that have the selected tag"""
+            self.tag_video_list.delete(0, tk.END)
+            tag = self.tag_var.get().strip()
+            if not tag:
+                return
+            
+            # Find videos with this tag from their collection
+            for video in self.available_videos:
+                if tag in video.get("collection", {}).get("tags", []):
+                    title = video.get("title", video.get("path", "Unknown").split("/")[-1])
+                    duration = video.get("duration", 0)
+                    duration_str = f"{int(duration//3600):02d}:{int((duration%3600)//60):02d}" if duration > 0 else "?:??"
+                    display = f"{title} [{duration_str}]"
+                    self.tag_video_list.insert(tk.END, display)
+        
+        def on_all_days_toggle(self):
+            """Toggle all day checkboxes"""
+            state = self.all_days_var.get()
+            for var in self.day_vars.values():
+                var.set(state)
+        
+        def auto_for_tag(self):
+            """For tag mode: pick a random video and calculate end time based on its duration"""
+            content_type = self.type_var.get()
+            if content_type != "tag":
+                messagebox.showinfo("Info", "This feature is only for tag-based blocks")
+                return
+            
+            tag = self.tag_var.get().strip()
+            if not tag:
+                messagebox.showwarning("No Tag", "Please select a tag first")
+                return
+            
+            # Find videos that have this tag (from their collection)
+            tag_videos = [v for v in self.available_videos if tag in v.get("collection", {}).get("tags", [])]
+            
+            if not tag_videos:
+                messagebox.showwarning("No Videos", f"No videos found with tag '{tag}'")
+                return
+            
+            # Pick a random video
+            import random
+            selected = random.choice(tag_videos)
+            video_title = selected.get("title", selected.get("path", "Unknown").split("/")[-1])
+            duration = selected.get("duration", 0)
+            
+            if duration <= 0:
+                messagebox.showwarning("No Duration", f"Video '{video_title}' has no duration info")
+                return
+            
+            # Calculate end time
+            start = self.start_var.get()
+            try:
+                start_dt = datetime.strptime(start, "%H:%M")
+                end_dt = start_dt + timedelta(seconds=duration)
+                end_time = end_dt.strftime("%H:%M")
+                
+                # Store selected video for preview
+                self.selected_videos = [selected["path"]]
+                
+                duration_hours = duration / 3600
+                messagebox.showinfo("Video Selected", 
+                    f"Selected video:\n{video_title}\n\n"
+                    f"Duration: {duration_hours:.1f} hours\n"
+                    f"Start: {start}\n"
+                    f"End: {end_time}\n\n"
+                    f"A random video from this tag will be played at schedule time.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Could not calculate end time: {e}")
+        
         def populate_fields(self):
             if self.block:
                 self.start_var.set(self.block.start_time)
@@ -673,47 +797,111 @@ class SimpleSchedulerWizard:
                         display_text = f"Selected: {len(videos)} videos"
                     self.selected_video_label.config(text=display_text)
                 else:
-                    self.tag_var.set(self.block.content_value)
+                    # Tag mode: extract tag name and days from content_value
+                    # Format: "tag_name|monday,tuesday,friday"
+                    content = self.block.content_value
+                    if "|" in content:
+                        tag_name, days_str = content.split("|", 1)
+                        self.tag_var.set(tag_name)
+                        # Set day checkboxes
+                        selected_days = set(days_str.split(","))
+                        for day, var in self.day_vars.items():
+                            var.set(day in selected_days)
+                    else:
+                        self.tag_var.set(content)
                 self.on_type_change()
         
         def on_cancel(self):
             self.destroy()
         
         def on_save(self):
-            # Validate times
-            start = self.start_var.get()
-            end = self.end_var.get()
-            if not validate_time_format(start):
-                messagebox.showerror("Error", "Invalid start time format")
-                return
-            if not validate_time_format(end):
-                messagebox.showerror("Error", "Invalid end time format")
-                return
-            
             # Validate content
             content_type = self.type_var.get()
+            start = self.start_var.get()
+            
+            # Get selected days for tag mode
+            selected_days = [day for day, var in self.day_vars.items() if var.get()]
+            
             if content_type == "video":
+                # Video mode: require start and end time
+                end = self.end_var.get()
+                if not validate_time_format(start):
+                    messagebox.showerror("Error", "Invalid start time format")
+                    return
+                if not validate_time_format(end):
+                    messagebox.showerror("Error", "Invalid end time format")
+                    return
                 if not hasattr(self, 'selected_videos') or not self.selected_videos:
                     messagebox.showerror("Error", "Please select at least one video")
                     return
-                # Store multiple videos as semicolon-separated string
                 content_value = ";".join(self.selected_videos)
             else:
+                # Tag mode: only require tag and start time
                 tag = self.tag_var.get().strip()
                 if not tag:
-                    messagebox.showerror("Error", "Please enter a tag")
+                    messagebox.showerror("Error", "Please select a tag")
                     return
-                content_value = tag
+                if not selected_days:
+                    messagebox.showerror("Error", "Please select at least one day")
+                    return
+                # Store tag with selected days: "tag_name|monday,tuesday,friday"
+                content_value = f"{tag}|{','.join(selected_days)}"
+                # For tag mode, set end time to start time (duration is calculated at runtime)
+                end = start  # Will be calculated at runtime based on random video
             
             # Create block
             block = TimeBlock(start, end, content_type, content_value)
-            error = validate_time_block(block)
-            if error:
-                messagebox.showerror("Validation Error", error)
-                return
+            
+            # Skip validation for tag blocks (duration is calculated at runtime)
+            if content_type == "video":
+                error = validate_time_block(block)
+                if error:
+                    messagebox.showerror("Validation Error", error)
+                    return
             
             self.result = block
             self.destroy()
+        
+        def on_preview(self):
+            """Preview a random video for the selected tag"""
+            content_type = self.type_var.get()
+            
+            if content_type == "tag":
+                tag = self.tag_var.get().strip()
+                if not tag:
+                    messagebox.showwarning("No Tag", "Please select a tag first")
+                    return
+                
+                # Find videos that have this tag (from their collection)
+                tag_videos = [v for v in self.available_videos if tag in v.get("collection", {}).get("tags", [])]
+                
+                if not tag_videos:
+                    messagebox.showwarning("No Videos", f"No videos found with tag '{tag}'")
+                    return
+                
+                # Pick a random video
+                import random
+                selected = random.choice(tag_videos)
+                video_title = selected.get("title", selected.get("path", "Unknown").split("/")[-1])
+                duration = selected.get("duration", 0)
+                duration_hours = duration / 3600
+                
+                # Calculate end time
+                start = self.start_var.get()
+                try:
+                    start_dt = datetime.strptime(start, "%H:%M")
+                    end_dt = start_dt + timedelta(seconds=duration)
+                    end_time = end_dt.strftime("%H:%M")
+                    messagebox.showinfo("Preview", 
+                        f"Tag: {tag}\n\n"
+                        f"Random video selected:\n{video_title}\n\n"
+                        f"Duration: {duration_hours:.1f} hours\n"
+                        f"Start: {start}\n"
+                        f"End: {end_time}")
+                except Exception as e:
+                    messagebox.showerror("Error", f"Could not calculate end time: {e}")
+            else:
+                messagebox.showinfo("Preview", "Preview is only available for tag-based blocks")
     
     class TagExclusionDialog(tk.Toplevel):
         """Dialog for selecting tags to exclude from gap filler"""

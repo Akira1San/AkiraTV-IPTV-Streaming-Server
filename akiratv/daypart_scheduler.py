@@ -66,12 +66,13 @@ class TimeBlock:
     """
     def __init__(self, start_time: str, end_time: str, 
                  content_type: str, content_value: str, 
-                 block_id: str = None):
+                 block_id: str = None, days: list = None):
         self.block_id = block_id or f"block_{uuid.uuid4().hex[:8]}"
         self.start_time = start_time
         self.end_time = end_time
         self.content_type = content_type  # "video" or "tag"
         self.content_value = content_value
+        self.days = days or []  # List of days for tag blocks
         
     def __repr__(self):
         return f"TimeBlock({self.start_time}-{self.end_time}, {self.content_type}={self.content_value})"
@@ -89,7 +90,7 @@ class TimeBlock:
     
     def to_dict(self) -> dict:
         """Serialize to dictionary"""
-        return {
+        result = {
             "block_id": self.block_id,
             "start_time": self.start_time,
             "end_time": self.end_time,
@@ -97,6 +98,9 @@ class TimeBlock:
             "content_value": self.content_value,
             "duration_seconds": self.duration_seconds
         }
+        if self.days:
+            result["days"] = self.days
+        return result
     
     @classmethod
     def from_dict(cls, data: dict) -> 'TimeBlock':
@@ -106,7 +110,8 @@ class TimeBlock:
             end_time=data["end_time"],
             content_type=data["content_type"],
             content_value=data["content_value"],
-            block_id=data.get("block_id")
+            block_id=data.get("block_id"),
+            days=data.get("days", [])
         )
 
 
@@ -410,7 +415,8 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
     elif block.content_type == "tag":
         # Tag-based random selection
         tag = block.content_value
-        tag_videos = [v for v in available_videos if tag in v.get("tags", [])]
+        # Check collection tags (videos inherit tags from their collection)
+        tag_videos = [v for v in available_videos if tag in v.get("collection", {}).get("tags", [])]
         
         if not tag_videos:
             logger.warning(f"[{channel}] No videos found for tag: {tag}")
