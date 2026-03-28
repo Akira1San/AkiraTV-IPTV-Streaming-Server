@@ -21,7 +21,7 @@ from .daypart_scheduler import (
     DaypartScheduler, parse_time_string, validate_daypart_config,
     generate_daypart_schedule
 )
-from .simple_scheduler import load_collections
+from .collections import load_collections
 
 logger = logging.getLogger(__name__)
 

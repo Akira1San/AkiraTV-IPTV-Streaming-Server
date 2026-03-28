@@ -19,6 +19,9 @@ from .daypart_scheduler_mixin import DaypartSchedulerMixin
 import logging
 logger = logging.getLogger(__name__)
 
+# Import load_collections from collections module (avoids circular import)
+from .collections import load_collections
+
 # Daypart UI imports
 # Note: EditBlockDialog is defined locally in SimpleSchedulerWizard class
 from .ui.daypart_ui import TagExclusionDialog, create_daypart_tab
@@ -1044,15 +1047,6 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
     # - draw_time_block
     # ========================================================================
 
-        
-        dialog = self.EditBlockDialog(
-            self.root,
-            available_tags=sorted(list(available_tags)),
-            available_videos=available_videos
-        )
-        self.root.wait_window(dialog)
-        if dialog.result:
-            self.daypart_time_blocks.append(dialog.result)
             self.update_block_list()
             self.update_preview_display()
     

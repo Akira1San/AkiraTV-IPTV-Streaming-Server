@@ -129,3 +129,46 @@ def save_collections(data, path="collections.json"):
     data["last_scan"] = datetime.now().isoformat()
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
+
+
+def load_collections(profile_name="collections"):
+    """Load collections from specified profile in user/collections directory.
+    
+    This function is used by simple_scheduler and daypart_scheduler_mixin.
+    It looks for collection files in the following order:
+    1. user/collections/{profile_name}.json
+    2. user/collections/collections_{profile_name}.json
+    3. akiratv/{profile_name}.json (fallback)
+    4. akiratv/collections_{profile_name}.json (fallback)
+    """
+    import json
+    try:
+        # Get the script's directory and resolve paths
+        script_dir = Path(__file__).resolve().parent
+        base_dir = script_dir.parent
+        collections_dir = base_dir / "user" / "collections"
+        
+        # Try to find the collection file in the collections directory
+        profile_file = collections_dir / f"{profile_name}.json"
+        
+        # If not found, try with the "collections_" prefix
+        if not profile_file.exists():
+            profile_file = collections_dir / f"collections_{profile_name}.json"
+        
+        # If still not found, try in the script's directory as a fallback
+        if not profile_file.exists():
+            profile_file = script_dir / f"{profile_name}.json"
+            if not profile_file.exists():
+                profile_file = script_dir / f"collections_{profile_name}.json"
+        
+        # If the file exists, load it
+        if profile_file.exists():
+            with open(profile_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data.get("collections", [])
+        else:
+            print(f"Collection file not found: {profile_file}")
+            return []
+    except Exception as e:
+        print(f"Error loading collections: {e}")
+        return []
