@@ -1128,7 +1128,7 @@ class SimpleSchedulerWizard:
         self.draw_timeline()
     
     def on_generate_daypart_preview(self):
-        """Generate daypart schedule preview"""
+        """Generate daypart schedule preview for the week"""
         try:
             # Get available videos
             collections = load_collections(self.current_profile)
@@ -1148,22 +1148,36 @@ class SimpleSchedulerWizard:
                 }
             }
             
-            # Generate schedule for today
+            # Generate schedule for the entire week (Monday-Sunday)
+            all_entries = []
             today = date.today()
-            entries = generate_daypart_schedule(
-                daypart_config,
-                available_videos,
-                self.current_channel or "default",
-                today
-            )
+            # Find start of week (Monday)
+            days_ahead = today.weekday()
+            monday = today - timedelta(days=days_ahead)
             
-            self.daypart_preview_entries = entries
-            print(f"[DEBUG] Generated {len(entries)} entries, calling update_preview_display")
+            for i in range(7):
+                target_date = monday + timedelta(days=i)
+                day_name = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"][i]
+                
+                entries = generate_daypart_schedule(
+                    daypart_config,
+                    available_videos,
+                    self.current_channel or "default",
+                    target_date
+                )
+                
+                # Add day name to each entry
+                for entry in entries:
+                    entry["day"] = day_name
+                
+                all_entries.extend(entries)
+            
+            self.daypart_preview_entries = all_entries
+            print(f"[DEBUG] Generated {len(all_entries)} entries for week, calling update_preview_display")
             self.update_preview_display()
-            # Note: Timeline is drawn in main preview panel via update_preview_display
             
             messagebox.showinfo("Preview Generated",
-                              f"Generated {len(entries)} schedule entries for preview")
+                              f"Generated {len(all_entries)} schedule entries for the week")
         except Exception as e:
             print(f"[DEBUG] Exception in on_generate_daypart_preview: {e}")
             messagebox.showerror("Error", f"Failed to generate preview: {str(e)}")

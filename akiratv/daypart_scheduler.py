@@ -725,15 +725,32 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     if not is_marathon_day:
         daypart_inner = daypart_config.get("daypart_config", {})
         time_blocks = daypart_inner.get("time_blocks", [])
+        
         for block_data in time_blocks:
             block = TimeBlock.from_dict(block_data)
-            block_entries = generate_block_schedule(
-                block, 
-                available_videos,
-                recent_videos,
-                channel
-            )
-            schedule_entries.extend(block_entries)
+            
+            # Check if tag block has specific days
+            block_days = block.days if hasattr(block, 'days') and block.days else None
+            
+            if block.content_type == "tag" and block_days:
+                # Tag block with specific days - check if today is in the list
+                if weekday in get_weekday_indices(block_days):
+                    block_entries = generate_block_schedule(
+                        block, 
+                        available_videos,
+                        recent_videos,
+                        channel
+                    )
+                    schedule_entries.extend(block_entries)
+            else:
+                # Video block or tag block without specific days - apply to all days
+                block_entries = generate_block_schedule(
+                    block, 
+                    available_videos,
+                    recent_videos,
+                    channel
+                )
+                schedule_entries.extend(block_entries)
     
     # 3. Detect and fill gaps (only if not marathon day and gap filler enabled)
     if not is_marathon_day:
