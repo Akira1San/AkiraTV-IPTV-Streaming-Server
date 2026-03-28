@@ -15,6 +15,7 @@ from .daypart_scheduler import (
     validate_time_format, parse_time_string, validate_time_block,
     generate_daypart_schedule
 )
+from .daypart_scheduler_mixin import DaypartSchedulerMixin
 import logging
 logger = logging.getLogger(__name__)
 
@@ -119,7 +120,7 @@ def save_blacklist(profile_name="collections", blacklisted_videos=None):
         print(f"Error saving blacklist: {e}")
         return False
 
-class SimpleSchedulerWizard:
+class SimpleSchedulerWizard(DaypartSchedulerMixin):
     def __init__(self, root):
         self.root = root
         self.root.title("AkiraTV — Simple Random Scheduler")
@@ -457,24 +458,9 @@ class SimpleSchedulerWizard:
     # ============================================================================
     # DAYPART SCHEDULER DIALOG CLASSES
     # ============================================================================
-    
-    class EditBlockDialog(tk.Toplevel):
-        """Dialog for creating/editing a time block"""
-        def __init__(self, parent, block=None, available_tags=None, available_videos=None):
-            super().__init__(parent)
-            self.parent = parent
-            self.block = block
-            self.available_tags = available_tags or []
-            self.available_videos = available_videos or []
-            self.result = None
-            self.transient(parent)
-            self.grab_set()
-            self.title("Edit Time Block")
-            self.geometry("700x500")
-            self.resizable(True, True)
-            self.create_widgets()
-            if block:
-                self.populate_fields()
+    # Time Block Dialog - Now provided by DaypartSchedulerMixin
+    # ============================================================================
+
         
         def create_widgets(self):
             main_frame = ttk.Frame(self, padding=10)
@@ -1045,23 +1031,19 @@ class SimpleSchedulerWizard:
     # ============================================================================
     # DAYPART SCHEDULER EVENT HANDLERS
     # ============================================================================
-    
-    def on_block_select(self, event):
-        """Handle block selection in listbox"""
-        pass  # Selection handled by Edit/Delete buttons
-    
-    def on_add_block(self):
-        """Open dialog to add a new time block"""
-        # Get available tags and videos
-        collections = load_collections(self.current_profile)
-        available_videos = []
-        available_tags = set()
-        for col in collections:
-            for video in col.get("videos", []):
-                if video["path"] not in self.blacklisted_videos:
-                    video["collection"] = col
-                    available_videos.append(video)
-            available_tags.update(col.get("tags", []))
+    # ========================================================================
+    # DAYPART SCHEDULING METHODS - Provided by DaypartSchedulerMixin
+    # These methods are inherited from the mixin:
+    # - on_block_select, on_add_block, on_edit_block, on_delete_block
+    # - on_move_block_up, on_move_block_down
+    # - on_marathon_all_toggle, on_add_marathon, on_remove_marathon
+    # - on_gap_source_change, on_edit_excluded_tags
+    # - on_timeline_resize, on_generate_daypart_preview, on_save_daypart_schedule
+    # - load_daypart_config_for_channel, refresh_daypart_tags
+    # - update_block_list, update_marathon_list, update_gap_filler_ui, update_gap_filler_label
+    # - draw_time_block
+    # ========================================================================
+
         
         dialog = self.EditBlockDialog(
             self.root,
