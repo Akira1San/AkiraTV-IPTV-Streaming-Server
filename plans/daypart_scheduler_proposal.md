@@ -499,139 +499,220 @@ def fill_gaps_with_random(gaps: List[Tuple], available_videos: List[dict],
                          gap_filler_config: GapFillerConfig,
                          recent_videos: List[tuple] = None) -> List[dict]:
     """
-    Fill each gap with random video selections.
+    Fill detected gaps with random video content.
     
     Args:
-        gaps: List of (start, end) time tuples
-        available_videos: Pool of videos to choose from
-        gap_filler_config: Configuration for gap filling
-        recent_videos: List of (video_path, timestamp) for 24h rule
+        gaps: List of (start_time, end_time) tuples
+        available_videos: Pool of eligible videos
+        gap_filler_config: Configuration for gap filling behavior
+        recent_videos: List of (video_path, last_played_time) tuples
     
     Returns:
-        List of schedule entries for gap content
+        List of schedule entries for gap filler content
     """
-    if recent_videos is None:
-        recent_videos = []
-    
     gap_entries = []
+    recent_videos = recent_videos or []
     
     for gap_start, gap_end in gaps:
-        gap_duration = calculate_duration(gap_start, gap_end)
-        current_time = datetime.strptime(gap_start, "%H:%M")
-        end_time = datetime.strptime(gap_end, "%H:%M")
+        gap_start_dt = datetime.strptime(gap_start, "%H:%M")
+        gap_end_dt = datetime.strptime(gap_end, "%H:%M")
+        gap_duration = int((gap_end_dt - gap_start_dt).total_seconds())
         
-        # Track videos used in this gap (for 24h rule if enabled)
-        gap_recent = [] if gap_filler_config.respect_24h_norepeat else None
+        remaining_seconds = gap_duration
+        current_time = gap_start_dt
         
-        while current_time < end_time:
-            # Filter available videos
-            candidates = available_videos.copy()
+        while remaining_seconds > 0:
+            # Filter available videos based on gap_filler_config
+            eligible_videos = filter_videos_for_gap(
+                available_videos, 
+                gap_filler_config, 
+                recent_videos
+            )
             
-            # Apply 24h no-repeat rule
-            if gap_filler_config.respect_24h_norepeat:
-                recent_paths = {path for path, _ in recent_videos}
-                candidates = [v for v in candidates if v["path"] not in recent_paths]
+            if not eligible_videos:
+                # No videos available, break to avoid infinite loop
+                logger.warning(f"No eligible videos for gap {gap_start}-{gap_end}")
+                break
             
-            # Apply excluded tags
-            if gap_filler_config.excluded_tags:
-                candidates = [v for v in candidates 
-                            if not has_excluded_tag(v, gap_filler_config.excluded_tags)]
-            
-            if not candidates:
-                # Emergency: reset recent videos and try again
-                candidates = available_videos
-                if gap_filler_config.respect_24h_norepeat:
-                    recent_videos.clear()
-            
-            # Select video
+            # Select random video
             if gap_filler_config.shuffle:
-                selected = random.choice(candidates)
+                video = random.choice(eligible_videos)
             else:
-                # Sequential selection
-                selected = candidates[0]
+                video = eligible_videos[0]
             
-            # Add to schedule
+            video_duration = video.get("duration", 0)
+            
+            # Create schedule entry
             entry = {
                 "time": current_time.strftime("%H:%M:%S"),
-                "file": selected["path"],
-                "collection_id": selected["collection"]["id"],
-                "channel": "TARGET_CHANNEL",
-                "source": "gap_filler"
+                "file": video["path"],
+                "collection_id": video.get("collection_id"),
+                "channel": video.get("channel", "default"),
+                "source": "gap_filler",
+                "metadata": {
+                    "scheduled_type": "gap_filler",
+                    "gap_start": gap_start,
+                    "gap_end": gap_end
+                }
             }
+            
             gap_entries.append(entry)
             
-            # Track for 24h rule
-            if gap_filler_config.respect_24h_norepeat:
-                seconds_from_day_start = (current_time - datetime(2023,1,2,0,0)).total_seconds()
-                recent_videos.append((selected["path"], seconds_from_day_start))
-                if gap_recent is not None:
-                    gap_recent.append(selected["path"])
-            
-            # Advance time
-            current_time += timedelta(seconds=selected["duration"])
+            # Update tracking
+            current_time += timedelta(seconds=video_duration)
+            remaining_seconds -= video_duration
+            recent_videos.append((video["path"], datetime.now()))
     
     return gap_entries
 ```
 
-### 5.3 Complete Daypart Schedule Generation
+### 5.3 Marathon Scheduling Algorithm
 
 ```python
-def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
-                            channel: str, target_date: date) -> List[dict]:
+def generate_marathon_schedule(marathon_config: MarathonConfig, 
+                               available_videos: List[dict],
+                               target_date: datetime) -> List[dict]:
     """
-    Generate a complete day schedule using daypart configuration.
+    Generate a 24-hour marathon schedule for a specific day.
     
-    Process:
-    1. Check if target_date has marathon (overrides time blocks)
-    2. Apply time blocks for the day
-    3. Detect gaps between blocks
-    4. Fill gaps with random content (if enabled)
-    5. Sort all entries by time
+    Args:
+        marathon_config: Configuration for the marathon
+        available_videos: Pool of all available videos
+        target_date: The date for which to generate the marathon
+    
+    Returns:
+        List of schedule entries for the 24-hour marathon
+    """
+    # Filter videos by marathon tag
+    tagged_videos = [
+        v for v in available_videos 
+        if marathon_config.tag in v.get("tags", [])
+    ]
+    
+    if not tagged_videos:
+        logger.warning(f"No videos found for marathon tag: {marathon_config.tag}")
+        return []
+    
+    # Calculate how many videos needed for 24 hours
+    total_duration_needed = 24 * 3600  # 24 hours in seconds
+    
+    # Get video durations and build playlist
+    video_playlist = []
+    current_duration = 0
+    
+    while current_duration < total_duration_needed:
+        # Apply shuffling if enabled
+        if marathon_config.shuffle:
+            random.shuffle(tagged_videos)
+        
+        for video in tagged_videos:
+            if marathon_config.no_repeat_24h:
+                # Check if video was played in last 24h
+                if was_played_in_last_24h(video["path"]):
+                    continue
+            
+            video_playlist.append(video)
+            current_duration += video.get("duration", 0)
+            
+            if current_duration >= total_duration_needed:
+                break
+    
+    # Generate schedule entries starting at 00:00
+    marathon_entries = []
+    current_time = datetime.strptime("00:00", "%H:%M")
+    
+    for video in video_playlist:
+        entry = {
+            "time": current_time.strftime("%H:%M:%S"),
+            "file": video["path"],
+            "collection_id": video.get("collection_id"),
+            "channel": video.get("channel", "default"),
+            "source": "marathon",
+            "daypart_marathon_id": marathon_config.tag,
+            "metadata": {
+                "scheduled_type": "marathon",
+                "marathon_tag": marathon_config.tag,
+                "marathon_day": target_date.strftime("%A").lower()
+            }
+        }
+        marathon_entries.append(entry)
+        
+        # Move time forward by video duration
+        current_time += timedelta(seconds=video.get("duration", 0))
+        
+        # Stop if we've gone past 24:00
+        if current_time.hour == 0 and current_time.minute == 0 and current_time.day > target_date.day:
+            break
+    
+    return marathon_entries
+```
+
+### 5.4 Complete Daypart Generation Flow
+
+```python
+def generate_daypart_schedule(channel: str, 
+                              date: datetime,
+                              time_blocks: List[TimeBlock],
+                              marathons: List[MarathonConfig],
+                              gap_filler: GapFillerConfig,
+                              available_videos: List[dict]) -> List[dict]:
+    """
+    Main entry point for generating a daypart-based schedule.
+    
+    Args:
+        channel: Channel name
+        date: Target date for schedule generation
+        time_blocks: List of time blocks for the day
+        marathons: List of marathon configurations
+        gap_filler: Gap filler configuration
+        available_videos: Pool of all available videos
+    
+    Returns:
+        Complete schedule entries for the day
     """
     schedule_entries = []
-    recent_videos = []  # For 24h no-repeat tracking
     
-    # 1. Check for marathon on this day
-    marathon_entries = []
-    is_marathon_day = False
-    for marathon in daypart_config["marathons"]:
-        if marathon["enabled"] and target_date.weekday() in get_weekday_indices(marathon["days"]):
-            is_marathon_day = True
-            marathon_entries = generate_marathon_schedule(
-                marathon["tag"], 
-                available_videos,
-                marathon_config=marathon,
-                recent_videos=recent_videos
-            )
-            schedule_entries.extend(marathon_entries)
-            break  # Only one marathon per day
+    # Check if this day has a marathon
+    day_name = date.strftime("%A").lower()
+    active_marathon = None
     
-    # 2. If not marathon day, apply time blocks
-    if not is_marathon_day:
-        for block in daypart_config["time_blocks"]:
+    for marathon in marathons:
+        if marathon.enabled and day_name in marathon.days:
+            active_marathon = marathon
+            break
+    
+    if active_marathon:
+        # Generate marathon schedule (overrides time blocks)
+        marathon_entries = generate_marathon_schedule(
+            active_marathon, 
+            available_videos, 
+            date
+        )
+        schedule_entries.extend(marathon_entries)
+    else:
+        # Process time blocks
+        sorted_blocks = sorted(time_blocks, key=lambda b: b.start_time)
+        
+        for block in sorted_blocks:
             block_entries = generate_block_schedule(
                 block, 
                 available_videos,
-                recent_videos
+                schedule_entries  # Pass existing to check for overlaps
             )
             schedule_entries.extend(block_entries)
-    
-    # 3. Detect and fill gaps (only if not marathon day and gap filler enabled)
-    if not is_marathon_day and daypart_config["gap_filler"]["enabled"]:
-        # Extract block time ranges
-        block_times = [(b.start_time, b.end_time) for b in daypart_config["time_blocks"]]
-        gaps = detect_gaps(block_times)
         
-        if gaps:
+        # Fill gaps if enabled
+        if gap_filler.enabled:
+            gaps = detect_gaps(time_blocks)
             gap_entries = fill_gaps_with_random(
-                gaps,
-                available_videos,
-                daypart_config["gap_filler"],
-                recent_videos
+                gaps, 
+                available_videos, 
+                gap_filler,
+                get_recent_videos(channel, date)
             )
             schedule_entries.extend(gap_entries)
     
-    # 4. Sort by time
+    # Sort by time
     schedule_entries.sort(key=lambda e: e["time"])
     
     return schedule_entries
@@ -639,873 +720,347 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
 
 ---
 
-## 6. Implementation Phases and Technical Details
+## 6. Implementation Plan
 
-### Phase 1: Core Infrastructure (Week 1-2) [x]
+### 6.1 Phase 1: Core Scheduler (Week 1-2)
 
-**Tasks**:
-1. Create `akiratv/daypart_scheduler.py` with:
-   - `TimeBlock` class
-   - `MarathonConfig` class
-   - `GapFillerConfig` class
-   - `DaypartScheduler` main class
-   [x] Completed
+**Day 1-3: Data Structures**
+- Implement `TimeBlock` class
+- Implement `MarathonConfig` class
+- Implement `GapFillerConfig` class
+- Add serialization/deserialization methods
 
-2. Add data persistence:
-   - Load/save daypart config to/from JSON
-   - Store in `user/schedules/daypart_{channel}.json`
-   - Maintain backward compatibility with existing schedule.json
-   [x] Completed
+**Day 4-7: Gap Detection & Filling**
+- Implement `detect_gaps()` function
+- Implement `fill_gaps_with_random()` function
+- Add configuration options for gap filler
 
-3. Unit tests for:
-   - Time arithmetic (duration calculation, overnight handling)
-   - Gap detection algorithm
-   - Serialization/deserialization
-   [x] Completed (54 tests passing)
+**Day 8-10: Integration**
+- Integrate with existing `simple_scheduler.py`
+- Add backward compatibility mode
+- Test with existing schedules
 
-**Deliverable**: Working daypart configuration system with file I/O [x] COMPLETED
+### 6.2 Phase 2: Marathon Mode (Week 3)
 
-### Phase 2: UI Implementation (Week 3-4) [x]
+**Day 11-13: Marathon Algorithm**
+- Implement `generate_marathon_schedule()`
+- Add tag-based video filtering
+- Implement 24-hour no-repeat logic
 
-**Tasks**:
-1. Extend `simple_scheduler.py`:
-   - Add "Schedule Programming" tab to `create_added_panel()`
-   - Create `create_schedule_programming_tab()` method
-   - Implement block list display with listbox
-   - Add block control buttons
-   [x] Completed
+**Day 14-15: Day-of-Week Logic**
+- Add day selection UI
+- Implement weekly pattern matching
+- Test marathon on specific days
 
-2. Create modal dialogs:
-   - `EditBlockDialog` class for add/edit operations
-   - Video search/selection within dialog
-   - Tag selection with autocomplete from existing tags
-   [x] Completed
+### 6.3 Phase 3: UI Integration (Week 4-5)
 
-3. Implement marathon panel:
-   - Tag dropdown populated from collections
-   - Day checkboxes
-   - Options toggles
-   [x] Completed
+**Day 16-20: New Tab Development**
+- Create "Schedule Programming" tab
+- Implement Time Block Management panel
+- Implement Add/Edit Block dialog
 
-4. Implement gap filler settings panel:
-   - Source selection (all/collections/tags)
-   - Tag exclusion dialog
-   - Checkboxes for options
-   [x] Completed
+**Day 21-25: Marathon Panel**
+- Create Marathon Scheduling panel
+- Add tag dropdown population
+- Implement day selection checkboxes
 
-5. Preview panel:
-   - Visual timeline canvas (24h bar)
-   - Text preview listbox
-   - Color coding and tooltips
-   [x] Completed
+**Day 26-28: Gap Filler & Preview**
+- Create Gap Filler Settings panel
+- Implement Visual Timeline preview
+- Add Text Preview generation
 
-**Deliverable**: Complete UI for daypart configuration [x] COMPLETED
+**Day 29-30: Testing & Polish**
+- Cross-browser testing
+- Performance optimization
+- User acceptance testing
 
-### Phase 3: Schedule Generation Integration (Week 5-6) [x]
+### 6.4 Phase 4: API Routes (Week 6)
 
-**Tasks**:
-1. Extend `scheduler.py`:
-   - Add `generate_daypart_schedule()` function
-   - Modify `get_current_schedule_for_channel()` to detect and use daypart config
-   - Ensure daypart entries are properly formatted for workers
-    [x] Completed
+**Day 31-33: Backend Routes**
+- Create `/api/schedule/daypart/config` GET/POST
+- Create `/api/schedule/daypart/preview` POST
+- Create `/api/schedule/daypart/generate` POST
 
-2. Connect UI to generation:
-   - "Generate Preview" button calls daypart scheduler
-   - Display preview in timeline and list
-   - Show statistics (total blocks, gap segments, estimated runtime)
-    [x] Completed (UI side, needs scheduler integration)
+**Day 34-36: Frontend Integration**
+- Connect UI to API routes
+- Add error handling
+- Implement loading states
 
-3. Save integration:
-   - "Save Schedule" writes daypart config + generated entries
-   - Maintain separate weekly/calendar sections (empty when daypart active)
-   - Update `_save_schedule()` in simple_scheduler.py
-    [x] Completed
+**Day 37-38: Persistence**
+- Save daypart config to schedule JSON
+- Load on startup
+- Handle migrations
 
-4. Validation:
-   - Ensure blocks don't overlap (UI validation)
-   - Ensure total block time ≤ 24 hours
-   - Validate time formats (HH:MM, 00:00-24:00)
-   - Check for orphaned gaps at day boundaries
-    [x] Completed (UI side)
+### 6.5 Phase 5: Testing & Documentation (Week 7)
 
-**Deliverable**: Working end-to-end daypart scheduling [Completed]
+**Day 39-42: Comprehensive Testing**
+- Unit tests for all new classes
+- Integration tests with existing system
+- Edge case handling (overnight blocks, empty tags, etc.)
 
-### Phase 4: Advanced Features & Polish (Week 7-8)
-
-**Tasks**:
-1. Marathon implementation:
-   - `generate_marathon_schedule()` function
-   - 24-hour continuous playback from tag pool
-   - Respect marathon-specific options (shuffle, no-repeat)
-   [X] Completed
-
-2. Gap filler enhancements:
-   - Collection-based source selection
-   - Tag-based source selection
-   - Advanced exclusion UI
-   [X] Basic UI implemented (radio buttons, exclusion dialog)
-   [ ] Full filtering logic in scheduler NOT connected
-
-3. Import/Export:
-   - Export daypart config as standalone JSON
-   - Import daypart config
-   - Copy blocks between channels
-   [X] Completed
-
-4. UX improvements:
-   - Drag-and-drop block reordering
-   - Duplicate block button
-   - Undo/redo for block edits
-   - Tooltips and help text
-   [X] Basic Move Up/Down implemented
-   [ ] Drag-drop, duplicate, undo/redo NOT implemented
-
-5. Code organization:
-   - Separate daypart scheduler code from simple_scheduler.py into its own module
-   - Refactor imports and dependencies
-   [X] Completed
-
-5. Error handling:
-   - Clear validation messages
-   - Conflict detection (overlapping blocks)
-   - Graceful fallback when no videos available
-   [X] Completed
-
-**Deliverable**: Production-ready daypart scheduler [Partial - some features remaining]
-
-### Phase 5: Testing & Documentation (Week 9-10)
-
-**Tasks**:
-1. Unit tests (pytest):
-   - All algorithm functions
-   - Time calculations
-   - Gap detection
-   - Serialization
-   [x] Completed (54 tests)
-
-2. Integration tests:
-   - Full schedule generation
-   - UI workflows
-   - Save/load cycles
-   - Worker compatibility
-   [ ] Pending
-
-3. Documentation:
-   - Update README.md with daypart scheduling section
-   - Create user guide (PDF/HTML)
-   - In-app tooltips and help
-   - Sample configurations
-   [ ] Pending
-
-4. Performance testing:
-   - Large collection handling (1000+ videos)
-   - Schedule generation time (<5s)
-   - Memory usage
-   [ ] Pending
-
-**Deliverable**: Fully tested and documented feature
+**Day 43-45: Documentation**
+- Update user documentation
+- Create video tutorials
+- Document API endpoints
 
 ---
 
-## 7. File Modifications Needed
+## 7. Edge Cases and Error Handling
 
-### 7.1 New Files
+### 7.1 Overlapping Time Blocks
 
-```
-akiratv/
-├── daypart_scheduler.py          # Core daypart logic (new)
-└── plans/
-    └── daypart_scheduler_proposal.md  # This document (new)
-```
+**Scenario**: User creates overlapping blocks (06:00-10:00 and 08:00-12:00)
 
-### 7.2 Modified Files
+**Handling**:
+1. Validate on save: Reject overlapping blocks
+2. Show error message: "Time block overlaps with existing block"
+3. Highlight conflicting block in red
 
-#### `akiratv/simple_scheduler.py`
+### 7.2 Overnight Blocks
 
-**Changes**:
-1. **Import new module**:
-```python
-from .daypart_scheduler import TimeBlock, MarathonConfig, GapFillerConfig, DaypartScheduler
-```
+**Scenario**: Block spans midnight (e.g., 22:00-02:00)
 
-2. **Add instance variables** in `__init__`:
-```python
-self.daypart_scheduler = DaypartScheduler()
-self.daypart_config = None  # Loaded from file
-self.daypart_enabled = False
-```
+**Handling**:
+1. Allow overnight blocks in UI
+2. Calculate duration correctly (4 hours, not 20)
+3. Display with special indicator
+4. Handle in gap detection (treat as continuous)
 
-3. **Modify `create_added_panel()`**:
-   - Add "Schedule Programming" tab next to "Added Videos"
-   - Call new method `create_schedule_programming_tab()`
+### 7.3 Empty Tag Pool
 
-4. **Add new method** `create_schedule_programming_tab(parent)`:
-   - Build UI layout as specified in Section 2.2
-   - Include block list, marathon panel, gap filler, preview
-   - Wire up event handlers
+**Scenario**: User selects tag "rare_tag" with no videos
 
-5. **Add dialog classes**:
-   - `EditBlockDialog` - modal for block creation/editing
-   - `TagExclusionDialog` - multi-select tag exclusion
+**Handling**:
+1. Validate on block creation: Show warning if no videos match
+2. At generation time: Log warning, skip block
+3. In preview: Show "No videos available" indicator
 
-6. **Add event handlers**:
-   - `on_add_block()` - open edit dialog
-   - `on_edit_block()` - load selected block into dialog
-   - `on_delete_block()` - remove selected blocks
-   - `on_move_block_up/down()` - reorder
-   - `on_generate_daypart_preview()` - call daypart scheduler
-   - `on_save_daypart_schedule()` - save config + generated entries
+### 7.4 Insufficient Videos for Marathon
 
-7. **Update `preview_schedule()`**:
-   - Detect if daypart mode active
-   - Call appropriate generator (`_generate_daypart_schedule()`)
-   - Store `self.current_schedule_mode = "daypart"`
+**Scenario**: Tag has 10 hours of content but marathon needs 24
 
-8. **Update `_save_schedule()`**:
-   - Handle daypart format (save config + generated entries)
-   - Maintain backward compatibility for weekly/calendar
+**Handling**:
+1. Calculate required vs available duration
+2. If insufficient: Log warning
+3. Option: Repeat videos (respecting no-repeat setting) or fill with gap filler
 
-9. **Update `update_preview_display()`**:
-   - Handle daypart schedule display
-   - Show block types with color coding
+### 7.5 Video Duration Exceeds Block
 
-#### `akiratv/scheduler.py`
+**Scenario**: Block is 1 hour but video is 2 hours
 
-**Changes**:
-1. **Import daypart module**:
-```python
-from .daypart_scheduler import generate_daypart_schedule, load_daypart_config
-```
+**Handling**:
+1. Play entire video (no truncation)
+2. Next block starts after video ends (may overlap)
+3. Visual indicator in preview showing overlap
 
-2. **Modify `get_current_schedule_for_channel(channel: str)`**:
-```python
-def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
-    # Check for daypart config first
-    daypart_config = load_daypart_config(channel)
-    if daypart_config and daypart_config.get("enabled", False):
-        # Generate daypart schedule for today
-        today = date.today()
-        weekday = today.weekday()  # 0=Monday
-        entries = generate_daypart_schedule(
-            daypart_config,
-            get_videos_for_channel(channel),  # New helper
-            channel,
-            today
-        )
-        return entries
-    
-    # Fall back to existing weekly/calendar logic
-    ...
-```
+### 7.6 Blacklisted Videos in Tags
 
-3. **Add helper** `get_videos_for_channel(channel: str)`:
-```python
-def get_videos_for_channel(channel: str) -> List[Dict]:
-    """
-    Get all available videos for a channel from collections.
-    Respects blacklist and returns full video objects with metadata.
-    """
-    collections = load_collections_for_channel(channel)
-    blacklist = load_blacklist(channel)
-    
-    videos = []
-    for collection in collections:
-        for video in collection.get("videos", []):
-            if video["path"] not in blacklist:
-                video["collection"] = collection
-                videos.append(video)
-    
-    return videos
-```
+**Scenario**: Tag includes blacklisted videos
 
-4. **Update schedule validation** in `_validate_entries()`:
-   - Accept daypart-specific metadata fields
-   - Handle `source: "daypart_tag"` or `"daypart_video"` or `"gap_filler"`
-
-#### `akiratv/collections.py`
-
-**Minimal changes**:
-- No modifications required (existing tag system is sufficient)
-- Collections already have `tags` field that daypart scheduler will use
-
-#### `akiratv/workers/base_worker.py` or `dynamic_worker.py`
-
-**Check compatibility**:
-- Ensure workers accept schedule entries with `source: "daypart_*"`
-- No code changes likely needed (workers just need `time`, `file`, `channel`)
+**Handling**:
+1. Filter out blacklisted videos at generation time
+2. If no videos remain after filtering, log warning
+3. Gap filler may be used to fill resulting gaps
 
 ---
 
-## 8. Sample Schedule JSON Structures
+## 8. Backward Compatibility
 
-### 8.1 Daypart Configuration File
+### 8.1 Existing Schedule Format
 
-**File**: `user/schedules/daypart_critters.json`
+The existing simple scheduler JSON format will continue to work:
 
 ```json
 {
   "metadata": {
     "channel": "critters",
-    "created": "2025-01-15T10:30:00",
-    "version": "2.0",
-    "schedule_type": "daypart"
+    "version": "1.0",
+    "schedule_type": "simple"
   },
-  "daypart_config": {
-    "time_blocks": [
-      {
-        "block_id": "block_morning_kids",
-        "start_time": "06:00",
-        "end_time": "10:00",
-        "content_type": "tag",
-        "content_value": "kids",
-        "duration_seconds": 14400
-      },
-      {
-        "block_id": "block_prime_horror",
-        "start_time": "20:00",
-        "end_time": "24:00",
-        "content_type": "tag",
-        "content_value": "horror",
-        "duration_seconds": 14400
-      }
-    ],
-    "marathons": [
-      {
-        "tag": "80s",
-        "days": ["friday", "saturday"],
-        "enabled": true,
-        "shuffle": true,
-        "no_repeat_24h": true
-      }
-    ],
-    "gap_filler": {
-      "enabled": true,
-      "source": "all",
-      "collection_ids": [],
-      "tags": [],
-      "excluded_tags": ["horror", "kids"],
-      "respect_24h_norepeat": true,
-      "shuffle": true
-    }
-  },
-  "weekly": {},
-  "calendar": {}
-}
-```
-
-### 8.2 Generated Schedule File (After Save)
-
-**File**: `user/schedules/schedule_critters.json`
-
-```json
-{
-  "metadata": {
-    "channel": "critters",
-    "created": "2025-01-15T14:22:33",
-    "version": "2.0",
-    "schedule_type": "daypart"
-  },
-  "daypart_config": { ... },
   "weekly": {
-    "monday": [],
-    "tuesday": [],
-    "wednesday": [],
-    "thursday": [],
-    "friday": [],
-    "saturday": [],
-    "sunday": []
-  },
-  "calendar": {},
-  "generated_entries": {
-    "2025-01-15": {
-      "entries": [
-        {
-          "time": "06:00:00",
-          "file": "C:/Videos/Akiratv/Kids_Show_S01E01.mp4",
-          "collection_id": "kids_show",
-          "channel": "critters",
-          "source": "daypart_tag",
-          "daypart_block_id": "block_morning_kids",
-          "metadata": {
-            "scheduled_type": "tag",
-            "tag_used": "kids",
-            "block_start": "06:00",
-            "block_end": "10:00"
-          }
-        },
-        {
-          "time": "08:15:00",
-          "file": "C:/Videos/Akiratv/Kids_Show_S02E07.mp4",
-          "collection_id": "kids_show_2",
-          "channel": "critters",
-          "source": "daypart_tag",
-          "daypart_block_id": "block_morning_kids",
-          "metadata": {
-            "scheduled_type": "tag",
-            "tag_used": "kids",
-            "block_start": "06:00",
-            "block_end": "10:00"
-          }
-        },
-        {
-          "time": "10:00:00",
-          "file": "C:/Videos/Akiratv/Documentary_Wildlife.mp4",
-          "collection_id": "wildlife_doc",
-          "channel": "critters",
-          "source": "gap_filler",
-          "metadata": {
-            "scheduled_type": "gap_filler",
-            "gap_start": "10:00",
-            "gap_end": "12:00"
-          }
-        },
-        {
-          "time": "20:00:00",
-          "file": "C:/Videos/Akiratv/Horror_Movie_1.mp4",
-          "collection_id": "horror_collection",
-          "channel": "critters",
-          "source": "daypart_tag",
-          "daypart_block_id": "block_prime_horror",
-          "metadata": {
-            "scheduled_type": "tag",
-            "tag_used": "horror",
-            "block_start": "20:00",
-            "block_end": "24:00"
-          }
-        }
-      ]
-    }
+    "monday": [
+      {"time": "00:00:00", "file": "..."}
+    ]
   }
 }
 ```
 
-**Note**: The `generated_entries` section is optional. The worker system will regenerate the schedule daily using `daypart_config`. Storing generated entries is for debugging/audit only.
+### 8.2 Migration Path
+
+1. **Detection**: On load, check `metadata.schedule_type`
+2. **Mode Selection**: 
+   - If "simple": Use existing `simple_scheduler.py`
+   - If "daypart": Use new daypart generation logic
+3. **Conversion**: Provide one-way migration tool to convert simple schedules to daypart blocks
+
+### 8.3 UI Adaptation
+
+- Show "Simple" vs "Daypart" toggle in UI
+- When in Simple mode: Hide Schedule Programming tab
+- When switching modes: Warn about data loss (one-way conversion)
 
 ---
 
-## 9. Edge Cases and Validation Rules
+## 9. Performance Considerations
 
-### 9.1 Time Block Validation
+### 9.1 Caching Strategy
 
-**Rules**:
-1. **Time Format**: Must be `HH:MM` in 24-hour format (00:00 to 24:00)
-   - Validation: Regex `^([01]?[0-9]|2[0-4]):[0-5][0-9]$`
-   - Reject: `24:01`, `25:00`, `12:60`, `abc`
+- **Tag Index**: Build once, update on collection changes
+- **Video Duration Cache**: Store in memory, persist to disk
+- **Blacklist Cache**: Load on startup, refresh on change
 
-2. **Time Range**: `start_time < end_time` (unless overnight, which is NOT allowed for blocks)
-   - Overnight blocks (22:00-02:00) are **invalid** - split into two blocks instead
-   - Reason: Daypart scheduler assumes single-day blocks
+### 9.2 Generation Optimization
 
-3. **Block Duration**: Must be > 0 and ≤ 24 hours (max 86400 seconds)
-   - Minimum: 1 minute (60 seconds) recommended
-   - Maximum: 24 hours (86400 seconds)
+- **Lazy Loading**: Only load videos needed for visible time range
+- **Parallel Processing**: Generate each day in parallel
+- **Incremental Updates**: Only regenerate affected days
 
-4. **No Overlap**: Blocks for the same day must not overlap
-   - Validation: Sort by start time, ensure `prev.end <= curr.start`
-   - UI: Prevent adding overlapping blocks (highlight conflict)
-   - Save-time: Reject if overlaps detected
+### 9.3 Memory Management
 
-5. **Total Coverage**: Sum of all block durations can be less than 24 hours (gaps allowed)
-   - Cannot exceed 24 hours (would create overlap)
-   - Gaps will be filled by gap filler if enabled
+- **Video Pool Limits**: Cap at 1000 videos per tag
+- **Streaming**: Don't load all video metadata at once
+- **Cleanup**: Clear caches on schedule save
 
-### 9.2 Marathon Validation
+---
 
-**Rules**:
-1. **Tag Must Exist**: Selected tag must exist in collections (or be new, created on save)
-2. **Day Selection**: At least one day must be selected
-3. **24-Hour Coverage**: Marathon always covers full 24 hours (00:00-24:00)
-4. **Marathon Priority**: Marathon overrides all time blocks on selected days
-   - Validation: Warn if marathon day already has time blocks
-   - Allow but show warning: "Marathon will replace time blocks on Friday"
+## 10. Testing Strategy
 
-### 9.3 Gap Filler Validation
+### 10.1 Unit Tests
 
-**Rules**:
-1. **Source Videos**: Must have at least one video available for gap filling
-   - Check: `len(available_videos) > 0`
-   - If using collections: selected collections must have videos
-   - If using tags: selected tags must have videos
+- `TimeBlock` class methods
+- `MarathonConfig` serialization
+- `GapFillerConfig` filtering
+- `detect_gaps()` algorithm
+- `fill_gaps_with_random()` algorithm
 
-2. **Exclusions**: Excluded tags cannot be the ONLY source
-   - Validation: Ensure `available_videos - excluded_tag_videos > 0`
+### 10.2 Integration Tests
 
-3. **24h No-Repeat**: If enabled, need enough videos to fill gaps without repeat
-   - Minimum videos required: `ceil(total_gap_duration / min_video_duration)`
-   - If insufficient, either disable rule or allow repeats after pool exhausted
+- End-to-end daypart generation
+- Marathon on specific day
+- Gap filling with various configurations
+- Overlap detection and handling
 
-### 9.4 Schedule Generation Edge Cases
+### 10.3 UI Tests
 
-**Case 1: Video longer than block**
-- **Behavior**: Video plays in full, overrunning into next block
-- **Rationale**: Truncating videos is unacceptable; better to shift schedule
-- **Implementation**: Do not pre-split videos; let them play completely
-- **Note**: This is standard broadcast behavior (programs don't get cut)
+- Tab navigation
+- Block CRUD operations
+- Preview generation
+- Error message display
 
-**Case 2: No videos available for tag**
-- **Behavior**: Skip block, log warning, try to fill with gap filler
-- **UI**: Show warning "No videos found for tag 'horror'"
-- **Fallback**: If gap filler enabled, treat as gap; else show blank
+### 10.4 Performance Tests
 
-**Case 3: Marathon tag has insufficient videos**
-- **Behavior**: Repeat videos after exhausting pool (respecting 24h rule if enabled)
-- **Log**: "Marathon pool exhausted after N videos, resetting"
-- **User Message**: "Not enough videos for 24h marathon; repeats enabled"
+- Large tag pools (1000+ videos)
+- Many time blocks (20+)
+- Overnight marathon generation
+- Concurrent schedule generation
 
-**Case 4: All videos blacklisted**
-- **Behavior**: Abort generation with error
-- **Message**: "All videos are blacklisted. Remove from blacklist or add more videos."
+---
 
-**Case 5: Gap filler source empty**
-- **Behavior**: Leave gaps unfilled (silence/standby)
-- **Log**: "Gap filler source empty - gaps will remain unfilled"
-- **UI**: Show warning but allow save
+## 11. API Reference
 
-**Case 6: Overnight wrap (23:59 → 00:00)**
-- **Behavior**: Daypart schedule is daily; no overnight carryover
-- **Implementation**: Each day starts fresh at 00:00
-- **Note**: If a video starts at 23:50 with 30-minute duration, it ends at 24:20 (next day)
-  - Worker will handle this naturally (next day's first block starts at 00:00, but previous video still playing)
-  - This is acceptable (overlap into next day)
+### 11.1 Configuration Endpoints
 
-**Case 7: Daylight Saving Time**
-- **Behavior**: Not handled by daypart scheduler
-- **Rationale**: Scheduler uses wall-clock times (HH:MM), not UTC
-- **Responsibility**: System clock should handle DST transitions
-- **Recommendation**: Avoid scheduling changes on DST transition days
+#### GET /api/schedule/daypart/config
+Get daypart configuration for a channel.
 
-**Case 8: Missing collections file**
-- **Behavior**: Show error "Collections not found. Please configure collections first."
-- **Prevention**: Disable daypart tab if no collections loaded
-
-### 9.5 Data Integrity Validation
-
-**On Load**:
-```python
-def validate_daypart_config(config: dict) -> List[str]:
-    errors = []
-    
-    # Check required fields
-    if "daypart_config" not in config:
-        return ["Missing daypart_config section"]
-    
-    dp = config["daypart_config"]
-    
-    # Validate time blocks
-    for i, block in enumerate(dp.get("time_blocks", [])):
-        try:
-            TimeBlock.from_dict(block)
-        except ValueError as e:
-            errors.append(f"Block {i}: {e}")
-    
-    # Check for overlaps
-    blocks = [TimeBlock.from_dict(b) for b in dp.get("time_blocks", [])]
-    if has_overlaps(blocks):
-        errors.append("Time blocks overlap")
-    
-    # Validate marathons
-    for m in dp.get("marathons", []):
-        if not m.get("tag"):
-            errors.append("Marathon missing tag")
-        if not m.get("days"):
-            errors.append(f"Marathon {m.get('tag')} has no days selected")
-    
-    return errors
+**Response**:
+```json
+{
+  "success": true,
+  "config": {
+    "time_blocks": [...],
+    "marathons": [...],
+    "gap_filler": {...}
+  }
+}
 ```
 
-**On Save**:
-- Run validation before writing to file
-- Prevent save if validation fails
-- Show all errors to user
+#### POST /api/schedule/daypart/config
+Save daypart configuration.
 
----
-
-## 10. Backward Compatibility
-
-### 10.1 Existing Schedules
-- All existing `schedule_*.json` files continue to work unchanged
-- They use `weekly` or `calendar` format without `daypart_config`
-- `scheduler.py` will use existing logic for these files
-
-### 10.2 UI Toggle
-- Daypart tab is always visible (even if no collections)
-- If user doesn't configure daypart, they can still use weekly/calendar modes
-- No breaking changes to existing workflows
-
-### 10.3 Migration Path
-- Users can adopt daypart scheduling incrementally
-- Can mix daypart with weekly? **No** - daypart replaces weekly for that channel
-- Clear UI indication: "Daypart mode active" vs "Weekly mode active"
-
----
-
-## 11. Performance Considerations
-
-### 11.1 Schedule Generation Time
-- **Target**: < 5 seconds for 1000 videos, 10 blocks
-- **Algorithm Complexity**: O(n * m) where n = videos, m = blocks
-- **Optimization**: 
-  - Cache tag-to-video mappings
-  - Pre-filter videos once per generation
-  - Use efficient data structures (sets for recent videos)
-
-### 11.2 Memory Usage
-- **Target**: < 200MB for 1000 videos
-- **Strategy**: 
-  - Load collections on-demand, not all at once
-  - Stream schedule generation (don't build full 7-day schedule if only viewing one day)
-  - Clear caches after generation
-
-### 11.3 UI Responsiveness
-- **Problem**: Schedule generation could freeze UI
-- **Solution**: Run generation in background thread
-  - Use `threading.Thread` for preview generation
-  - Show progress dialog
-  - Update UI via `after()` callback
-
----
-
-## 12. Success Criteria
-
-### 12.1 Functional Requirements
-- [ ] User can create, edit, delete time blocks
-- [ ] Blocks can specify video OR tag content
-- [ ] Blocks can be reordered
-- [ ] Marathon can be configured for tag + days
-- [ ] Gap filler can be configured with source and exclusions
-- [ ] Preview shows visual timeline and text schedule
-- [ ] Schedule saves to JSON and loads correctly
-- [ ] Generated schedule plays correctly in worker
-- [ ] No regressions in existing weekly/calendar scheduling
-
-### 12.2 Quality Requirements
-- [ ] All validation rules enforced
-- [ ] Clear error messages for user mistakes
-- [ ] No crashes on edge cases (empty collections, missing videos)
-- [ ] 24-hour no-repeat rule works correctly
-- [ ] Overnight video playback handled gracefully
-- [ ] Blacklist respected in all content selection
-
-### 12.3 Performance Requirements
-- [ ] Preview generation < 5 seconds for 500 videos
-- [ ] UI remains responsive during generation
-- [ ] Memory usage < 300MB during operation
-
----
-
-## 13. Risks and Mitigations
-
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Complex time arithmetic bugs | High | Comprehensive unit tests for all time calculations |
-| Overlap detection misses edge cases | High | Validation on add/edit + save-time re-check |
-| Gap filler creates infinite loops | Medium | Limit iterations, fallback to sequential |
-| Performance degrades with many blocks | Medium | Efficient algorithms, background threading |
-| User confusion between modes | Medium | Clear UI indicators, tooltips, documentation |
-| Marathon conflicts with blocks | Low | Validation warning, allow override with confirmation |
-| Tag resolution returns no videos | Medium | Show warning, suggest checking collections/tags |
-
----
-
-## 14. Conclusion
-
-The Daypart Scheduler represents a significant enhancement to AkiraTV's scheduling capabilities, bringing broadcast-style programming to the platform. By building upon the existing collection and tag infrastructure, we minimize development risk while delivering powerful new functionality.
-
-The phased approach allows for incremental delivery and user feedback. The modular design ensures that daypart scheduling can coexist with the existing weekly/calendar modes, providing a smooth migration path for users.
-
-**Next Steps**:
-1. Review this proposal with stakeholders
-2. Approve Phase 1 implementation
-3. Begin development of `daypart_scheduler.py` core module
-4. Iterate based on testing and feedback
-
----
-
-## Appendix A: UI Mockup Details
-
-### A.1 Schedule Programming Tab - Full Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  Simple Random Scheduler                                      [X]          │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  ┌──────────┬────────────┬──────────────┬──────────────────────────────┐ │
-│  │ Info     │ Collections│ Added Videos │ Schedule Programming         │ │
-│  │ Panel    │ & Standby  │              │                              │ │
-│  │          │            │              │                              │ │
-│  │ Name:    │ Profile:   │ [Added Videos]│ ┌─────────────────────────┐│ │
-│  │ -        │ [collections▾]│ [Blacklist] │ │ Time Blocks (3)        ││ │
-│  │          │            │              │ │ ┌─────────────────────┐││ │
-│  │ Cover:   │ Collections│ Total: 5     │ │ │ 06:00-10:00 [TAG:kids]│││ │
-│  │ [image]  │ • Coll 1   │ [Add to      │ │ │ 10:00-12:00 [VIDEO]  │││ │
-│  │          │ • Coll 2   │  Blacklist]  │ │ │   The Matrix.mp4    │││ │
-│  │ Genre:   │ • Coll 3   │ [Remove Sel] │ │ │ 20:00-24:00 [TAG:horror]│││
-│  │ -        │            │ [Remove All] │ │ └─────────────────────┘││ │
-│  │          │ [Select All]│              │ │                         ││ │
-│  │          │ [Add Selected]│            │ │ Marathon Scheduling    ││ │
-│  │          │            │              │ │ Tag: [horror▾]         ││ │
-│  │          │            │              │ │ Days: [✓]Mon [✓]Tue...││ │
-│  │          │            │              │ │ [✓] Fill 24h          ││ │
-│  │          │            │              │ │ [✓] Shuffle           ││ │
-│  │          │            │              │ └─────────────────────────┘│ │
-│  │          │            │              │                              │ │
-│  │          │            │              │ ┌─────────────────────────┐│ │
-│  │          │            │              │ │ Gap Filler Settings    ││ │
-│  │          │            │              │ │ ☑ Enable gap filling   ││ │
-│  │          │            │              │ │ Source: ○ All ○ Colls  ││ │
-│  │          │            │              │ │ Excluded: [horror, kids]││ │
-│  │          │            │              │ └─────────────────────────┘│ │
-│  │          │            │              │                              │ │
-│  │          │            │              │ ┌─────────────────────────┐│ │
-│  │          │            │              │ │ Preview Timeline        ││ │
-│  │          │            │              │ │ 00:00 ████████████████ ││ │
-│  │          │            │              │ │ 06:00 ████████████████ ││ │
-│  │          │            │              │ │ 12:00 ████████████████ ││ │
-│  │          │            │              │ │ 18:00 ████████████████ ││ │
-│  │          │            │              │ └─────────────────────────┘│ │
-│  └──────────┴────────────┴──────────────┴──────────────────────────────┘ │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  Channel: [critters▾]  Mode: ○ Weekly ○ Calendar  [RAND] [▶] [SAVE] [Theme:▾]│
-└─────────────────────────────────────────────────────────────────────────────┘
+**Request**:
+```json
+{
+  "channel": "critters",
+  "config": {
+    "time_blocks": [...],
+    "marathons": [...],
+    "gap_filler": {...}
+  }
+}
 ```
 
-### A.2 Edit Block Dialog
+### 11.2 Preview Endpoints
 
+#### POST /api/schedule/daypart/preview
+Generate a preview of the daypart schedule.
+
+**Request**:
+```json
+{
+  "channel": "critters",
+  "date": "2025-01-15"
+}
 ```
-┌─────────────────────────────────────────────┐
-│ Edit Time Block                             │
-├─────────────────────────────────────────────┤
-│                                             │
-│  Start Time:  [06:00]    End Time: [10:00] │
-│                                             │
-│  Content Type: ○ Specific Video  ○ Tag      │
-│                                             │
-│  If Specific Video:                         │
-│    Search: [________________] [Search]      │
-│    Results:                                 │
-│    ☐ The Matrix (1999).mp4                 │
-│    ☐ Into the Sun.mp4                      │
-│    ☐ Kids Show S01E01.mp4                  │
-│    (Scroll)                                │
-│    Selected: [The Matrix (1999).mp4]       │
-│                                             │
-│  If Tag:                                   │
-│    Tag: [horror▾]                          │
-│    Or New: [__________]                    │
-│                                             │
-│  Duration: 4 hours (14400 seconds)         │
-│                                             │
-│  [Cancel]  [Save]                          │
-└─────────────────────────────────────────────┘
+
+**Response**:
+```json
+{
+  "success": true,
+  "preview": [
+    {
+      "time": "06:00:00",
+      "duration": 14400,
+      "content_type": "tag",
+      "content_value": "kids",
+      "entries": [...]
+    }
+  ],
+  "gaps": [
+    {"start": "10:00", "end": "12:00", "duration": 7200}
+  ]
+}
+```
+
+### 11.3 Generation Endpoints
+
+#### POST /api/schedule/daypart/generate
+Generate actual schedule entries.
+
+**Request**:
+```json
+{
+  "channel": "critters",
+  "days": 7
+}
 ```
 
 ---
 
-## Appendix B: Migration from Existing Block Programming Plan
+## 12. Open Questions for Review
 
-The existing `plans/block_programming_feature_plan.md` proposed a more complex system with:
-- Modal dialogs for block creation
-- Drag-and-drop timeline
-- Priority system
-- Conflict resolution UI
+1. **UI Framework**: Should we use Qt (PyQt) for desktop or focus on web UI?
 
-**This proposal simplifies**:
-- No modal dialogs for main workflow (inline block list)
-- No drag-and-drop (simple up/down buttons)
-- No priority system (blocks are ordered by time)
-- No conflict resolution UI (prevention via validation)
+2. **Block Templates**: Should we add predefined block templates (e.g., "Weekday Morning", "Friday Night Horror")?
 
-The simplified approach is more aligned with the current `simple_scheduler.py` philosophy: straightforward, functional, and easy to implement.
+3. **Conflict Resolution**: How should we handle when marathon and time blocks overlap?
+
+4. **Video Transitions**: Should blocks have "lead-out" or "lead-in" time for smooth transitions?
+
+5. **Live TV Integration**: Should daypart scheduling support live TV inputs in specific blocks?
+
+6. **Recurring Schedules**: Beyond weekly, should we support monthly or custom recurrence patterns?
+
+7. **Export Options**: Should we allow exporting schedules to iCal or other formats?
+
+8. **Multi-Channel**: Should a single daypart config apply to multiple channels or be per-channel?
 
 ---
 
-**Document Version**: 1.0  
-**Date**: 2025-01-15  
-**Author**: AkiraTV Architecture Team  
-**Status**: Draft for Review  
-  
-"## Appendix C: Tasks for Later Implementation"  
-""  
-"Based on the code review and current implementation status, the following tasks have been identified for future implementation to enhance the daypart scheduler:"  
-""  
-"### C.1 UI/UX Enhancements"  
-""  
-"1. **Drag-and-drop block reordering**"  
-"   - Implement drag-and-drop functionality in the time block list for intuitive reordering"  
-"   - Add visual feedback during drag operations"  
-"   - Update block positions in real-time as user drags"  
-""  
-"2. **Duplicate block button**"  
-"   - Add a 'Duplicate' button to create a copy of the selected block"  
-"   - Pre-populate the edit dialog with the duplicated block's data"  
-""  
-"3. **Undo/redo functionality for block edits**"  
-"   - Implement undo/redo stack for block creation, modification, and deletion"  
-"   - Add keyboard shortcuts (Ctrl+Z, Ctrl+Y) for undo/redo"  
-"   - Display undo/redo availability in the UI"  
-""  
-"4. **Enhanced tooltips and help text**"  
-"   - Add contextual help tooltips for all UI elements"  
-"   - Create a comprehensive help system with examples"  
-"   - Add inline validation hints in input fields"  
-""  
-"### C.2 Advanced Features"  
-""  
-"1. **Conflict resolution UI**"  
-"   - Implement visual indication of overlapping blocks in the timeline"  
-"   - Add automatic resolution options (shift, truncate, cancel)"  
-"   - Provide detailed conflict reports when validation fails"  
-""  
-"2. **Priority system for overlapping blocks**"  
-"   - Allow users to set priority levels for blocks"  
-"   - Implement automatic resolution based on priority when overlaps occur"  
-"   - Visual indicator of block priority in the UI"  
-""  
-"3. **Modal dialogs for block creation (alternative workflow)**"  
-"   - Keep current inline editing as primary method"  
-"   - Add option to use modal dialogs for users who prefer that workflow"  
-"   - Modal dialogs with larger input areas and advanced options"  
-""  
-"### C.3 Import/Export Enhancements"  
-""  
-"1. **Standalone daypart config import/export**"  
-"   - Export daypart configuration as a separate JSON file"  
-"   - Import daypart configuration from external files"  
-"   - Validate imported configurations before applying"  
-""  
-"2. **Copy blocks between channels**"  
-"   - Allow copying configured blocks from one channel to another"  
-"   - Option to adjust timing when copying (timezone adjustments)"  
-"   - Maintain references to shared tags/collections"  
-""  
-"### C.4 Performance & Scalability"  
-""  
-"1. **Background schedule generation**"  
-"   - Move schedule generation to background threads to prevent UI freezing"  
-"   - Add progress indicators and cancellation capability"  
-"   - Use threading.Thread with proper UI synchronization"  
-""  
-"2. **Cached tag-to-video mappings**"  
-"   - Implement caching mechanisms for frequent tag-based lookups"  
-"   - Cache invalidation when collections or blacklists change"  
-"   - LRU cache strategy for memory efficiency"  
-""  
-"### C.5 Testing & Documentation"  
-""  
-"1. **Integration tests**"  
-"   - Test complete workflows from UI to schedule generation"  
-"   - Test save/load cycles with various configurations"  
-"   - Test worker compatibility with daypart-generated schedules"  
-""  
-"2. **User documentation**"  
-"   - Create comprehensive user guide (PDF/HTML)"  
-"   - Add in-app help system with context-sensitive assistance"  
-"   - Provide sample configurations for common use cases"  
-""  
-"3. **Performance testing**"  
-"   - Test with large collections (1000+ videos)"  
-"   - Measure schedule generation time (<5s target)"  
-"   - Monitor memory usage during operation"  
-""  
-"---" 
+## 13. Conclusion
+
+The Daypart Scheduler feature represents a significant upgrade to AkiraTV's scheduling capabilities, bringing broadcast-style programming to the platform. By implementing time-block-based scheduling with tag-based content selection, gap filling, and marathon support, users will have unprecedented control over their channel's programming.
+
+The phased implementation approach allows for incremental delivery and testing, minimizing risk while ensuring each component is thoroughly validated before moving to the next phase.
+
+This proposal provides a comprehensive blueprint for development, but we welcome feedback and adjustments based on user needs and technical constraints discovered during implementation.

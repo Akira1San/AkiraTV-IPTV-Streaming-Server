@@ -970,12 +970,14 @@ class SimpleSchedulerWizard:
             )
             
             self.daypart_preview_entries = entries
+            print(f"[DEBUG] Generated {len(entries)} entries, calling update_preview_display")
             self.update_preview_display()
             # Note: Timeline is drawn in main preview panel via update_preview_display
             
             messagebox.showinfo("Preview Generated",
                               f"Generated {len(entries)} schedule entries for preview")
         except Exception as e:
+            print(f"[DEBUG] Exception in on_generate_daypart_preview: {e}")
             messagebox.showerror("Error", f"Failed to generate preview: {str(e)}")
             logger.error(f"Daypart preview generation failed: {e}", exc_info=True)
     
@@ -1111,7 +1113,15 @@ class SimpleSchedulerWizard:
     
     def update_preview_display(self):
         """Update the text preview list"""
+        print(f"[DEBUG] update_preview_display called, entries: {len(self.daypart_preview_entries) if self.daypart_preview_entries else 0}")
         self.preview_list.delete(0, tk.END)
+        
+        if not self.daypart_preview_entries:
+            self.preview_list.insert(tk.END, "No preview generated. Click 'Generate Preview'.")
+            self.preview_stats_label.config(text="")
+            return
+        
+        print(f"[DEBUG] Displaying {len(self.daypart_preview_entries)} entries in listbox")
         
         if not self.daypart_preview_entries:
             self.preview_list.insert(tk.END, "No preview generated. Click 'Generate Preview'.")
@@ -1139,6 +1149,9 @@ class SimpleSchedulerWizard:
                 display = f"{time} {file}"
             
             self.preview_list.insert(tk.END, display)
+        
+        # Force UI update
+        self.preview_list.update()
         
         # Update stats
         total_entries = len(self.daypart_preview_entries)
