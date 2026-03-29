@@ -34,9 +34,27 @@ class EditBlockDialog(tk.Toplevel):
         self.title("Edit Time Block")
         self.geometry("600x400")
         self.resizable(False, False)
+        # Center the dialog on parent
+        self.center_on_parent()
         self.create_widgets()
         if block:
             self.populate_fields()
+    
+    def center_on_parent(self):
+        """Center the dialog window on the parent window"""
+        self.update_idletasks()
+        # Get parent position and size
+        parent_x = self.parent.winfo_x()
+        parent_y = self.parent.winfo_y()
+        parent_w = self.parent.winfo_width()
+        parent_h = self.parent.winfo_height()
+        # Get dialog size
+        dialog_w = 600
+        dialog_h = 400
+        # Calculate center position
+        x = parent_x + (parent_w - dialog_w) // 2
+        y = parent_y + (parent_h - dialog_h) // 2
+        self.geometry(f"{dialog_w}x{dialog_h}+{x}+{y}")
     
     def create_widgets(self):
         main_frame = ttk.Frame(self, padding=10)
@@ -242,7 +260,25 @@ class TagExclusionDialog(tk.Toplevel):
         self.grab_set()
         self.title("Exclude Tags from Gap Filler")
         self.geometry("400x300")
+        # Center the dialog on parent
+        self.center_on_parent()
         self.create_widgets()
+    
+    def center_on_parent(self):
+        """Center the dialog window on the parent window"""
+        self.update_idletasks()
+        # Get parent position and size
+        parent_x = self.parent.winfo_x()
+        parent_y = self.parent.winfo_y()
+        parent_w = self.parent.winfo_width()
+        parent_h = self.parent.winfo_height()
+        # Get dialog size
+        dialog_w = 400
+        dialog_h = 300
+        # Calculate center position
+        x = parent_x + (parent_w - dialog_w) // 2
+        y = parent_y + (parent_h - dialog_h) // 2
+        self.geometry(f"{dialog_w}x{dialog_h}+{x}+{y}")
     
     def create_widgets(self):
         main_frame = ttk.Frame(self, padding=10)
