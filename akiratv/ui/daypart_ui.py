@@ -468,6 +468,29 @@ class DaypartSchedulerUI:
         # Note: Preview is displayed in the main Schedule Preview panel on the right
         # Click "Generate Preview" button below to see the schedule preview
         
+        # Preview mode selection
+        preview_mode_frame = ttk.Frame(main_frame)
+        preview_mode_frame.pack(fill="x", pady=(0, 5))
+        
+        ttk.Label(preview_mode_frame, text="Preview Mode:").pack(side="left", padx=(0, 5))
+        self.app.preview_mode_var = tk.StringVar(value="single")
+        ttk.Radiobutton(preview_mode_frame, text="Single Day", variable=self.app.preview_mode_var,
+                       value="single").pack(side="left", padx=5)
+        ttk.Radiobutton(preview_mode_frame, text="Weekly (7 days)", variable=self.app.preview_mode_var,
+                       value="weekly").pack(side="left", padx=5)
+        ttk.Radiobutton(preview_mode_frame, text="Calendar Range", variable=self.app.preview_mode_var,
+                       value="calendar").pack(side="left", padx=5)
+        
+        # Calendar date range (for calendar mode)
+        calendar_range_frame = ttk.Frame(main_frame)
+        calendar_range_frame.pack(fill="x", pady=(0, 10))
+        ttk.Label(calendar_range_frame, text="From:").pack(side="left", padx=(0, 5))
+        self.app.preview_start_date_var = tk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
+        ttk.Entry(calendar_range_frame, textvariable=self.app.preview_start_date_var, width=12).pack(side="left", padx=2)
+        ttk.Label(calendar_range_frame, text="To:").pack(side="left", padx=(10, 5))
+        self.app.preview_end_date_var = tk.StringVar(value=(datetime.now() + timedelta(days=6)).strftime("%Y-%m-%d"))
+        ttk.Entry(calendar_range_frame, textvariable=self.app.preview_end_date_var, width=12).pack(side="left", padx=2)
+        
         # Action buttons
         action_btn_frame = ttk.Frame(main_frame)
         action_btn_frame.pack(fill="x", pady=(10, 0))
@@ -475,6 +498,8 @@ class DaypartSchedulerUI:
                   command=self.app.on_generate_daypart_preview).pack(side="left", padx=5)
         ttk.Button(action_btn_frame, text="Save Schedule",
                   command=self.app.on_save_daypart_schedule).pack(side="left", padx=5)
+        ttk.Button(action_btn_frame, text="Copy Preview",
+                  command=self.app.on_copy_daypart_preview).pack(side="left", padx=5)
         
         # Export/Import buttons
         ttk.Button(action_btn_frame, text="Export Config",
