@@ -157,6 +157,7 @@ class DaypartSchedulerMixin:
             self.end_var = tk.StringVar(value="01:00")
             self.end_entry = ttk.Entry(time_frame, textvariable=self.end_var, width=8)
             self.end_entry.pack(side="left", padx=5)
+            ttk.Button(time_frame, text="Auto Calc", command=self.on_auto_calc_end_time).pack(side="left", padx=5)
             ttk.Label(time_frame, text="(HH:MM format, 24-hour)").pack(side="left", padx=10)
             
             # Duration display
@@ -188,6 +189,11 @@ class DaypartSchedulerMixin:
             
             self.populate_video_list()
             
+            # Initially hide video frame (only show in video mode)
+            if hasattr(self, 'video_frame'):
+                if self.type_var.get() == "tag":
+                    self.video_frame.pack_forget()
+            
             self.selected_video_label = ttk.Label(self.video_frame, text="Selected: None", foreground="blue")
             self.selected_video_label.pack(pady=(5, 0))
             
@@ -200,19 +206,28 @@ class DaypartSchedulerMixin:
         def on_type_change(self):
             """Toggle between tag and video mode"""
             is_tag = self.type_var.get() == "tag"
-            self.tag_frame.pack(fill="x", pady=(0, 10)) if is_tag else self.tag_frame.pack_forget()
-            self.tag_video_list_frame.pack(fill="both", expand=True, pady=(0, 10)) if is_tag else self.tag_video_list_frame.pack_forget()
-            count_frame = self.nametowidget(self.tag_video_list_frame.winfo_parent()).winfo_children()
-            # Show/hide video frame
-            if hasattr(self, 'video_frame'):
-                if is_tag:
-                    self.video_frame.pack(fill="both", expand=True, pady=(0, 10))
-                else:
+            
+            # Show/hide tag-related frames
+            if is_tag:
+                self.tag_frame.pack(fill="x", pady=(0, 10))
+                self.tag_video_list_frame.pack(fill="both", expand=True, pady=(0, 10))
+                # Hide video-specific frame (for selecting single video)
+                if hasattr(self, 'video_frame'):
                     self.video_frame.pack_forget()
+            else:
+                # Hide tag-related frames
+                self.tag_frame.pack_forget()
+                self.tag_video_list_frame.pack_forget()
+                # Show video-specific frame
+                if hasattr(self, 'video_frame'):
+                    self.video_frame.pack(fill="both", expand=True, pady=(0, 10))
+                    self.populate_video_list()
         
         def on_tag_select(self, *args):
-            """Update video list when tag changes"""
+            """Update video list when tag changes and recalculate end time"""
             self.populate_tag_videos()
+            # Auto-calculate end time based on current video count selection
+            self.on_video_count_change()
         
         def on_new_tag(self):
             """Create a new tag"""
@@ -224,8 +239,75 @@ class DaypartSchedulerMixin:
                 self.tag_var.set(new_tag)
         
         def on_video_count_change(self, event=None):
-            """Handle video count change"""
-            pass  # Can be extended for more functionality
+            """Handle video count change - auto-calculate end time based on selected videos"""
+            self.on_auto_calc_end_time()
+        
+        def on_auto_calc_end_time(self):
+            """Calculate end time based on selected tag and video count"""
+            video_count = self.video_count_var.get()
+            selected_tag = self.tag_var.get()
+            
+            if not selected_tag or not video_count:
+                return
+            
+            # Get videos with this tag (check collection tags)
+            tag_videos = []
+            for video in self.available_videos:
+                collection_tags = video.get("collection", {}).get("tags", [])
+                if selected_tag in collection_tags:
+                    tag_videos.append(video)
+            
+            if not tag_videos:
+                return
+            
+            # Calculate total duration based on video count
+            total_duration_seconds = 0
+            
+            if video_count == "all":
+                # Sum all videos with this tag
+                for video in tag_videos:
+                    duration = video.get("duration", 0)
+                    if duration:
+                        total_duration_seconds += duration
+            elif video_count == "single":
+                # Just one video - use average duration or first video
+                if tag_videos:
+                    durations = [v.get("duration", 0) for v in tag_videos if v.get("duration")]
+                    if durations:
+                        total_duration_seconds = sum(durations) / len(durations)
+                    else:
+                        total_duration_seconds = 3600  # Default 1 hour
+            else:
+                # Specific number (2, 3, 4, 5)
+                try:
+                    count = int(video_count)
+                    # Use average duration from available videos
+                    durations = [v.get("duration", 0) for v in tag_videos if v.get("duration")]
+                    if durations:
+                        avg_duration = sum(durations) / len(durations)
+                        total_duration_seconds = avg_duration * count
+                    elif tag_videos:
+                        # Fallback to first video duration
+                        total_duration_seconds = (tag_videos[0].get("duration", 0) or 3600) * count
+                except ValueError:
+                    pass
+            
+            # Calculate end time from start time + duration
+            if total_duration_seconds > 0:
+                try:
+                    from datetime import timedelta
+                    # Import parse_time_string locally
+                    from akiratv.daypart_scheduler import parse_time_string
+                    start_time = parse_time_string(self.start_var.get())
+                    end_time = start_time + timedelta(seconds=total_duration_seconds)
+                    # Format as HH:MM (24-hour)
+                    end_time_str = end_time.strftime("%H:%M")
+                    self.end_var.set(end_time_str)
+                    # Update duration display
+                    self.update_duration()
+                except Exception as e:
+                    # Keep default end time if calculation fails
+                    pass
         
         def on_all_days_toggle(self):
             """Toggle all day checkboxes"""
@@ -247,8 +329,9 @@ class DaypartSchedulerMixin:
             if not selected_tag:
                 return
             for video in self.available_videos:
-                tags = video.get("tags", [])
-                if selected_tag in tags:
+                # Get tags from collection (tags are stored in collection, not video)
+                collection_tags = video.get("collection", {}).get("tags", [])
+                if selected_tag in collection_tags:
                     filename = Path(video.get("path", "")).name
                     self.tag_video_list.insert(tk.END, filename)
         
