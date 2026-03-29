@@ -13,7 +13,7 @@ from .daypart_scheduler import (
     TimeBlock, MarathonConfig, GapFillerConfig,
     DaypartScheduler, get_available_tags_from_collections,
     validate_time_format, parse_time_string, validate_time_block,
-    generate_daypart_schedule
+    generate_daypart_schedule, validate_daypart_config
 )
 from .daypart_scheduler_mixin import DaypartSchedulerMixin
 import logging
