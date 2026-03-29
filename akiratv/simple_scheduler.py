@@ -459,25 +459,12 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         create_daypart_tab(schedule_tab, self)
     
     # ============================================================================
-    # DAYPART SCHEDULER DIALOG CLASSES
-    # ============================================================================
-    # Time Block Dialog - Now provided by DaypartSchedulerMixin
+    # TAG EXCLUSION DIALOG
     # ============================================================================
 
-        
-        def create_widgets(self):
-            main_frame = ttk.Frame(self, padding=10)
-            main_frame.pack(fill="both", expand=True)
-            
-            # Content type
-            type_frame = ttk.Frame(main_frame)
-            type_frame.pack(fill="x", pady=(0, 10))
-            ttk.Label(type_frame, text="Content Type:").pack(side="left", padx=(0, 5))
-            self.type_var = tk.StringVar(value="tag")
-            ttk.Radiobutton(type_frame, text="Tag (random)", variable=self.type_var,
-                           value="tag", command=self.on_type_change).pack(side="left", padx=5)
-            ttk.Radiobutton(type_frame, text="Specific Video", variable=self.type_var,
-                           value="video", command=self.on_type_change).pack(side="left", padx=5)
+    class TagExclusionDialog(tk.Toplevel):
+        """Dialog for selecting tags to exclude from gap filler"""
+        def __init__(self, parent, available_tags=None, excluded_tags=None):
             
             # Tag selection (shown for tag mode)
             self.tag_frame = ttk.Frame(main_frame)
