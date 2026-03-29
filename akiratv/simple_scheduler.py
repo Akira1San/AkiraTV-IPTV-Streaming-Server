@@ -664,9 +664,17 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
     
     def on_save_daypart_schedule(self):
         """Save daypart schedule configuration"""
-        if not self.current_channel:
+        # Use channel_var if current_channel is not set
+        target_channel = self.current_channel
+        if not target_channel:
+            target_channel = self.channel_var.get().strip() if hasattr(self, 'channel_var') else None
+        
+        if not target_channel:
             messagebox.showerror("Error", "No channel selected")
             return
+        
+        # Update current_channel for consistency
+        self.current_channel = target_channel
         
         # Validate configuration
         daypart_config = {
@@ -694,10 +702,18 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
     
     def load_daypart_config_for_channel(self):
         """Load daypart configuration for current channel"""
-        if not self.current_channel:
+        # Use channel_var if current_channel is not set
+        target_channel = self.current_channel
+        if not target_channel:
+            target_channel = self.channel_var.get().strip() if hasattr(self, 'channel_var') else None
+        
+        if not target_channel:
             return
         
-        config = self.daypart_scheduler.load_config(self.current_channel)
+        # Update current_channel for consistency
+        self.current_channel = target_channel
+        
+        config = self.daypart_scheduler.load_config(target_channel)
         if config:
             self.daypart_config = config
             self.daypart_enabled = config.get("enabled", False)
