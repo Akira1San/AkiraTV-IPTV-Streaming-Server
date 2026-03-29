@@ -459,11 +459,14 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         max_videos = None
         if video_count == "all":
             max_videos = len(tag_videos)
-        elif video_count != "single":
+        elif video_count != "single" and video_count:
             try:
                 max_videos = int(video_count)
             except (ValueError, TypeError):
-                max_videos = None
+                max_videos = 1  # Default to single if invalid
+        else:
+            # video_count is "single" or empty
+            max_videos = 1
         
         # Fill the block with videos from this tag
         video_index = 0

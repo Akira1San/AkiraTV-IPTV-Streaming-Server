@@ -16,6 +16,7 @@ import logging
 from datetime import datetime, date
 from pathlib import Path
 
+from pathlib import Path
 from .daypart_scheduler import (
     TimeBlock, MarathonConfig, GapFillerConfig,
     DaypartScheduler, parse_time_string, validate_daypart_config,
@@ -649,7 +650,7 @@ class DaypartSchedulerMixin:
         self.draw_timeline()
     
     def on_generate_daypart_preview(self):
-        """Generate daypart schedule preview for today (24 hours)"""
+        """Generate daypart schedule preview (single day, weekly, or calendar range)"""
         try:
             collections = load_collections(self.current_profile)
             available_videos = []
@@ -667,24 +668,71 @@ class DaypartSchedulerMixin:
                 }
             }
             
-            target_date = date.today()
-            day_name = target_date.strftime("%A").lower()
+            preview_mode = self.preview_mode_var.get()
+            all_entries = []
             
-            entries = generate_daypart_schedule(
-                daypart_config,
-                available_videos,
-                self.current_channel or "default",
-                target_date
-            )
+            if preview_mode == "single":
+                # Single day - today
+                target_date = date.today()
+                entries = generate_daypart_schedule(
+                    daypart_config,
+                    available_videos,
+                    self.current_channel or "default",
+                    target_date
+                )
+                day_name = target_date.strftime("%A").lower()
+                for entry in entries:
+                    entry["day"] = day_name
+                all_entries.extend(entries)
+                
+            elif preview_mode == "weekly":
+                # Generate for 7 days starting from today
+                for day_offset in range(7):
+                    target_date = date.today() + timedelta(days=day_offset)
+                    entries = generate_daypart_schedule(
+                        daypart_config,
+                        available_videos,
+                        self.current_channel or "default",
+                        target_date
+                    )
+                    day_name = target_date.strftime("%A").lower()
+                    for entry in entries:
+                        entry["day"] = day_name
+                        entry["date"] = target_date.strftime("%Y-%m-%d")
+                    all_entries.extend(entries)
+                
+            elif preview_mode == "calendar":
+                # Generate for date range
+                try:
+                    start_parts = self.preview_start_date_var.get().split("-")
+                    end_parts = self.preview_end_date_var.get().split("-")
+                    start_date = date(int(start_parts[0]), int(start_parts[1]), int(start_parts[2]))
+                    end_date = date(int(end_parts[0]), int(end_parts[1]), int(end_parts[2]))
+                    
+                    current_date = start_date
+                    while current_date <= end_date:
+                        entries = generate_daypart_schedule(
+                            daypart_config,
+                            available_videos,
+                            self.current_channel or "default",
+                            current_date
+                        )
+                        day_name = current_date.strftime("%A").lower()
+                        for entry in entries:
+                            entry["day"] = day_name
+                            entry["date"] = current_date.strftime("%Y-%m-%d")
+                        all_entries.extend(entries)
+                        current_date += timedelta(days=1)
+                except Exception as e:
+                    messagebox.showerror("Date Error", f"Invalid date format. Use YYYY-MM-DD: {e}")
+                    return
             
-            for entry in entries:
-                entry["day"] = day_name
-            
-            self.daypart_preview_entries = entries
+            self.daypart_preview_entries = all_entries
             self.update_preview_display()
             
+            mode_text = {"single": "today", "weekly": "7 days", "calendar": "date range"}[preview_mode]
             messagebox.showinfo("Preview Generated",
-                              f"Generated {len(entries)} schedule entries for {day_name.title()} (24 hours)")
+                              f"Generated {len(all_entries)} schedule entries for {mode_text}")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate preview: {str(e)}")
             logger.error(f"Daypart preview generation failed: {e}", exc_info=True)
@@ -716,6 +764,40 @@ class DaypartSchedulerMixin:
             messagebox.showinfo("Success", f"Daypart schedule saved for channel '{self.current_channel}'")
         else:
             messagebox.showerror("Error", "Failed to save daypart configuration")
+    
+    def on_copy_daypart_preview(self):
+        """Copy daypart preview to clipboard"""
+        if not self.daypart_preview_entries:
+            messagebox.showwarning("No Preview", "Generate a preview first")
+            return
+        
+        text_lines = []
+        current_date = None
+        for entry in self.daypart_preview_entries:
+            entry_date = entry.get("date", "")
+            entry_day = entry.get("day", "")
+            
+            # Show date header when date changes
+            if entry_date and entry_date != current_date:
+                current_date = entry_date
+                day_display = entry_day.title() if entry_day else ""
+                text_lines.append(f"=== {entry_date} ({day_display}) ===")
+            
+            time_str = entry.get("time", "??:??:??")
+            time_short = ":".join(time_str.split(":")[:2])
+            # Get title from file path or use default
+            file_path = entry.get("file", "")
+            if file_path:
+                title = Path(file_path).stem
+            else:
+                title = entry.get("title", "Unknown")
+            source = entry.get("source", "unknown")
+            text_lines.append(f"  {time_short} [{source}] {title}")
+        
+        clipboard_text = "\n".join(text_lines)
+        self.root.clipboard_clear()
+        self.root.clipboard_append(clipboard_text)
+        messagebox.showinfo("Copied", f"{len(self.daypart_preview_entries)} entries copied to clipboard")
     
     def load_daypart_config_for_channel(self):
         """Load daypart configuration for current channel"""
@@ -830,21 +912,40 @@ class DaypartSchedulerMixin:
                     self.preview_stats_label.config(text="")
                 return
             
+            # Group entries by date for display
+            current_date = None
             for entry in self.daypart_preview_entries:
-                start = entry.get("start_time", "??:??")
-                end = entry.get("end_time", "??:??")
-                title = entry.get("title", "Unknown")
-                entry_type = entry.get("type", "unknown")
-                self.preview_list.insert(tk.END, f"{start} - {end} [{entry_type}] {title}")
+                entry_date = entry.get("date", "")
+                entry_day = entry.get("day", "")
+                
+                # Show date header when date changes
+                if entry_date and entry_date != current_date:
+                    current_date = entry_date
+                    day_display = entry_day.title() if entry_day else ""
+                    self.preview_list.insert(tk.END, f"--- {entry_date} ({day_display}) ---")
+                
+                start = entry.get("time", "??:??").split(":")[:2]
+                start = ":".join(start)
+                # Get title from file path or use default
+                file_path = entry.get("file", "")
+                if file_path:
+                    title = Path(file_path).stem
+                else:
+                    title = entry.get("title", "Unknown")
+                source = entry.get("source", "unknown")
+                self.preview_list.insert(tk.END, f"  {start} [{source}] {title}")
             
             if hasattr(self, 'preview_stats_label'):
+                # Count unique dates
+                dates = set(entry.get("date", "") for entry in self.daypart_preview_entries if entry.get("date"))
+                date_count = len(dates) if dates else 1
                 total_duration = sum(
-                    entry.get("duration_seconds", 0) 
+                    entry.get("duration", 0) 
                     for entry in self.daypart_preview_entries
                 )
-                hours = total_duration / 3600
+                hours = total_duration / 3600 if total_duration else 0
                 self.preview_stats_label.config(
-                    text=f"{len(self.daypart_preview_entries)} entries | {hours:.1f} hours scheduled"
+                    text=f"{len(self.daypart_preview_entries)} entries | {date_count} day(s) | {hours:.1f} hours"
                 )
 
     # ========================================================================
@@ -1083,7 +1184,30 @@ class DaypartSchedulerMixin:
         # Preview statistics
         self.preview_stats_label = ttk.Label(preview_panel, text="")
         self.preview_stats_label.pack(pady=(5, 0))
-
+        
+        # === PREVIEW MODE SELECTION ===
+        preview_mode_frame = ttk.Frame(main_frame)
+        preview_mode_frame.pack(fill="x", pady=(0, 10))
+        
+        ttk.Label(preview_mode_frame, text="Preview Mode:").pack(side="left", padx=(0, 5))
+        self.preview_mode_var = tk.StringVar(value="single")
+        ttk.Radiobutton(preview_mode_frame, text="Single Day", variable=self.preview_mode_var,
+                       value="single").pack(side="left", padx=5)
+        ttk.Radiobutton(preview_mode_frame, text="Weekly (7 days)", variable=self.preview_mode_var,
+                       value="weekly").pack(side="left", padx=5)
+        ttk.Radiobutton(preview_mode_frame, text="Calendar Range", variable=self.preview_mode_var,
+                       value="calendar").pack(side="left", padx=5)
+        
+        # Calendar date range (for calendar mode)
+        calendar_range_frame = ttk.Frame(main_frame)
+        calendar_range_frame.pack(fill="x", pady=(0, 10))
+        ttk.Label(calendar_range_frame, text="From:").pack(side="left", padx=(0, 5))
+        self.preview_start_date_var = tk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
+        ttk.Entry(calendar_range_frame, textvariable=self.preview_start_date_var, width=12).pack(side="left", padx=2)
+        ttk.Label(calendar_range_frame, text="To:").pack(side="left", padx=(10, 5))
+        self.preview_end_date_var = tk.StringVar(value=(datetime.now() + timedelta(days=6)).strftime("%Y-%m-%d"))
+        ttk.Entry(calendar_range_frame, textvariable=self.preview_end_date_var, width=12).pack(side="left", padx=2)
+        
         # Action buttons
         action_btn_frame = ttk.Frame(main_frame)
         action_btn_frame.pack(fill="x", pady=(10, 0))
@@ -1091,6 +1215,8 @@ class DaypartSchedulerMixin:
                   command=self.on_generate_daypart_preview).pack(side="left", padx=5)
         ttk.Button(action_btn_frame, text="Save Schedule",
                   command=self.on_save_daypart_schedule).pack(side="left", padx=5)
+        ttk.Button(action_btn_frame, text="Copy Preview",
+                  command=self.on_copy_daypart_preview).pack(side="left", padx=5)
 
         # Initialize daypart config for current channel
         self.load_daypart_config_for_channel()
