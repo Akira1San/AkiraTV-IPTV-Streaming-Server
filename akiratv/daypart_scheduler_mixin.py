@@ -384,6 +384,11 @@ class DaypartSchedulerMixin:
                 for day in self.block.days:
                     if day in self.day_vars:
                         self.day_vars[day].set(True)
+                # Check if all days are selected and update the "All" checkbox
+                all_days = [day for day, var in self.day_vars.items()]
+                selected_days = [day for day, var in self.day_vars.items() if var.get()]
+                if len(selected_days) == len(all_days):
+                    self.all_days_var.set(True)
             else:
                 self.type_var.set("video")
                 # Find and select the video
@@ -422,7 +427,11 @@ class DaypartSchedulerMixin:
                 if not content_value:
                     messagebox.showerror("Error", "Please select a tag")
                     return
+                # Get selected days
                 days = [day for day, var in self.day_vars.items() if var.get()]
+                # If "All" is checked, set days to all days
+                if self.all_days_var.get():
+                    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
                 video_count = self.video_count_var.get()
             else:
                 selection = self.video_list.curselection()
@@ -806,6 +815,176 @@ class DaypartSchedulerMixin:
         self.root.clipboard_clear()
         self.root.clipboard_append(clipboard_text)
         messagebox.showinfo("Copied", f"{len(self.daypart_preview_entries)} entries copied to clipboard")
+    
+    def on_save_daypart_work(self):
+        """Save daypart blocks to an INI file for reuse"""
+        try:
+            import configparser
+            from pathlib import Path
+            
+            # Check if there are blocks to save
+            if not self.daypart_time_blocks and not self.daypart_marathons:
+                messagebox.showwarning("Nothing to Save", "No time blocks or marathons to save")
+                return
+            
+            # Ask user for save location
+            file_path = filedialog.asksaveasfilename(
+                title="Save Daypart Work",
+                defaultextension=".ini",
+                filetypes=[("INI files", "*.ini"), ("All files", "*.*")],
+                initialfile="daypart_work.ini"
+            )
+            
+            if not file_path:
+                return  # User cancelled
+            
+            # Create config parser
+            config = configparser.ConfigParser()
+            
+            # Save time blocks
+            for i, block in enumerate(self.daypart_time_blocks):
+                section = f"Block_{i+1}"
+                # Check if all days are selected
+                all_days_list = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+                is_all_days = block.days == all_days_list
+                config[section] = {
+                    "start_time": block.start_time,
+                    "end_time": block.end_time,
+                    "content_type": block.content_type,
+                    "content_value": block.content_value,
+                    "block_id": block.block_id,
+                    "days": ",".join(block.days) if block.days else "",
+                    "all_days": "true" if is_all_days else "false",
+                    "video_count": block.video_count or ""
+                }
+            
+            # Save marathons
+            for i, marathon in enumerate(self.daypart_marathons):
+                section = f"Marathon_{i+1}"
+                config[section] = {
+                    "tag": marathon.tag,
+                    "start_time": marathon.start_time,
+                    "end_time": marathon.end_time,
+                    "shuffle": str(marathon.shuffle),
+                    "no_repeat_hours": str(marathon.no_repeat_hours),
+                    "marathon_id": marathon.marathon_id or ""
+                }
+            
+            # Save gap filler config
+            if hasattr(self, 'daypart_gap_filler') and self.daypart_gap_filler:
+                config["GapFiller"] = {
+                    "enabled": str(self.daypart_gap_filler.enabled),
+                    "source": self.daypart_gap_filler.source,
+                    "collection_ids": ",".join(self.daypart_gap_filler.collection_ids) if self.daypart_gap_filler.collection_ids else "",
+                    "tags": ",".join(self.daypart_gap_filler.tags) if self.daypart_gap_filler.tags else "",
+                    "excluded_tags": ",".join(self.daypart_gap_filler.excluded_tags) if self.daypart_gap_filler.excluded_tags else "",
+                    "respect_24h_norepeat": str(self.daypart_gap_filler.respect_24h_norepeat),
+                    "shuffle": str(self.daypart_gap_filler.shuffle)
+                }
+            
+            # Write to file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                config.write(f)
+            
+            block_count = len(self.daypart_time_blocks)
+            marathon_count = len(self.daypart_marathons)
+            messagebox.showinfo("Save Successful", 
+                f"Daypart work saved to:\n{file_path}\n\nSaved:\n• {block_count} time block(s)\n• {marathon_count} marathon(s)")
+            
+        except Exception as e:
+            messagebox.showerror("Save Error", f"Failed to save: {str(e)}")
+            logger.error(f"Daypart save work failed: {e}", exc_info=True)
+    
+    def on_load_daypart_work(self):
+        """Load daypart blocks from an INI file"""
+        try:
+            import configparser
+            from pathlib import Path
+            
+            # Ask user for file to load
+            file_path = filedialog.askopenfilename(
+                title="Load Daypart Work",
+                filetypes=[("INI files", "*.ini"), ("All files", "*.*")]
+            )
+            
+            if not file_path:
+                return  # User cancelled
+            
+            # Read config
+            config = configparser.ConfigParser()
+            config.read(file_path, encoding='utf-8')
+            
+            # Load time blocks
+            self.daypart_time_blocks = []
+            for section in config.sections():
+                if section.startswith("Block_"):
+                    try:
+                        all_days = config[section].get("all_days", "false").lower() == "true"
+                        days_str = config[section].get("days", "")
+                        if all_days:
+                            days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+                        else:
+                            days = days_str.split(",") if days_str else []
+                        days = [d.strip() for d in days if d.strip()]
+                        
+                        block = TimeBlock(
+                            start_time=config[section].get("start_time", "00:00"),
+                            end_time=config[section].get("end_time", "00:00"),
+                            content_type=config[section].get("content_type", "tag"),
+                            content_value=config[section].get("content_value", ""),
+                            block_id=config[section].get("block_id"),
+                            days=days,
+                            video_count=config[section].get("video_count") or None
+                        )
+                        self.daypart_time_blocks.append(block)
+                    except Exception as e:
+                        logger.warning(f"Failed to load block {section}: {e}")
+            
+            # Load marathons
+            self.daypart_marathons = []
+            for section in config.sections():
+                if section.startswith("Marathon_"):
+                    try:
+                        marathon = MarathonConfig(
+                            tag=config[section].get("tag", ""),
+                            start_time=config[section].get("start_time", "00:00"),
+                            end_time=config[section].get("end_time", "00:00"),
+                            shuffle=config[section].get("shuffle", "True").lower() == "true",
+                            no_repeat_hours=int(config[section].get("no_repeat_hours", "24")),
+                            marathon_id=config[section].get("marathon_id")
+                        )
+                        self.daypart_marathons.append(marathon)
+                    except Exception as e:
+                        logger.warning(f"Failed to load marathon {section}: {e}")
+            
+            # Load gap filler
+            if "GapFiller" in config:
+                gap_section = config["GapFiller"]
+                self.daypart_gap_filler = GapFillerConfig(
+                    enabled=gap_section.get("enabled", "False").lower() == "true",
+                    source=gap_section.get("source", "all"),
+                    collection_ids=gap_section.get("collection_ids", "").split(",") if gap_section.get("collection_ids") else [],
+                    tags=gap_section.get("tags", "").split(",") if gap_section.get("tags") else [],
+                    excluded_tags=gap_section.get("excluded_tags", "").split(",") if gap_section.get("excluded_tags") else [],
+                    respect_24h_norepeat=gap_section.get("respect_24h_norepeat", "True").lower() == "true",
+                    shuffle=gap_section.get("shuffle", "True").lower() == "true"
+                )
+            
+            # Update UI
+            self.update_block_list()
+            self.update_marathon_list()
+            self.update_gap_filler_ui()
+            self.update_preview_display()
+            
+            # Show import summary
+            block_count = len(self.daypart_time_blocks)
+            marathon_count = len(self.daypart_marathons)
+            messagebox.showinfo("Load Successful", 
+                f"Loaded from:\n{file_path}\n\nImported:\n• {block_count} time block(s)\n• {marathon_count} marathon(s)\n• Gap filler settings")
+            
+        except Exception as e:
+            messagebox.showerror("Load Error", f"Failed to load: {str(e)}")
+            logger.error(f"Daypart load work failed: {e}", exc_info=True)
     
     def load_daypart_config_for_channel(self):
         """Load daypart configuration for current channel"""
@@ -1233,6 +1412,18 @@ class DaypartSchedulerMixin:
                   command=self.on_save_daypart_schedule).pack(side="left", padx=5)
         ttk.Button(action_btn_frame, text="Copy Preview",
                   command=self.on_copy_daypart_preview).pack(side="left", padx=5)
-
+        
+        # Export/Import buttons
+        ttk.Button(action_btn_frame, text="Export Config",
+                  command=self.on_export_daypart_config).pack(side="left", padx=5)
+        ttk.Button(action_btn_frame, text="Import Config",
+                  command=self.on_import_daypart_config).pack(side="left", padx=5)
+        
+        # Save Work / Load Work buttons
+        ttk.Button(action_btn_frame, text="Save Work",
+                  command=self.on_save_daypart_work).pack(side="left", padx=5)
+        ttk.Button(action_btn_frame, text="Load Work",
+                  command=self.on_load_daypart_work).pack(side="left", padx=5)
+        
         # Initialize daypart config for current channel
         self.load_daypart_config_for_channel()
