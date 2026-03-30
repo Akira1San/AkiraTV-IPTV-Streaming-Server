@@ -380,7 +380,8 @@ def validate_time_block(block: TimeBlock) -> Optional[str]:
 
 def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
                            recent_videos: List[Tuple[str, datetime]] = None,
-                           channel: str = "") -> List[dict]:
+                           channel: str = "",
+                           start_datetime: datetime = None) -> List[dict]:
     """
     Generate schedule entries for a time block.
     
@@ -389,6 +390,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         available_videos: Pool of videos to choose from
         recent_videos: List of (video_path, timestamp) for 24h rule
         channel: Channel name for logging
+        start_datetime: Optional datetime to start scheduling from (for continuous scheduling)
     
     Returns:
         List of schedule entries for this block
@@ -398,7 +400,13 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
     
     entries = []
     block_duration = block.duration_seconds
-    current_time = parse_time_string(block.start_time)
+    
+    # Use provided start_datetime or parse from block.start_time
+    if start_datetime is not None:
+        current_time = start_datetime
+    else:
+        current_time = parse_time_string(block.start_time)
+    
     end_time = parse_time_string(block.end_time)
     
     # Filter videos by content type
@@ -470,9 +478,25 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         
         # Fill the block with videos from this tag
         video_index = 0
-        while current_time < end_time:
+        
+        # Calculate the actual end time for the block
+        if start_datetime is not None:
+            # Calculate block end based on duration
+            block_start_dt = start_datetime
+            block_end_dt = block_start_dt + timedelta(seconds=block.duration_seconds)
+        else:
+            # Use the traditional end_time (time only)
+            block_end_dt = None
+        
+        while True:
             # Check if we've reached the video count limit
             if max_videos is not None and video_index >= max_videos:
+                break
+            
+            # Check time-based end condition
+            if block_end_dt is not None and current_time >= block_end_dt:
+                break
+            elif block_end_dt is None and current_time.time() >= end_time:
                 break
             
             # Filter by 24h rule
@@ -724,7 +748,8 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
 
 
 def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
-                             channel: str, target_date: date) -> List[dict]:
+                             channel: str, target_date: date,
+                             base_datetime: datetime = None) -> List[dict]:
     """
     Generate a complete day schedule using daypart configuration.
     
@@ -740,12 +765,23 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         available_videos: List of video dicts with metadata
         channel: Channel name
         target_date: Date to generate schedule for
+        base_datetime: Optional base datetime for continuous scheduling across days
+                      If None, starts at midnight of target_date
     
     Returns:
-        List of schedule entries sorted by time
+        Tuple of (List of schedule entries, last datetime used)
     """
     schedule_entries = []
     recent_videos = []  # For 24h no-repeat tracking
+    
+    # Determine the base time for this day
+    if base_datetime and base_datetime.date() == target_date:
+        day_start = base_datetime
+    else:
+        day_start = datetime.combine(target_date, datetime.min.time())
+    
+    # Track current time for scheduling
+    current_time = day_start
     
     # 1. Check for marathon on this day
     marathon_entries = []
@@ -800,7 +836,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         block, 
                         available_videos,
                         recent_videos,
-                        channel
+                        channel,
+                        start_datetime=current_time
                     )
                     schedule_entries.extend(block_entries)
             else:
@@ -809,7 +846,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     block, 
                     available_videos,
                     recent_videos,
-                    channel
+                    channel,
+                    start_datetime=current_time
                 )
                 schedule_entries.extend(block_entries)
     
@@ -837,7 +875,10 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     # 4. Sort by time
     schedule_entries.sort(key=lambda e: e["time"])
     
-    return schedule_entries
+    # Track the last time used for continuous scheduling
+    last_datetime = current_time
+    
+    return schedule_entries, last_datetime
 
 
 # ============================================================================
