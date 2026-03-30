@@ -617,51 +617,6 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
             self.update_gap_filler_label()
     
 
-    def on_generate_daypart_preview(self):
-        """Generate daypart schedule preview for today (24 hours)"""
-        try:
-            # Get available videos
-            collections = load_collections(self.current_profile)
-            available_videos = []
-            for col in collections:
-                for video in col.get("videos", []):
-                    if video["path"] not in self.blacklisted_videos:
-                        video["collection"] = col
-                        available_videos.append(video)
-            
-            # Build daypart config
-            daypart_config = {
-                "daypart_config": {
-                    "time_blocks": [b.to_dict() for b in self.daypart_time_blocks],
-                    "marathons": [m.to_dict() for m in self.daypart_marathons],
-                    "gap_filler": self.daypart_gap_filler.to_dict()
-                }
-            }
-            
-            # Generate schedule for just TODAY (24 hours only)
-            target_date = date.today()
-            day_name = target_date.strftime("%A").lower()  # "monday", "tuesday", etc.
-            
-            entries = generate_daypart_schedule(
-                daypart_config,
-                available_videos,
-                self.current_channel or "default",
-                target_date
-            )
-            
-            # Add day name to each entry
-            for entry in entries:
-                entry["day"] = day_name
-            
-            self.daypart_preview_entries = entries
-            self.update_preview_display()
-            
-            messagebox.showinfo("Preview Generated",
-                              f"Generated {len(entries)} schedule entries for {day_name.title()} (24 hours)")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to generate preview: {str(e)}")
-            logger.error(f"Daypart preview generation failed: {e}", exc_info=True)
-    
     def on_save_daypart_schedule(self):
         """Save daypart schedule configuration"""
         # Use channel_var if current_channel is not set
@@ -1523,30 +1478,52 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         # First check for daypart preview entries
         if self.daypart_preview_entries:
             self.preview_list.delete(0, tk.END)
-            for entry in self.daypart_preview_entries:
-                time = entry["time"]
-                file = Path(entry["file"]).name
-                source = entry.get("source", "unknown")
-                metadata = entry.get("metadata", {})
-                
-                if source == "daypart_video":
-                    display = f"{time} [VIDEO] {file}"
-                elif source == "daypart_tag":
-                    tag = metadata.get("tag_used", "unknown")
-                    display = f"{time} [TAG:{tag}] {file}"
-                elif source == "daypart_marathon":
-                    tag = metadata.get("tag", "unknown")
-                    display = f"{time} [MARATHON:{tag}] {file}"
-                elif source == "gap_filler":
-                    display = f"{time} [GAP] {file}"
-                else:
-                    display = f"{time} {file}"
-                
-                self.preview_list.insert(tk.END, display)
             
-            # Update preview info label if it exists
+            selected_day = self.day_var.get()
+            
+            # Filter entries for the selected day
+            selected_entries = [
+                entry for entry in self.daypart_preview_entries
+                if entry.get("day", "").lower() == selected_day.lower()
+            ]
+            
+            # If we have entries for the selected day, show them
+            if selected_entries:
+                # Sort by time for that day
+                sorted_entries = sorted(selected_entries, key=lambda e: e.get("time", ""))
+                
+                self.preview_list.insert(tk.END, f"=== {selected_day.upper()} ===")
+                self.preview_list.insert(tk.END, "")
+                
+                for entry in sorted_entries:
+                    time = entry["time"]
+                    file = Path(entry["file"]).name
+                    source = entry.get("source", "unknown")
+                    metadata = entry.get("metadata", {})
+                    
+                    if source == "daypart_video":
+                        display = f"{time} [VIDEO] {file}"
+                    elif source == "daypart_tag":
+                        tag = metadata.get("tag_used", "unknown")
+                        display = f"{time} [TAG:{tag}] {file}"
+                    elif source == "daypart_marathon":
+                        tag = metadata.get("tag", "unknown")
+                        display = f"{time} [MARATHON:{tag}] {file}"
+                    elif source == "gap_filler":
+                        display = f"{time} [GAP] {file}"
+                    else:
+                        display = f"{time} {file}"
+                    
+                    self.preview_list.insert(tk.END, display)
+                
+                self.preview_list.insert(tk.END, "")
+                self.preview_list.insert(tk.END, f"Total entries: {len(selected_entries)}")
+            else:
+                self.preview_list.insert(tk.END, f"No entries for {selected_day.title()}")
+            
+            # Update preview info label
             if hasattr(self, 'preview_info'):
-                self.preview_info.config(text=f"Daypart Preview: {len(self.daypart_preview_entries)} entries")
+                self.preview_info.config(text=f"Daypart Preview: {len(selected_entries)} entries for {selected_day.title()}")
             return
         
         # Fall back to current_schedule logic

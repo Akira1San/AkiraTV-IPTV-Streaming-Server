@@ -13,7 +13,7 @@ Usage:
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import logging
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from pathlib import Path
 
 from pathlib import Path
@@ -1107,9 +1107,15 @@ class DaypartSchedulerMixin:
                     self.preview_stats_label.config(text="")
                 return
             
+            # Sort entries by date then time for proper display
+            sorted_entries = sorted(
+                self.daypart_preview_entries,
+                key=lambda e: (e.get("date", ""), e.get("time", ""))
+            )
+            
             # Group entries by date for display
             current_date = None
-            for entry in self.daypart_preview_entries:
+            for entry in sorted_entries:
                 entry_date = entry.get("date", "")
                 entry_day = entry.get("day", "")
                 
