@@ -829,27 +829,46 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     days_str = content_parts[1]
                     block_days = [d.strip() for d in days_str.split(",") if d.strip()]
             
+            # FIX: Calculate proper start_datetime for this block from its start_time
+            # Parse the block's start_time and combine with target_date
+            block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
+            
+            # Only override with current_time if we're continuing from a previous day
+            # that ran past this block's start time
+            if current_time > block_start_dt:
+                effective_start = current_time
+            else:
+                effective_start = block_start_dt
+            
             if block.content_type == "tag" and block_days:
                 # Tag block with specific days - check if today is in the list
                 if weekday in get_weekday_indices(block_days):
                     block_entries = generate_block_schedule(
-                        block, 
+                        block,
                         available_videos,
                         recent_videos,
                         channel,
-                        start_datetime=current_time
+                        start_datetime=effective_start
                     )
                     schedule_entries.extend(block_entries)
+                    # Update current_time to track where this block ended
+                    if block_entries:
+                        last_entry_time = datetime.strptime(block_entries[-1]["time"], "%H:%M:%S")
+                        current_time = datetime.combine(target_date, last_entry_time.time())
             else:
                 # Video block or tag block without specific days - apply to all days
                 block_entries = generate_block_schedule(
-                    block, 
+                    block,
                     available_videos,
                     recent_videos,
                     channel,
-                    start_datetime=current_time
+                    start_datetime=effective_start
                 )
                 schedule_entries.extend(block_entries)
+                # Update current_time to track where this block ended
+                if block_entries:
+                    last_entry_time = datetime.strptime(block_entries[-1]["time"], "%H:%M:%S")
+                    current_time = datetime.combine(target_date, last_entry_time.time())
     
     # 3. Detect and fill gaps (only if not marathon day and gap filler enabled)
     if not is_marathon_day:
