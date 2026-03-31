@@ -781,10 +781,20 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     # Determine the base time for this day
     # If base_datetime is provided and is before or on target_date, use it for continuity
     # This handles cross-day continuity (e.g., base_datetime=2026-03-31 23:30, target_date=2026-04-01)
-    if base_datetime and base_datetime.date() <= target_date:
+    if base_datetime and base_datetime.date() < target_date:
+        # Previous day continued into this day - use the exact time
         day_start = base_datetime
+    elif base_datetime and base_datetime.date() == target_date:
+        # Same day - only use base_datetime if it's past midnight (continuing from earlier in the day)
+        # If base_datetime is exactly midnight, treat it as a fresh start
+        if base_datetime.time() > datetime.min.time():
+            day_start = base_datetime
+        else:
+            day_start = datetime.combine(target_date, datetime.min.time())
     else:
         day_start = datetime.combine(target_date, datetime.min.time())
+    
+    logger.info(f"[{channel}] Generating schedule for {target_date} ({target_date.strftime('%A')}), day_start={day_start}")
     
     # Track current time for scheduling
     current_time = day_start
@@ -949,6 +959,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             duration = 5400  # 90 minutes in seconds
         # Calculate the end time by adding video duration
         last_datetime = last_entry_time + timedelta(seconds=duration)
+    
+    logger.info(f"[{channel}] Completed {target_date}, last_datetime={last_datetime}, entries={len(schedule_entries)}")
     
     return schedule_entries, last_datetime
 

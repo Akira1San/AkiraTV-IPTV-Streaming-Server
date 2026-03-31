@@ -716,6 +716,7 @@ class DaypartSchedulerMixin:
                     all_entries.extend(entries)
                     # Continue from last time for next day (don't reset to midnight)
                     if last_time:
+                        logger.info(f"[DEBUG] Day {day_offset}: target={target_date}, last_time={last_time}")
                         current_time = last_time
                 
             elif preview_mode == "calendar":
