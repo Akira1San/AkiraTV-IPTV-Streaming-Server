@@ -785,6 +785,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     # Track current time for scheduling
     current_time = day_start
     
+    # DEBUG: Log day start
+    logger.info(f"[{channel}] Generating schedule for {target_date}: base_datetime={base_datetime}, day_start={day_start}, current_time={current_time}")
+    
     # 1. Check for marathon on this day
     marathon_entries = []
     is_marathon_day = False
@@ -835,12 +838,17 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             # Parse the block's start_time and combine with target_date
             block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
             
+            # DEBUG: Log values for troubleshooting
+            logger.debug(f"[{channel}] Block {block.block_id}: current_time={current_time}, block_start_dt={block_start_dt}, block.start_time={block.start_time}")
+            
             # Only override with current_time if we're continuing from a previous day
             # that ran past this block's start time
             if current_time > block_start_dt:
                 effective_start = current_time
+                logger.debug(f"[{channel}] Using current_time as effective_start: {effective_start}")
             else:
                 effective_start = block_start_dt
+                logger.debug(f"[{channel}] Using block_start_dt as effective_start: {effective_start}")
             
             if block.content_type == "tag" and block_days:
                 # Tag block with specific days - check if today is in the list
@@ -879,6 +887,13 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         if gap_filler_config.enabled:
             time_blocks = [TimeBlock.from_dict(b) for b in daypart_inner.get("time_blocks", [])]
             gaps = detect_gaps(time_blocks)
+            
+            # If we're continuing from a previous day (base_datetime.date() < target_date),
+            # remove the gap from 00:00 to the first block, as it's already covered by previous day
+            if base_datetime and base_datetime.date() < target_date:
+                # Find and remove the gap that starts at 00:00
+                gaps = [(start, end) for start, end in gaps if start != "00:00"]
+                logger.info(f"[{channel}] Continuing from previous day, skipping 00:00 gap fill")
             
             if gaps:
                 logger.info(f"[{channel}] Filling {len(gaps)} gap(s): {gaps}")

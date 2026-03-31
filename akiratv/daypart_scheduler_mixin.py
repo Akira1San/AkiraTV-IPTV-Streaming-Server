@@ -702,6 +702,7 @@ class DaypartSchedulerMixin:
                     target_date = date.today() + timedelta(days=day_offset)
                     if current_time is None:
                         current_time = datetime.combine(target_date, datetime.min.time())
+                    logger.info(f"[Daypart Preview] Day {day_offset}: target_date={target_date}, base_datetime={current_time}")
                     entries, last_time = generate_daypart_schedule(
                         daypart_config,
                         available_videos,
@@ -709,6 +710,7 @@ class DaypartSchedulerMixin:
                         target_date,
                         base_datetime=current_time
                     )
+                    logger.info(f"[Daypart Preview] Day {day_offset}: last_time={last_time}, entries_count={len(entries)}")
                     day_name = target_date.strftime("%A").lower()
                     for entry in entries:
                         entry["day"] = day_name
@@ -717,6 +719,7 @@ class DaypartSchedulerMixin:
                     # Continue from last time for next day (don't reset to midnight)
                     if last_time:
                         current_time = last_time
+                        logger.info(f"[Daypart Preview] Setting current_time to last_time: {current_time}")
                 
             elif preview_mode == "calendar":
                 # Generate for date range
