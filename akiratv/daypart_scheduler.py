@@ -429,6 +429,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             entry = {
                 "time": current_time.strftime("%H:%M:%S"),
                 "file": video["path"],
+                "duration": video.get("duration", 5400),  # Default 90 minutes if not set
                 "collection_id": video.get("collection", {}).get("id", "unknown"),
                 "channel": channel,
                 "source": "daypart_video",
@@ -516,6 +517,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             entry = {
                 "time": current_time.strftime("%H:%M:%S"),
                 "file": selected["path"],
+                "duration": selected.get("duration", 5400),  # Default 90 minutes if not set
                 "collection_id": selected.get("collection", {}).get("id", "unknown"),
                 "channel": channel,
                 "source": "daypart_tag",
@@ -610,6 +612,7 @@ def generate_marathon_schedule(tag: str, available_videos: List[dict],
         entry = {
             "time": current_time.strftime("%H:%M:%S"),
             "file": selected["path"],
+            "duration": selected.get("duration", 5400),  # Default 90 minutes if not set
             "collection_id": selected.get("collection", {}).get("id", "unknown"),
             "channel": channel,
             "source": "daypart_marathon",
@@ -724,6 +727,7 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
             entry = {
                 "time": current_time.strftime("%H:%M:%S"),
                 "file": selected["path"],
+                "duration": selected.get("duration", 5400),  # Default 90 minutes if not set
                 "collection_id": selected.get("collection", {}).get("id", "unknown"),
                 "channel": channel,
                 "source": "gap_filler",
@@ -937,11 +941,14 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     if schedule_entries:
         last_entry = schedule_entries[-1]
         last_entry_time = datetime.combine(target_date, datetime.strptime(last_entry["time"], "%H:%M:%S").time())
-        # Estimate the end time by adding the video duration if available
-        # Try to get duration from the video file or use a default estimate
-        last_datetime = last_entry_time
-        # For now, use the start time as the end time (duration not easily available here)
-        # The mixin should handle this appropriately
+        # Get video duration from the entry if available
+        duration = last_entry.get("duration", 0)
+        if not duration:
+            # Try to get duration from the file path or use default
+            # Default to 90 minutes if not available
+            duration = 5400  # 90 minutes in seconds
+        # Calculate the end time by adding video duration
+        last_datetime = last_entry_time + timedelta(seconds=duration)
     
     return schedule_entries, last_datetime
 
