@@ -649,9 +649,51 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
             messagebox.showerror("Validation Errors", error_msg)
             return
         
+        # If we have generated preview entries, also include them in the saved file
+        if self.daypart_preview_entries:
+            # Group entries by date for weekly/calendar sections
+            weekly_entries = {}
+            calendar_entries = {}
+            
+            for entry in self.daypart_preview_entries:
+                day = entry.get("day", "monday")
+                date_str = entry.get("date", "")
+                
+                # Add to weekly section (by day name)
+                if day not in weekly_entries:
+                    weekly_entries[day] = []
+                weekly_entries[day].append({
+                    "time": entry.get("time", ""),
+                    "file": entry.get("file", ""),
+                    "duration": entry.get("duration", 0),
+                    "source": entry.get("source", "")
+                })
+                
+                # Add to calendar section (by date)
+                if date_str:
+                    if date_str not in calendar_entries:
+                        calendar_entries[date_str] = {
+                            "date": date_str,
+                            "day": day,
+                            "entries": []
+                        }
+                    calendar_entries[date_str]["entries"].append({
+                        "time": entry.get("time", ""),
+                        "file": entry.get("file", ""),
+                        "duration": entry.get("duration", 0),
+                        "source": entry.get("source", "")
+                    })
+            
+            # Update config with generated entries
+            daypart_config["weekly"] = weekly_entries
+            daypart_config["calendar"] = calendar_entries
+        
         # Save configuration
         if self.daypart_scheduler.save_config(self.current_channel, daypart_config):
-            messagebox.showinfo("Success", f"Daypart schedule saved for channel '{self.current_channel}'")
+            preview_msg = ""
+            if self.daypart_preview_entries:
+                preview_msg = f"\n\nAlso saved {len(self.daypart_preview_entries)} generated video entries."
+            messagebox.showinfo("Success", f"Daypart schedule saved for channel '{self.current_channel}'!{preview_msg}")
         else:
             messagebox.showerror("Error", "Failed to save daypart configuration")
     
@@ -727,10 +769,14 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         """Update the time block list display"""
         self.block_list.delete(0, tk.END)
         for block in self.daypart_time_blocks:
-            # Format: "06:00-10:00 [TAG:kids] Random kids content"
+            # Format: "06:00-10:00 [TAG:kids] Mon,Wed,Fri"
             # or "06:00-10:00 [VIDEO] The Matrix (1999).mp4"
             if block.content_type == "tag":
-                display = f"{block.start_time}-{block.end_time} [TAG:{block.content_value}]"
+                # Show days if specified
+                days_str = ""
+                if hasattr(block, 'days') and block.days:
+                    days_str = " (" + ",".join([d[:3] for d in block.days]) + ")"
+                display = f"{block.start_time}-{block.end_time} [TAG:{block.content_value}]{days_str}"
             else:
                 # Shorten video path for display
                 filename = Path(block.content_value).name
@@ -1598,6 +1644,39 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
     
     def copy_schedule(self):
         """Copy the current schedule preview to clipboard"""
+        
+        # First check if we have daypart preview entries
+        if self.daypart_preview_entries:
+            # Use daypart preview entries
+            text_lines = []
+            current_date = None
+            for entry in self.daypart_preview_entries:
+                entry_date = entry.get("date", "")
+                entry_day = entry.get("day", "")
+                
+                # Show date header when date changes
+                if entry_date and entry_date != current_date:
+                    current_date = entry_date
+                    day_display = entry_day.title() if entry_day else ""
+                    text_lines.append(f"=== {entry_date} ({day_display}) ===")
+                
+                time_str = entry.get("time", "??:??:??")
+                time_short = ":".join(time_str.split(":")[:2])
+                file_path = entry.get("file", "")
+                if file_path:
+                    title = Path(file_path).stem
+                else:
+                    title = entry.get("title", "Unknown")
+                source = entry.get("source", "unknown")
+                text_lines.append(f"  {time_short} [{source}] {title}")
+            
+            clipboard_text = "\n".join(text_lines)
+            self.root.clipboard_clear()
+            self.root.clipboard_append(clipboard_text)
+            messagebox.showinfo("Copied", f"{len(self.daypart_preview_entries)} entries copied to clipboard!")
+            return
+        
+        # Fall back to legacy schedule format
         if not self.current_schedule:
             messagebox.showinfo("Info", "No schedule to copy. Generate a preview first!")
             return

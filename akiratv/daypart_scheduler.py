@@ -877,26 +877,56 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         gap_filler_config = GapFillerConfig.from_dict(daypart_inner.get("gap_filler", {}))
         
         if gap_filler_config.enabled:
-            time_blocks = [TimeBlock.from_dict(b) for b in daypart_inner.get("time_blocks", [])]
-            gaps = detect_gaps(time_blocks)
+            # Filter time blocks that apply to this day (same logic as block application)
+            time_blocks_today = []
+            for block_data in daypart_inner.get("time_blocks", []):
+                block = TimeBlock.from_dict(block_data)
+                
+                # Get block days
+                block_days = block.days if hasattr(block, 'days') and block.days else None
+                
+                if not block_days and block.content_type == "tag":
+                    # Try to extract days from content_value (backward compatibility)
+                    content_parts = block.content_value.split("|")
+                    if len(content_parts) >= 2:
+                        days_str = content_parts[1]
+                        block_days = [d.strip() for d in days_str.split(",") if d.strip()]
+                
+                # Check if this block applies to today
+                if block.content_type == "video" or not block_days:
+                    # Video blocks or tag blocks without specific days apply to all days
+                    time_blocks_today.append(block)
+                elif weekday in get_weekday_indices(block_days):
+                    # Tag block with specific days - check if today is in the list
+                    time_blocks_today.append(block)
             
-            # If we're continuing from a previous day (base_datetime.date() < target_date),
-            # skip the gap from 00:00 to the first block, as it's already covered by previous day
-            if base_datetime and base_datetime.date() < target_date:
-                gaps = [(start, end) for start, end in gaps if start != "00:00"]
-            
-            if gaps:
-                logger.info(f"[{channel}] Filling {len(gaps)} gap(s): {gaps}")
-                gap_entries = fill_gaps_with_random(
-                    gaps,
-                    available_videos,
-                    gap_filler_config,
-                    recent_videos,
-                    channel
-                )
-                schedule_entries.extend(gap_entries)
+            # Only fill gaps if there are blocks for this day
+            # If no blocks apply to this day, skip gap filling entirely
+            if not time_blocks_today:
+                logger.info(f"[{channel}] No blocks for this day ({target_date.strftime('%A')}), skipping gap filling")
             else:
-                logger.info(f"[{channel}] No gaps to fill")
+                gaps = detect_gaps(time_blocks_today)
+                
+                # When continuing from a previous day, only skip 00:00 gap if the previous day
+                # actually extended into the early morning hours of today
+                if base_datetime and base_datetime.date() < target_date:
+                    # Check if the previous day's schedule extended past midnight
+                    # If current_time is still in the early morning (before 06:00), skip the 00:00 gap
+                    if current_time.hour < 6:
+                        gaps = [(start, end) for start, end in gaps if start != "00:00"]
+                
+                if gaps:
+                    logger.info(f"[{channel}] Filling {len(gaps)} gap(s): {gaps}")
+                    gap_entries = fill_gaps_with_random(
+                        gaps,
+                        available_videos,
+                        gap_filler_config,
+                        recent_videos,
+                        channel
+                    )
+                    schedule_entries.extend(gap_entries)
+                else:
+                    logger.info(f"[{channel}] No gaps to fill")
     
     # 4. Sort by time
     schedule_entries.sort(key=lambda e: e["time"])

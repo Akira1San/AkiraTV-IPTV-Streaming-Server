@@ -1075,7 +1075,11 @@ class DaypartSchedulerMixin:
         self.block_list.delete(0, tk.END)
         for block in self.daypart_time_blocks:
             if block.content_type == "tag":
-                display = f"{block.start_time}-{block.end_time} [TAG:{block.content_value}]"
+                # Show days if specified
+                days_str = ""
+                if hasattr(block, 'days') and block.days:
+                    days_str = " (" + ",".join([d[:3] for d in block.days]) + ")"
+                display = f"{block.start_time}-{block.end_time} [TAG:{block.content_value}]{days_str}"
             else:
                 filename = Path(block.content_value).name
                 display = f"{block.start_time}-{block.end_time} [VIDEO] {filename}"

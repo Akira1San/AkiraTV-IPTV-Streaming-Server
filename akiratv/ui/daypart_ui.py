@@ -32,10 +32,13 @@ class EditBlockDialog(tk.Toplevel):
         self.transient(parent)
         self.grab_set()
         self.title("Edit Time Block")
-        self.geometry("600x400")
+        self.geometry("650x500")
         self.resizable(False, False)
         # Center the dialog on parent
         self.center_on_parent()
+        
+        # Initialize day variables
+        self.day_vars = {}
         self.create_widgets()
         if block:
             self.populate_fields()
@@ -88,6 +91,32 @@ class EditBlockDialog(tk.Toplevel):
                        value="video", command=self.on_type_change).pack(side="left", padx=5)
         ttk.Radiobutton(type_frame, text="Tag (random)", variable=self.type_var,
                        value="tag", command=self.on_type_change).pack(side="left", padx=5)
+        
+        # Day of week selection
+        days_frame = ttk.LabelFrame(main_frame, text="Days (applies to tag blocks)", padding=10)
+        days_frame.pack(fill="x", pady=(0, 10))
+        
+        days_container = ttk.Frame(days_frame)
+        days_container.pack(fill="x")
+        
+        self.days_var = tk.StringVar(value="")  # Comma-separated days
+        
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        day_frame = ttk.Frame(days_container)
+        day_frame.pack(fill="x")
+        
+        for i, day in enumerate(days):
+            var = tk.BooleanVar(value=False)
+            self.day_vars[day] = var
+            ttk.Checkbutton(day_frame, text=day[:3].title(), variable=var,
+                          command=self.on_day_change).grid(row=0, column=i, padx=5, sticky="w")
+        
+        # All/None quick buttons
+        quick_frame = ttk.Frame(days_container)
+        quick_frame.pack(fill="x", pady=(5, 0))
+        ttk.Button(quick_frame, text="All", command=self.select_all_days, width=8).pack(side="left", padx=2)
+        ttk.Button(quick_frame, text="None", command=self.clear_all_days, width=8).pack(side="left", padx=2)
+        ttk.Label(quick_frame, text="(Leave empty to apply to all days)", font=("", 9, "italic")).pack(side="left", padx=10)
         
         # Video selection
         video_frame = ttk.Frame(main_frame)
@@ -155,9 +184,36 @@ class EditBlockDialog(tk.Toplevel):
         if self.type_var.get() == "video":
             self.video_list.master.pack(fill="both", expand=True)
             self.tag_frame.pack_forget()
+            # Hide days frame for video blocks
+            for child in self.winfo_children():
+                if isinstance(child, ttk.LabelFrame) and "Days" in child.cget("text"):
+                    child.pack_forget()
         else:
             self.video_list.master.pack_forget()
             self.tag_frame.pack(fill="x", pady=(0, 10))
+            # Show days frame for tag blocks
+            for child in self.winfo_children():
+                if isinstance(child, ttk.Frame):
+                    for subchild in child.winfo_children():
+                        if isinstance(subchild, ttk.LabelFrame) and "Days" in subchild.cget("text"):
+                            subchild.pack(fill="x", pady=(0, 10))
+    
+    def on_day_change(self):
+        """Update the days string when any day checkbox changes"""
+        selected_days = [day for day, var in self.day_vars.items() if var.get()]
+        self.days_var.set(",".join(selected_days))
+    
+    def select_all_days(self):
+        """Select all days"""
+        for var in self.day_vars.values():
+            var.set(True)
+        self.on_day_change()
+    
+    def clear_all_days(self):
+        """Clear all days"""
+        for var in self.day_vars.values():
+            var.set(False)
+        self.on_day_change()
     
     def populate_video_list(self, filter_text=""):
         self.video_list.delete(0, tk.END)
@@ -203,6 +259,14 @@ class EditBlockDialog(tk.Toplevel):
                 self.selected_video_label.config(text=f"Selected: {self.block.content_value}")
             else:
                 self.tag_var.set(self.block.content_value)
+            
+            # Load days from block
+            block_days = getattr(self.block, 'days', []) or []
+            for day in block_days:
+                if day.lower() in self.day_vars:
+                    self.day_vars[day.lower()].set(True)
+            self.on_day_change()
+            
             self.on_type_change()
     
     def on_cancel(self):
@@ -227,16 +291,20 @@ class EditBlockDialog(tk.Toplevel):
                 messagebox.showerror("Error", "Please select a video")
                 return
             content_value = self.selected_video
+            # Videos don't use days - apply to all days
+            selected_days = []
         else:
             tag = self.tag_var.get().strip()
             if not tag:
                 messagebox.showerror("Error", "Please enter a tag")
                 return
             content_value = tag
+            # Get selected days for tag blocks
+            selected_days = [day for day, var in self.day_vars.items() if var.get()]
         
         # Create block - import TimeBlock here to avoid circular imports
         from ..daypart_scheduler import TimeBlock
-        block = TimeBlock(start, end, content_type, content_value)
+        block = TimeBlock(start, end, content_type, content_value, days=selected_days)
         
         if self.validate_time_block:
             error = self.validate_time_block(block)
