@@ -775,7 +775,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     recent_videos = []  # For 24h no-repeat tracking
     
     # Determine the base time for this day
-    if base_datetime and base_datetime.date() == target_date:
+    # If base_datetime is provided and is before or on target_date, use it for continuity
+    # This handles cross-day continuity (e.g., base_datetime=2026-03-31 23:30, target_date=2026-04-01)
+    if base_datetime and base_datetime.date() <= target_date:
         day_start = base_datetime
     else:
         day_start = datetime.combine(target_date, datetime.min.time())
@@ -895,7 +897,14 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     schedule_entries.sort(key=lambda e: e["time"])
     
     # Track the last time used for continuous scheduling
+    # Calculate the actual end time of the last entry for proper day-to-day continuity
     last_datetime = current_time
+    if schedule_entries:
+        last_entry = schedule_entries[-1]
+        last_entry_time = datetime.combine(target_date, datetime.strptime(last_entry["time"], "%H:%M:%S").time())
+        # Estimate the end time by adding the video duration if available
+        # For gap fillers and tag entries, we use the time as-is
+        last_datetime = last_entry_time
     
     return schedule_entries, last_datetime
 

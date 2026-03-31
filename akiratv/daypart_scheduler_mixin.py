@@ -697,9 +697,11 @@ class DaypartSchedulerMixin:
             elif preview_mode == "weekly":
                 # Generate for 7 days starting from today
                 # Track the current time for continuous scheduling across days
+                current_time = None  # Will be set to midnight of first day
                 for day_offset in range(7):
                     target_date = date.today() + timedelta(days=day_offset)
-                    current_time = datetime.combine(target_date, datetime.min.time())
+                    if current_time is None:
+                        current_time = datetime.combine(target_date, datetime.min.time())
                     entries, last_time = generate_daypart_schedule(
                         daypart_config,
                         available_videos,
@@ -712,10 +714,9 @@ class DaypartSchedulerMixin:
                         entry["day"] = day_name
                         entry["date"] = target_date.strftime("%Y-%m-%d")
                     all_entries.extend(entries)
-                    # Continue from last time for next day
+                    # Continue from last time for next day (don't reset to midnight)
                     if last_time:
-                        current_time = last_time + timedelta(days=1)
-                        current_time = current_time.replace(hour=0, minute=0, second=0)
+                        current_time = last_time
                 
             elif preview_mode == "calendar":
                 # Generate for date range
@@ -726,9 +727,11 @@ class DaypartSchedulerMixin:
                     end_date = date(int(end_parts[0]), int(end_parts[1]), int(end_parts[2]))
                     
                     # Track the current time for continuous scheduling
-                    current_time = datetime.combine(start_date, datetime.min.time())
+                    current_time = None  # Will be set to midnight of first day
                     current_date = start_date
                     while current_date <= end_date:
+                        if current_time is None:
+                            current_time = datetime.combine(current_date, datetime.min.time())
                         entries, last_time = generate_daypart_schedule(
                             daypart_config,
                             available_videos,
@@ -741,10 +744,9 @@ class DaypartSchedulerMixin:
                             entry["day"] = day_name
                             entry["date"] = current_date.strftime("%Y-%m-%d")
                         all_entries.extend(entries)
-                        # Continue from last time for next day
+                        # Continue from last time for next day (don't reset to midnight)
                         if last_time:
-                            current_time = last_time + timedelta(days=1)
-                            current_time = current_time.replace(hour=0, minute=0, second=0)
+                            current_time = last_time
                         current_date += timedelta(days=1)
                 except Exception as e:
                     messagebox.showerror("Date Error", f"Invalid date format. Use YYYY-MM-DD: {e}")
