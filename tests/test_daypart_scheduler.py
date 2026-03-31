@@ -740,6 +740,10 @@ class TestScheduleGeneration:
         
         entries = generate_daypart_schedule(daypart_config, available_videos, "test_channel", test_date)
         
+        # Handle both tuple and list returns (backward compatibility)
+        if isinstance(entries, tuple):
+            entries = entries[0]
+        
         # Should have entries from marathon on Friday
         assert len(entries) > 0
         # At least some entries should be marathon entries

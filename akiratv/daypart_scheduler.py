@@ -498,7 +498,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             # Check time-based end condition
             if block_end_dt is not None and current_time >= block_end_dt:
                 break
-            elif block_end_dt is None and current_time.time() >= end_time:
+            elif block_end_dt is None and current_time.time() >= end_time.time():
                 break
             
             # Filter by 24h rule
@@ -884,8 +884,14 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     schedule_entries.extend(block_entries)
                     # Update current_time to track where this block ended
                     if block_entries:
-                        last_entry_time = datetime.strptime(block_entries[-1]["time"], "%H:%M:%S")
-                        current_time = datetime.combine(target_date, last_entry_time.time())
+                        # BUG FIX: The previous code just took the last entry's time,
+                        # but that's when the video STARTED, not when it ENDED!
+                        # We need to add the video duration to get the actual end time.
+                        last_entry = block_entries[-1]
+                        last_entry_time = datetime.strptime(last_entry["time"], "%H:%M:%S")
+                        last_entry_duration = last_entry.get("duration", 5400)  # Default 90 min
+                        last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
+                        current_time = last_entry_end
             else:
                 # Video block or tag block without specific days - apply to all days
                 block_entries = generate_block_schedule(
@@ -898,8 +904,14 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 schedule_entries.extend(block_entries)
                 # Update current_time to track where this block ended
                 if block_entries:
-                    last_entry_time = datetime.strptime(block_entries[-1]["time"], "%H:%M:%S")
-                    current_time = datetime.combine(target_date, last_entry_time.time())
+                    # BUG FIX: The previous code just took the last entry's time,
+                    # but that's when the video STARTED, not when it ENDED!
+                    # We need to add the video duration to get the actual end time.
+                    last_entry = block_entries[-1]
+                    last_entry_time = datetime.strptime(last_entry["time"], "%H:%M:%S")
+                    last_entry_duration = last_entry.get("duration", 5400)  # Default 90 min
+                    last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
+                    current_time = last_entry_end
     
     # 3. Detect and fill gaps (only if not marathon day and gap filler enabled)
     if not is_marathon_day:
@@ -960,9 +972,13 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 gaps = detect_gaps(time_blocks_today)
                 
                 # When continuing from a previous day, adjust gaps to start from where we left off
-                if base_datetime and base_datetime.date() < target_date:
-                    # Previous day's schedule continues into today
-                    # The gaps should start from current_time, not from 00:00
+                # OR when we've already scheduled content within the same day (past midnight)
+                should_adjust = (
+                    (base_datetime and base_datetime.date() < target_date) or  # Cross-day continuity
+                    (current_time.hour > 0 or current_time.minute > 0)  # Same-day: blocks moved time past midnight
+                )
+                
+                if should_adjust:
                     current_hour = current_time.hour + current_time.minute / 60
                     
                     # Filter out gaps that are before current_time
