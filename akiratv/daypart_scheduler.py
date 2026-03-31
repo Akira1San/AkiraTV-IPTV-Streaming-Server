@@ -972,14 +972,22 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         # Calculate the end time by adding video duration
         last_datetime = last_entry_time + timedelta(seconds=duration)
 
-        # Handle overnight continuation: if the schedule ran past midnight,
-        # we need to return midnight for proper continuity
-        # because the last_datetime has crossed to the next day
-        if last_datetime.date() > target_date:
-            # Schedule ran overnight - set last_datetime to midnight of next day
-            # to indicate "schedule completed fully, start next day fresh at midnight"
-            last_datetime = datetime.combine(target_date + timedelta(days=1), datetime.min.time())
-            logger.info(f"[{channel}] Schedule ran past midnight ({last_entry_time.strftime('%H:%M:%S')} + {duration}s), resetting to midnight")
+        # IMPORTANT: Do NOT reset to midnight!
+        # We must preserve the actual end time for cross-day continuity.
+        # If a video ends at 23:54, the next day should start at 23:54.
+        # Resetting to midnight creates unwanted gaps in the schedule.
+        # The caller (mixin or scheduler) will handle starting fresh at midnight
+        # when appropriate by passing no base_datetime or midnight base_datetime.
+        # 
+        # Previously, we had code here that reset to midnight when the schedule
+        # ran past midnight. This was WRONG because it broke cross-day continuity.
+        # The correct behavior is to return the actual end time so the next day
+        # can continue from where this day left off.
+        pass  # Keep the actual end time
+        
+        # NOTE: The gap-filling logic in lines 925-942 handles adjusting gaps
+        # when continuing from a previous day. This is the correct approach,
+        # not resetting last_datetime.
     
     logger.info(f"[{channel}] Completed {target_date}, last_datetime={last_datetime}, entries={len(schedule_entries)}")
     
