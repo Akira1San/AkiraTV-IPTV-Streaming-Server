@@ -880,6 +880,11 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             time_blocks = [TimeBlock.from_dict(b) for b in daypart_inner.get("time_blocks", [])]
             gaps = detect_gaps(time_blocks)
             
+            # If we're continuing from a previous day (base_datetime.date() < target_date),
+            # skip the gap from 00:00 to the first block, as it's already covered by previous day
+            if base_datetime and base_datetime.date() < target_date:
+                gaps = [(start, end) for start, end in gaps if start != "00:00"]
+            
             if gaps:
                 logger.info(f"[{channel}] Filling {len(gaps)} gap(s): {gaps}")
                 gap_entries = fill_gaps_with_random(
