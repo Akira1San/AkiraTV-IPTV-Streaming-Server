@@ -457,8 +457,9 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         if not video_count:
             video_count = "single"
         
-        # Check collection tags (videos inherit tags from their collection)
-        tag_videos = [v for v in available_videos if tag in v.get("collection", {}).get("tags", [])]
+        # Check both video-level tags and collection-level tags (videos inherit tags from their collection)
+        tag_videos = [v for v in available_videos 
+                      if tag in v.get("tags", []) or tag in v.get("collection", {}).get("tags", [])]
         
         if not tag_videos:
             logger.warning(f"[{channel}] No videos found for tag: {tag}")
@@ -566,7 +567,9 @@ def generate_marathon_schedule(tag: str, available_videos: List[dict],
         marathon_config = MarathonConfig(tag, ["monday"], shuffle=True, no_repeat_24h=True)
     
     # Filter videos by tag
-    tag_videos = [v for v in available_videos if tag in v.get("tags", [])]
+    # Check both video-level tags and collection-level tags (videos inherit tags from their collection)
+    tag_videos = [v for v in available_videos 
+                  if tag in v.get("tags", []) or tag in v.get("collection", {}).get("tags", [])]
     
     if not tag_videos:
         logger.warning(f"[{channel}] Marathon: No videos for tag '{tag}'")
@@ -636,7 +639,8 @@ def generate_marathon_schedule(tag: str, available_videos: List[dict],
 def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[dict],
                          gap_filler_config: GapFillerConfig,
                          recent_videos: List[Tuple[str, datetime]] = None,
-                         channel: str = "") -> List[dict]:
+                         channel: str = "",
+                         base_datetime: datetime = None) -> List[dict]:
     """
     Fill each gap with random video selections.
     
@@ -646,6 +650,7 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
         gap_filler_config: Configuration
         recent_videos: For 24h rule tracking
         channel: Channel name
+        base_datetime: Optional datetime to start from (for cross-day continuity)
     
     Returns:
         List of schedule entries for gap content
@@ -677,12 +682,22 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
     
     for gap_start, gap_end in gaps:
         gap_duration = calculate_duration(gap_start, gap_end)
-        current_time = parse_time_string(gap_start)
-        end_time = parse_time_string(gap_end)
         
-        # Handle overnight gap
-        if end_time < current_time:
-            end_time += timedelta(days=1)
+        # Use base_datetime if provided and this is the first gap starting at 00:00
+        # This handles cross-day continuity
+        if base_datetime is not None and gap_start == "00:00":
+            current_time = base_datetime
+            # Calculate end time properly when base_datetime pushes past midnight
+            # The gap ends at 24:00 of the target date, which we need to interpret correctly
+            # If base_datetime is 01:00 on Tuesday, we fill from 01:00 Tuesday to 24:00 Tuesday
+            target_date = base_datetime.date()
+            end_time = datetime.combine(target_date, datetime.min.time()) + timedelta(days=1)
+        else:
+            current_time = parse_time_string(gap_start)
+            end_time = parse_time_string(gap_end)
+            # Handle overnight gap - only if start is after end
+            if end_time < current_time:
+                end_time += timedelta(days=1)
         
         # Track videos used in this gap (for 24h rule if enabled)
         gap_recent = [] if gap_filler_config.respect_24h_norepeat else None
@@ -917,7 +932,30 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             # Only fill gaps if there are blocks for this day
             # If no blocks apply to this day, skip gap filling entirely
             if not time_blocks_today:
-                logger.info(f"[{channel}] No blocks for this day ({target_date.strftime('%A')}), skipping gap filling")
+                # Check if we should still fill gaps (gap_filler enabled with videos)
+                # This handles the case where no time blocks exist but we want to fill the day
+                if gap_filler_config.enabled and available_videos:
+                    logger.info(f"[{channel}] No blocks but gap filler enabled - filling full day from 00:00 to 24:00")
+                    # Create a single full-day gap
+                    full_day_gaps = [("00:00", "24:00")]
+                    
+                    # For cross-day continuity, pass the current_time as base_datetime
+                    # fill_gaps_with_random will use it when gap starts at 00:00
+                    # We use current_time (which is set from day_start) instead of base_datetime
+                    # because current_time already handles both cross-day and same-day continuity
+                    gap_base_datetime = current_time
+                    
+                    gap_entries = fill_gaps_with_random(
+                        full_day_gaps,
+                        available_videos,
+                        gap_filler_config,
+                        recent_videos,
+                        channel,
+                        base_datetime=gap_base_datetime
+                    )
+                    schedule_entries.extend(gap_entries)
+                else:
+                    logger.info(f"[{channel}] No blocks for this day ({target_date.strftime('%A')}), skipping gap filling")
             else:
                 gaps = detect_gaps(time_blocks_today)
                 
@@ -948,7 +986,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         available_videos,
                         gap_filler_config,
                         recent_videos,
-                        channel
+                        channel,
+                        base_datetime=current_time
                     )
                     schedule_entries.extend(gap_entries)
                 else:
