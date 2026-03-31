@@ -921,13 +921,25 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             else:
                 gaps = detect_gaps(time_blocks_today)
                 
-                # When continuing from a previous day, only skip 00:00 gap if the previous day
-                # actually extended into the early morning hours of today
+                # When continuing from a previous day, adjust gaps to start from where we left off
                 if base_datetime and base_datetime.date() < target_date:
-                    # Check if the previous day's schedule extended past midnight
-                    # If current_time is still in the early morning (before 06:00), skip the 00:00 gap
-                    if current_time.hour < 6:
-                        gaps = [(start, end) for start, end in gaps if start != "00:00"]
+                    # Previous day's schedule continues into today
+                    # The gaps should start from current_time, not from 00:00
+                    current_hour = current_time.hour + current_time.minute / 60
+                    
+                    # Filter out gaps that are before current_time
+                    adjusted_gaps = []
+                    for gap_start, gap_end in gaps:
+                        gap_start_h = parse_time_string(gap_start).hour + parse_time_string(gap_start).minute / 60
+                        if gap_start_h >= current_hour:
+                            # This gap is after where we are, keep it
+                            adjusted_gaps.append((gap_start, gap_end))
+                        elif gap_start == "00:00" and current_hour > 0:
+                            # This gap starts at 00:00 but we've already scheduled content
+                            # Calculate the adjusted start from current_time
+                            adjusted_start = current_time.strftime("%H:%M")
+                            adjusted_gaps.append((adjusted_start, gap_end))
+                    gaps = adjusted_gaps
                 
                 if gaps:
                     logger.info(f"[{channel}] Filling {len(gaps)} gap(s): {gaps}")
