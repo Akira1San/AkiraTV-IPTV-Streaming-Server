@@ -66,7 +66,8 @@ class TimeBlock:
     """
     def __init__(self, start_time: str, end_time: str, 
                  content_type: str, content_value: str, 
-                 block_id: str = None, days: list = None, video_count: str = None):
+                 block_id: str = None, days: list = None, video_count: str = None,
+                 approximate: bool = False):
         self.block_id = block_id or f"block_{uuid.uuid4().hex[:8]}"
         self.start_time = start_time
         self.end_time = end_time
@@ -74,6 +75,7 @@ class TimeBlock:
         self.content_value = content_value
         self.days = days or []  # List of days for tag blocks
         self.video_count = video_count  # "single", "2", "3", "all", etc.
+        self.approximate = approximate  # Whether timing was approximated
         
     def __repr__(self):
         return f"TimeBlock({self.start_time}-{self.end_time}, {self.content_type}={self.content_value})"
@@ -103,6 +105,8 @@ class TimeBlock:
             result["days"] = self.days
         if self.video_count:
             result["video_count"] = self.video_count
+        if self.approximate:
+            result["approximate"] = self.approximate
         return result
     
     @classmethod
@@ -115,7 +119,8 @@ class TimeBlock:
             content_value=data["content_value"],
             block_id=data.get("block_id"),
             days=data.get("days", []),
-            video_count=data.get("video_count")
+            video_count=data.get("video_count"),
+            approximate=data.get("approximate", False)
         )
 
 
@@ -290,6 +295,99 @@ def detect_gaps(time_blocks: List[TimeBlock], day_start: str = "00:00", day_end:
         gaps.append((format_time_string(current_time), day_end))
     
     return gaps
+
+
+def approximate_block_timing(new_block_start: str, new_block_end: str,
+                             existing_blocks: List[TimeBlock],
+                             gaps: List[Tuple[str, str]],
+                             tag_duration_hours: float = 1.0) -> Optional[Tuple[str, str]]:
+    """
+    Approximate block timing to fit around existing blocks without cutting them.
+    
+    This function analyzes existing blocks and gaps to find the best time slot
+    for a new block. It tries to place the block after any overlapping existing
+    content, or finds a suitable gap near the requested time.
+    
+    Args:
+        new_block_start: Proposed start time (HH:MM)
+        new_block_end: Proposed end time (HH:MM)
+        existing_blocks: List of existing TimeBlocks to check against
+        gaps: List of (start, end) tuples representing available gaps
+        tag_duration_hours: Duration to use if adjusting (default 1 hour)
+    
+    Returns:
+        Tuple of (adjusted_start, adjusted_end) or None if cannot approximate
+    """
+    # Calculate the duration of the proposed block
+    try:
+        start_dt = parse_time_string(new_block_start)
+        end_dt = parse_time_string(new_block_end)
+        if end_dt < start_dt:
+            end_dt += timedelta(days=1)
+        block_duration = (end_dt - start_dt).total_seconds() / 3600  # hours
+    except Exception as e:
+        logger.warning(f"Error parsing times {new_block_start}-{new_block_end}: {e}")
+        block_duration = tag_duration_hours
+    
+    # If no existing blocks, return original times (no need to approximate)
+    if not existing_blocks:
+        return (new_block_start, new_block_end)
+    
+    # Parse existing blocks
+    existing_intervals = []
+    for block in existing_blocks:
+        try:
+            b_start = parse_time_string(block.start_time)
+            b_end = parse_time_string(block.end_time)
+            if b_end < b_start:
+                b_end += timedelta(days=1)
+            existing_intervals.append((b_start, b_end, block))
+        except:
+            continue
+    
+    if not existing_intervals:
+        return (new_block_start, new_block_end)
+    
+    # Sort by start time
+    existing_intervals.sort(key=lambda x: x[0])
+    
+    # Check if proposed time overlaps with any existing block
+    proposed_start = parse_time_string(new_block_start)
+    proposed_end = parse_time_string(new_block_end)
+    
+    for b_start, b_end, block in existing_intervals:
+        # Check for overlap
+        if proposed_start < b_end and proposed_end > b_start:
+            # Found overlap - try to move block to right after this block
+            adjusted_start = b_end
+            adjusted_end = adjusted_start + timedelta(hours=block_duration)
+            
+            # Format the adjusted times
+            adjusted_start_str = format_time_string(adjusted_start)
+            adjusted_end_str = format_time_string(adjusted_end)
+            
+            # Check if adjusted time fits in any gap
+            for gap_start, gap_end in gaps:
+                gap_start_dt = parse_time_string(gap_start)
+                gap_end_dt = parse_time_string(gap_end)
+                if gap_end_dt < gap_start_dt:
+                    gap_end_dt += timedelta(days=1)
+                if adjusted_start >= gap_start_dt and adjusted_end <= gap_end_dt:
+                    return (adjusted_start_str, adjusted_end_str)
+            
+            # Try next available position between current block and next block
+            idx = existing_intervals.index((b_start, b_end, block))
+            if idx + 1 < len(existing_intervals):
+                next_start, _, _ = existing_intervals[idx + 1]
+                if adjusted_end <= next_start:
+                    return (adjusted_start_str, adjusted_end_str)
+            else:
+                # Last block - check if fits until end of day
+                if adjusted_end.hour <= 24 and adjusted_end.minute == 0:
+                    return (adjusted_start_str, adjusted_end_str)
+    
+    # No overlap found - return original times (user's preferred time is fine)
+    return (new_block_start, new_block_end)
 
 
 def has_overlapping_blocks(blocks: List[TimeBlock]) -> bool:

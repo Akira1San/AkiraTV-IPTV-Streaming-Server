@@ -20,7 +20,7 @@ from pathlib import Path
 from .daypart_scheduler import (
     TimeBlock, MarathonConfig, GapFillerConfig,
     DaypartScheduler, parse_time_string, validate_daypart_config,
-    generate_daypart_schedule
+    generate_daypart_schedule, detect_gaps, approximate_block_timing
 )
 from .collections import load_collections
 
@@ -166,6 +166,14 @@ class DaypartSchedulerMixin:
             self.duration_label.pack(side="left", padx=20)
             self.start_var.trace_add("write", self.update_duration)
             self.end_var.trace_add("write", self.update_duration)
+            
+            # Approximate checkbox
+            self.approximate_var = tk.BooleanVar(value=False)
+            ttk.Checkbutton(time_frame, text="Approximate", variable=self.approximate_var,
+                          command=self.on_approximate_toggle).pack(side="left", padx=20)
+            self.approximate_hint = ttk.Label(time_frame, text="(Adjust to fit around existing videos)",
+                                            font=("", 8, "italic"))
+            self.approximate_hint.pack(side="left", padx=5)
             
             # Video selection (for video mode)
             self.video_frame = ttk.Frame(main_frame)
@@ -377,6 +385,10 @@ class DaypartSchedulerMixin:
             self.end_var.set(self.block.end_time)
             self.type_var.set(self.block.content_type)
             
+            # Restore approximate checkbox state
+            if hasattr(self.block, 'approximate') and self.block.approximate:
+                self.approximate_var.set(True)
+            
             if self.block.content_type == "tag":
                 self.tag_var.set(self.block.content_value)
                 if self.block.video_count:
@@ -403,6 +415,74 @@ class DaypartSchedulerMixin:
             """Cancel dialog"""
             self.result = None
             self.destroy()
+        
+        def on_approximate_toggle(self):
+            """Handle approximate checkbox toggle"""
+            if self.approximate_var.get():
+                # Try to approximate and update the time fields
+                self.try_approximate()
+        
+        def try_approximate(self):
+            """Try to approximate timing to fit around existing blocks"""
+            # Get current time values
+            start_time = self.start_var.get().strip()
+            end_time = self.end_var.get().strip()
+            
+            if not start_time or not end_time:
+                return
+            
+            # Get existing blocks from parent
+            existing_blocks = []
+            if hasattr(self.parent, 'daypart_time_blocks'):
+                existing_blocks = self.parent.daypart_time_blocks
+            
+            # Get current block being edited (exclude from existing for edit mode)
+            if self.block:
+                existing_blocks = [b for b in existing_blocks if b.block_id != self.block.block_id]
+            
+            if not existing_blocks:
+                # No existing blocks, return original
+                return
+            
+            # Detect gaps
+            gaps = detect_gaps(existing_blocks)
+            
+            # Calculate tag duration (default 1 hour)
+            tag_duration = 1.0
+            if self.type_var.get() == "tag":
+                video_count = self.video_count_var.get()
+                try:
+                    if video_count != "single" and video_count != "all":
+                        tag_duration = float(video_count)
+                except:
+                    pass
+            
+            # Try to approximate
+            result = approximate_block_timing(
+                start_time, end_time,
+                existing_blocks, gaps,
+                tag_duration_hours=tag_duration
+            )
+            
+            if result:
+                adjusted_start, adjusted_end = result
+                if adjusted_start != start_time or adjusted_end != end_time:
+                    # Show info to user
+                    messagebox.showinfo(
+                        "Approximate Timing",
+                        f"Adjusted timing to fit around existing videos:\n"
+                        f"Original: {start_time} - {end_time}\n"
+                        f"Adjusted: {adjusted_start} - {adjusted_end}"
+                    )
+                    # Update the time fields
+                    self.start_var.set(adjusted_start)
+                    self.end_var.set(adjusted_end)
+            else:
+                messagebox.showwarning(
+                    "Cannot Approximate",
+                    "Could not find a suitable time slot. Please adjust manually or check existing blocks."
+                )
+                self.approximate_var.set(False)
         
         def on_save(self):
             """Save block configuration"""
@@ -449,7 +529,8 @@ class DaypartSchedulerMixin:
                 content_value=content_value,
                 block_id=self.block.block_id if self.block else None,
                 days=days,
-                video_count=video_count
+                video_count=video_count,
+                approximate=self.approximate_var.get()
             )
             self.destroy()
     
