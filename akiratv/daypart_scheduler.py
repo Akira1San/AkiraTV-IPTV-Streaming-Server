@@ -640,7 +640,8 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
                          gap_filler_config: GapFillerConfig,
                          recent_videos: List[Tuple[str, datetime]] = None,
                          channel: str = "",
-                         base_datetime: datetime = None) -> List[dict]:
+                         base_datetime: datetime = None,
+                         target_date: date = None) -> List[dict]:
     """
     Fill each gap with random video selections.
     
@@ -657,6 +658,11 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
     """
     if recent_videos is None:
         recent_videos = []
+    
+    # Default target_date to today if not provided
+    if target_date is None:
+        from datetime import date as date_module
+        target_date = date_module.today()
     
     gap_entries = []
     
@@ -683,15 +689,35 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
     for gap_start, gap_end in gaps:
         gap_duration = calculate_duration(gap_start, gap_end)
         
-        # Use base_datetime if provided and this is the first gap starting at 00:00
-        # This handles cross-day continuity
-        if base_datetime is not None and gap_start == "00:00":
-            current_time = base_datetime
-            # Calculate end time properly when base_datetime pushes past midnight
-            # The gap ends at 24:00 of the target date, which we need to interpret correctly
-            # If base_datetime is 01:00 on Tuesday, we fill from 01:00 Tuesday to 24:00 Tuesday
-            target_date = base_datetime.date()
-            end_time = datetime.combine(target_date, datetime.min.time()) + timedelta(days=1)
+        # Use base_datetime if provided to handle cross-day continuity
+        # base_datetime represents where the previous day ended
+        if base_datetime is not None:
+            if gap_start == "00:00":
+                # Special case: gap starts at midnight, use base_datetime
+                # This handles the case where previous day ended at, say, 00:43
+                # We should fill from 00:43 to 17:00, not from 00:00 to 17:00
+                current_time = base_datetime
+                # Calculate end time properly when base_datetime pushes past midnight
+                # The gap ends at 24:00 of the target date
+                target_date = base_datetime.date()
+                end_time = datetime.combine(target_date, datetime.min.time()) + timedelta(days=1)
+            else:
+                # Gap doesn't start at 00:00 - check if base_datetime is within this gap
+                gap_start_dt = datetime.combine(target_date, parse_time_string(gap_start).time())
+                gap_end_dt = datetime.combine(target_date, parse_time_string(gap_end).time())
+                if gap_end_dt < gap_start_dt:
+                    gap_end_dt += timedelta(days=1)
+                
+                # If base_datetime falls within this gap, use it as the start time
+                if base_datetime >= gap_start_dt and base_datetime < gap_end_dt:
+                    current_time = base_datetime
+                    end_time = gap_end_dt
+                else:
+                    # base_datetime is outside this gap, use normal parsing
+                    current_time = parse_time_string(gap_start)
+                    end_time = parse_time_string(gap_end)
+                    if end_time < current_time:
+                        end_time += timedelta(days=1)
         else:
             current_time = parse_time_string(gap_start)
             end_time = parse_time_string(gap_end)
@@ -963,7 +989,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         gap_filler_config,
                         recent_videos,
                         channel,
-                        base_datetime=gap_base_datetime
+                        base_datetime=gap_base_datetime,
+                        target_date=target_date
                     )
                     schedule_entries.extend(gap_entries)
                 else:
@@ -1003,7 +1030,8 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         gap_filler_config,
                         recent_videos,
                         channel,
-                        base_datetime=current_time
+                        base_datetime=current_time,
+                        target_date=target_date
                     )
                     schedule_entries.extend(gap_entries)
                 else:
