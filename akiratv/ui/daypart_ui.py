@@ -559,6 +559,14 @@ class DaypartSchedulerUI:
         self.app.preview_end_date_var = tk.StringVar(value=(datetime.now() + timedelta(days=6)).strftime("%Y-%m-%d"))
         ttk.Entry(calendar_range_frame, textvariable=self.app.preview_end_date_var, width=12).pack(side="left", padx=2)
         
+        # Global Approximate checkbox (affects all blocks when generating preview)
+        approximate_frame = ttk.Frame(main_frame)
+        approximate_frame.pack(fill="x", pady=(0, 10))
+        self.app.use_approximation_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(approximate_frame, text="Approximate - Move blocks to fill gaps (global setting)",
+                      variable=self.app.use_approximation_var).pack(side="left", padx=5)
+        ttk.Label(approximate_frame, text="(applies to all blocks when generating preview)").pack(side="left", padx=5)
+        
         # Action buttons
         action_btn_frame = ttk.Frame(main_frame)
         action_btn_frame.pack(fill="x", pady=(10, 0))

@@ -833,18 +833,35 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
             source = entry.get("source", "unknown")
             metadata = entry.get("metadata", {})
             
+            # Calculate end time for debug display
+            duration = entry.get("duration", 0)
+            end_time_str = ""
+            if duration > 0:
+                try:
+                    # Parse start time (HH:MM:SS)
+                    time_parts = time.split(":")
+                    if len(time_parts) >= 2:
+                        start_h = int(time_parts[0])
+                        start_m = int(time_parts[1])
+                        total_minutes = start_h * 60 + start_m + (duration // 60)
+                        end_h = (total_minutes // 60) % 24
+                        end_m = total_minutes % 60
+                        end_time_str = f"-{end_h:02d}:{end_m:02d}"
+                except:
+                    pass
+            
             if source == "daypart_video":
-                display = f"{time} [VIDEO] {file}"
+                display = f"{time}{end_time_str} [VIDEO] {file}"
             elif source == "daypart_tag":
                 tag = metadata.get("tag_used", "unknown")
-                display = f"{time} [TAG:{tag}] {file}"
+                display = f"{time}{end_time_str} [TAG:{tag}] {file}"
             elif source == "daypart_marathon":
                 tag = metadata.get("tag", "unknown")
-                display = f"{time} [MARATHON:{tag}] {file}"
+                display = f"{time}{end_time_str} [MARATHON:{tag}] {file}"
             elif source == "gap_filler":
-                display = f"{time} [GAP] {file}"
+                display = f"{time}{end_time_str} [GAP] {file}"
             else:
-                display = f"{time} {file}"
+                display = f"{time}{end_time_str} {file}"
             
             self.preview_list.insert(tk.END, display)
         
@@ -1521,6 +1538,7 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
     
     def update_preview_display(self, event=None):
         """Update the preview listbox with the selected day's schedule"""
+        print(f"[DEBUG] simple_scheduler update_preview_display called, daypart entries: {len(self.daypart_preview_entries) if self.daypart_preview_entries else 0}")
         # First check for daypart preview entries
         if self.daypart_preview_entries:
             self.preview_list.delete(0, tk.END)
@@ -1547,18 +1565,39 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
                     source = entry.get("source", "unknown")
                     metadata = entry.get("metadata", {})
                     
+                    # Calculate end time for debug display
+                    duration = entry.get("duration", 0)
+                    print(f"[DEBUG] Entry: time={time}, duration={duration}")
+                    end_time_str = ""
+                    if duration > 0:
+                        try:
+                            # Parse start time (HH:MM:SS)
+                            time_parts = time.split(":")
+                            print(f"[DEBUG] Time parts: {time_parts}")
+                            if len(time_parts) >= 2:
+                                start_h = int(time_parts[0])
+                                start_m = int(time_parts[1])
+                                total_minutes = start_h * 60 + start_m + int(duration // 60)
+                                end_h = (total_minutes // 60) % 24
+                                end_m = total_minutes % 60
+                                end_time_str = f"-{end_h:02d}:{end_m:02d}"
+                                print(f"[DEBUG] Calculated end: {end_time_str} from duration {duration}")
+                        except Exception as e:
+                            print(f"[DEBUG] Error calculating end: {e}")
+                            pass
+                    
                     if source == "daypart_video":
-                        display = f"{time} [VIDEO] {file}"
+                        display = f"{time}{end_time_str} [VIDEO] {file}"
                     elif source == "daypart_tag":
                         tag = metadata.get("tag_used", "unknown")
-                        display = f"{time} [TAG:{tag}] {file}"
+                        display = f"{time}{end_time_str} [TAG:{tag}] {file}"
                     elif source == "daypart_marathon":
                         tag = metadata.get("tag", "unknown")
-                        display = f"{time} [MARATHON:{tag}] {file}"
+                        display = f"{time}{end_time_str} [MARATHON:{tag}] {file}"
                     elif source == "gap_filler":
-                        display = f"{time} [GAP] {file}"
+                        display = f"{time}{end_time_str} [GAP] {file}"
                     else:
-                        display = f"{time} {file}"
+                        display = f"{time}{end_time_str} {file}"
                     
                     self.preview_list.insert(tk.END, display)
                 
@@ -1668,7 +1707,24 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
                 else:
                     title = entry.get("title", "Unknown")
                 source = entry.get("source", "unknown")
-                text_lines.append(f"  {time_short} [{source}] {title}")
+                
+                # Calculate end time
+                duration = entry.get("duration", 0)
+                end_time_str = ""
+                if duration > 0:
+                    try:
+                        time_parts = time_str.split(":")
+                        if len(time_parts) >= 2:
+                            start_h = int(time_parts[0])
+                            start_m = int(time_parts[1])
+                            total_minutes = start_h * 60 + start_m + int(duration // 60)
+                            end_h = (total_minutes // 60) % 24
+                            end_m = total_minutes % 60
+                            end_time_str = f"-{end_h:02d}:{end_m:02d}"
+                    except:
+                        pass
+                
+                text_lines.append(f"  {time_short}{end_time_str} [{source}] {title}")
             
             clipboard_text = "\n".join(text_lines)
             self.root.clipboard_clear()

@@ -219,6 +219,83 @@ class GapFillerConfig:
         )
 
 
+class ScheduledEntry:
+    """
+    Represents any scheduled content (block or gap filler video).
+    
+    This class provides a unified interface for both explicit TimeBlocks
+    and gap filler videos, allowing the approximate calc to consider both
+    when finding the best position for new daypart blocks.
+    
+    Args:
+        start_time: "HH:MM" format (24-hour)
+        end_time: "HH:MM" format (24-hour)
+        duration_seconds: Duration in seconds
+        source: "block" or "gap_filler"
+        content_type: "video", "tag", or "gap_video"
+        content_value: video path, tag name, or description
+    """
+    def __init__(self, start_time: str, end_time: str, duration_seconds: int,
+                 source: str, content_type: str, content_value: str):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.duration_seconds = duration_seconds
+        self.source = source  # "block" or "gap_filler"
+        self.content_type = content_type  # "video", "tag", "gap_video"
+        self.content_value = content_value
+        
+    def __repr__(self):
+        return f"ScheduledEntry({self.start_time}-{self.end_time}, source={self.source}, type={self.content_type})"
+    
+    @property
+    def duration_hours(self) -> float:
+        """Calculate duration in hours"""
+        return self.duration_seconds / 3600
+    
+    @classmethod
+    def from_time_block(cls, block: TimeBlock) -> 'ScheduledEntry':
+        """Create a ScheduledEntry from a TimeBlock"""
+        return cls(
+            start_time=block.start_time,
+            end_time=block.end_time,
+            duration_seconds=block.duration_seconds,
+            source="block",
+            content_type=block.content_type,
+            content_value=block.content_value
+        )
+    
+    @classmethod
+    def from_gap_filler_entry(cls, entry: dict) -> 'ScheduledEntry':
+        """
+        Create a ScheduledEntry from a gap filler entry dict.
+        
+        Args:
+            entry: Dict with 'time', 'duration', 'file', etc.
+        """
+        time_str = entry.get("time", "00:00")
+        # Handle HH:MM:SS format - extract HH:MM
+        if ":" in time_str:
+            parts = time_str.split(":")
+            if len(parts) >= 3:
+                time_str = f"{parts[0]}:{parts[1]}"
+        
+        duration = entry.get("duration", 5400)  # Default 90 minutes
+        
+        # Calculate end time
+        start_dt = parse_time_string(time_str)
+        end_dt = start_dt + timedelta(seconds=duration)
+        end_time_str = format_time_string(end_dt)
+        
+        return cls(
+            start_time=time_str,
+            end_time=end_time_str,
+            duration_seconds=duration,
+            source="gap_filler",
+            content_type="gap_video",
+            content_value=entry.get("file", "")
+        )
+
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
@@ -392,6 +469,166 @@ def approximate_block_timing(new_block_start: str, new_block_end: str,
                     fits_between = True
             else:
                 # Last block - check if fits until end of day
+                if adjusted_end.hour <= 24 and adjusted_end.minute == 0:
+                    fits_between = True
+            
+            if fits_in_gap or fits_between:
+                possible_adjustments.append((adjusted_start_str, adjusted_end_str, time_diff_seconds))
+    
+    # Find the best adjustment (closest to original proposed time)
+    if possible_adjustments:
+        # Sort by time difference (smallest = closest to original)
+        possible_adjustments.sort(key=lambda x: x[2])
+        return (possible_adjustments[0][0], possible_adjustments[0][1])
+    
+    # No overlap found - return original times (user's preferred time is fine)
+    return (new_block_start, new_block_end)
+
+
+def convert_gap_filler_to_scheduled_entries(gap_filler_entries: List[dict]) -> List[ScheduledEntry]:
+    """
+    Convert gap filler entry dicts to ScheduledEntry objects.
+    
+    Args:
+        gap_filler_entries: List of dicts from fill_gaps_with_random()
+    
+    Returns:
+        List of ScheduledEntry objects representing gap filler videos
+    """
+    entries = []
+    for entry in gap_filler_entries:
+        try:
+            scheduled_entry = ScheduledEntry.from_gap_filler_entry(entry)
+            entries.append(scheduled_entry)
+        except Exception as e:
+            logger.warning(f"Error converting gap filler entry: {e}")
+    return entries
+
+
+def merge_blocks_and_gap_filler(existing_blocks: List[TimeBlock],
+                                gap_filler_entries: List[ScheduledEntry]) -> List[ScheduledEntry]:
+    """
+    Merge TimeBlocks and gap filler entries into a single list of ScheduledEntries.
+    
+    This combined list represents all existing content that should not be cut
+    when approximating a new block's timing.
+    
+    Args:
+        existing_blocks: List of TimeBlock objects
+        gap_filler_entries: List of ScheduledEntry objects from gap filler
+    
+    Returns:
+        Sorted list of ScheduledEntry objects
+    """
+    merged = []
+    
+    # Convert blocks to ScheduledEntry
+    for block in existing_blocks:
+        merged.append(ScheduledEntry.from_time_block(block))
+    
+    # Add gap filler entries
+    merged.extend(gap_filler_entries)
+    
+    # Sort by start time
+    merged.sort(key=lambda x: parse_time_string(x.start_time))
+    
+    return merged
+
+
+def approximate_block_timing_v2(new_block_start: str, new_block_end: str,
+                                 existing_entries: List[ScheduledEntry],
+                                 gaps: List[Tuple[str, str]],
+                                 tag_duration_hours: float = 1.0) -> Optional[Tuple[str, str]]:
+    """
+    Approximate block timing to fit around existing content (blocks + gap filler videos).
+    
+    This improved version considers both explicit TimeBlocks and gap filler videos
+    when finding the best position for a new daypart block.
+    
+    Args:
+        new_block_start: Proposed start time (HH:MM)
+        new_block_end: Proposed end time (HH:MM)
+        existing_entries: List of ScheduledEntry objects (blocks + gap filler videos)
+        gaps: List of (start, end) tuples representing available gaps
+        tag_duration_hours: Duration to use if adjusting (default 1 hour)
+    
+    Returns:
+        Tuple of (adjusted_start, adjusted_end) or None if cannot approximate
+    """
+    # Calculate the duration of the proposed block
+    try:
+        start_dt = parse_time_string(new_block_start)
+        end_dt = parse_time_string(new_block_end)
+        if end_dt < start_dt:
+            end_dt += timedelta(days=1)
+        block_duration = (end_dt - start_dt).total_seconds() / 3600  # hours
+    except Exception as e:
+        logger.warning(f"Error parsing times {new_block_start}-{new_block_end}: {e}")
+        block_duration = tag_duration_hours
+    
+    # If no existing entries, return original times (no need to approximate)
+    if not existing_entries:
+        return (new_block_start, new_block_end)
+    
+    # Parse existing entries into datetime intervals
+    existing_intervals = []
+    for entry in existing_entries:
+        try:
+            e_start = parse_time_string(entry.start_time)
+            e_end = parse_time_string(entry.end_time)
+            if e_end < e_start:
+                e_end += timedelta(days=1)
+            existing_intervals.append((e_start, e_end, entry))
+        except:
+            continue
+    
+    if not existing_intervals:
+        return (new_block_start, new_block_end)
+    
+    # Sort by start time
+    existing_intervals.sort(key=lambda x: x[0])
+    
+    # Check if proposed time overlaps with any existing entry
+    proposed_start = parse_time_string(new_block_start)
+    proposed_end = parse_time_string(new_block_end)
+    
+    # Collect all possible adjustments (to find the best one later)
+    possible_adjustments = []
+    
+    for e_start, e_end, entry in existing_intervals:
+        # Check for overlap
+        if proposed_start < e_end and proposed_end > e_start:
+            # Found overlap - try to move block to right after this entry
+            adjusted_start = e_end
+            adjusted_end = adjusted_start + timedelta(hours=block_duration)
+            
+            # Format the adjusted times
+            adjusted_start_str = format_time_string(adjusted_start)
+            adjusted_end_str = format_time_string(adjusted_end)
+            
+            # Calculate how far this adjustment is from original proposed time
+            time_diff_seconds = abs((adjusted_start - proposed_start).total_seconds())
+            
+            # Check if adjusted time fits in any gap
+            fits_in_gap = False
+            for gap_start, gap_end in gaps:
+                gap_start_dt = parse_time_string(gap_start)
+                gap_end_dt = parse_time_string(gap_end)
+                if gap_end_dt < gap_start_dt:
+                    gap_end_dt += timedelta(days=1)
+                if adjusted_start >= gap_start_dt and adjusted_end <= gap_end_dt:
+                    fits_in_gap = True
+                    break
+            
+            # Check if fits between current entry and next entry
+            fits_between = False
+            idx = existing_intervals.index((e_start, e_end, entry))
+            if idx + 1 < len(existing_intervals):
+                next_start, _, _ = existing_intervals[idx + 1]
+                if adjusted_end <= next_start:
+                    fits_between = True
+            else:
+                # Last entry - check if fits until end of day
                 if adjusted_end.hour <= 24 and adjusted_end.minute == 0:
                     fits_between = True
             

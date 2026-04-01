@@ -423,7 +423,7 @@ class DaypartSchedulerMixin:
                 self.try_approximate()
         
         def try_approximate(self):
-            """Try to approximate timing to fit around existing blocks"""
+            """Try to approximate timing to fit around existing blocks and gap filler videos"""
             # Get current time values
             start_time = self.start_var.get().strip()
             end_time = self.end_var.get().strip()
@@ -444,8 +444,39 @@ class DaypartSchedulerMixin:
                 # No existing blocks, return original
                 return
             
-            # Detect gaps
+            # Import the new functions for gap filler support
+            from .daypart_scheduler import (
+                detect_gaps, ScheduledEntry, 
+                convert_gap_filler_to_scheduled_entries,
+                merge_blocks_and_gap_filler,
+                approximate_block_timing_v2
+            )
+            
+            # Detect gaps between blocks
             gaps = detect_gaps(existing_blocks)
+            
+            # Try to get gap filler videos if gap filler is enabled
+            # This allows approximation to consider gap filler videos
+            gap_filler_entries = []
+            if hasattr(self.parent, 'daypart_gap_filler'):
+                gap_filler_config = self.parent.daypart_gap_filler
+                if gap_filler_config and gap_filler_config.enabled:
+                    # Get available videos from parent
+                    if hasattr(self.parent, 'available_videos'):
+                        available_videos = self.parent.available_videos
+                        if available_videos:
+                            # Generate gap filler entries to get gap video timings
+                            from .daypart_scheduler import fill_gaps_with_random
+                            gap_filler_dicts = fill_gaps_with_random(
+                                gaps, available_videos, gap_filler_config,
+                                channel=getattr(self.parent, 'channel', ''),
+                                target_date=getattr(self.parent, 'target_date', None)
+                            )
+                            if gap_filler_dicts:
+                                gap_filler_entries = convert_gap_filler_to_scheduled_entries(gap_filler_dicts)
+            
+            # Merge blocks and gap filler entries
+            existing_entries = merge_blocks_and_gap_filler(existing_blocks, gap_filler_entries)
             
             # Calculate tag duration (default 1 hour)
             tag_duration = 1.0
@@ -457,10 +488,10 @@ class DaypartSchedulerMixin:
                 except:
                     pass
             
-            # Try to approximate
-            result = approximate_block_timing(
+            # Try to approximate using the new v2 function that considers gap filler
+            result = approximate_block_timing_v2(
                 start_time, end_time,
-                existing_blocks, gaps,
+                existing_entries, gaps,
                 tag_duration_hours=tag_duration
             )
             
@@ -468,9 +499,10 @@ class DaypartSchedulerMixin:
                 adjusted_start, adjusted_end = result
                 if adjusted_start != start_time or adjusted_end != end_time:
                     # Show info to user
+                    gap_note = " (considered gap filler videos)" if gap_filler_entries else ""
                     messagebox.showinfo(
                         "Approximate Timing",
-                        f"Adjusted timing to fit around existing videos:\n"
+                        f"Adjusted timing to fit around existing videos{gap_note}:\n"
                         f"Original: {start_time} - {end_time}\n"
                         f"Adjusted: {adjusted_start} - {adjusted_end}"
                     )
@@ -741,6 +773,7 @@ class DaypartSchedulerMixin:
     
     def on_generate_daypart_preview(self):
         """Generate daypart schedule preview (single day, weekly, or calendar range)"""
+        print("[DEBUG] on_generate_daypart_preview called")
         try:
             collections = load_collections(self.current_profile)
             available_videos = []
@@ -750,9 +783,35 @@ class DaypartSchedulerMixin:
                         video["collection"] = col
                         available_videos.append(video)
             
+            # Check global approximate setting - try both self.app and self references
+            try:
+                use_global_approximate = self.app.use_approximation_var.get()
+            except AttributeError:
+                # If self.app doesn't exist, check self directly
+                if hasattr(self, 'use_approximation_var'):
+                    use_global_approximate = self.use_approximation_var.get()
+                else:
+                    use_global_approximate = False
+            print(f"[DEBUG] Global approximate setting: {use_global_approximate}")
+            
+            # Create copies of blocks with approximate set based on global checkbox
+            time_blocks_for_preview = []
+            for block in self.daypart_time_blocks:
+                block_copy = TimeBlock(
+                    start_time=block.start_time,
+                    end_time=block.end_time,
+                    content_type=block.content_type,
+                    content_value=block.content_value,
+                    block_id=block.block_id,
+                    days=block.days,
+                    video_count=block.video_count,
+                    approximate=use_global_approximate  # Use global setting
+                )
+                time_blocks_for_preview.append(block_copy)
+            
             daypart_config = {
                 "daypart_config": {
-                    "time_blocks": [b.to_dict() for b in self.daypart_time_blocks],
+                    "time_blocks": [b.to_dict() for b in time_blocks_for_preview],
                     "marathons": [m.to_dict() for m in self.daypart_marathons],
                     "gap_filler": self.daypart_gap_filler.to_dict()
                 }
@@ -886,6 +945,8 @@ class DaypartSchedulerMixin:
             messagebox.showwarning("No Preview", "Generate a preview first")
             return
         
+        print(f"[DEBUG] Copying {len(self.daypart_preview_entries)} entries")
+        
         text_lines = []
         current_date = None
         for entry in self.daypart_preview_entries:
@@ -907,7 +968,27 @@ class DaypartSchedulerMixin:
             else:
                 title = entry.get("title", "Unknown")
             source = entry.get("source", "unknown")
-            text_lines.append(f"  {time_short} [{source}] {title}")
+            
+            # Calculate end time for debug display
+            duration = entry.get("duration", 0)
+            print(f"[DEBUG] Copy: time={time_str}, duration={duration}")
+            end_time_str = ""
+            if duration > 0:
+                try:
+                    time_parts = time_str.split(":")
+                    if len(time_parts) >= 2:
+                        start_h = int(time_parts[0])
+                        start_m = int(time_parts[1])
+                        total_minutes = start_h * 60 + start_m + int(duration // 60)
+                        end_h = (total_minutes // 60) % 24
+                        end_m = total_minutes % 60
+                        end_time_str = f"-{end_h:02d}:{end_m:02d}"
+                        print(f"[DEBUG] Copy calculated end: {end_time_str}")
+                except Exception as e:
+                    print(f"[DEBUG] Copy error: {e}")
+                    pass
+            
+            text_lines.append(f"  {time_short}{end_time_str} [{source}] {title}")
         
         clipboard_text = "\n".join(text_lines)
         self.root.clipboard_clear()
@@ -953,7 +1034,8 @@ class DaypartSchedulerMixin:
                     "block_id": block.block_id,
                     "days": ",".join(block.days) if block.days else "",
                     "all_days": "true" if is_all_days else "false",
-                    "video_count": block.video_count or ""
+                    "video_count": block.video_count or "",
+                    "approximate": str(getattr(block, 'approximate', False)).lower()
                 }
             
             # Save marathons
@@ -979,6 +1061,15 @@ class DaypartSchedulerMixin:
                     "respect_24h_norepeat": str(self.daypart_gap_filler.respect_24h_norepeat),
                     "shuffle": str(self.daypart_gap_filler.shuffle)
                 }
+            
+            # Save global settings (including approximate checkbox)
+            try:
+                approx_val = self.app.use_approximation_var.get()
+            except AttributeError:
+                approx_val = self.use_approximation_var.get() if hasattr(self, 'use_approximation_var') else False
+            config["Settings"] = {
+                "use_approximation": str(approx_val).lower()
+            }
             
             # Write to file
             with open(file_path, 'w', encoding='utf-8') as f:
@@ -1032,7 +1123,8 @@ class DaypartSchedulerMixin:
                             content_value=config[section].get("content_value", ""),
                             block_id=config[section].get("block_id"),
                             days=days,
-                            video_count=config[section].get("video_count") or None
+                            video_count=config[section].get("video_count") or None,
+                            approximate=config[section].get("approximate", "false").lower() == "true"
                         )
                         self.daypart_time_blocks.append(block)
                     except Exception as e:
@@ -1067,6 +1159,17 @@ class DaypartSchedulerMixin:
                     respect_24h_norepeat=gap_section.get("respect_24h_norepeat", "True").lower() == "true",
                     shuffle=gap_section.get("shuffle", "True").lower() == "true"
                 )
+            
+            # Load global settings (including approximate checkbox)
+            if "Settings" in config:
+                settings_section = config["Settings"]
+                use_approx = settings_section.get("use_approximation", "false").lower() == "true"
+                try:
+                    self.app.use_approximation_var.set(use_approx)
+                except AttributeError:
+                    if hasattr(self, 'use_approximation_var'):
+                        self.use_approximation_var.set(use_approx)
+                print(f"[DEBUG] Loaded approximate setting: {use_approx}")
             
             # Update UI
             self.update_block_list()
@@ -1236,7 +1339,26 @@ class DaypartSchedulerMixin:
                 else:
                     title = entry.get("title", "Unknown")
                 source = entry.get("source", "unknown")
-                self.preview_list.insert(tk.END, f"  {start} [{source}] {title}")
+                
+                # Calculate end time for debug display
+                duration = entry.get("duration", 0)
+                if duration > 0:
+                    # Parse start time and add duration
+                    try:
+                        start_parts = start.split(":")
+                        start_h = int(start_parts[0])
+                        start_m = int(start_parts[1])
+                        total_minutes = start_h * 60 + start_m + (duration // 60)
+                        end_h = (total_minutes // 60) % 24
+                        end_m = total_minutes % 60
+                        end_str = f"{end_h:02d}:{end_m:02d}"
+                        display = f"  {start}-{end_str} [{source}] {title}"
+                    except:
+                        display = f"  {start} [{source}] {title}"
+                else:
+                    display = f"  {start} [{source}] {title}"
+                
+                self.preview_list.insert(tk.END, display)
             
             if hasattr(self, 'preview_stats_label'):
                 # Count unique dates
