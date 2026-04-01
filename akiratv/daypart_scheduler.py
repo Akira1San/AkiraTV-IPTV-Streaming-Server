@@ -355,6 +355,9 @@ def approximate_block_timing(new_block_start: str, new_block_end: str,
     proposed_start = parse_time_string(new_block_start)
     proposed_end = parse_time_string(new_block_end)
     
+    # Collect all possible adjustments (to find the best one later)
+    possible_adjustments = []
+    
     for b_start, b_end, block in existing_intervals:
         # Check for overlap
         if proposed_start < b_end and proposed_end > b_start:
@@ -366,25 +369,40 @@ def approximate_block_timing(new_block_start: str, new_block_end: str,
             adjusted_start_str = format_time_string(adjusted_start)
             adjusted_end_str = format_time_string(adjusted_end)
             
+            # Calculate how far this adjustment is from original proposed time
+            time_diff_seconds = abs((adjusted_start - proposed_start).total_seconds())
+            
             # Check if adjusted time fits in any gap
+            fits_in_gap = False
             for gap_start, gap_end in gaps:
                 gap_start_dt = parse_time_string(gap_start)
                 gap_end_dt = parse_time_string(gap_end)
                 if gap_end_dt < gap_start_dt:
                     gap_end_dt += timedelta(days=1)
                 if adjusted_start >= gap_start_dt and adjusted_end <= gap_end_dt:
-                    return (adjusted_start_str, adjusted_end_str)
+                    fits_in_gap = True
+                    break
             
-            # Try next available position between current block and next block
+            # Check if fits between current block and next block
+            fits_between = False
             idx = existing_intervals.index((b_start, b_end, block))
             if idx + 1 < len(existing_intervals):
                 next_start, _, _ = existing_intervals[idx + 1]
                 if adjusted_end <= next_start:
-                    return (adjusted_start_str, adjusted_end_str)
+                    fits_between = True
             else:
                 # Last block - check if fits until end of day
                 if adjusted_end.hour <= 24 and adjusted_end.minute == 0:
-                    return (adjusted_start_str, adjusted_end_str)
+                    fits_between = True
+            
+            if fits_in_gap or fits_between:
+                possible_adjustments.append((adjusted_start_str, adjusted_end_str, time_diff_seconds))
+    
+    # Find the best adjustment (closest to original proposed time)
+    if possible_adjustments:
+        # Sort by time difference (smallest = closest to original)
+        possible_adjustments.sort(key=lambda x: x[2])
+        return (possible_adjustments[0][0], possible_adjustments[0][1])
     
     # No overlap found - return original times (user's preferred time is fine)
     return (new_block_start, new_block_end)
