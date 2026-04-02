@@ -1145,6 +1145,218 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
     return gap_entries
 
 
+def _handle_approximate_blocks(schedule_entries: List[dict], time_blocks: List[dict],
+                                 daypart_inner: dict, weekday: int,
+                                 target_date: date, channel: str,
+                                 available_videos: List[dict] = None,
+                                 recent_videos: List = None):
+    """
+    Handle blocks with approximate=True by moving them to suitable gaps.
+    
+    This function finds blocks that have approximate=True and attempts to move them
+    to time slots that don't overlap with existing scheduled content.
+    
+    Args:
+        schedule_entries: Current list of scheduled entries (will be modified)
+        time_blocks: List of time block dicts from config
+        daypart_inner: Inner daypart config dict
+        weekday: Current weekday (0=Monday)
+        target_date: Target date for scheduling
+        channel: Channel name for logging
+        available_videos: List of available videos for scheduling
+        recent_videos: List of recently played videos for 24h no-repeat
+    """
+    if available_videos is None:
+        available_videos = []
+    if recent_videos is None:
+        recent_videos = []
+    
+    # Find blocks with approximate=True that apply to today
+    approximate_blocks = []
+    
+    logger.info(f"[_handle_approximate_blocks] Checking {len(time_blocks)} time blocks for approximate=True")
+    
+    for block_data in time_blocks:
+        block = TimeBlock.from_dict(block_data)
+        
+        # Check if this block has approximate=True
+        logger.info(f"[_handle_approximate_blocks] Block {block.block_id}: approximate={getattr(block, 'approximate', False)}, content_type={block.content_type}")
+        
+        if not getattr(block, 'approximate', False):
+            continue
+    
+        # Get block days
+        block_days = block.days if hasattr(block, 'days') and block.days else None
+    
+        if not block_days and block.content_type == "tag":
+            # Try to extract days from content_value
+            content_parts = block.content_value.split("|")
+            if len(content_parts) >= 2:
+                days_str = content_parts[1]
+                block_days = [d.strip() for d in days_str.split(",") if d.strip()]
+    
+        # Check if block applies today
+        applies_today = False
+        if block.content_type == "video" or not block_days:
+            applies_today = True
+        elif weekday in get_weekday_indices(block_days):
+            applies_today = True
+    
+        if applies_today:
+            approximate_blocks.append((block, block_data))
+    
+    if not approximate_blocks:
+        return  # No approximate blocks to handle
+    
+    logger.info(f"[{channel}] Handling {len(approximate_blocks)} approximate block(s)")
+    
+    # Get existing scheduled entries as ScheduledEntry objects for approximation
+    existing_entries = []
+    for entry in schedule_entries:
+        time_str = entry.get("time", "00:00")
+        # Handle HH:MM:SS format
+        if ":" in time_str:
+            parts = time_str.split(":")
+            if len(parts) >= 3:
+                time_str = f"{parts[0]}:{parts[1]}"
+        
+        duration = entry.get("duration", 5400)
+        start_dt = parse_time_string(time_str)
+        end_dt = start_dt + timedelta(seconds=duration)
+        end_time_str = format_time_string(end_dt)
+        
+        source = entry.get("source", "unknown")
+        existing_entries.append(ScheduledEntry(
+            start_time=time_str,
+            end_time=end_time_str,
+            duration_seconds=duration,
+            source=source,
+            content_type=entry.get("metadata", {}).get("scheduled_type", "video"),
+            content_value=entry.get("file", "")
+        ))
+    
+    # Sort existing entries by start time
+    existing_entries.sort(key=lambda e: e.start_time)
+    
+    # CRITICAL: Remove approximate block entries BEFORE calculating gaps
+    # This ensures gaps are calculated based on gap_filler content only
+    # Use source='daypart_tag' or 'daypart_video' to identify block entries
+    schedule_entries[:] = [e for e in schedule_entries 
+                          if e.get("source") not in ["daypart_tag", "daypart_video"]]
+    
+    # Now rebuild existing_entries from the filtered schedule_entries
+    existing_entries = []
+    for entry in schedule_entries:
+        time_str = entry.get("time", "00:00")
+        # Handle HH:MM:SS format
+        if ":" in time_str:
+            parts = time_str.split(":")
+            if len(parts) >= 3:
+                time_str = f"{parts[0]}:{parts[1]}"
+        
+        duration = entry.get("duration", 5400)
+        start_dt = parse_time_string(time_str)
+        end_dt = start_dt + timedelta(seconds=duration)
+        end_time_str = format_time_string(end_dt)
+        
+        source = entry.get("source", "unknown")
+        existing_entries.append(ScheduledEntry(
+            start_time=time_str,
+            end_time=end_time_str,
+            duration_seconds=duration,
+            source=source,
+            content_type=entry.get("metadata", {}).get("scheduled_type", "video"),
+            content_value=entry.get("file", "")
+        ))
+    
+    # Sort existing entries by start time
+    existing_entries.sort(key=lambda e: e.start_time)
+    
+    # Calculate gaps from existing entries
+    if existing_entries:
+        gaps = []
+        current_gap_start = parse_time_string("00:00")
+        for entry in existing_entries:
+            entry_start = parse_time_string(entry.start_time)
+            if current_gap_start < entry_start:
+                gaps.append((format_time_string(current_gap_start), entry.start_time))
+            entry_end = parse_time_string(entry.end_time)
+            current_gap_start = entry_end
+        
+        # Add final gap to end of day
+        day_end = parse_time_string("24:00")
+        if current_gap_start < day_end:
+            gaps.append((format_time_string(current_gap_start), "24:00"))
+    else:
+        # No existing entries - full day is available
+        gaps = [("00:00", "24:00")]
+    
+    logger.info(f"[{channel}] Current gaps for approximate placement: {gaps}")
+    
+    # Process each approximate block
+    for block, block_data in approximate_blocks:
+        # Calculate block duration
+        block_duration_hours = block.duration_seconds / 3600
+        
+        # Try to find a suitable gap
+        best_gap = None
+        for gap_start, gap_end in gaps:
+            gap_start_dt = parse_time_string(gap_start)
+            gap_end_dt = parse_time_string(gap_end)
+            
+            # Handle overnight gaps
+            if gap_end_dt < gap_start_dt:
+                gap_end_dt += timedelta(days=1)
+            
+            gap_duration_hours = (gap_end_dt - gap_start_dt).total_seconds() / 3600
+            
+            # Check if gap is large enough
+            if gap_duration_hours >= block_duration_hours:
+                best_gap = (gap_start, gap_end)
+                break  # Use first suitable gap
+        
+        if best_gap:
+            gap_start, gap_end = best_gap
+            logger.info(f"[{channel}] Moving approximate block {block.block_id} to gap {gap_start}-{gap_end}")
+            
+            # Update the block's times
+            block.start_time = gap_start
+            
+            # Calculate end time
+            gap_start_dt = parse_time_string(gap_start)
+            block_end_dt = gap_start_dt + timedelta(seconds=block.duration_seconds)
+            block.end_time = format_time_string(block_end_dt)
+            
+            # Remove old entries for this block and reschedule
+            schedule_entries[:] = [e for e in schedule_entries 
+                                   if e.get("metadata", {}).get("daypart_block_id") != block.block_id]
+            
+            # Generate new entries at the new time
+            block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
+            new_entries = generate_block_schedule(
+                block,
+                available_videos,
+                recent_videos,
+                channel,
+                start_datetime=block_start_dt
+            )
+            
+            # Add the new entries
+            schedule_entries.extend(new_entries)
+            
+            # Remove this gap from the list (since it's now occupied)
+            # and add remaining time as new gaps if any
+            if gap_start != format_time_string(block_end_dt):
+                # There's remaining time after the block
+                gaps.remove((gap_start, gap_end))
+                remaining_start = format_time_string(block_end_dt)
+                gaps.append((remaining_start, gap_end))
+            else:
+                gaps.remove((gap_start, gap_end))
+        else:
+            logger.warning(f"[{channel}] No suitable gap found for approximate block {block.block_id}")
+
+
 def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
                              channel: str, target_date: date,
                              base_datetime: datetime = None) -> List[dict]:
@@ -1292,6 +1504,28 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
                     current_time = last_entry_end
     
+    # 2b. TEMPORARILY DISABLED - approximate blocks are handled AFTER gap filling now
+    # This runs after initial block scheduling but before gap filling
+    # print("[generate_daypart_schedule] Calling _handle_approximate_blocks...")
+    # _handle_approximate_blocks(
+    #     schedule_entries,
+    #     daypart_inner.get("time_blocks", []),
+    #     daypart_inner,
+    #     weekday,
+    #     target_date,
+    #     channel,
+    #     available_videos,
+    #     recent_videos
+    # )
+    
+    # After approximate handling, recalculate current_time from the last scheduled entry
+    if schedule_entries:
+        last_entry = schedule_entries[-1]
+        last_entry_time = datetime.strptime(last_entry["time"], "%H:%M:%S")
+        last_entry_duration = last_entry.get("duration", 5400)
+        last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
+        current_time = last_entry_end
+    
     # 3. Detect and fill gaps (only if not marathon day and gap filler enabled)
     if not is_marathon_day:
         gap_filler_config = GapFillerConfig.from_dict(daypart_inner.get("gap_filler", {}))
@@ -1390,6 +1624,20 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 else:
                     logger.info(f"[{channel}] No gaps to fill")
     
+    # 4. Handle approximate blocks - move them to fit around ALL scheduled content (including gap filler)
+    # This runs AFTER gap filling so we can move blocks to fit around gap_filler videos
+    _handle_approximate_blocks(
+        schedule_entries,
+        daypart_inner.get("time_blocks", []),
+        daypart_inner,
+        weekday,
+        target_date,
+        channel,
+        available_videos,
+        recent_videos
+    )
+    
+    # After approximate handling, sort entries by time
     # 4. Sort by time
     schedule_entries.sort(key=lambda e: e["time"])
     
