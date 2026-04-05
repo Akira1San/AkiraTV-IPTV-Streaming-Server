@@ -65,7 +65,7 @@ class AkiraTVApp:
         
         self.streaming_button = ttk.Button(top_frame, text="Start Streaming", command=self.toggle_streaming)
         self.streaming_button.pack(side="left", padx=2)
-        ttk.Button(top_frame, text="Open Weekly Wizard", command=self.open_wizard).pack(side="left", padx=2)
+        # ttk.Button(top_frame, text="Open Weekly Wizard", command=self.open_wizard).pack(side="left", padx=2)
         ttk.Button(top_frame, text="Manage Collections", command=self.open_collection_wizard).pack(side="left", padx=2)
         ttk.Button(top_frame, text="Clear HLS Cache", command=self.clear_hls_cache).pack(side="left", padx=2)
         ttk.Button(top_frame, text="Generate XMLTV for Kodi", command=self.generate_xmltv).pack(side="left", padx=2)
