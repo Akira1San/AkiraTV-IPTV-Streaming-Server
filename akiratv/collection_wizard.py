@@ -12,7 +12,7 @@ from threading import Thread
 import time
 from .metadata_fetcher import MetadataFetcher
 
-COLLECTIONS_DIR = Path(__file__).parent.parent / "user" / "collections"
+COLLECTIONS_DIR = Path(__file__).resolve().parent.parent / "user" / "collections"
 COVERS_DIR = Path(__file__).parent.parent / "user" / "covers"
 COLLECTIONS_DIR.mkdir(parents=True, exist_ok=True)  # ensure folder exists
 COVERS_DIR.mkdir(parents=True, exist_ok=True)  # ensure folder exists
@@ -712,11 +712,20 @@ Your API key will be saved for future use.""")
     def load_collections(self):
         """Load collections from current profile"""
         try:
-            profile_file = COLLECTIONS_DIR / f"{self.current_profile}.json"
-            with open(profile_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self.collections = data.get("collections", [])
-        except:
+            # Try with collections_ prefix first (standard naming)
+            profile_file = COLLECTIONS_DIR / f"collections_{self.current_profile}.json"
+            if not profile_file.exists():
+                # Fallback to without prefix
+                profile_file = COLLECTIONS_DIR / f"{self.current_profile}.json"
+            
+            if profile_file.exists():
+                with open(profile_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.collections = data.get("collections", [])
+            else:
+                self.collections = []
+        except Exception as e:
+            print(f"Error loading collections: {e}")
             self.collections = []
 
     def save_collections(self, show_success_message=True):
@@ -1132,59 +1141,220 @@ Your API key will be saved for future use.""")
         messagebox.showinfo("Upgrade Complete", result_msg)
 
     def fix_video_path(self):
-        """Fix missing video file path by browsing for new location"""
+        """Fix missing video file paths - supports batch fixing by searching a folder"""
         if not self.selected_indices:
             messagebox.showwarning("Warning", "Please select at least one collection to fix!")
             return
         
-        # Get selected collection(s)
-        fixed_count = 0
-        
+        # Collect all missing videos from selected collections
+        missing_videos = []  # List of (collection_idx, video_idx, video_dict, filename)
         for idx in self.selected_indices:
             collection = self.collections[idx]
             videos = collection.get("videos", [])
-            
-            for video in videos:
+            for video_idx, video in enumerate(videos):
                 video_path = video.get("path", "")
                 if video_path and not Path(video_path).exists():
-                    # Video file is missing - ask user to find it
-                    old_filename = Path(video_path).name
+                    filename = Path(video_path).name
+                    missing_videos.append((idx, video_idx, video, filename))
+        
+        if not missing_videos:
+            messagebox.showinfo("Info", "No missing video files found in selected collections!")
+            return
+        
+        # Ask user how they want to fix
+        fix_dialog = tk.Toplevel(self.root)
+        fix_dialog.title("Fix Missing Video Paths")
+        fix_dialog.geometry("500x400")
+        fix_dialog.transient(self.root)
+        fix_dialog.grab_set()
+        
+        # Apply theme
+        if self.current_theme == "dark":
+            fix_dialog.configure(bg="#2d2d2d")
+        
+        # Center dialog
+        fix_dialog.update_idletasks()
+        x = (fix_dialog.winfo_screenwidth() // 2) - (fix_dialog.winfo_width() // 2)
+        y = (fix_dialog.winfo_screenheight() // 2) - (fix_dialog.winfo_height() // 2)
+        fix_dialog.geometry(f"+{x}+{y}")
+        
+        ttk.Label(fix_dialog, text=f"Found {len(missing_videos)} missing video file(s):", 
+                 font=("TkDefaultFont", 11, "bold")).pack(pady=10)
+        
+        # Show list of missing files (scrollable)
+        list_frame = ttk.Frame(fix_dialog)
+        list_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        scrollbar = ttk.Scrollbar(list_frame)
+        scrollbar.pack(side="right", fill="y")
+        
+        missing_listbox = tk.Listbox(list_frame, height=10, yscrollcommand=scrollbar.set)
+        missing_listbox.pack(fill="both", expand=True)
+        scrollbar.config(command=missing_listbox.yview)
+        
+        for _, _, _, filename in missing_videos:
+            missing_listbox.insert(tk.END, filename)
+        
+        # Options
+        option_frame = ttk.Frame(fix_dialog)
+        option_frame.pack(fill="x", padx=10, pady=10)
+        
+        mode_var = tk.StringVar(value="ask_each")
+        
+        ttk.Radiobutton(option_frame, text="Fix individually (browse for each file)", 
+                       variable=mode_var, value="ask_each").pack(anchor="w", pady=2)
+        ttk.Radiobutton(option_frame, text="Batch search folder (auto-match by filename)", 
+                       variable=mode_var, value="batch_search").pack(anchor="w", pady=2)
+        
+        # Buttons
+        btn_frame = ttk.Frame(fix_dialog)
+        btn_frame.pack(fill="x", padx=10, pady=10)
+        
+        result = {"proceed": False, "mode": None, "search_folder": None}
+        
+        def on_proceed():
+            result["proceed"] = True
+            result["mode"] = mode_var.get()
+            if result["mode"] == "batch_search":
+                # Ask for folder to search
+                search_folder = filedialog.askdirectory(
+                    title="Select Folder to Search for Missing Videos",
+                    initialdir="."
+                )
+                if search_folder:
+                    result["search_folder"] = search_folder
+                else:
+                    result["proceed"] = False  # Don't proceed if no folder selected
+            fix_dialog.destroy()
+        
+        def on_cancel():
+            fix_dialog.destroy()
+        
+        ttk.Button(btn_frame, text="Proceed", command=on_proceed).pack(side="right", padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=on_cancel).pack(side="right")
+        
+        # Wait for dialog to close
+        fix_dialog.wait_window()
+        
+        if not result["proceed"]:
+            return
+        
+        # Handle individual fixing (original behavior)
+        if result["mode"] == "ask_each":
+            fixed_count = 0
+            for collection_idx, video_idx, video, filename in missing_videos:
+                # Show dialog for this specific file
+                if messagebox.askyesno("Missing Video File", 
+                    f"Video file not found:\n\n{video['path']}\n\n"
+                    f"Would you like to browse for '{filename}'?"):
                     
-                    # Show dialog with the missing file name
-                    result = messagebox.askyesno(
-                        "Missing Video File",
-                        f"Video file not found:\n\n{video_path}\n\n"
-                        f"Would you like to browse for '{old_filename}'?"
+                    new_path = filedialog.askopenfilename(
+                        title=f"Find: {filename}",
+                        initialfile=filename,
+                        filetypes=[
+                            ("Video files", "*.mp4 *.mkv *.avi *.mov *.webm *.wmv *.flv *.m4v"),
+                            ("All files", "*.*")
+                        ]
                     )
                     
-                    if result:
-                        # Open file browser
-                        new_path = filedialog.askopenfilename(
-                            title=f"Find: {old_filename}",
-                            initialfile=old_filename,
-                            filetypes=[
-                                ("Video files", "*.mp4 *.mkv *.avi *.mov *.webm *.wmv *.flv *.m4v"),
-                                ("All files", "*.*")
-                            ]
-                        )
-                        
-                        if new_path:
-                            # Update the path
-                            new_path = new_path.replace("\\", "/")
-                            video["path"] = new_path
-                            
-                            # Also update duration for the new file
-                            video["duration"] = self.get_video_duration(new_path)
-                            
-                            fixed_count += 1
-                            print(f"Fixed path: {old_filename} -> {new_path}")
+                    if new_path:
+                        new_path = new_path.replace("\\", "/")
+                        video["path"] = new_path
+                        video["duration"] = self.get_video_duration(new_path)
+                        fixed_count += 1
+                        print(f"Fixed path: {filename} -> {new_path}")
+            
+            if fixed_count > 0:
+                self.save_collections()
+                self.refresh_collection_list()
+                messagebox.showinfo("Success", f"Fixed {fixed_count} video path(s)!")
+            else:
+                messagebox.showinfo("Info", "No paths were updated.")
         
-        if fixed_count > 0:
-            self.save_collections()
-            self.refresh_collection_list()
-            messagebox.showinfo("Success", f"Fixed {fixed_count} video path(s)!")
-        else:
-            messagebox.showinfo("Info", "No missing video files found or no paths were updated.")
+        # Handle batch search fixing
+        elif result["mode"] == "batch_search":
+            search_folder = result["search_folder"]
+            if not search_folder or not Path(search_folder).exists():
+                messagebox.showerror("Error", "Invalid search folder!")
+                return
+            
+            # Build a mapping of all video files in the search folder (and subfolders)
+            # Key: lowercase filename (without extension or with extension - we'll try both)
+            # Value: full path
+            video_files_map = {}
+            video_extensions = {".mp4", ".mkv", ".avi", ".mov", ".webm", ".wmv", ".flv", ".m4v"}
+            
+            # Search recursively
+            for ext in video_extensions:
+                for file_path in Path(search_folder).rglob(f"*{ext}"):
+                    # Store by filename (case-insensitive matching)
+                    filename = file_path.name.lower()
+                    video_files_map[filename] = str(file_path.resolve()).replace("\\", "/")
+                    # Also store without extension for fuzzy matching
+                    stem = file_path.stem.lower()
+                    video_files_map[stem] = str(file_path.resolve()).replace("\\", "/")
+            
+            # Match missing videos
+            matches = []  # List of (collection_idx, video_idx, old_path, new_path)
+            unmatched = []
+            
+            for collection_idx, video_idx, video, filename in missing_videos:
+                # Try to find match
+                filename_lower = filename.lower()
+                stem = Path(filename).stem.lower()
+                
+                if filename_lower in video_files_map:
+                    new_path = video_files_map[filename_lower]
+                    matches.append((collection_idx, video_idx, video, new_path))
+                elif stem in video_files_map:
+                    new_path = video_files_map[stem]
+                    matches.append((collection_idx, video_idx, video, new_path))
+                else:
+                    unmatched.append(filename)
+            
+            # Show results to user for confirmation
+            if not matches:
+                messagebox.showwarning("No Matches", 
+                    f"Could not find any matching video files in:\n{search_folder}\n\n"
+                    f"Unmatched files:\n" + "\n".join(f"• {f}" for f in unmatched[:20]))
+                return
+            
+            # Build confirmation message
+            msg = f"Found matches for {len(matches)} of {len(missing_videos)} missing video(s).\n\n"
+            if unmatched:
+                msg += f"Unmatched ({len(unmatched)}):\n"
+                msg += "\n".join(f"• {f}" for f in unmatched[:10])
+                if len(unmatched) > 10:
+                    msg += f"\n... and {len(unmatched) - 10} more"
+                msg += "\n\n"
+            msg += "Update the paths for matched videos?\n"
+            
+            # Show first few matches as preview
+            msg += "\nPreview of updates:\n"
+            for i, (_, _, _, new_path) in enumerate(matches[:5]):
+                msg += f"• {Path(new_path).name}\n"
+            if len(matches) > 5:
+                msg += f"... and {len(matches) - 5} more\n"
+            
+            if not messagebox.askyesno("Confirm Batch Fix", msg):
+                return
+            
+            # Apply updates
+            updated_count = 0
+            for collection_idx, video_idx, video, new_path in matches:
+                video["path"] = new_path
+                video["duration"] = self.get_video_duration(new_path)
+                updated_count += 1
+            
+            # Save and refresh
+            if updated_count > 0:
+                self.save_collections()
+                self.refresh_collection_list()
+                messagebox.showinfo("Success", 
+                    f"Updated {updated_count} video path(s)!\n\n"
+                    f"Unmatched: {len(unmatched)} file(s)")
+            else:
+                messagebox.showinfo("Info", "No paths were updated.")
 
     def create_tooltip(self, widget, text):
         """Create a tooltip for a widget"""
@@ -1448,30 +1618,28 @@ Your API key will be saved for future use.""")
     def _load_profile_by_name(self, profile_name):
         """Load profile by name from collections directory"""
         try:
+            profile_name = profile_name.strip()
+            if not profile_name:
+                messagebox.showerror("Error", "Profile name cannot be empty")
+                return
+                
             # Remove .json extension if provided
             if profile_name.endswith(".json"):
                 profile_name = profile_name[:-5]
             
-            # Get the script's directory and resolve paths
-            script_dir = Path(__file__).resolve().parent
-            base_dir = script_dir.parent
-            collections_dir = base_dir / "user" / "collections"
+            # Search strategy: use COLLECTIONS_DIR constant, try various filename forms
+            candidates = [
+                COLLECTIONS_DIR / f"collections_{profile_name}.json",  # primary pattern
+                COLLECTIONS_DIR / f"{profile_name}.json",              # fallback pattern
+            ]
             
-            # Try to find the collection file in the collections directory
-            profile_file = collections_dir / f"{profile_name}.json"
+            profile_file = None
+            for candidate in candidates:
+                if candidate.exists():
+                    profile_file = candidate
+                    break
             
-            # If not found, try with the "collections_" prefix
-            if not profile_file.exists():
-                profile_file = collections_dir / f"collections_{profile_name}.json"
-            
-            # If still not found, try in the script's directory as a fallback
-            if not profile_file.exists():
-                profile_file = script_dir / f"{profile_name}.json"
-                if not profile_file.exists():
-                    profile_file = script_dir / f"collections_{profile_name}.json"
-            
-            # If the file exists, load it
-            if profile_file.exists():
+            if profile_file:
                 with open(profile_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     self.collections = data.get("collections", [])

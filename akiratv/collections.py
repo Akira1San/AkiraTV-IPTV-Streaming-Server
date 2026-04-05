@@ -7,10 +7,32 @@ import subprocess
 
 # akiratv/collections.py
 import subprocess
+import shutil
+import sys
 from pathlib import Path
 
-# 🔑 Hardcode your FFprobe path
-FFPROBE_PATH = r"C:\ffmpeg\bin\ffprobe.exe"
+def get_ffprobe_path() -> str:
+    """
+    Get the ffprobe executable path in a cross-platform way.
+    - First tries system 'ffprobe' command (works on Linux and Windows if in PATH)
+    - Falls back to Windows default path if not found
+    """
+    # Try system ffprobe first (works on both Linux and Windows)
+    system_ffprobe = shutil.which("ffprobe")
+    if system_ffprobe:
+        return system_ffprobe
+    
+    # Fallback to Windows default path
+    windows_path = r"C:\ffmpeg\bin\ffprobe.exe"
+    if Path(windows_path).exists():
+        return windows_path
+    
+    # Last resort: return system command anyway (will fail with clear error)
+    print(f"[WARNING] ffprobe not found. Please install ffmpeg or set path manually.")
+    return "ffprobe"
+
+# 🔑 Cross-platform FFprobe path
+FFPROBE_PATH = get_ffprobe_path()
 
 def get_video_duration(video_path: str) -> float:
     """Get video duration in seconds using ffprobe."""

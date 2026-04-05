@@ -16,7 +16,7 @@
   },
   "storage": {
     "type": "ram",
-    "ram_path": "R:/akiratv",
+    "ram_path": "/home/akira/akiratv",
     "disk_path": "./output"
   },
   "output": {
