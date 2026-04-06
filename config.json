@@ -49,7 +49,7 @@
       "enable_subtitles": false
     },
     "akiratv": {
-      "enabled": true,
+      "enabled": false,
       "type": "dynamic",
       "transcoding": {
         "enabled": false
@@ -65,7 +65,7 @@
       "enable_subtitles": false
     },
     "horror": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -78,6 +78,7 @@
       "transcoding": {
         "enabled": false
       },
+      "kodi_compatible": true,
       "enable_subtitles": false
     },
     "asian_vids": {
@@ -104,8 +105,15 @@
       "enable_subtitles": false
     },
     "Western": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
+    },
+    "RE2": {
+      "enabled": false,
+      "type": "dynamic",
       "transcoding": {
         "enabled": false
       }

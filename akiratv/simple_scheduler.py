@@ -913,6 +913,7 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         
         # Copy button on the right
         ttk.Button(day_frame, text="[COPY] Copy", command=self.copy_schedule, width=8).pack(side="right", padx=5)
+        ttk.Button(day_frame, text="[FIX] Fix Paths", command=self.fix_schedule_paths_dialog, width=10).pack(side="right", padx=5)
         
         # Preview listbox frame (horizontal)
         preview_frame = ttk.Frame(preview_container)
@@ -1775,8 +1776,99 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
 
         # Copy to clipboard
         self.root.clipboard_clear()
-        self.root.clipboard_append(schedule_text)
+        self.root.clipboard_append(clipboard_text)
         messagebox.showinfo("Copied", "Schedule copied to clipboard!")
+
+    def fix_schedule_paths_dialog(self):
+        """Open a dialog to fix Windows paths in a schedule JSON file to Linux paths"""
+        # Ask user to select a schedule file
+        file_path = filedialog.askopenfilename(
+            title="Select Schedule JSON to Fix",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            initialdir=SCHEDULE_DIR
+        )
+        if not file_path:
+            return
+        
+        # Ask for Windows and Linux base paths
+        windows_base = simpledialog.askstring("Path Mapping", "Enter Windows base path (e.g., C:/Videos):", initialvalue="C:/Videos")
+        if windows_base is None:
+            return
+        linux_base = simpledialog.askstring("Path Mapping", "Enter Linux base path (e.g., /home/akira/Videos):", initialvalue="/home/akira/Videos")
+        if linux_base is None:
+            return
+        
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                schedule = json.load(f)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load schedule file:\n{e}")
+            return
+        
+        # Normalize base prefixes
+        def norm(p):
+            return p.replace("\\", "/").rstrip("/")
+        win_norm = norm(windows_base)
+        linux_norm = norm(linux_base)
+        
+        fixed_count = 0
+        
+        # Helper to fix a single path
+        def fix_path(p):
+            nonlocal fixed_count
+            if not p:
+                return p
+            original = p
+            # Normalize slashes
+            p_norm = p.replace("\\", "/")
+            # Check case-insensitive match for Windows base
+            if p_norm[:len(win_norm)].lower() == win_norm.lower():
+                # Replace prefix
+                suffix = p_norm[len(win_norm):].lstrip("/")
+                if suffix:
+                    new = linux_norm + "/" + suffix
+                else:
+                    new = linux_norm
+                p_norm = new
+            # Replace any remaining backslashes
+            p_norm = p_norm.replace("\\", "/")
+            if p_norm != original:
+                fixed_count += 1
+            return p_norm
+        
+        # Fix weekly entries
+        weekly = schedule.get("weekly", {})
+        for day, entries in weekly.items():
+            for entry in entries:
+                if "file" in entry:
+                    entry["file"] = fix_path(entry["file"])
+        
+        # Fix calendar entries
+        calendar = schedule.get("calendar", {})
+        for cal_key, cal_data in calendar.items():
+            entries = cal_data.get("entries", [])
+            for entry in entries:
+                if "file" in entry:
+                    entry["file"] = fix_path(entry["file"])
+        
+        # Fix daypart_config time_blocks with video content
+        daypart_config = schedule.get("daypart_config")
+        if daypart_config:
+            time_blocks = daypart_config.get("time_blocks", [])
+            for block in time_blocks:
+                if block.get("content_type") == "video" and "content_value" in block:
+                    block["content_value"] = fix_path(block["content_value"])
+        
+        # Save the fixed schedule back to the same file
+        if fixed_count > 0:
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    json.dump(schedule, f, indent=2, ensure_ascii=False)
+                messagebox.showinfo("Success", f"Fixed {fixed_count} paths in:\n{file_path}")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to save fixed schedule:\n{e}")
+        else:
+            messagebox.showinfo("No Changes", "No paths needed fixing (no changes made).")
 
     def on_schedule_mode_change(self):
         """Handle schedule mode change (Weekly/Calendar)"""

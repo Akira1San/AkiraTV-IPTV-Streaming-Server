@@ -5,6 +5,7 @@ from pathlib import Path
 #import textwrap
 from PIL import Image, ImageDraw, ImageFont
 import uuid
+from akiratv.collections import FFMPEG_PATH
 
 def create_standby_video(duration=30, codec="h265", output_path=None, resolution=(720, 400)):
     """Generate a looping standby video with AkiraTV ASCII art."""
@@ -62,23 +63,23 @@ def create_standby_video(duration=30, codec="h265", output_path=None, resolution
         level = "3.0"
         tag = "avc1"
 
-    # Generate video
-    try:
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-loop", "1", "-i", str(temp_img),
-            "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
-            "-c:v", video_codec,
-            "-pix_fmt", "yuv420p",
-            "-profile:v", profile,
-            "-level", level,
-            "-tag:v", tag,
-            "-preset", "fast",
-            "-c:a", "aac", "-b:a", "128k", "-ac", "2",
-            "-t", str(duration),
-            "-r", "1",
-            str(output_path)
-        ], check=True, capture_output=True, text=True)
+     # Generate video
+     try:
+         subprocess.run([
+             FFMPEG_PATH, "-y",
+             "-loop", "1", "-i", str(temp_img),
+             "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
+             "-c:v", video_codec,
+             "-pix_fmt", "yuv420p",
+             "-profile:v", profile,
+             "-level", level,
+             "-tag:v", tag,
+             "-preset", "fast",
+             "-c:a", "aac", "-b:a", "128k", "-ac", "2",
+             "-t", str(duration),
+             "-r", "1",
+             str(output_path)
+         ], check=True, capture_output=True, text=True)
         
         print(f"[OK] Created standby: {output_path.name} ({width}x{height})")
         
@@ -137,27 +138,27 @@ def add_end_card_to_video(
 
         start_time = max(0, duration - 10)  # Start overlay at (duration - 10)
 
-        # Build FFmpeg command
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", str(input_path),
-            "-i", str(overlay_img),
-            "-filter_complex",
-            f"[0:v][1:v]overlay=enable='between(t,{start_time},{duration})'",
-            "-c:v", video_codec,
-            "-profile:v", "main",
-            "-level:v", "4.0",
-            "-rc:v", "cbr",
-            "-b:v", "1800k",
-            "-maxrate", "1800k",
-            "-bufsize", "3600k",
-            "-g", "90",
-            "-bf", "0",          # No B-frames
-            "-flags", "+cgop",
-            "-c:a", "copy",      # Copy audio
-            "-movflags", "frag_keyframe+empty_moov+default_base_moof",
-            str(output_path)
-        ]
+         # Build FFmpeg command
+         cmd = [
+             FFMPEG_PATH, "-y",
+             "-i", str(input_path),
+             "-i", str(overlay_img),
+             "-filter_complex",
+             f"[0:v][1:v]overlay=enable='between(t,{start_time},{duration})'",
+             "-c:v", video_codec,
+             "-profile:v", "main",
+             "-level:v", "4.0",
+             "-rc:v", "cbr",
+             "-b:v", "1800k",
+             "-maxrate", "1800k",
+             "-bufsize", "3600k",
+             "-g", "90",
+             "-bf", "0",          # No B-frames
+             "-flags", "+cgop",
+             "-c:a", "copy",      # Copy audio
+             "-movflags", "frag_keyframe+empty_moov+default_base_moof",
+             str(output_path)
+         ]
 
         print(f"[PLAY] Adding end card to: {input_path.name}")
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)

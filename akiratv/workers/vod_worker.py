@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 from typing import Optional, List, Dict
 from .base_worker import BaseWorker
+from akiratv.collections import FFMPEG_PATH
 
 class VODWorker(BaseWorker):
     def __init__(self, channel: str, config, logger, transcoding_service, command_queue):
@@ -171,7 +172,7 @@ class VODWorker(BaseWorker):
         segment_time = hls_conf.get("segment_time", 6)
 
         # Build FFmpeg command - add -ss for start position BEFORE -i for faster seeking (input seeking)
-        args = ["ffmpeg", "-re"]
+        args = [FFMPEG_PATH, "-re"]
         
         # Add -ss before -i for input seeking (faster)
         if start_position > 0:

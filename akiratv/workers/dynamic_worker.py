@@ -26,6 +26,7 @@ from typing import Optional, List, Dict
 from datetime import datetime, date, timedelta
 from .base_worker import BaseWorker
 from akiratv.server.app_context import app_context
+from akiratv.collections import FFMPEG_PATH, FFPROBE_PATH
 
 
 class DynamicWorker(BaseWorker):
@@ -187,12 +188,24 @@ class DynamicWorker(BaseWorker):
         hls_conf = self.config.data["output"]["hls"]
         playlist_filename = (self.hls_dir.resolve() / "index.m3u8").as_posix()
         
-        # ALWAYS use native playback for scheduled content (like VOD)
-        encoding_args = ["-c:v", "copy", "-c:a", "copy"]
-        self.logger.info(f"[START] Playing scheduled video in NATIVE resolution (copy mode)")
+        # Determine if we need transcoding for Kodi compatibility or channel config
+        channel_config = self.config.data.get("channels", {}).get(self.channel, {})
+        kodi_compatible = channel_config.get("kodi_compatible", False)
+        transcode_enabled = self.config.data.get("ffmpeg", {}).get("transcoding", {}).get("enabled", False)
+
+        if transcode_enabled or kodi_compatible:
+            encoding_args = self.transcoding_service.get_encoding_args(
+                input_path=Path(video_path),
+                channel=self.channel,
+                force_transcode=kodi_compatible
+            )
+            self.logger.info(f"[START] Playing scheduled video with transcoding (Kodi compatible: {kodi_compatible})")
+        else:
+            encoding_args = ["-c:v", "copy", "-c:a", "copy"]
+            self.logger.info(f"[START] Playing scheduled video in NATIVE resolution (copy mode)")
         
         args = [
-            "ffmpeg",
+            FFMPEG_PATH,
             "-v", "verbose",
             "-re",
         ]
@@ -312,7 +325,7 @@ class DynamicWorker(BaseWorker):
         )
         
         args = [
-            "ffmpeg",
+            FFMPEG_PATH,
             "-v", "verbose",
             "-re",
             "-stream_loop", "-1",  # Loop indefinitely
@@ -367,20 +380,23 @@ class DynamicWorker(BaseWorker):
         hls_conf = self.config.data["output"]["hls"]
         playlist_filename = (self.hls_dir.resolve() / "index.m3u8").as_posix()
         
+        channel_config = self.config.data.get("channels", {}).get(self.channel, {})
+        kodi_compatible = channel_config.get("kodi_compatible", False)
         transcode_enabled = self.config.data.get("ffmpeg", {}).get("transcoding", {}).get("enabled", False)
-        
-        if transcode_enabled:
+
+        if transcode_enabled or kodi_compatible:
             encoding_args = self.transcoding_service.get_encoding_args(
                 input_path=video_path,
-                channel=self.channel
+                channel=self.channel,
+                force_transcode=kodi_compatible
             )
-            self.logger.info(f"[CONFIG] Transcoding VOD to match channel specs")
+            self.logger.info(f"[CONFIG] Transcoding VOD to match channel specs (Kodi: {kodi_compatible})")
         else:
             encoding_args = ["-c:v", "copy", "-c:a", "copy"]
             self.logger.info(f"[START] Playing VOD in native resolution (copy mode)")
         
         args = [
-            "ffmpeg",
+            FFMPEG_PATH,
             "-v", "verbose",
             "-re",
             "-i", str(video_path),
@@ -406,7 +422,7 @@ class DynamicWorker(BaseWorker):
         """Get total duration of a video file."""
         try:
             result = subprocess.run([
-                "ffprobe", "-v", "error", "-show_entries",
+                FFPROBE_PATH, "-v", "error", "-show_entries",
                 "format=duration", "-of", "csv=p=0",
                 str(video_path)
             ], capture_output=True, text=True, check=True, timeout=10)

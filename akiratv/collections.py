@@ -11,28 +11,35 @@ import shutil
 import sys
 from pathlib import Path
 
-def get_ffprobe_path() -> str:
-    """
-    Get the ffprobe executable path in a cross-platform way.
-    - First tries system 'ffprobe' command (works on Linux and Windows if in PATH)
-    - Falls back to Windows default path if not found
-    """
-    # Try system ffprobe first (works on both Linux and Windows)
-    system_ffprobe = shutil.which("ffprobe")
-    if system_ffprobe:
-        return system_ffprobe
-    
-    # Fallback to Windows default path
-    windows_path = r"C:\ffmpeg\bin\ffprobe.exe"
-    if Path(windows_path).exists():
-        return windows_path
-    
-    # Last resort: return system command anyway (will fail with clear error)
-    print(f"[WARNING] ffprobe not found. Please install ffmpeg or set path manually.")
-    return "ffprobe"
+def get_ffmpeg_bin_path() -> tuple:
+    """Get ffmpeg/ffprobe path, preferring bundled binary in akiratv/bin."""
+    import shutil
+    from pathlib import Path
 
-# 🔑 Cross-platform FFprobe path
-FFPROBE_PATH = get_ffprobe_path()
+    # 1. Check for bundled binary in akiratv/bin
+    bin_dir = Path(__file__).parent / "bin"
+    bundled_ffmpeg = bin_dir / "ffmpeg"
+    bundled_ffprobe = bin_dir / "ffprobe"
+
+    if bundled_ffmpeg.exists() and bundled_ffprobe.exists():
+        return str(bundled_ffmpeg), str(bundled_ffprobe)
+
+    # 2. Try system PATH
+    system_ffmpeg = shutil.which("ffmpeg")
+    system_ffprobe = shutil.which("ffprobe")
+    if system_ffmpeg and system_ffprobe:
+        return system_ffmpeg, system_ffprobe
+
+    # 3. Fallback to Windows default paths
+    windows_ffmpeg = r"C:\ffmpeg\bin\ffmpeg.exe"
+    windows_ffprobe = r"C:\ffmpeg\bin\ffprobe.exe"
+    if Path(windows_ffmpeg).exists() and Path(windows_ffprobe).exists():
+        return windows_ffmpeg, windows_ffprobe
+
+    # 4. Last resort
+    return "ffmpeg", "ffprobe"
+
+FFMPEG_PATH, FFPROBE_PATH = get_ffmpeg_bin_path()
 
 def get_video_duration(video_path: str) -> float:
     """Get video duration in seconds using ffprobe."""

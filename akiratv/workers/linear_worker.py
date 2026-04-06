@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime, date
 from .base_worker import BaseWorker
+from akiratv.collections import FFMPEG_PATH, FFPROBE_PATH
 
 
 class LinearWorker(BaseWorker):
@@ -101,7 +102,7 @@ class LinearWorker(BaseWorker):
         self.logger.info(f"✂️ Trimming {Path(video_path).name} starting at {seek_time:.2f}s...")
         
         trim_process = subprocess.Popen([
-            "ffmpeg", "-y",
+            FFMPEG_PATH, "-y",
             "-ss", str(seek_time),
             "-i", video_path,
             "-c", "copy",
@@ -169,7 +170,7 @@ class LinearWorker(BaseWorker):
     def _build_ffmpeg_args(self, concat_file: Path, input_path: Path) -> List[str]:
         """Build FFmpeg args with either transcoding or copy."""
         args = [
-            "ffmpeg",
+            FFMPEG_PATH,
             "-v", "verbose",
             "-re",
             "-fflags", "+genpts+igndts+discardcorrupt",
@@ -244,7 +245,7 @@ class LinearWorker(BaseWorker):
         """Get total duration of a video file."""
         try:
             result = subprocess.run([
-                "ffprobe", "-v", "error", "-show_entries",
+                FFPROBE_PATH, "-v", "error", "-show_entries",
                 "format=duration", "-of", "csv=p=0",
                 str(base_path)
             ], capture_output=True, text=True, check=True, timeout=10)

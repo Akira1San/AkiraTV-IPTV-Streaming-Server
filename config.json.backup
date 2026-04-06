@@ -1,13 +1,13 @@
 {
   "ffmpeg": {
-    "hwaccel": "nvenc",
+    "hwaccel": "none",
     "enable_subtitles": false,
     "transcoding": {
       "enabled": false,
       "bitrate": "auto",
       "custom_bitrate": "1500k",
       "video_quality": "source",
-      "encoder": "auto",
+      "encoder": "nvenc",
       "audio_quality": "copy",
       "fps": "auto",
       "threads": "2",
@@ -16,7 +16,7 @@
   },
   "storage": {
     "type": "ram",
-    "ram_path": "R:/akiratv",
+    "ram_path": "/home/akira/akiratv",
     "disk_path": "./output"
   },
   "output": {
@@ -50,10 +50,11 @@
     },
     "akiratv": {
       "enabled": true,
-      "type": "linear",
+      "type": "dynamic",
       "transcoding": {
         "enabled": false
-      }
+      },
+      "enable_subtitles": false
     },
     "AnimeTV": {
       "enabled": false,
@@ -68,37 +69,19 @@
       "type": "linear",
       "transcoding": {
         "enabled": false
-      }
-    },
-    "don_dragon": {
-      "enabled": false,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
       },
       "enable_subtitles": false
     },
     "TatkoTV": {
       "enabled": true,
-      "type": "linear",
+      "type": "dynamic",
       "transcoding": {
         "enabled": false
       },
       "enable_subtitles": false
     },
-    "fma": {
-      "enabled": false,
-      "type": "linear",
-      "transcoding": {
-        "enabled": false
-      }
-    },
-    "superman_cartoonTV": {
-      "enabled": false,
-      "type": "linear"
-    },
     "asian_vids": {
-      "enabled": true,
+      "enabled": false,
       "type": "linear",
       "transcoding": {
         "enabled": false
@@ -112,14 +95,20 @@
         "enabled": false
       }
     },
-    "test_channel": {
-      "enabled": true,
-      "type": "vod",
+    "Test": {
+      "enabled": false,
+      "type": "dynamic",
       "transcoding": {
-        "enabled": true,
-        "bitrate": "1500k"
+        "enabled": false
       },
       "enable_subtitles": false
+    },
+    "Western": {
+      "enabled": true,
+      "type": "linear",
+      "transcoding": {
+        "enabled": false
+      }
     }
   },
   "worker": {
@@ -127,7 +116,11 @@
     "max_ram_usage_percent": 80
   },
   "ui": {
-    "dark_mode": false
+    "dark_mode": false,
+    "test_mode": true
   },
-  "channel": "critters"
+  "channel": "critters",
+  "tmdb_api_key": "",
+  "omdb_api_key": "ebed58dc",
+  "test": "value"
 }

@@ -20,9 +20,10 @@ class TranscodingService:
         
         # Check if transcoding is actually allowed
         transcoding_enabled = transcoding_config.get("enabled", False)
+        kodi_compatible = channel_config.get("kodi_compatible", False)
 
-        # If transcoding is OFF (or force_copy is ON), return 'copy' immediately
-        if force_transcode is False and not transcoding_enabled:
+        # If transcoding is OFF (or force_copy is ON), return 'copy' immediately unless kodi_compatible forces transcoding
+        if force_transcode is False and not transcoding_enabled and not kodi_compatible:
             return ["-c:v", "copy", "-c:a", "copy"]
 
         # 2. Proceed with full transcoding logic if enabled
@@ -71,7 +72,10 @@ class TranscodingService:
         
         # Audio logic
         audio_quality = transcoding_config.get("audio_quality", "copy")
-        if audio_quality == "copy":
+        if kodi_compatible:
+            # Force AAC audio for Kodi compatibility
+            args.extend(["-c:a", "aac", "-b:a", "128k"])
+        elif audio_quality == "copy":
             args.extend(["-c:a", "copy"])
         else:
             b_audio = audio_quality.split("_")[1] if "_" in audio_quality else "128k"
