@@ -78,10 +78,17 @@ class HttpServer:
                 with open(file_path, 'rb') as f:
                     content = f.read()
                 
-                response = web.Response(body=content)
-                response.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = '*'
-                response.headers[hdrs.CACHE_CONTROL] = 'no-cache, no-store, must-revalidate'
-                return response
+                 response = web.Response(body=content)
+                 response.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = '*'
+                 response.headers[hdrs.CACHE_CONTROL] = 'no-cache, no-store, must-revalidate'
+                 
+                 # Set proper MIME types for HLS files
+                 if file_path.suffix == '.m3u8':
+                     response.headers[hdrs.CONTENT_TYPE] = 'application/x-mpegURL'
+                 elif file_path.suffix == '.ts':
+                     response.headers[hdrs.CONTENT_TYPE] = 'video/mp2t'
+                 
+                 return response
                 
             except PermissionError:
                 if i < max_retries - 1:
