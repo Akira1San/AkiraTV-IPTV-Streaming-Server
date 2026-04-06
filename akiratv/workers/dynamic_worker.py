@@ -220,6 +220,7 @@ class DynamicWorker(BaseWorker):
             "-map", "0:a:0?",
             *encoding_args,
             "-f", "hls",
+            "-hls_version", "3",
             "-hls_time", str(hls_conf["segment_time"]),
             "-hls_list_size", str(hls_conf["playlist_size"]),
             "-hls_flags", "delete_segments+append_list+omit_endlist",

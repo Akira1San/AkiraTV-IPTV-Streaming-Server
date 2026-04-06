@@ -263,6 +263,7 @@ class VODWorker(BaseWorker):
         args.extend([
             "-avoid_negative_ts", "make_zero",
             "-f", "hls",
+            "-hls_version", "3",
             "-hls_time", str(segment_time),
             "-hls_list_size", "10",  # Increased from 3 to 10
             "-hls_flags", "delete_segments+append_list+omit_endlist",
