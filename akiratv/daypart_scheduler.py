@@ -1084,38 +1084,43 @@ def fill_gaps_with_random(gaps: List[Tuple[str, str]], available_videos: List[di
         while current_time < end_time:
             # Filter available videos (use pre-filtered list)
             candidates = filtered_videos.copy()
-            
+
+            # Only schedule videos that fit entirely within the remaining gap.
+            # This prevents gap filler from bleeding into the next daypart block.
+            remaining_seconds = (end_time - current_time).total_seconds()
+            fitting = [v for v in candidates if (v.get("duration") or 0) <= remaining_seconds]
+
             # Apply excluded tags
-            if gap_filler_config.excluded_tags:
-                candidates = [v for v in candidates 
-                            if not has_excluded_tag(v, gap_filler_config.excluded_tags)]
-            
-            if not candidates:
-                # Emergency: try without exclusions
-                candidates = filtered_videos
-                logger.warning(f"[{channel}] Gap filler: No candidates after exclusions, using filtered videos")
-            
+            pool = fitting if fitting else []
+            if pool and gap_filler_config.excluded_tags:
+                pool = [v for v in pool
+                        if not has_excluded_tag(v, gap_filler_config.excluded_tags)]
+            if not pool:
+                pool = fitting  # excluded tags filtered everything, relax that
+
+            # If nothing fits at all, stop — don't overshoot into the next block
+            if not pool:
+                break
+
             # Apply 24h no-repeat rule
             if gap_filler_config.respect_24h_norepeat:
                 recent_paths = {path for path, _ in recent_videos}
-                candidates = [v for v in candidates if v["path"] not in recent_paths]
-                
-                if not candidates:
-                    # Reset recent videos and try again
+                no_repeat_pool = [v for v in pool if v["path"] not in recent_paths]
+                if no_repeat_pool:
+                    pool = no_repeat_pool
+                else:
                     logger.info(f"[{channel}] Gap filler: All videos used in last 24h, resetting")
-                    candidates = filtered_videos
                     recent_videos.clear()
-            
-            if not candidates:
+
+            if not pool:
                 logger.error(f"[{channel}] Gap filler: No videos available at all!")
                 break
-            
+
             # Select video
             if gap_filler_config.shuffle:
-                selected = random.choice(candidates)
+                selected = random.choice(pool)
             else:
-                # Sequential - pick first
-                selected = candidates[0]
+                selected = pool[0]
             
             # Add to schedule
             entry = {
@@ -1357,6 +1362,102 @@ def _handle_approximate_blocks(schedule_entries: List[dict], time_blocks: List[d
             logger.warning(f"[{channel}] No suitable gap found for approximate block {block.block_id}")
 
 
+def _gaps_from_actual_ends(
+    schedule_entries: list,
+    time_blocks_today: list,
+    target_date,
+    current_time: datetime,
+    base_datetime: datetime = None
+) -> list:
+    """
+    Compute gap windows using actual video end times from scheduled entries,
+    with block start times as the gap end boundaries.
+
+    This prevents:
+    - Gap filler overshooting into a daypart block (gap ends at block START)
+    - Duplicate entries after a block (gap starts at actual last video end)
+    """
+    # Day always starts at midnight of target_date.
+    # Cross-day continuity is handled by adjusting the first gap's start below.
+    day_start_dt = datetime.combine(target_date, datetime.min.time())
+    day_end_dt = day_start_dt + timedelta(days=1)
+
+    # Collect block windows sorted by start time
+    block_windows = []
+    for block in time_blocks_today:
+        try:
+            bs = datetime.combine(target_date, parse_time_string(block.start_time).time())
+            be = datetime.combine(target_date, parse_time_string(block.end_time).time())
+            if be <= bs:
+                be += timedelta(days=1)
+            block_windows.append((bs, be))
+        except Exception:
+            pass
+    block_windows.sort(key=lambda x: x[0])
+
+    # For each block, find the actual end time of the last scheduled entry within it
+    def actual_end_of_block(bs, be):
+        best = bs  # fallback: block start (nothing scheduled)
+        for entry in schedule_entries:
+            try:
+                t = datetime.strptime(entry["time"], "%H:%M:%S")
+                entry_start = datetime.combine(target_date, t.time())
+                dur = entry.get("duration", 0) or 0
+                entry_end = entry_start + timedelta(seconds=dur)
+                if bs <= entry_start < be:
+                    if entry_end > best:
+                        best = entry_end
+            except Exception:
+                pass
+        return best
+
+    gaps = []
+    cursor = day_start_dt
+
+    for bs, be in block_windows:
+        if cursor < bs:
+            gap_start_str = cursor.strftime("%H:%M")
+            gap_end_str = bs.strftime("%H:%M")
+            if gap_end_str == "00:00":
+                gap_end_str = "24:00"
+            gaps.append((gap_start_str, gap_end_str))
+        cursor = max(cursor, actual_end_of_block(bs, be))
+
+    # Gap after last block to end of day
+    if cursor < day_end_dt:
+        gap_start_str = cursor.strftime("%H:%M")
+        gaps.append((gap_start_str, "24:00"))
+
+    # Adjust the very first gap's start for cross-day continuity
+    if gaps:
+        if base_datetime and base_datetime.date() < target_date:
+            adjusted_start = base_datetime.strftime("%H:%M")
+            gaps[0] = (adjusted_start, gaps[0][1])
+        elif base_datetime and base_datetime.date() == target_date:
+            first_gap_start_dt = datetime.combine(target_date, parse_time_string(gaps[0][0]).time())
+            if base_datetime > first_gap_start_dt:
+                adjusted_start = base_datetime.strftime("%H:%M")
+                gaps[0] = (adjusted_start, gaps[0][1])
+
+    # Remove zero-length gaps using time-aware comparison (not string comparison)
+    def gap_duration_seconds(s, e):
+        try:
+            st = parse_time_string(s)
+            et = parse_time_string(e)
+            if e == "24:00":
+                et = parse_time_string("00:00") + timedelta(days=1)
+            if et <= st:
+                et += timedelta(days=1)
+            return (et - st).total_seconds()
+        except Exception:
+            return 0
+
+    gaps = [(s, e) for s, e in gaps if gap_duration_seconds(s, e) > 60]
+
+    logger.info(f"[_gaps_from_actual_ends] gaps={gaps}")
+    return gaps
+
+
 def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
                              channel: str, target_date: date,
                              base_datetime: datetime = None) -> List[dict]:
@@ -1560,67 +1661,47 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 # Check if we should still fill gaps (gap_filler enabled with videos)
                 # This handles the case where no time blocks exist but we want to fill the day
                 if gap_filler_config.enabled and available_videos:
-                    logger.info(f"[{channel}] No blocks but gap filler enabled - filling full day from 00:00 to 24:00")
-                    # Create a single full-day gap
-                    full_day_gaps = [("00:00", "24:00")]
-                    
-                    # For cross-day continuity, pass the current_time as base_datetime
-                    # fill_gaps_with_random will use it when gap starts at 00:00
-                    # We use current_time (which is set from day_start) instead of base_datetime
-                    # because current_time already handles both cross-day and same-day continuity
-                    gap_base_datetime = current_time
-                    
+                    logger.info(f"[{channel}] No blocks but gap filler enabled - filling full day")
+                    # Determine actual start: cross-day continuity or midnight
+                    if base_datetime and base_datetime.date() < target_date:
+                        gap_start_str = base_datetime.strftime("%H:%M")
+                    else:
+                        gap_start_str = "00:00"
                     gap_entries = fill_gaps_with_random(
-                        full_day_gaps,
+                        [(gap_start_str, "24:00")],
                         available_videos,
                         gap_filler_config,
                         recent_videos,
                         channel,
-                        base_datetime=gap_base_datetime,
+                        base_datetime=None,
                         target_date=target_date
                     )
                     schedule_entries.extend(gap_entries)
                 else:
                     logger.info(f"[{channel}] No blocks for this day ({target_date.strftime('%A')}), skipping gap filling")
             else:
-                gaps = detect_gaps(time_blocks_today)
-                
-                # When continuing from a previous day, adjust gaps to start from where we left off
-                # OR when we've already scheduled content within the same day (past midnight)
-                should_adjust = (
-                    (base_datetime and base_datetime.date() < target_date) or  # Cross-day continuity
-                    (current_time.hour > 0 or current_time.minute > 0)  # Same-day: blocks moved time past midnight
+                # Use actual scheduled end times to define gap boundaries,
+                # so gap filler starts exactly where the last video ended.
+                gaps = _gaps_from_actual_ends(
+                    schedule_entries, time_blocks_today, target_date, current_time, base_datetime
                 )
-                
-                if should_adjust:
-                    current_hour = current_time.hour + current_time.minute / 60
-                    
-                    # Filter out gaps that are before current_time
-                    adjusted_gaps = []
-                    for gap_start, gap_end in gaps:
-                        gap_start_h = parse_time_string(gap_start).hour + parse_time_string(gap_start).minute / 60
-                        if gap_start_h >= current_hour:
-                            # This gap is after where we are, keep it
-                            adjusted_gaps.append((gap_start, gap_end))
-                        elif gap_start == "00:00" and current_hour > 0:
-                            # This gap starts at 00:00 but we've already scheduled content
-                            # Calculate the adjusted start from current_time
-                            adjusted_start = current_time.strftime("%H:%M")
-                            adjusted_gaps.append((adjusted_start, gap_end))
-                    gaps = adjusted_gaps
                 
                 if gaps:
                     logger.info(f"[{channel}] Filling {len(gaps)} gap(s): {gaps}")
-                    gap_entries = fill_gaps_with_random(
-                        gaps,
-                        available_videos,
-                        gap_filler_config,
-                        recent_videos,
-                        channel,
-                        base_datetime=current_time,
-                        target_date=target_date
-                    )
-                    schedule_entries.extend(gap_entries)
+                    # Gaps already have correct start times from _gaps_from_actual_ends.
+                    # Pass base_datetime=None so fill_gaps_with_random uses the gap
+                    # start string directly without date-comparison confusion.
+                    for gap_start, gap_end in gaps:
+                        gap_entries = fill_gaps_with_random(
+                            [(gap_start, gap_end)],
+                            available_videos,
+                            gap_filler_config,
+                            recent_videos,
+                            channel,
+                            base_datetime=None,
+                            target_date=target_date
+                        )
+                        schedule_entries.extend(gap_entries)
                 else:
                     logger.info(f"[{channel}] No gaps to fill")
     
