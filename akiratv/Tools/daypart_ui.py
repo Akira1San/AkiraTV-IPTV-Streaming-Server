@@ -559,35 +559,50 @@ class DaypartSchedulerUI:
         self.app.preview_end_date_var = tk.StringVar(value=(datetime.now() + timedelta(days=6)).strftime("%Y-%m-%d"))
         ttk.Entry(calendar_range_frame, textvariable=self.app.preview_end_date_var, width=12).pack(side="left", padx=2)
         
-        # Global Approximate checkbox (affects all blocks when generating preview)
+        # Global Approximate checkbox — short label, tooltip carries the explanation
         approximate_frame = ttk.Frame(main_frame)
         approximate_frame.pack(fill="x", pady=(0, 10))
         self.app.use_approximation_var = tk.BooleanVar(value=False)
-        ttk.Checkbutton(approximate_frame, text="Approximate - Move blocks to fill gaps (global setting)",
-                      variable=self.app.use_approximation_var).pack(side="left", padx=5)
-        ttk.Label(approximate_frame, text="(applies to all blocks when generating preview)").pack(side="left", padx=5)
-        
-        # Action buttons
-        action_btn_frame = ttk.Frame(main_frame)
-        action_btn_frame.pack(fill="x", pady=(10, 0))
-        ttk.Button(action_btn_frame, text="Generate Preview",
+        approx_chk = ttk.Checkbutton(approximate_frame, text="Approximate",
+                      variable=self.app.use_approximation_var)
+        approx_chk.pack(side="left", padx=5)
+        self.app.create_tooltip(approx_chk, "Move blocks to fill gaps (global setting) — applies to all blocks when generating preview")
+
+        # Action buttons — row 1
+        action_row1 = ttk.Frame(main_frame)
+        action_row1.pack(fill="x", pady=(10, 2))
+        ttk.Button(action_row1, text="Generate Preview",
                   command=self.app.on_generate_daypart_preview).pack(side="left", padx=5)
-        ttk.Button(action_btn_frame, text="Save Schedule",
+        ttk.Button(action_row1, text="Save Schedule",
                   command=self.app.on_save_daypart_schedule).pack(side="left", padx=5)
-        ttk.Button(action_btn_frame, text="Copy Preview",
+        ttk.Button(action_row1, text="Copy Preview",
                   command=self.app.on_copy_daypart_preview).pack(side="left", padx=5)
-        
-        # Export/Import buttons
-        ttk.Button(action_btn_frame, text="Export Config",
+        ttk.Button(action_row1, text="Export Config",
                   command=self.on_export_daypart_config).pack(side="left", padx=5)
-        ttk.Button(action_btn_frame, text="Import Config",
+
+        # Action buttons — row 2
+        action_row2 = ttk.Frame(main_frame)
+        action_row2.pack(fill="x", pady=(0, 4))
+        ttk.Button(action_row2, text="Import Config",
                   command=self.on_import_daypart_config).pack(side="left", padx=5)
-        
-        # Save Work / Load Work buttons
-        ttk.Button(action_btn_frame, text="Save Work",
+        ttk.Button(action_row2, text="Save Work",
                   command=self.on_save_daypart_work).pack(side="left", padx=5)
-        ttk.Button(action_btn_frame, text="Load Work",
+        ttk.Button(action_row2, text="Load Work",
                   command=self.on_load_daypart_work).pack(side="left", padx=5)
+
+        # Save as Normal Schedule
+        save_normal_frame = ttk.LabelFrame(main_frame, text="Save as Normal Schedule", padding=(8, 4))
+        save_normal_frame.pack(fill="x", pady=(8, 0))
+        ttk.Label(save_normal_frame, text="Channel:").pack(side="left", padx=(0, 4))
+        self.app.save_normal_channel_var = tk.StringVar(value=self.app.current_channel or "")
+        self.app.save_normal_channel_combo = ttk.Combobox(
+            save_normal_frame, textvariable=self.app.save_normal_channel_var,
+            values=self.app._get_known_channels_daypart(), width=14
+        )
+        self.app.save_normal_channel_combo.pack(side="left", padx=(0, 10))
+        ttk.Label(save_normal_frame, text="(uses Preview Mode & date range above)").pack(side="left", padx=(0, 10))
+        ttk.Button(save_normal_frame, text="Save as Normal Schedule",
+                  command=self.app.on_save_as_normal_schedule).pack(side="left", padx=5)
         
         # Initialize daypart config for current channel
         self.app.load_daypart_config_for_channel()

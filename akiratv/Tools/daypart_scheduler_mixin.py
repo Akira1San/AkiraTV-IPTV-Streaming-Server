@@ -938,7 +938,180 @@ class DaypartSchedulerMixin:
             messagebox.showinfo("Success", f"Daypart schedule saved for channel '{self.current_channel}'")
         else:
             messagebox.showerror("Error", "Failed to save daypart configuration")
-    
+
+    def _get_known_channels_daypart(self):
+        """Return sorted list of known channel names for the Save as Normal Schedule combobox."""
+        import json as _json
+        channels = {"critters", "default"}
+        for fname in ("config.json", "schedule.json"):
+            try:
+                with open(fname, "r", encoding="utf-8") as f:
+                    data = _json.load(f)
+                if fname == "config.json":
+                    channels.update(data.get("channels", {}).keys())
+                else:
+                    for day_entries in data.get("weekly", {}).values():
+                        for e in day_entries:
+                            channels.add(e.get("channel", "default"))
+            except Exception:
+                pass
+        if self.current_channel:
+            channels.add(self.current_channel)
+        return sorted(channels)
+
+    def on_save_as_normal_schedule(self):
+        """Generate and save the daypart schedule as a normal schedule_{channel}.json file."""
+        import json as _json
+        from pathlib import Path
+
+        target_channel = self.save_normal_channel_var.get().strip()
+        if not target_channel:
+            messagebox.showerror("Error", "Please enter or select a channel name")
+            return
+
+        preview_mode = self.preview_mode_var.get()
+
+        try:
+            collections = load_collections(self.current_profile)
+            available_videos = []
+            for col in collections:
+                for video in col.get("videos", []):
+                    if video["path"] not in self.blacklisted_videos:
+                        video["collection"] = col
+                        available_videos.append(video)
+
+            try:
+                use_approx = self.use_approximation_var.get()
+            except AttributeError:
+                use_approx = False
+
+            time_blocks_for_gen = []
+            for block in self.daypart_time_blocks:
+                block_copy = TimeBlock(
+                    start_time=block.start_time,
+                    end_time=block.end_time,
+                    content_type=block.content_type,
+                    content_value=block.content_value,
+                    block_id=block.block_id,
+                    days=block.days,
+                    video_count=block.video_count,
+                    approximate=use_approx
+                )
+                time_blocks_for_gen.append(block_copy)
+
+            daypart_config = {
+                "daypart_config": {
+                    "time_blocks": [b.to_dict() for b in time_blocks_for_gen],
+                    "marathons": [m.to_dict() for m in self.daypart_marathons],
+                    "gap_filler": self.daypart_gap_filler.to_dict()
+                }
+            }
+
+            all_entries = []
+            current_time = None
+
+            if preview_mode == "single":
+                target_date = date.today()
+                entries, _ = generate_daypart_schedule(
+                    daypart_config, available_videos, target_channel, target_date)
+                day_name = target_date.strftime("%A").lower()
+                for e in entries:
+                    e["day"] = day_name
+                all_entries = entries
+
+            elif preview_mode == "weekly":
+                for day_offset in range(7):
+                    target_date = date.today() + timedelta(days=day_offset)
+                    if current_time is None:
+                        current_time = datetime.combine(target_date, datetime.min.time())
+                    entries, last_time = generate_daypart_schedule(
+                        daypart_config, available_videos, target_channel,
+                        target_date, base_datetime=current_time)
+                    day_name = target_date.strftime("%A").lower()
+                    for e in entries:
+                        e["day"] = day_name
+                        e["date"] = target_date.strftime("%Y-%m-%d")
+                    all_entries.extend(entries)
+                    if last_time:
+                        current_time = last_time
+
+            elif preview_mode == "calendar":
+                start_parts = self.preview_start_date_var.get().split("-")
+                end_parts = self.preview_end_date_var.get().split("-")
+                start_date = date(int(start_parts[0]), int(start_parts[1]), int(start_parts[2]))
+                end_date = date(int(end_parts[0]), int(end_parts[1]), int(end_parts[2]))
+                current_date = start_date
+                while current_date <= end_date:
+                    if current_time is None:
+                        current_time = datetime.combine(current_date, datetime.min.time())
+                    entries, last_time = generate_daypart_schedule(
+                        daypart_config, available_videos, target_channel,
+                        current_date, base_datetime=current_time)
+                    day_name = current_date.strftime("%A").lower()
+                    for e in entries:
+                        e["day"] = day_name
+                        e["date"] = current_date.strftime("%Y-%m-%d")
+                    all_entries.extend(entries)
+                    if last_time:
+                        current_time = last_time
+                    current_date += timedelta(days=1)
+
+        except Exception as ex:
+            messagebox.showerror("Error", f"Failed to generate schedule: {ex}")
+            logger.error(f"on_save_as_normal_schedule failed: {ex}", exc_info=True)
+            return
+
+        if not all_entries:
+            messagebox.showwarning("Empty", "No entries were generated — nothing to save.")
+            return
+
+        try:
+            from .daypart_scheduler import SCHEDULE_DIR as _SCHED_DIR
+        except Exception:
+            _SCHED_DIR = Path("user") / "schedules"
+        schedule_dir = Path(_SCHED_DIR)
+        schedule_dir.mkdir(parents=True, exist_ok=True)
+        schedule_file = schedule_dir / f"schedule_{target_channel}.json"
+
+        if preview_mode in ("weekly", "single"):
+            weekly = {d: [] for d in ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]}
+            for e in all_entries:
+                day = e.get("day", "monday")
+                weekly.setdefault(day, []).append({
+                    "time": e.get("time", ""), "file": e.get("file", ""),
+                    "duration": e.get("duration", 0), "source": e.get("source", "")
+                })
+            for day in weekly:
+                weekly[day].sort(key=lambda x: x["time"])
+            final = {"weekly": weekly}
+        else:
+            weekly = {d: [] for d in ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]}
+            calendar = {}
+            for e in all_entries:
+                day = e.get("day", "monday")
+                date_str = e.get("date", "")
+                entry_data = {"time": e.get("time", ""), "file": e.get("file", ""),
+                              "duration": e.get("duration", 0), "source": e.get("source", "")}
+                weekly.setdefault(day, []).append(entry_data)
+                if date_str:
+                    if date_str not in calendar:
+                        calendar[date_str] = {"date": date_str, "day": day, "entries": []}
+                    calendar[date_str]["entries"].append(entry_data)
+            for day in weekly:
+                weekly[day].sort(key=lambda x: x["time"])
+            for d in calendar.values():
+                d["entries"].sort(key=lambda x: x["time"])
+            final = {"weekly": weekly, "calendar": calendar}
+
+        try:
+            with open(schedule_file, "w", encoding="utf-8") as f:
+                _json.dump(final, f, indent=2, ensure_ascii=False)
+            messagebox.showinfo("Saved",
+                f"Normal schedule saved for '{target_channel}'\n{schedule_file}\n\n{len(all_entries)} entries ({preview_mode} mode)")
+        except Exception as ex:
+            messagebox.showerror("Error", f"Failed to write file: {ex}")
+            logger.error(f"on_save_as_normal_schedule write failed: {ex}", exc_info=True)
+
     def on_copy_daypart_preview(self):
         """Copy daypart preview to clipboard"""
         if not self.daypart_preview_entries:
