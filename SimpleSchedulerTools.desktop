@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Simple Scheduler (Tools)
+Comment=AkiraTV Simple Scheduler - Tools Version
+Exec=bash -c "cd /home/akira/akira/AkiraTV_NEW && bash simple_scheduler_tools.sh; read -p 'Press Enter to close...'"
+Terminal=true
+Icon=/home/akira/akira/AkiraTV_NEW/logo.png
+Categories=Application;
