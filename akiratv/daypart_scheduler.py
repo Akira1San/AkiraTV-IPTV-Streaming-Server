@@ -939,27 +939,14 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
 
         col_videos.sort(key=_ep_sort_key)
 
-        # Load episodic state to find the next episode index
-        state_file = SCHEDULE_DIR.parent / f"episodic_state.json"
-        try:
-            with open(state_file, "r", encoding="utf-8") as f:
-                ep_state = json.load(f)
-        except Exception:
-            ep_state = {}
-
-        state_key = f"{channel}_{block.block_id}"
-        # First run: start at configured start_season/start_episode
-        if state_key not in ep_state:
-            # Find the index of the configured start point
-            start_idx = 0
-            for i, v in enumerate(col_videos):
-                s, e = _ep_sort_key(v)
-                if s > start_season or (s == start_season and e >= start_episode):
-                    start_idx = i
-                    break
-            ep_state[state_key] = start_idx
-
-        ep_index = ep_state[state_key]
+        # Find the starting index from the configured start_season/start_episode.
+        # For a pre-generated schedule each call starts fresh from that point.
+        ep_index = 0
+        for i, v in enumerate(col_videos):
+            s, e = _ep_sort_key(v)
+            if s > start_season or (s == start_season and e >= start_episode):
+                ep_index = i
+                break
         played = 0
 
         # Calculate block end time
@@ -1005,14 +992,8 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             ep_index += 1
             played += 1
 
-        # Persist the next episode index
-        ep_state[state_key] = ep_index % len(col_videos) if col_videos else 0
-        try:
-            state_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(state_file, "w", encoding="utf-8") as f:
-                json.dump(ep_state, f, indent=2)
-        except Exception as ex:
-            logger.warning(f"[{channel}] Could not save episodic state: {ex}")
+        # No state persistence here — this generates a static schedule.
+        # start_season/start_episode is the fixed starting point per generation.
 
     return entries
 

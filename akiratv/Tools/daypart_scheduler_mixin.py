@@ -213,17 +213,32 @@ class DaypartSchedulerMixin:
             # Episodic panel (initially hidden)
             self.episodic_frame = ttk.LabelFrame(main_frame, text="Episodic Settings", padding=8)
 
+            # Collection row: combobox + Browse button
             col_row = ttk.Frame(self.episodic_frame)
-            col_row.pack(fill="x", pady=(0, 6))
+            col_row.pack(fill="x", pady=(0, 4))
             ttk.Label(col_row, text="Collection:").pack(side="left", padx=(0, 5))
             self.ep_collection_var = tk.StringVar()
             col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
             self.ep_collection_combo = ttk.Combobox(col_row, textvariable=self.ep_collection_var,
-                                                    values=col_names, state="readonly", width=28)
-            self.ep_collection_combo.pack(side="left")
+                                                    values=col_names, state="readonly", width=26)
+            self.ep_collection_combo.pack(side="left", padx=(0, 4))
             if col_names:
                 self.ep_collection_combo.current(0)
+            self.ep_collection_combo.bind("<<ComboboxSelected>>", self._on_ep_collection_select)
+            ttk.Button(col_row, text="Browse…", command=self._ep_browse_collection).pack(side="left")
 
+            # Video list for the selected collection
+            ep_list_lf = ttk.LabelFrame(self.episodic_frame, text="Videos in collection", padding=4)
+            ep_list_lf.pack(fill="both", expand=True, pady=(0, 6))
+            ep_list_inner = ttk.Frame(ep_list_lf)
+            ep_list_inner.pack(fill="both", expand=True)
+            self.ep_video_list = tk.Listbox(ep_list_inner, height=6, font=("TkDefaultFont", 9))
+            self.ep_video_list.pack(side="left", fill="both", expand=True)
+            ep_scroll = ttk.Scrollbar(ep_list_inner, orient="vertical", command=self.ep_video_list.yview)
+            ep_scroll.pack(side="right", fill="y")
+            self.ep_video_list.configure(yscrollcommand=ep_scroll.set)
+
+            # Start season / episode
             start_row = ttk.Frame(self.episodic_frame)
             start_row.pack(fill="x", pady=(0, 6))
             ttk.Label(start_row, text="Start Season:").pack(side="left", padx=(0, 4))
@@ -232,8 +247,6 @@ class DaypartSchedulerMixin:
             ttk.Label(start_row, text="Start Episode:").pack(side="left", padx=(0, 4))
             self.ep_episode_var = tk.IntVar(value=1)
             ttk.Spinbox(start_row, from_=1, to=999, textvariable=self.ep_episode_var, width=5).pack(side="left")
-            ttk.Label(start_row, text="(first run only — progress saved after)",
-                      font=("", 8, "italic"), foreground="gray").pack(side="left", padx=8)
 
             epb_row = ttk.Frame(self.episodic_frame)
             epb_row.pack(fill="x")
@@ -243,12 +256,74 @@ class DaypartSchedulerMixin:
                          values=["1","2","3","4","5","all"],
                          state="readonly", width=6).pack(side="left")
 
+            # Populate video list for the initially selected collection
+            self._refresh_ep_video_list()
+
             # Buttons
             btn_frame = ttk.Frame(main_frame)
             btn_frame.pack(fill="x", pady=(10, 0))
             ttk.Button(btn_frame, text="Cancel", command=self.on_cancel).pack(side="right", padx=5)
             ttk.Button(btn_frame, text="Save", command=self.on_save).pack(side="right", padx=5)
         
+        def _refresh_ep_video_list(self):
+            """Populate the episodic video listbox from the currently selected collection."""
+            self.ep_video_list.delete(0, tk.END)
+            idx = self.ep_collection_combo.current()
+            if idx < 0 or idx >= len(self.available_collections):
+                return
+            col = self.available_collections[idx]
+            import re as _re
+            def _sort_key(v):
+                fname = Path(v.get("path", "")).stem
+                m = _re.search(r"[Ss](\d+)[Ee](\d+)", fname)
+                if m:
+                    return (int(m.group(1)), int(m.group(2)))
+                m2 = _re.search(r"(\d+)[xX](\d+)", fname)
+                if m2:
+                    return (int(m2.group(1)), int(m2.group(2)))
+                return (0, 0)
+            videos = sorted(col.get("videos", []), key=_sort_key)
+            for v in videos:
+                fname = Path(v.get("path", "")).name
+                dur = v.get("duration", 0)
+                mins = int(dur // 60) if dur else 0
+                self.ep_video_list.insert(tk.END, f"{fname}  ({mins}m)")
+
+        def _on_ep_collection_select(self, event=None):
+            self._refresh_ep_video_list()
+
+        def _ep_browse_collection(self):
+            """Let the user pick a collections_*.json file directly."""
+            from tkinter import filedialog
+            path = filedialog.askopenfilename(
+                title="Open collection file",
+                filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+            )
+            if not path:
+                return
+            try:
+                import json as _json
+                with open(path, "r", encoding="utf-8") as f:
+                    data = _json.load(f)
+                new_cols = data.get("collections", [])
+                if not new_cols:
+                    messagebox.showwarning("Empty", "No collections found in that file.")
+                    return
+                # Merge into available_collections (avoid duplicates by id)
+                existing_ids = {c.get("id") for c in self.available_collections}
+                for c in new_cols:
+                    if c.get("id") not in existing_ids:
+                        self.available_collections.append(c)
+                        existing_ids.add(c.get("id"))
+                col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
+                self.ep_collection_combo["values"] = col_names
+                # Select the first newly added collection
+                first_new_idx = len(self.available_collections) - len(new_cols)
+                self.ep_collection_combo.current(first_new_idx)
+                self._refresh_ep_video_list()
+            except Exception as ex:
+                messagebox.showerror("Error", f"Could not load file:\n{ex}")
+
         def on_type_change(self):
             """Toggle between tag, video, and episodic mode"""
             t = self.type_var.get()
