@@ -446,91 +446,81 @@ class DaypartSchedulerUI:
         self.app.block_count_label = ttk.Label(block_panel, text="Total blocks: 0")
         self.app.block_count_label.pack(pady=(5, 0))
         
-        # === MARATHON SCHEDULING PANEL ===
-        marathon_panel = ttk.LabelFrame(main_frame, text="Marathon Scheduling", padding=10)
-        marathon_panel.pack(fill="x", pady=(0, 10))
-        
-        # Tag selection
-        tag_frame = ttk.Frame(marathon_panel)
+        # === MARATHON + GAP FILLER as tabs ===
+        mid_nb = ttk.Notebook(main_frame)
+        mid_nb.pack(fill="x", pady=(0, 10))
+
+        # --- Tab 1: Marathon Scheduling ---
+        marathon_tab = ttk.Frame(mid_nb, padding=8)
+        mid_nb.add(marathon_tab, text="Marathon Scheduling")
+
+        tag_frame = ttk.Frame(marathon_tab)
         tag_frame.pack(fill="x", pady=(0, 5))
         ttk.Label(tag_frame, text="Tag:").pack(side="left", padx=(0, 5))
         self.app.marathon_tag_var = tk.StringVar()
         self.app.marathon_tag_combo = ttk.Combobox(tag_frame, textvariable=self.app.marathon_tag_var, state="normal")
         self.app.marathon_tag_combo.pack(side="left", fill="x", expand=True)
-        
-        # Day selection
-        day_frame = ttk.Frame(marathon_panel)
+
+        day_frame = ttk.Frame(marathon_tab)
         day_frame.pack(fill="x", pady=(0, 5))
         ttk.Label(day_frame, text="Days:").pack(side="left", padx=(0, 5))
         self.app.marathon_day_vars = {}
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        for day in days:
+        for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
             var = tk.BooleanVar(value=False)
-            chk = ttk.Checkbutton(day_frame, text=day[:3].title(), variable=var)
-            chk.pack(side="left", padx=2)
+            ttk.Checkbutton(day_frame, text=day[:3].title(), variable=var).pack(side="left", padx=2)
             self.app.marathon_day_vars[day] = var
         self.app.marathon_all_var = tk.BooleanVar(value=False)
         ttk.Checkbutton(day_frame, text="All", variable=self.app.marathon_all_var,
-                       command=self.app.on_marathon_all_toggle).pack(side="left", padx=5)
-        
-        # Marathon options
-        marathon_opt_frame = ttk.Frame(marathon_panel)
+                        command=self.app.on_marathon_all_toggle).pack(side="left", padx=5)
+
+        marathon_opt_frame = ttk.Frame(marathon_tab)
         marathon_opt_frame.pack(fill="x", pady=(0, 5))
         self.app.marathon_shuffle_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(marathon_opt_frame, text="Shuffle within marathon",
-                       variable=self.app.marathon_shuffle_var).pack(side="left", padx=5)
+                        variable=self.app.marathon_shuffle_var).pack(side="left", padx=5)
         self.app.marathon_norepeat_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(marathon_opt_frame, text="No repeats within 24h",
-                       variable=self.app.marathon_norepeat_var).pack(side="left", padx=5)
-        
-        # Marathon buttons
-        marathon_btn_frame = ttk.Frame(marathon_panel)
+                        variable=self.app.marathon_norepeat_var).pack(side="left", padx=5)
+
+        marathon_btn_frame = ttk.Frame(marathon_tab)
         marathon_btn_frame.pack(fill="x")
-        ttk.Button(marathon_btn_frame, text="Add Marathon", command=self.app.on_add_marathon).pack(side="left", padx=2)
+        ttk.Button(marathon_btn_frame, text="Add Marathon",    command=self.app.on_add_marathon).pack(side="left", padx=2)
         ttk.Button(marathon_btn_frame, text="Remove Selected", command=self.app.on_remove_marathon).pack(side="left", padx=2)
-        
-        # Marathon list
-        self.app.marathon_list = tk.Listbox(marathon_panel, height=4, font=("TkDefaultFont", 10))
+
+        self.app.marathon_list = tk.Listbox(marathon_tab, height=4, font=("TkDefaultFont", 10))
         self.app.marathon_list.pack(fill="x", pady=(5, 0))
-        
-        # === GAP FILLER PANEL ===
-        gap_panel = ttk.LabelFrame(main_frame, text="Gap Filler Settings", padding=10)
-        gap_panel.pack(fill="x", pady=(0, 10))
-        
-        # Enable checkbox
+
+        # --- Tab 2: Gap Filler Settings ---
+        gap_tab = ttk.Frame(mid_nb, padding=8)
+        mid_nb.add(gap_tab, text="Gap Filler Settings")
+
         self.app.gap_enabled_var = tk.BooleanVar(value=True)
-        ttk.Checkbutton(gap_panel, text="Enable gap filling with random content",
-                       variable=self.app.gap_enabled_var).pack(anchor="w", pady=(0, 5))
-        
-        # Source selection
-        source_frame = ttk.Frame(gap_panel)
+        ttk.Checkbutton(gap_tab, text="Enable gap filling with random content",
+                        variable=self.app.gap_enabled_var).pack(anchor="w", pady=(0, 5))
+
+        source_frame = ttk.Frame(gap_tab)
         source_frame.pack(fill="x", pady=(0, 5))
         ttk.Label(source_frame, text="Source:").pack(side="left", padx=(0, 5))
         self.app.gap_source_var = tk.StringVar(value="all")
-        ttk.Radiobutton(source_frame, text="All videos", variable=self.app.gap_source_var,
-                       value="all", command=self.app.on_gap_source_change).pack(side="left", padx=5)
-        ttk.Radiobutton(source_frame, text="Selected collections", variable=self.app.gap_source_var,
-                       value="collections", command=self.app.on_gap_source_change).pack(side="left", padx=5)
-        ttk.Radiobutton(source_frame, text="Selected tags", variable=self.app.gap_source_var,
-                       value="tags", command=self.app.on_gap_source_change).pack(side="left", padx=5)
-        
-        # Excluded tags
-        exclude_frame = ttk.Frame(gap_panel)
+        ttk.Radiobutton(source_frame, text="All videos",           variable=self.app.gap_source_var, value="all",         command=self.app.on_gap_source_change).pack(side="left", padx=5)
+        ttk.Radiobutton(source_frame, text="Selected collections", variable=self.app.gap_source_var, value="collections", command=self.app.on_gap_source_change).pack(side="left", padx=5)
+        ttk.Radiobutton(source_frame, text="Selected tags",        variable=self.app.gap_source_var, value="tags",        command=self.app.on_gap_source_change).pack(side="left", padx=5)
+
+        exclude_frame = ttk.Frame(gap_tab)
         exclude_frame.pack(fill="x", pady=(0, 5))
         ttk.Label(exclude_frame, text="Exclude tags:").pack(side="left", padx=(0, 5))
         self.app.gap_exclude_label = ttk.Label(exclude_frame, text="[None]", foreground="blue", cursor="hand2")
         self.app.gap_exclude_label.pack(side="left")
         self.app.gap_exclude_label.bind("<Button-1>", self.app.on_edit_excluded_tags)
-        
-        # Gap options
-        gap_opt_frame = ttk.Frame(gap_panel)
+
+        gap_opt_frame = ttk.Frame(gap_tab)
         gap_opt_frame.pack(fill="x")
         self.app.gap_24h_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(gap_opt_frame, text="Respect 24-hour no-repeat rule",
-                       variable=self.app.gap_24h_var).pack(side="left", padx=5)
+                        variable=self.app.gap_24h_var).pack(side="left", padx=5)
         self.app.gap_shuffle_var = tk.BooleanVar(value=True)
         ttk.Checkbutton(gap_opt_frame, text="Shuffle selection",
-                       variable=self.app.gap_shuffle_var).pack(side="left", padx=5)
+                        variable=self.app.gap_shuffle_var).pack(side="left", padx=5)
         
         # === PREVIEW PANEL ===
         # Note: Preview is displayed in the main Schedule Preview panel on the right
