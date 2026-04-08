@@ -58,6 +58,7 @@ class DaypartSchedulerMixin:
             self.available_tags = available_tags or []
             self.available_videos = available_videos or []
             self.available_collections = available_collections or []
+            self._ep_loaded_file = ""  # path of the last browsed collection file
             self.result = None
             self.transient(parent)
             self.grab_set()
@@ -313,6 +314,7 @@ class DaypartSchedulerMixin:
                     return
                 # Replace the collection list entirely with what was loaded
                 self.available_collections = new_cols
+                self._ep_loaded_file = path  # remember for saving
                 col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
                 self.ep_collection_combo["values"] = col_names
                 self.ep_collection_combo.current(0)
@@ -367,54 +369,59 @@ class DaypartSchedulerMixin:
             self.on_auto_calc_end_time()
         
         def on_auto_calc_end_time(self):
-            """Calculate end time based on selected tag and video count"""
-            video_count = self.video_count_var.get()
-            selected_tag = self.tag_var.get()
-            
-            if not selected_tag or not video_count:
-                return
-            
-            # Get videos with this tag (check collection tags)
-            tag_videos = []
-            for video in self.available_videos:
-                collection_tags = video.get("collection", {}).get("tags", [])
-                if selected_tag in collection_tags:
-                    tag_videos.append(video)
-            
-            if not tag_videos:
-                return
-            
-            # Calculate total duration based on video count
-            total_duration_seconds = 0
-            
-            if video_count == "all":
-                # Sum all videos with this tag
-                for video in tag_videos:
-                    duration = video.get("duration", 0)
-                    if duration:
-                        total_duration_seconds += duration
-            elif video_count == "single":
-                # Just one video - use average duration or first video
-                if tag_videos:
-                    durations = [v.get("duration", 0) for v in tag_videos if v.get("duration")]
-                    if durations:
-                        total_duration_seconds = sum(durations) / len(durations)
-                    else:
-                        total_duration_seconds = 3600  # Default 1 hour
+            """Calculate end time based on selected tag/episodic and video count"""
+            t = self.type_var.get()
+
+            if t == "episodic":
+                # Use videos from the selected collection
+                idx = self.ep_collection_combo.current() if hasattr(self, 'ep_collection_combo') else -1
+                if idx < 0 or idx >= len(self.available_collections):
+                    return
+                col_videos = self.available_collections[idx].get("videos", [])
+                if not col_videos:
+                    return
+                ep_count_str = self.ep_count_var.get() if hasattr(self, 'ep_count_var') else "1"
+                durations = [v.get("duration", 0) for v in col_videos if v.get("duration")]
+                if not durations:
+                    return
+                avg = sum(durations) / len(durations)
+                if ep_count_str == "all":
+                    total_duration_seconds = sum(durations)
+                else:
+                    try:
+                        total_duration_seconds = avg * int(ep_count_str)
+                    except (ValueError, TypeError):
+                        total_duration_seconds = avg
             else:
-                # Specific number (2, 3, 4, 5)
-                try:
-                    count = int(video_count)
-                    # Use average duration from available videos
+                video_count = self.video_count_var.get()
+                selected_tag = self.tag_var.get()
+
+                if not selected_tag or not video_count:
+                    return
+
+                tag_videos = []
+                for video in self.available_videos:
+                    collection_tags = video.get("collection", {}).get("tags", [])
+                    if selected_tag in collection_tags:
+                        tag_videos.append(video)
+
+                if not tag_videos:
+                    return
+
+                total_duration_seconds = 0
+                if video_count == "all":
+                    total_duration_seconds = sum(v.get("duration", 0) for v in tag_videos if v.get("duration"))
+                elif video_count == "single":
                     durations = [v.get("duration", 0) for v in tag_videos if v.get("duration")]
-                    if durations:
-                        avg_duration = sum(durations) / len(durations)
-                        total_duration_seconds = avg_duration * count
-                    elif tag_videos:
-                        # Fallback to first video duration
-                        total_duration_seconds = (tag_videos[0].get("duration", 0) or 3600) * count
-                except ValueError:
-                    pass
+                    total_duration_seconds = sum(durations) / len(durations) if durations else 3600
+                else:
+                    try:
+                        count = int(video_count)
+                        durations = [v.get("duration", 0) for v in tag_videos if v.get("duration")]
+                        avg = sum(durations) / len(durations) if durations else (tag_videos[0].get("duration", 0) or 3600)
+                        total_duration_seconds = avg * count
+                    except ValueError:
+                        pass
             
             # Calculate end time from start time + duration
             if total_duration_seconds > 0:
@@ -518,7 +525,7 @@ class DaypartSchedulerMixin:
                 parts = self.block.content_value.split("|")
                 col_id = parts[0] if parts else ""
                 for i, c in enumerate(self.available_collections):
-                    if c.get("id", "") == col_id:
+                    if c.get("id", "") == col_id or c.get("name", "") == col_id:
                         self.ep_collection_combo.current(i)
                         break
                 self.ep_season_var.set(int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1)
@@ -527,6 +534,9 @@ class DaypartSchedulerMixin:
                 for day in self.block.days:
                     if day in self.day_vars:
                         self.day_vars[day].set(True)
+                # Restore the collection file path
+                self._ep_loaded_file = getattr(self.block, 'collection_file', "") or ""
+                self._refresh_ep_video_list()
             else:
                 self.type_var.set("video")
                 for i, video in enumerate(self.available_videos):
@@ -698,6 +708,10 @@ class DaypartSchedulerMixin:
                 video_count=video_count,
                 approximate=self.approximate_var.get()
             )
+            # Store the collection file path for episodic blocks so it can be
+            # restored when the INI is reloaded and the block is edited again
+            if content_type == "episodic":
+                self.result.collection_file = getattr(self, '_ep_loaded_file', "") or ""
             self.destroy()
     
     # ========================================================================
@@ -755,10 +769,22 @@ class DaypartSchedulerMixin:
         edit_collections = []
         if block.content_type == "episodic":
             saved_col_id = block.content_value.split("|")[0] if block.content_value else ""
+            # Search in the currently loaded profile collections
             for col in collections:
-                if col.get("id", "") == saved_col_id:
+                if col.get("id", "") == saved_col_id or col.get("name", "") == saved_col_id:
                     edit_collections = [col]
                     break
+            # If not found in profile, try loading from the saved collection_file path
+            if not edit_collections:
+                col_file = getattr(block, 'collection_file', "") or ""
+                if col_file:
+                    try:
+                        import json as _json
+                        with open(col_file, "r", encoding="utf-8") as f:
+                            data = _json.load(f)
+                        edit_collections = data.get("collections", [])
+                    except Exception:
+                        pass
 
         dialog = self.EditBlockDialog(
             self.root,
@@ -1353,7 +1379,8 @@ class DaypartSchedulerMixin:
                     "days": ",".join(block.days) if block.days else "",
                     "all_days": "true" if is_all_days else "false",
                     "video_count": block.video_count or "",
-                    "approximate": str(getattr(block, 'approximate', False)).lower()
+                    "approximate": str(getattr(block, 'approximate', False)).lower(),
+                    "collection_file": getattr(block, 'collection_file', "") or ""
                 }
             
             # Save marathons
@@ -1444,6 +1471,8 @@ class DaypartSchedulerMixin:
                             video_count=config[section].get("video_count") or None,
                             approximate=config[section].get("approximate", "false").lower() == "true"
                         )
+                        # Restore collection_file for episodic blocks
+                        block.collection_file = config[section].get("collection_file", "") or ""
                         self.daypart_time_blocks.append(block)
                     except Exception as e:
                         logger.warning(f"Failed to load block {section}: {e}")
@@ -1577,17 +1606,24 @@ class DaypartSchedulerMixin:
             return
         self.block_list.delete(0, tk.END)
         for block in self.daypart_time_blocks:
+            days_str = ""
+            if hasattr(block, 'days') and block.days:
+                days_str = " (" + ",".join([d[:3] for d in block.days]) + ")"
+
             if block.content_type == "tag":
-                # Show days if specified
-                days_str = ""
-                if hasattr(block, 'days') and block.days:
-                    days_str = " (" + ",".join([d[:3] for d in block.days]) + ")"
                 display = f"{block.start_time}-{block.end_time} [TAG:{block.content_value}]{days_str}"
+            elif block.content_type == "episodic":
+                parts = block.content_value.split("|")
+                col_id = parts[0]
+                s = parts[1] if len(parts) > 1 else "1"
+                e = parts[2] if len(parts) > 2 else "1"
+                count = parts[3] if len(parts) > 3 else "1"
+                display = f"{block.start_time}-{block.end_time} [EPISODIC:{col_id} S{s}E{e} x{count}]{days_str}"
             else:
                 filename = Path(block.content_value).name
                 display = f"{block.start_time}-{block.end_time} [VIDEO] {filename}"
             self.block_list.insert(tk.END, display)
-        
+
         if hasattr(self, 'block_count_label'):
             self.block_count_label.config(text=f"Total blocks: {len(self.daypart_time_blocks)}")
     
