@@ -226,6 +226,8 @@ class DaypartSchedulerMixin:
                 self.ep_collection_combo.current(0)
             self.ep_collection_combo.bind("<<ComboboxSelected>>", self._on_ep_collection_select)
             ttk.Button(col_row, text="Browse…", command=self._ep_browse_collection).pack(side="left")
+            ttk.Label(col_row, text="← load a collections_*.json file",
+                      font=("", 8, "italic"), foreground="gray").pack(side="left", padx=6)
 
             # Video list for the selected collection
             ep_list_lf = ttk.LabelFrame(self.episodic_frame, text="Videos in collection", padding=4)
@@ -722,7 +724,7 @@ class DaypartSchedulerMixin:
             self.root,
             available_tags=sorted(list(available_tags)),
             available_videos=available_videos,
-            available_collections=collections
+            available_collections=[]
         )
         self.root.wait_window(dialog)
         if dialog.result:
@@ -749,12 +751,21 @@ class DaypartSchedulerMixin:
                     available_videos.append(video)
             available_tags.update(col.get("tags", []))
         
+        # For episodic blocks, pre-load the saved collection so it shows up on edit
+        edit_collections = []
+        if block.content_type == "episodic":
+            saved_col_id = block.content_value.split("|")[0] if block.content_value else ""
+            for col in collections:
+                if col.get("id", "") == saved_col_id:
+                    edit_collections = [col]
+                    break
+
         dialog = self.EditBlockDialog(
             self.root,
             block=block,
             available_tags=sorted(list(available_tags)),
             available_videos=available_videos,
-            available_collections=collections
+            available_collections=edit_collections
         )
         self.root.wait_window(dialog)
         if dialog.result:
