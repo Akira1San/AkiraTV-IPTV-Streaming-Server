@@ -50,12 +50,14 @@ class DaypartSchedulerMixin:
     
     class EditBlockDialog(tk.Toplevel):
         """Dialog for creating/editing a time block"""
-        def __init__(self, parent, block=None, available_tags=None, available_videos=None):
+        def __init__(self, parent, block=None, available_tags=None, available_videos=None,
+                     available_collections=None):
             super().__init__(parent)
             self.parent = parent
             self.block = block
             self.available_tags = available_tags or []
             self.available_videos = available_videos or []
+            self.available_collections = available_collections or []
             self.result = None
             self.transient(parent)
             self.grab_set()
@@ -97,6 +99,8 @@ class DaypartSchedulerMixin:
                            value="tag", command=self.on_type_change).pack(side="left", padx=5)
             ttk.Radiobutton(type_frame, text="Specific Video", variable=self.type_var,
                            value="video", command=self.on_type_change).pack(side="left", padx=5)
+            ttk.Radiobutton(type_frame, text="Episodic", variable=self.type_var,
+                           value="episodic", command=self.on_type_change).pack(side="left", padx=5)
             
             # Tag selection (shown for tag mode)
             self.tag_frame = ttk.Frame(main_frame)
@@ -206,6 +210,39 @@ class DaypartSchedulerMixin:
             self.selected_video_label = ttk.Label(self.video_frame, text="Selected: None", foreground="blue")
             self.selected_video_label.pack(pady=(5, 0))
             
+            # Episodic panel (initially hidden)
+            self.episodic_frame = ttk.LabelFrame(main_frame, text="Episodic Settings", padding=8)
+
+            col_row = ttk.Frame(self.episodic_frame)
+            col_row.pack(fill="x", pady=(0, 6))
+            ttk.Label(col_row, text="Collection:").pack(side="left", padx=(0, 5))
+            self.ep_collection_var = tk.StringVar()
+            col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
+            self.ep_collection_combo = ttk.Combobox(col_row, textvariable=self.ep_collection_var,
+                                                    values=col_names, state="readonly", width=28)
+            self.ep_collection_combo.pack(side="left")
+            if col_names:
+                self.ep_collection_combo.current(0)
+
+            start_row = ttk.Frame(self.episodic_frame)
+            start_row.pack(fill="x", pady=(0, 6))
+            ttk.Label(start_row, text="Start Season:").pack(side="left", padx=(0, 4))
+            self.ep_season_var = tk.IntVar(value=1)
+            ttk.Spinbox(start_row, from_=1, to=99, textvariable=self.ep_season_var, width=5).pack(side="left", padx=(0, 12))
+            ttk.Label(start_row, text="Start Episode:").pack(side="left", padx=(0, 4))
+            self.ep_episode_var = tk.IntVar(value=1)
+            ttk.Spinbox(start_row, from_=1, to=999, textvariable=self.ep_episode_var, width=5).pack(side="left")
+            ttk.Label(start_row, text="(first run only — progress saved after)",
+                      font=("", 8, "italic"), foreground="gray").pack(side="left", padx=8)
+
+            epb_row = ttk.Frame(self.episodic_frame)
+            epb_row.pack(fill="x")
+            ttk.Label(epb_row, text="Episodes per block:").pack(side="left", padx=(0, 5))
+            self.ep_count_var = tk.StringVar(value="1")
+            ttk.Combobox(epb_row, textvariable=self.ep_count_var,
+                         values=["1","2","3","4","5","all"],
+                         state="readonly", width=6).pack(side="left")
+
             # Buttons
             btn_frame = ttk.Frame(main_frame)
             btn_frame.pack(fill="x", pady=(10, 0))
@@ -213,24 +250,31 @@ class DaypartSchedulerMixin:
             ttk.Button(btn_frame, text="Save", command=self.on_save).pack(side="right", padx=5)
         
         def on_type_change(self):
-            """Toggle between tag and video mode"""
-            is_tag = self.type_var.get() == "tag"
+            """Toggle between tag, video, and episodic mode"""
+            t = self.type_var.get()
             
-            # Show/hide tag-related frames
-            if is_tag:
+            if t == "tag":
                 self.tag_frame.pack(fill="x", pady=(0, 10))
                 self.tag_video_list_frame.pack(fill="both", expand=True, pady=(0, 10))
-                # Hide video-specific frame (for selecting single video)
                 if hasattr(self, 'video_frame'):
                     self.video_frame.pack_forget()
-            else:
-                # Hide tag-related frames
+                if hasattr(self, 'episodic_frame'):
+                    self.episodic_frame.pack_forget()
+            elif t == "video":
                 self.tag_frame.pack_forget()
                 self.tag_video_list_frame.pack_forget()
-                # Show video-specific frame
+                if hasattr(self, 'episodic_frame'):
+                    self.episodic_frame.pack_forget()
                 if hasattr(self, 'video_frame'):
                     self.video_frame.pack(fill="both", expand=True, pady=(0, 10))
                     self.populate_video_list()
+            else:  # episodic
+                self.tag_frame.pack_forget()
+                self.tag_video_list_frame.pack_forget()
+                if hasattr(self, 'video_frame'):
+                    self.video_frame.pack_forget()
+                if hasattr(self, 'episodic_frame'):
+                    self.episodic_frame.pack(fill="x", pady=(0, 10))
         
         def on_tag_select(self, *args):
             """Update video list when tag changes and recalculate end time"""
@@ -385,7 +429,6 @@ class DaypartSchedulerMixin:
             self.end_var.set(self.block.end_time)
             self.type_var.set(self.block.content_type)
             
-            # Restore approximate checkbox state
             if hasattr(self.block, 'approximate') and self.block.approximate:
                 self.approximate_var.set(True)
             
@@ -396,14 +439,25 @@ class DaypartSchedulerMixin:
                 for day in self.block.days:
                     if day in self.day_vars:
                         self.day_vars[day].set(True)
-                # Check if all days are selected and update the "All" checkbox
-                all_days = [day for day, var in self.day_vars.items()]
-                selected_days = [day for day, var in self.day_vars.items() if var.get()]
+                all_days = list(self.day_vars.keys())
+                selected_days = [d for d, v in self.day_vars.items() if v.get()]
                 if len(selected_days) == len(all_days):
                     self.all_days_var.set(True)
+            elif self.block.content_type == "episodic":
+                parts = self.block.content_value.split("|")
+                col_id = parts[0] if parts else ""
+                for i, c in enumerate(self.available_collections):
+                    if c.get("id", "") == col_id:
+                        self.ep_collection_combo.current(i)
+                        break
+                self.ep_season_var.set(int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1)
+                self.ep_episode_var.set(int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 1)
+                self.ep_count_var.set(parts[3] if len(parts) > 3 else "1")
+                for day in self.block.days:
+                    if day in self.day_vars:
+                        self.day_vars[day].set(True)
             else:
                 self.type_var.set("video")
-                # Find and select the video
                 for i, video in enumerate(self.available_videos):
                     if video.get("path") == self.block.content_value:
                         self.video_list.selection_set(i)
@@ -539,12 +593,21 @@ class DaypartSchedulerMixin:
                 if not content_value:
                     messagebox.showerror("Error", "Please select a tag")
                     return
-                # Get selected days
                 days = [day for day, var in self.day_vars.items() if var.get()]
-                # If "All" is checked, set days to all days
                 if self.all_days_var.get():
                     days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
                 video_count = self.video_count_var.get()
+            elif content_type == "episodic":
+                idx = self.ep_collection_combo.current()
+                if idx < 0 or idx >= len(self.available_collections):
+                    messagebox.showerror("Error", "Please select a collection")
+                    return
+                col = self.available_collections[idx]
+                col_id = col.get("id", col.get("name", ""))
+                content_value = f"{col_id}|{self.ep_season_var.get()}|{self.ep_episode_var.get()}|{self.ep_count_var.get()}"
+                days = [day for day, var in self.day_vars.items() if var.get()]
+                if self.all_days_var.get():
+                    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
             else:
                 selection = self.video_list.curselection()
                 if not selection:
@@ -589,7 +652,8 @@ class DaypartSchedulerMixin:
         dialog = self.EditBlockDialog(
             self.root,
             available_tags=sorted(list(available_tags)),
-            available_videos=available_videos
+            available_videos=available_videos,
+            available_collections=collections
         )
         self.root.wait_window(dialog)
         if dialog.result:
@@ -620,7 +684,8 @@ class DaypartSchedulerMixin:
             self.root,
             block=block,
             available_tags=sorted(list(available_tags)),
-            available_videos=available_videos
+            available_videos=available_videos,
+            available_collections=collections
         )
         self.root.wait_window(dialog)
         if dialog.result:

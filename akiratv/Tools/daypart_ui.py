@@ -20,41 +20,35 @@ from pathlib import Path
 class EditBlockDialog(tk.Toplevel):
     """Dialog for creating/editing a time block"""
     def __init__(self, parent, block=None, available_tags=None, available_videos=None,
-                 validate_time_format=None, validate_time_block=None):
+                 validate_time_format=None, validate_time_block=None,
+                 available_collections=None):
         super().__init__(parent)
         self.parent = parent
         self.block = block
         self.available_tags = available_tags or []
         self.available_videos = available_videos or []
+        self.available_collections = available_collections or []
         self.validate_time_format = validate_time_format
         self.validate_time_block = validate_time_block
         self.result = None
         self.transient(parent)
         self.grab_set()
         self.title("Edit Time Block")
-        self.geometry("650x500")
-        self.resizable(False, False)
-        # Center the dialog on parent
+        self.resizable(True, True)
         self.center_on_parent()
-        
-        # Initialize day variables
+
         self.day_vars = {}
         self.create_widgets()
         if block:
             self.populate_fields()
     
     def center_on_parent(self):
-        """Center the dialog window on the parent window"""
         self.update_idletasks()
-        # Get parent position and size
         parent_x = self.parent.winfo_x()
         parent_y = self.parent.winfo_y()
         parent_w = self.parent.winfo_width()
         parent_h = self.parent.winfo_height()
-        # Get dialog size
-        dialog_w = 600
-        dialog_h = 400
-        # Calculate center position
+        dialog_w, dialog_h = 660, 560
         x = parent_x + (parent_w - dialog_w) // 2
         y = parent_y + (parent_h - dialog_h) // 2
         self.geometry(f"{dialog_w}x{dialog_h}+{x}+{y}")
@@ -91,6 +85,8 @@ class EditBlockDialog(tk.Toplevel):
                        value="video", command=self.on_type_change).pack(side="left", padx=5)
         ttk.Radiobutton(type_frame, text="Tag (random)", variable=self.type_var,
                        value="tag", command=self.on_type_change).pack(side="left", padx=5)
+        ttk.Radiobutton(type_frame, text="Episodic", variable=self.type_var,
+                       value="episodic", command=self.on_type_change).pack(side="left", padx=5)
         
         # Day of week selection
         days_frame = ttk.LabelFrame(main_frame, text="Days (applies to tag blocks)", padding=10)
@@ -158,16 +154,48 @@ class EditBlockDialog(tk.Toplevel):
             self.tag_combo['values'] = self.available_tags
             if self.available_tags:
                 self.tag_var.set(self.available_tags[0])
-        
+
+        # Episodic panel (initially hidden)
+        self.episodic_frame = ttk.LabelFrame(main_frame, text="Episodic Settings", padding=8)
+
+        col_row = ttk.Frame(self.episodic_frame)
+        col_row.pack(fill="x", pady=(0, 6))
+        ttk.Label(col_row, text="Collection:").pack(side="left", padx=(0, 5))
+        self.ep_collection_var = tk.StringVar()
+        col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
+        self.ep_collection_combo = ttk.Combobox(col_row, textvariable=self.ep_collection_var,
+                                                values=col_names, state="readonly", width=28)
+        self.ep_collection_combo.pack(side="left")
+        if col_names:
+            self.ep_collection_combo.current(0)
+
+        start_row = ttk.Frame(self.episodic_frame)
+        start_row.pack(fill="x", pady=(0, 6))
+        ttk.Label(start_row, text="Start Season:").pack(side="left", padx=(0, 4))
+        self.ep_season_var = tk.IntVar(value=1)
+        ttk.Spinbox(start_row, from_=1, to=99, textvariable=self.ep_season_var, width=5).pack(side="left", padx=(0, 12))
+        ttk.Label(start_row, text="Start Episode:").pack(side="left", padx=(0, 4))
+        self.ep_episode_var = tk.IntVar(value=1)
+        ttk.Spinbox(start_row, from_=1, to=999, textvariable=self.ep_episode_var, width=5).pack(side="left")
+        ttk.Label(start_row, text="(first run only — progress saved after)",
+                  font=("", 8, "italic"), foreground="gray").pack(side="left", padx=8)
+
+        epb_row = ttk.Frame(self.episodic_frame)
+        epb_row.pack(fill="x")
+        ttk.Label(epb_row, text="Episodes per block:").pack(side="left", padx=(0, 5))
+        self.ep_count_var = tk.StringVar(value="1")
+        ttk.Combobox(epb_row, textvariable=self.ep_count_var,
+                     values=["1","2","3","4","5","all"],
+                     state="readonly", width=6).pack(side="left")
+
         # Buttons
         btn_frame = ttk.Frame(main_frame)
         btn_frame.pack(fill="x", pady=(10, 0))
         ttk.Button(btn_frame, text="Cancel", command=self.on_cancel).pack(side="right", padx=5)
         ttk.Button(btn_frame, text="Save", command=self.on_save).pack(side="right", padx=5)
-        
+
         # Initially show tag selection
         self.on_type_change()
-    
     def update_duration(self, *args):
         try:
             start = datetime.strptime(self.start_var.get(), "%H:%M")
@@ -181,22 +209,30 @@ class EditBlockDialog(tk.Toplevel):
             self.duration_label.config(text="Duration: Invalid time")
     
     def on_type_change(self):
-        if self.type_var.get() == "video":
+        t = self.type_var.get()
+        self.video_list.master.pack_forget()
+        self.tag_frame.pack_forget()
+        self.episodic_frame.pack_forget()
+        if t == "video":
             self.video_list.master.pack(fill="both", expand=True)
-            self.tag_frame.pack_forget()
-            # Hide days frame for video blocks
+            # hide days for video blocks
             for child in self.winfo_children():
                 if isinstance(child, ttk.LabelFrame) and "Days" in child.cget("text"):
                     child.pack_forget()
-        else:
-            self.video_list.master.pack_forget()
+        elif t == "tag":
             self.tag_frame.pack(fill="x", pady=(0, 10))
-            # Show days frame for tag blocks
             for child in self.winfo_children():
                 if isinstance(child, ttk.Frame):
-                    for subchild in child.winfo_children():
-                        if isinstance(subchild, ttk.LabelFrame) and "Days" in subchild.cget("text"):
-                            subchild.pack(fill="x", pady=(0, 10))
+                    for sub in child.winfo_children():
+                        if isinstance(sub, ttk.LabelFrame) and "Days" in sub.cget("text"):
+                            sub.pack(fill="x", pady=(0, 10))
+        else:  # episodic
+            self.episodic_frame.pack(fill="x", pady=(0, 10))
+            for child in self.winfo_children():
+                if isinstance(child, ttk.Frame):
+                    for sub in child.winfo_children():
+                        if isinstance(sub, ttk.LabelFrame) and "Days" in sub.cget("text"):
+                            sub.pack(fill="x", pady=(0, 10))
     
     def on_day_change(self):
         """Update the days string when any day checkbox changes"""
@@ -257,16 +293,24 @@ class EditBlockDialog(tk.Toplevel):
             if self.block.content_type == "video":
                 self.selected_video = self.block.content_value
                 self.selected_video_label.config(text=f"Selected: {self.block.content_value}")
+            elif self.block.content_type == "episodic":
+                parts = self.block.content_value.split("|")
+                col_id = parts[0] if parts else ""
+                for i, c in enumerate(self.available_collections):
+                    if c.get("id", "") == col_id:
+                        self.ep_collection_combo.current(i)
+                        break
+                self.ep_season_var.set(int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1)
+                self.ep_episode_var.set(int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 1)
+                self.ep_count_var.set(parts[3] if len(parts) > 3 else "1")
             else:
                 self.tag_var.set(self.block.content_value)
-            
-            # Load days from block
+
             block_days = getattr(self.block, 'days', []) or []
             for day in block_days:
                 if day.lower() in self.day_vars:
                     self.day_vars[day.lower()].set(True)
             self.on_day_change()
-            
             self.on_type_change()
     
     def on_cancel(self):
@@ -293,6 +337,15 @@ class EditBlockDialog(tk.Toplevel):
             content_value = self.selected_video
             # Videos don't use days - apply to all days
             selected_days = []
+        elif content_type == "episodic":
+            idx = self.ep_collection_combo.current()
+            if idx < 0 or idx >= len(self.available_collections):
+                messagebox.showerror("Error", "Please select a collection")
+                return
+            col = self.available_collections[idx]
+            col_id = col.get("id", col.get("name", ""))
+            content_value = f"{col_id}|{self.ep_season_var.get()}|{self.ep_episode_var.get()}|{self.ep_count_var.get()}"
+            selected_days = [day for day, var in self.day_vars.items() if var.get()]
         else:
             tag = self.tag_var.get().strip()
             if not tag:

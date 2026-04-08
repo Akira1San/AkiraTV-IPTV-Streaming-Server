@@ -700,7 +700,7 @@ def validate_time_block(block: TimeBlock) -> Optional[str]:
         return f"Block duration exceeds 24 hours: {duration} seconds"
     
     # Check content type
-    if block.content_type not in ["video", "tag"]:
+    if block.content_type not in ["video", "tag", "episodic"]:
         return f"Invalid content_type: {block.content_type}"
     
     # Validate tag blocks have valid video_count
@@ -892,7 +892,128 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             
             current_time += timedelta(seconds=selected["duration"])
             video_index += 1
-    
+
+    elif block.content_type == "episodic":
+        # Episodic block: play episodes from a collection in order, resuming where we left off.
+        # content_value format: "collection_id|start_season|start_episode|episodes_per_block"
+        parts = block.content_value.split("|")
+        collection_id   = parts[0] if len(parts) > 0 else ""
+        start_season    = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1
+        start_episode   = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 1
+        episodes_per_block = parts[3] if len(parts) > 3 else "1"
+
+        # Determine how many episodes to play this block
+        if episodes_per_block == "all":
+            max_ep = None
+        else:
+            try:
+                max_ep = int(episodes_per_block)
+            except (ValueError, TypeError):
+                max_ep = 1
+
+        # Filter videos belonging to this collection
+        col_videos = [v for v in available_videos
+                      if v.get("collection", {}).get("id", "") == collection_id]
+
+        if not col_videos:
+            logger.warning(f"[{channel}] Episodic block: no videos for collection '{collection_id}'")
+            return entries
+
+        # Sort by season/episode using metadata, falling back to filename
+        def _ep_sort_key(v):
+            meta = v.get("metadata", {})
+            s = meta.get("season", 0) or 0
+            e = meta.get("episode", 0) or 0
+            if s == 0 and e == 0:
+                # Try to extract from filename
+                import re
+                fname = Path(v["path"]).stem
+                m = re.search(r"[Ss](\d+)[Ee](\d+)", fname)
+                if m:
+                    s, e = int(m.group(1)), int(m.group(2))
+                else:
+                    m2 = re.search(r"(\d+)[xX](\d+)", fname)
+                    if m2:
+                        s, e = int(m2.group(1)), int(m2.group(2))
+            return (s, e)
+
+        col_videos.sort(key=_ep_sort_key)
+
+        # Load episodic state to find the next episode index
+        state_file = SCHEDULE_DIR.parent / f"episodic_state.json"
+        try:
+            with open(state_file, "r", encoding="utf-8") as f:
+                ep_state = json.load(f)
+        except Exception:
+            ep_state = {}
+
+        state_key = f"{channel}_{block.block_id}"
+        # First run: start at configured start_season/start_episode
+        if state_key not in ep_state:
+            # Find the index of the configured start point
+            start_idx = 0
+            for i, v in enumerate(col_videos):
+                s, e = _ep_sort_key(v)
+                if s > start_season or (s == start_season and e >= start_episode):
+                    start_idx = i
+                    break
+            ep_state[state_key] = start_idx
+
+        ep_index = ep_state[state_key]
+        played = 0
+
+        # Calculate block end time
+        if start_datetime is not None:
+            block_end_dt = start_datetime + timedelta(seconds=block.duration_seconds)
+        else:
+            block_end_dt = None
+
+        while True:
+            if max_ep is not None and played >= max_ep:
+                break
+            if block_end_dt is not None and current_time >= block_end_dt:
+                break
+            elif block_end_dt is None and current_time.time() >= end_time.time():
+                break
+            if not col_videos:
+                break
+
+            # Wrap around when we reach the end of the collection
+            ep_index = ep_index % len(col_videos)
+            video = col_videos[ep_index]
+
+            s, e = _ep_sort_key(video)
+            entry = {
+                "time": current_time.strftime("%H:%M:%S"),
+                "file": video["path"],
+                "duration": video.get("duration", 5400),
+                "collection_id": collection_id,
+                "channel": channel,
+                "source": "daypart_tag",
+                "daypart_block_id": block.block_id,
+                "metadata": {
+                    "scheduled_type": "episodic",
+                    "collection_id": collection_id,
+                    "season": s,
+                    "episode": e,
+                    "block_start": block.start_time,
+                    "block_end": block.end_time
+                }
+            }
+            entries.append(entry)
+            current_time += timedelta(seconds=video.get("duration", 5400))
+            ep_index += 1
+            played += 1
+
+        # Persist the next episode index
+        ep_state[state_key] = ep_index % len(col_videos) if col_videos else 0
+        try:
+            state_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(state_file, "w", encoding="utf-8") as f:
+                json.dump(ep_state, f, indent=2)
+        except Exception as ex:
+            logger.warning(f"[{channel}] Could not save episodic state: {ex}")
+
     return entries
 
 
@@ -1545,7 +1666,7 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             # Format: "tag_name|monday,tuesday,friday|single"
             block_days = block.days if hasattr(block, 'days') and block.days else None
             
-            if not block_days and block.content_type == "tag":
+            if not block_days and block.content_type in ("tag", "episodic"):
                 # Try to extract days from content_value
                 content_parts = block.content_value.split("|")
                 if len(content_parts) >= 2:
@@ -1563,7 +1684,7 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             else:
                 effective_start = block_start_dt
             
-            if block.content_type == "tag" and block_days:
+            if block.content_type in ("tag", "episodic") and block_days:
                 # Tag block with specific days - check if today is in the list
                 if weekday in get_weekday_indices(block_days):
                     block_entries = generate_block_schedule(
