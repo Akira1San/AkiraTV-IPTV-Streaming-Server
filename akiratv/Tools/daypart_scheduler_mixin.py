@@ -309,17 +309,11 @@ class DaypartSchedulerMixin:
                 if not new_cols:
                     messagebox.showwarning("Empty", "No collections found in that file.")
                     return
-                # Merge into available_collections (avoid duplicates by id)
-                existing_ids = {c.get("id") for c in self.available_collections}
-                for c in new_cols:
-                    if c.get("id") not in existing_ids:
-                        self.available_collections.append(c)
-                        existing_ids.add(c.get("id"))
+                # Replace the collection list entirely with what was loaded
+                self.available_collections = new_cols
                 col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
                 self.ep_collection_combo["values"] = col_names
-                # Select the first newly added collection
-                first_new_idx = len(self.available_collections) - len(new_cols)
-                self.ep_collection_combo.current(first_new_idx)
+                self.ep_collection_combo.current(0)
                 self._refresh_ep_video_list()
             except Exception as ex:
                 messagebox.showerror("Error", f"Could not load file:\n{ex}")
