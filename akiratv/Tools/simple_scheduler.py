@@ -245,8 +245,9 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         self.main_paned.pack(fill="both", expand=True, pady=(0, 10))
         
         # === LEFT PANE: INFO PANEL ===
-        info_frame = ttk.Frame(self.main_paned)
-        self.main_paned.add(info_frame, weight=2)
+        info_frame = ttk.Frame(self.main_paned, width=220)
+        info_frame.pack_propagate(False)
+        self.main_paned.add(info_frame, weight=1)
         self.create_info_panel(info_frame)
         
         # === SECOND PANE: COLLECTION PANEL ===
@@ -266,6 +267,9 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         
         # === BOTTOM CONTROL BAR ===
         self.create_bottom_controls(main_frame)
+
+        # Fix info panel width after layout is calculated
+        self.root.after(100, lambda: self.main_paned.sashpos(0, 220))
 
     def create_info_panel(self, parent):
         """Create the Info panel for displaying video metadata"""
@@ -291,7 +295,7 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         self.info_name.pack(anchor="w", pady=2)
         
         self.info_description = ttk.Label(metadata_frame, text="Description: -", 
-                                         font=("TkDefaultFont", 9), wraplength=400)
+                                         font=("TkDefaultFont", 9), wraplength=200)
         self.info_description.pack(anchor="w", pady=2)
         
         self.info_genre = ttk.Label(metadata_frame, text="Genre: -", font=("TkDefaultFont", 9))
@@ -303,7 +307,7 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         ttk.Separator(metadata_frame, orient="horizontal").pack(fill="x", pady=10)
         
         self.info_path = ttk.Label(metadata_frame, text="Path: -", font=("TkDefaultFont", 9), 
-                                   wraplength=400, foreground="gray")
+                                   wraplength=200, foreground="gray")
         self.info_path.pack(anchor="w", pady=2)
         
         self.info_duration = ttk.Label(metadata_frame, text="Duration: -", font=("TkDefaultFont", 9))
