@@ -1006,6 +1006,7 @@ class DaypartSchedulerMixin:
                     video_count=block.video_count,
                     approximate=use_global_approximate  # Use global setting
                 )
+                block_copy.collection_file = getattr(block, 'collection_file', '') or ''
                 time_blocks_for_preview.append(block_copy)
             
             daypart_config = {

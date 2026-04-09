@@ -107,12 +107,15 @@ class TimeBlock:
             result["video_count"] = self.video_count
         if self.approximate:
             result["approximate"] = self.approximate
+        collection_file = getattr(self, 'collection_file', None)
+        if collection_file:
+            result["collection_file"] = collection_file
         return result
     
     @classmethod
     def from_dict(cls, data: dict) -> 'TimeBlock':
         """Deserialize from dictionary"""
-        return cls(
+        block = cls(
             start_time=data["start_time"],
             end_time=data["end_time"],
             content_type=data["content_type"],
@@ -122,6 +125,9 @@ class TimeBlock:
             video_count=data.get("video_count"),
             approximate=data.get("approximate", False)
         )
+        if "collection_file" in data:
+            block.collection_file = data["collection_file"]
+        return block
 
 
 class MarathonConfig:
