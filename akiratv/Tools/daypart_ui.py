@@ -857,10 +857,9 @@ class DaypartSchedulerUI:
             config = configparser.ConfigParser()
             config.read(file_path, encoding='utf-8')
             
-            # Load time blocks
+            # Load time blocks (append to existing list)
             from ..daypart_scheduler import TimeBlock, MarathonConfig, GapFillerConfig
             
-            self.app.daypart_time_blocks = []
             for section in config.sections():
                 if section.startswith("Block_"):
                     try:
@@ -886,8 +885,7 @@ class DaypartSchedulerUI:
                         import logging
                         logging.getLogger("AkiraTV").warning(f"Failed to load block {section}: {e}")
             
-            # Load marathons
-            self.app.daypart_marathons = []
+            # Load marathons (append to existing list)
             for section in config.sections():
                 if section.startswith("Marathon_"):
                     try:

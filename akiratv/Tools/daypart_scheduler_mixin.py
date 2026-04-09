@@ -230,6 +230,11 @@ class DaypartSchedulerMixin:
             ttk.Label(col_row, text="← load a collections_*.json file",
                       font=("", 8, "italic"), foreground="gray").pack(side="left", padx=6)
 
+            # Show the loaded file path
+            self._ep_file_label = ttk.Label(self.episodic_frame, text="No file loaded",
+                                            font=("", 8), foreground="gray")
+            self._ep_file_label.pack(anchor="w", pady=(0, 4))
+
             # Video list for the selected collection
             ep_list_lf = ttk.LabelFrame(self.episodic_frame, text="Videos in collection", padding=4)
             ep_list_lf.pack(fill="both", expand=True, pady=(0, 6))
@@ -318,6 +323,7 @@ class DaypartSchedulerMixin:
                 col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
                 self.ep_collection_combo["values"] = col_names
                 self.ep_collection_combo.current(0)
+                self._ep_file_label.config(text=f"File: {Path(path).name}")
                 self._refresh_ep_video_list()
             except Exception as ex:
                 messagebox.showerror("Error", f"Could not load file:\n{ex}")
@@ -536,6 +542,8 @@ class DaypartSchedulerMixin:
                         self.day_vars[day].set(True)
                 # Restore the collection file path
                 self._ep_loaded_file = getattr(self.block, 'collection_file', "") or ""
+                if self._ep_loaded_file:
+                    self._ep_file_label.config(text=f"File: {Path(self._ep_loaded_file).name}")
                 self._refresh_ep_video_list()
             else:
                 self.type_var.set("video")
@@ -953,6 +961,26 @@ class DaypartSchedulerMixin:
                     if video["path"] not in self.blacklisted_videos:
                         video["collection"] = col
                         available_videos.append(video)
+
+            # Also load videos from episodic block collection files not in the current profile
+            import json as _json
+            loaded_col_ids = {col.get("id") for col in collections}
+            for block in self.daypart_time_blocks:
+                if block.content_type == "episodic":
+                    col_file = getattr(block, "collection_file", "") or ""
+                    if col_file:
+                        try:
+                            with open(col_file, "r", encoding="utf-8") as f:
+                                extra_data = _json.load(f)
+                            for col in extra_data.get("collections", []):
+                                if col.get("id") not in loaded_col_ids:
+                                    loaded_col_ids.add(col.get("id"))
+                                    for video in col.get("videos", []):
+                                        if video["path"] not in self.blacklisted_videos:
+                                            video["collection"] = col
+                                            available_videos.append(video)
+                        except Exception as ex:
+                            logger.warning(f"Could not load episodic collection file {col_file}: {ex}")
             
             # Check global approximate setting - try both self.app and self references
             try:
@@ -1150,6 +1178,25 @@ class DaypartSchedulerMixin:
                     if video["path"] not in self.blacklisted_videos:
                         video["collection"] = col
                         available_videos.append(video)
+
+            # Also load videos from episodic block collection files
+            loaded_col_ids = {col.get("id") for col in collections}
+            for block in self.daypart_time_blocks:
+                if block.content_type == "episodic":
+                    col_file = getattr(block, "collection_file", "") or ""
+                    if col_file:
+                        try:
+                            with open(col_file, "r", encoding="utf-8") as f:
+                                extra_data = _json.load(f)
+                            for col in extra_data.get("collections", []):
+                                if col.get("id") not in loaded_col_ids:
+                                    loaded_col_ids.add(col.get("id"))
+                                    for video in col.get("videos", []):
+                                        if video["path"] not in self.blacklisted_videos:
+                                            video["collection"] = col
+                                            available_videos.append(video)
+                        except Exception as ex:
+                            logger.warning(f"Could not load episodic collection file {col_file}: {ex}")
 
             try:
                 use_approx = self.use_approximation_var.get()
@@ -1448,8 +1495,7 @@ class DaypartSchedulerMixin:
             config = configparser.ConfigParser()
             config.read(file_path, encoding='utf-8')
             
-            # Load time blocks
-            self.daypart_time_blocks = []
+            # Load time blocks — APPEND to existing, don't overwrite
             for section in config.sections():
                 if section.startswith("Block_"):
                     try:
@@ -1477,8 +1523,7 @@ class DaypartSchedulerMixin:
                     except Exception as e:
                         logger.warning(f"Failed to load block {section}: {e}")
             
-            # Load marathons
-            self.daypart_marathons = []
+            # Load marathons — APPEND to existing
             for section in config.sections():
                 if section.startswith("Marathon_"):
                     try:
