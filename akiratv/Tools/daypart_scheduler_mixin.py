@@ -847,6 +847,46 @@ class DaypartSchedulerMixin:
             self.daypart_time_blocks.append(dialog.result)
             self.update_block_list()
             self.update_preview_display()
+
+    def on_add_gap_fill_block(self):
+        """Add a 24h gap fill block from a chosen collection file"""
+        from tkinter import filedialog
+        import json as _json
+
+        path = filedialog.askopenfilename(
+            title="Select Collection File for Gap Fill",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+        )
+        if not path:
+            return
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = _json.load(f)
+            cols = data.get("collections", [])
+            if not cols:
+                messagebox.showwarning("Empty", "No collections found in that file.")
+                return
+
+            # Use the filename (without extension) as the tag label
+            tag_label = Path(path).stem
+
+            block = TimeBlock(
+                start_time="00:00",
+                end_time="23:59",
+                content_type="tag",
+                content_value=tag_label,
+                days=["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+                video_count="all"
+            )
+            block.collection_file = path
+
+            self.daypart_time_blocks.append(block)
+            self.update_block_list()
+            self.update_preview_display()
+            messagebox.showinfo("Gap Fill Added",
+                f"Gap fill block added using:\n{Path(path).name}\n\nTag: {tag_label}\nCovers: 00:00 - 23:59, all days")
+        except Exception as ex:
+            messagebox.showerror("Error", f"Could not load collection file:\n{ex}")
     
     def on_edit_block(self):
         """Edit selected time block"""
@@ -2003,6 +2043,7 @@ class DaypartSchedulerMixin:
         ttk.Button(block_btn_frame, text="Delete Selected", command=self.on_delete_block).pack(side="left", padx=2)
         ttk.Button(block_btn_frame, text="Move Up", command=self.on_move_block_up).pack(side="left", padx=2)
         ttk.Button(block_btn_frame, text="Move Down", command=self.on_move_block_down).pack(side="left", padx=2)
+        ttk.Button(block_btn_frame, text="Add Gap Fill", command=self.on_add_gap_fill_block).pack(side="left", padx=(10, 2))
 
         # Block count label
         self.block_count_label = ttk.Label(block_panel, text="Total blocks: 0")
