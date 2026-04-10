@@ -1658,7 +1658,7 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
         daypart_inner = daypart_config.get("daypart_config", {})
         time_blocks = daypart_inner.get("time_blocks", [])
 
-        # Sort blocks by start time so specific blocks take priority over gap fill
+        # Sort blocks by start time
         def _block_sort_key(bd):
             try:
                 return parse_time_string(bd.get("start_time", "00:00")).time()
@@ -1666,70 +1666,39 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 return datetime.min.time()
         time_blocks = sorted(time_blocks, key=_block_sort_key)
 
-        # Pre-compute which blocks apply to today so we can clip each block
-        # to stop before the next block's start time
-        active_block_starts = []
+        # Separate gap fill blocks (00:00-23:59 all-day) from specific blocks.
+        # Gap fill blocks are processed last to fill remaining time around specific blocks.
+        specific_blocks = []
+        gap_fill_blocks = []
         for bd in time_blocks:
-            b = TimeBlock.from_dict(bd)
-            b_days = b.days if hasattr(b, 'days') and b.days else []
-            if not b_days and b.content_type in ("tag", "episodic"):
-                parts = b.content_value.split("|")
-                if len(parts) >= 2:
-                    b_days = [d.strip() for d in parts[1].split(",") if d.strip()]
-            applies = (not b_days) or (weekday in get_weekday_indices(b_days))
-            if applies:
-                active_block_starts.append(
-                    datetime.combine(target_date, parse_time_string(b.start_time).time())
-                )
+            st = bd.get("start_time", "00:00")
+            et = bd.get("end_time", "23:59")
+            # A gap fill block covers nearly the full day (starts at 00:00, ends at 23:59)
+            if st == "00:00" and et in ("23:59", "24:00"):
+                gap_fill_blocks.append(bd)
+            else:
+                specific_blocks.append(bd)
 
-        for i, block_data in enumerate(time_blocks):
+        # --- Pass 1: schedule specific blocks at their exact times ---
+        for block_data in specific_blocks:
             block = TimeBlock.from_dict(block_data)
-            
-            # Parse days from content_value if not set (for backward compatibility)
+
             block_days = block.days if hasattr(block, 'days') and block.days else None
             if not block_days and block.content_type in ("tag", "episodic"):
                 content_parts = block.content_value.split("|")
                 if len(content_parts) >= 2:
-                    days_str = content_parts[1]
-                    block_days = [d.strip() for d in days_str.split(",") if d.strip()]
+                    block_days = [d.strip() for d in content_parts[1].split(",") if d.strip()]
 
-            # Each block always starts at its own scheduled start_time.
-            # Only push forward if we're continuing from a previous day that ran past it.
             block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
             if base_datetime and base_datetime.date() < target_date and current_time > block_start_dt:
                 effective_start = current_time
             else:
                 effective_start = block_start_dt
 
-            # Clip block end to the next active block's start so gap fill doesn't
-            # overrun into a specifically scheduled block's time window
-            block_end_dt = datetime.combine(target_date, parse_time_string(block.end_time).time())
-            next_starts = [s for s in active_block_starts if s > block_start_dt]
-            if next_starts:
-                next_block_start = min(next_starts)
-                if next_block_start < block_end_dt:
-                    block_end_dt = next_block_start
-
-            # Create a clipped copy of the block with the adjusted end time
-            clipped_block = TimeBlock(
-                start_time=block.start_time,
-                end_time=block_end_dt.strftime("%H:%M"),
-                content_type=block.content_type,
-                content_value=block.content_value,
-                block_id=block.block_id,
-                days=block.days,
-                video_count=block.video_count,
-                approximate=getattr(block, 'approximate', False)
-            )
-            clipped_block.collection_file = getattr(block, 'collection_file', '') or ''
-
             applies_today = (not block_days) or (weekday in get_weekday_indices(block_days))
             if applies_today:
                 block_entries = generate_block_schedule(
-                    clipped_block,
-                    available_videos,
-                    recent_videos,
-                    channel,
+                    block, available_videos, recent_videos, channel,
                     start_datetime=effective_start
                 )
                 schedule_entries.extend(block_entries)
@@ -1739,6 +1708,55 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     last_entry_duration = last_entry.get("duration", 5400)
                     last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
                     current_time = last_entry_end
+
+        # --- Pass 2: fill gaps around specific blocks using gap fill blocks ---
+        if gap_fill_blocks:
+            # Collect the time windows occupied by specific block entries
+            occupied = sorted(
+                [(datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()),
+                  datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()) + timedelta(seconds=e.get("duration", 5400)))
+                 for e in schedule_entries],
+                key=lambda x: x[0]
+            )
+
+            # Build free windows for the day
+            day_start_dt = datetime.combine(target_date, datetime.min.time())
+            day_end_dt = datetime.combine(target_date, datetime.strptime("23:59", "%H:%M").time())
+            free_windows = []
+            cursor = day_start_dt
+            for occ_start, occ_end in occupied:
+                if cursor < occ_start:
+                    free_windows.append((cursor, occ_start))
+                cursor = max(cursor, occ_end)
+            if cursor < day_end_dt:
+                free_windows.append((cursor, day_end_dt))
+
+            # Use the first gap fill block's video pool to fill each free window
+            for gf_data in gap_fill_blocks:
+                gf_block = TimeBlock.from_dict(gf_data)
+                gf_block.collection_file = gf_data.get("collection_file", "") or ""
+
+                for win_start, win_end in free_windows:
+                    win_duration = (win_end - win_start).total_seconds()
+                    if win_duration <= 0:
+                        continue
+                    # Create a temporary block for this window
+                    win_block = TimeBlock(
+                        start_time=win_start.strftime("%H:%M"),
+                        end_time=win_end.strftime("%H:%M"),
+                        content_type=gf_block.content_type,
+                        content_value=gf_block.content_value,
+                        block_id=gf_block.block_id,
+                        days=gf_block.days,
+                        video_count=gf_block.video_count,
+                        approximate=getattr(gf_block, 'approximate', False)
+                    )
+                    win_block.collection_file = gf_block.collection_file
+                    win_entries = generate_block_schedule(
+                        win_block, available_videos, recent_videos, channel,
+                        start_datetime=win_start
+                    )
+                    schedule_entries.extend(win_entries)
     
     # 2b. TEMPORARILY DISABLED - approximate blocks are handled AFTER gap filling now
     # This runs after initial block scheduling but before gap filling
