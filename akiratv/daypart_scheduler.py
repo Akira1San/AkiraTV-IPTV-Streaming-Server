@@ -1578,6 +1578,61 @@ def _gaps_from_actual_ends(
     return gaps
 
 
+def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[dict],
+                                 weekday: int, target_date: date, channel: str):
+    """
+    For blocks marked approximate=True, snap their start time to avoid overlapping
+    with gap fill videos. Rules:
+    - If a gap fill video ends AFTER the block's scheduled start → shift block to start after that video
+    - If a gap fill video ends BEFORE the block's scheduled start → keep scheduled start (clean gap)
+    This ensures continuous streaming with no overlaps.
+    """
+    for block_data in time_blocks:
+        block = TimeBlock.from_dict(block_data)
+        if not getattr(block, 'approximate', False):
+            continue
+
+        # Check if block applies today
+        block_days = block.days if hasattr(block, 'days') and block.days else []
+        if not block_days and block.content_type in ("tag", "episodic"):
+            parts = block.content_value.split("|")
+            if len(parts) >= 2:
+                block_days = [d.strip() for d in parts[1].split(",") if d.strip()]
+        applies = (not block_days) or (weekday in get_weekday_indices(block_days))
+        if not applies:
+            continue
+
+        scheduled_start = datetime.combine(target_date, parse_time_string(block.start_time).time())
+
+        # Find gap fill video that overlaps the scheduled start time
+        # (i.e. started before scheduled_start and ends after it)
+        overlapping_end = None
+        for entry in schedule_entries:
+            if entry.get("daypart_block_id") == block.block_id:
+                continue  # skip this block's own entries
+            entry_start = datetime.combine(target_date,
+                datetime.strptime(entry["time"], "%H:%M:%S").time())
+            entry_end = entry_start + timedelta(seconds=entry.get("duration", 5400))
+            # Gap fill video overlaps our scheduled start
+            if entry_start < scheduled_start < entry_end:
+                overlapping_end = entry_end
+                break
+
+        if overlapping_end is None:
+            continue  # No overlap, keep scheduled start
+
+        # Shift all entries of this block to start at overlapping_end
+        shift = overlapping_end - scheduled_start
+        block_entries = [e for e in schedule_entries if e.get("daypart_block_id") == block.block_id]
+        for entry in block_entries:
+            orig = datetime.combine(target_date, datetime.strptime(entry["time"], "%H:%M:%S").time())
+            new_time = orig + shift
+            entry["time"] = new_time.strftime("%H:%M:%S")
+
+        logger.info(f"[{channel}] Approximate: shifted block {block.block_id} by "
+                    f"{shift.total_seconds()/60:.1f} min (gap video ended at {overlapping_end.strftime('%H:%M')})")
+
+
 def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
                              channel: str, target_date: date,
                              base_datetime: datetime = None) -> List[dict]:
@@ -1864,9 +1919,12 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 else:
                     logger.info(f"[{channel}] No gaps to fill")
     
-    # NOTE: _handle_approximate_blocks is disabled — the new gap fill system
-    # handles block placement correctly without needing post-processing.
-    # Approximate flag on individual blocks is preserved for future use.
+    # 4. Approximate block start times to avoid overlaps with gap fill videos.
+    # For each specific block marked approximate (or when global approximate is on),
+    # find the gap fill video that overlaps or precedes the block's scheduled start
+    # and snap the block's entries to start right after that video ends.
+    _apply_approximate_snapping(schedule_entries, daypart_inner.get("time_blocks", []),
+                                weekday, target_date, channel)
     
     # After approximate handling, sort entries by time
     # 4. Sort by time
