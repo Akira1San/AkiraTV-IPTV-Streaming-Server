@@ -455,8 +455,13 @@ class DaypartSchedulerMixin:
                 tag_videos = []
                 for video in self.available_videos:
                     collection_tags = video.get("collection", {}).get("tags", [])
-                    if selected_tag in collection_tags:
+                    collection_name = video.get("collection", {}).get("name", "")
+                    if selected_tag in collection_tags or selected_tag == collection_name:
                         tag_videos.append(video)
+
+                # If no tag match, use all available videos (collection has no tags defined)
+                if not tag_videos:
+                    tag_videos = list(self.available_videos)
 
                 if not tag_videos:
                     return
