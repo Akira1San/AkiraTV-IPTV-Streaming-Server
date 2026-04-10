@@ -769,7 +769,8 @@ class DaypartSchedulerMixin:
                 days = [day for day, var in self.day_vars.items() if var.get()]
                 if self.all_days_var.get():
                     days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-                video_count = self.video_count_var.get()            elif content_type == "episodic":
+                video_count = self.video_count_var.get()
+            elif content_type == "episodic":
                 idx = self.ep_collection_combo.current()
                 if idx < 0 or idx >= len(self.available_collections):
                     messagebox.showerror("Error", "Please select a collection")
