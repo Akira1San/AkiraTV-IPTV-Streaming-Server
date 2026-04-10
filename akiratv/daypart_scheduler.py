@@ -1657,7 +1657,15 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
     if not is_marathon_day:
         daypart_inner = daypart_config.get("daypart_config", {})
         time_blocks = daypart_inner.get("time_blocks", [])
-        
+
+        # Sort blocks by start time so specific blocks take priority over gap fill
+        def _block_sort_key(bd):
+            try:
+                return parse_time_string(bd.get("start_time", "00:00")).time()
+            except Exception:
+                return datetime.min.time()
+        time_blocks = sorted(time_blocks, key=_block_sort_key)
+
         for block_data in time_blocks:
             block = TimeBlock.from_dict(block_data)
             
@@ -1672,13 +1680,10 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     days_str = content_parts[1]
                     block_days = [d.strip() for d in days_str.split(",") if d.strip()]
             
-            # FIX: Calculate proper start_datetime for this block from its start_time
-            # Parse the block's start_time and combine with target_date
+            # Each block always starts at its own scheduled start_time.
+            # Only push forward if we're continuing from a previous day that ran past it.
             block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
-            
-            # Only override with current_time if we're continuing from a previous day
-            # that ran past this block's start time
-            if current_time > block_start_dt:
+            if base_datetime and base_datetime.date() < target_date and current_time > block_start_dt:
                 effective_start = current_time
             else:
                 effective_start = block_start_dt
