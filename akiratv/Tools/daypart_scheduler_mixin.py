@@ -1418,7 +1418,7 @@ class DaypartSchedulerMixin:
                 # Check if all days are selected
                 all_days_list = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
                 is_all_days = block.days == all_days_list
-                config[section] = {
+                entry = {
                     "start_time": block.start_time,
                     "end_time": block.end_time,
                     "content_type": block.content_type,
@@ -1430,6 +1430,14 @@ class DaypartSchedulerMixin:
                     "approximate": str(getattr(block, 'approximate', False)).lower(),
                     "collection_file": getattr(block, 'collection_file', "") or ""
                 }
+                # For episodic blocks, also save the parsed fields explicitly for clarity
+                if block.content_type == "episodic":
+                    parts = block.content_value.split("|")
+                    entry["collection_id"] = parts[0] if len(parts) > 0 else ""
+                    entry["start_season"] = parts[1] if len(parts) > 1 else "1"
+                    entry["start_episode"] = parts[2] if len(parts) > 2 else "1"
+                    entry["episodes_per_block"] = parts[3] if len(parts) > 3 else "1"
+                config[section] = entry
             
             # Save marathons
             for i, marathon in enumerate(self.daypart_marathons):
@@ -1507,12 +1515,24 @@ class DaypartSchedulerMixin:
                         else:
                             days = days_str.split(",") if days_str else []
                         days = [d.strip() for d in days if d.strip()]
-                        
+
+                        content_type = config[section].get("content_type", "tag")
+                        content_value = config[section].get("content_value", "")
+
+                        # For episodic blocks, reconstruct content_value from explicit fields if present
+                        if content_type == "episodic":
+                            col_id = config[section].get("collection_id", "")
+                            start_season = config[section].get("start_season", "1")
+                            start_episode = config[section].get("start_episode", "1")
+                            episodes_per_block = config[section].get("episodes_per_block", "1")
+                            if col_id:
+                                content_value = f"{col_id}|{start_season}|{start_episode}|{episodes_per_block}"
+
                         block = TimeBlock(
                             start_time=config[section].get("start_time", "00:00"),
                             end_time=config[section].get("end_time", "00:00"),
-                            content_type=config[section].get("content_type", "tag"),
-                            content_value=config[section].get("content_value", ""),
+                            content_type=content_type,
+                            content_value=content_value,
                             block_id=config[section].get("block_id"),
                             days=days,
                             video_count=config[section].get("video_count") or None,
