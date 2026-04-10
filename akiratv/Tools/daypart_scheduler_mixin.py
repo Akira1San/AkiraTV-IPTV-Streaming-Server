@@ -127,13 +127,14 @@ class DaypartSchedulerMixin:
             self.tag_var.trace_add("write", self.on_tag_select)
             ttk.Button(tag_select_row, text="New", command=self.on_new_tag).pack(side="left", padx=5)
             self.tag_combo['values'] = self.available_tags
-            
-            # Tag video list
-            self.tag_video_list_frame = ttk.Frame(main_frame)
+
+            # Tag video list (inside tag_frame)
+            self.tag_video_list_frame = ttk.Frame(self.tag_frame)
+            self.tag_video_list_frame.pack(fill="both", expand=True, pady=(4, 0))
             ttk.Label(self.tag_video_list_frame, text="Videos with this tag:").pack(anchor="w")
             tag_list_frame = ttk.Frame(self.tag_video_list_frame)
             tag_list_frame.pack(fill="both", expand=True, pady=(5, 0))
-            self.tag_video_list = tk.Listbox(tag_list_frame, height=8)
+            self.tag_video_list = tk.Listbox(tag_list_frame, height=6)
             self.tag_video_list.pack(side="left", fill="both", expand=True)
             tag_scroll = ttk.Scrollbar(tag_list_frame, orient="vertical", command=self.tag_video_list.yview)
             tag_scroll.pack(side="right", fill="y")
@@ -216,12 +217,7 @@ class DaypartSchedulerMixin:
             self.video_list.bind("<<ListboxSelect>>", self.on_video_select)
             
             self.populate_video_list()
-            
-            # Initially hide video frame (only show in video mode)
-            if hasattr(self, 'video_frame'):
-                if self.type_var.get() == "tag":
-                    self.video_frame.pack_forget()
-            
+
             self.selected_video_label = ttk.Label(self.video_frame, text="Selected: None", foreground="blue")
             self.selected_video_label.pack(pady=(5, 0))
             
@@ -286,6 +282,9 @@ class DaypartSchedulerMixin:
             btn_frame.pack(fill="x", pady=(10, 0))
             ttk.Button(btn_frame, text="Cancel", command=self.on_cancel).pack(side="right", padx=5)
             ttk.Button(btn_frame, text="Save", command=self.on_save).pack(side="right", padx=5)
+
+            # Set correct initial visibility based on default type
+            self.on_type_change()
         
         def _refresh_ep_video_list(self):
             """Populate the episodic video listbox from the currently selected collection."""
@@ -383,14 +382,12 @@ class DaypartSchedulerMixin:
             
             if t == "tag":
                 self.tag_frame.pack(fill="x", pady=(0, 10))
-                self.tag_video_list_frame.pack(fill="both", expand=True, pady=(0, 10))
                 if hasattr(self, 'video_frame'):
                     self.video_frame.pack_forget()
                 if hasattr(self, 'episodic_frame'):
                     self.episodic_frame.pack_forget()
             elif t == "video":
                 self.tag_frame.pack_forget()
-                self.tag_video_list_frame.pack_forget()
                 if hasattr(self, 'episodic_frame'):
                     self.episodic_frame.pack_forget()
                 if hasattr(self, 'video_frame'):
@@ -398,7 +395,6 @@ class DaypartSchedulerMixin:
                     self.populate_video_list()
             else:  # episodic
                 self.tag_frame.pack_forget()
-                self.tag_video_list_frame.pack_forget()
                 if hasattr(self, 'video_frame'):
                     self.video_frame.pack_forget()
                 if hasattr(self, 'episodic_frame'):
