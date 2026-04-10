@@ -1719,11 +1719,17 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 key=lambda x: x[0]
             )
 
-            # Build free windows for the day
-            day_start_dt = datetime.combine(target_date, datetime.min.time())
+            # Build free windows for the day, respecting cross-day continuity
+            if base_datetime and base_datetime.date() < target_date:
+                fill_from = base_datetime  # continue from where previous day ended
+            elif base_datetime and base_datetime.date() == target_date and base_datetime.time() > datetime.min.time():
+                fill_from = base_datetime
+            else:
+                fill_from = datetime.combine(target_date, datetime.min.time())
+
             day_end_dt = datetime.combine(target_date, datetime.strptime("23:59", "%H:%M").time())
             free_windows = []
-            cursor = day_start_dt
+            cursor = fill_from
             for occ_start, occ_end in occupied:
                 if cursor < occ_start:
                     free_windows.append((cursor, occ_start))
