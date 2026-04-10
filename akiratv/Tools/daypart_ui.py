@@ -494,6 +494,7 @@ class DaypartSchedulerUI:
         ttk.Button(block_btn_frame, text="Move Up", command=self.app.on_move_block_up).pack(side="left", padx=2)
         ttk.Button(block_btn_frame, text="Move Down", command=self.app.on_move_block_down).pack(side="left", padx=2)
         ttk.Button(block_btn_frame, text="Copy to Channel", command=self.on_copy_blocks_to_channel).pack(side="left", padx=10)
+        ttk.Button(block_btn_frame, text="Add Gap Fill", command=self.app.on_add_gap_fill_block).pack(side="left", padx=(10, 2))
         
         # Block count label
         self.app.block_count_label = ttk.Label(block_panel, text="Total blocks: 0")
