@@ -1666,20 +1666,33 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 return datetime.min.time()
         time_blocks = sorted(time_blocks, key=_block_sort_key)
 
-        for block_data in time_blocks:
+        # Pre-compute which blocks apply to today so we can clip each block
+        # to stop before the next block's start time
+        active_block_starts = []
+        for bd in time_blocks:
+            b = TimeBlock.from_dict(bd)
+            b_days = b.days if hasattr(b, 'days') and b.days else []
+            if not b_days and b.content_type in ("tag", "episodic"):
+                parts = b.content_value.split("|")
+                if len(parts) >= 2:
+                    b_days = [d.strip() for d in parts[1].split(",") if d.strip()]
+            applies = (not b_days) or (weekday in get_weekday_indices(b_days))
+            if applies:
+                active_block_starts.append(
+                    datetime.combine(target_date, parse_time_string(b.start_time).time())
+                )
+
+        for i, block_data in enumerate(time_blocks):
             block = TimeBlock.from_dict(block_data)
             
             # Parse days from content_value if not set (for backward compatibility)
-            # Format: "tag_name|monday,tuesday,friday|single"
             block_days = block.days if hasattr(block, 'days') and block.days else None
-            
             if not block_days and block.content_type in ("tag", "episodic"):
-                # Try to extract days from content_value
                 content_parts = block.content_value.split("|")
                 if len(content_parts) >= 2:
                     days_str = content_parts[1]
                     block_days = [d.strip() for d in days_str.split(",") if d.strip()]
-            
+
             # Each block always starts at its own scheduled start_time.
             # Only push forward if we're continuing from a previous day that ran past it.
             block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
@@ -1687,46 +1700,43 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 effective_start = current_time
             else:
                 effective_start = block_start_dt
-            
-            if block.content_type in ("tag", "episodic") and block_days:
-                # Tag block with specific days - check if today is in the list
-                if weekday in get_weekday_indices(block_days):
-                    block_entries = generate_block_schedule(
-                        block,
-                        available_videos,
-                        recent_videos,
-                        channel,
-                        start_datetime=effective_start
-                    )
-                    schedule_entries.extend(block_entries)
-                    # Update current_time to track where this block ended
-                    if block_entries:
-                        # BUG FIX: The previous code just took the last entry's time,
-                        # but that's when the video STARTED, not when it ENDED!
-                        # We need to add the video duration to get the actual end time.
-                        last_entry = block_entries[-1]
-                        last_entry_time = datetime.strptime(last_entry["time"], "%H:%M:%S")
-                        last_entry_duration = last_entry.get("duration", 5400)  # Default 90 min
-                        last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
-                        current_time = last_entry_end
-            else:
-                # Video block or tag block without specific days - apply to all days
+
+            # Clip block end to the next active block's start so gap fill doesn't
+            # overrun into a specifically scheduled block's time window
+            block_end_dt = datetime.combine(target_date, parse_time_string(block.end_time).time())
+            next_starts = [s for s in active_block_starts if s > block_start_dt]
+            if next_starts:
+                next_block_start = min(next_starts)
+                if next_block_start < block_end_dt:
+                    block_end_dt = next_block_start
+
+            # Create a clipped copy of the block with the adjusted end time
+            clipped_block = TimeBlock(
+                start_time=block.start_time,
+                end_time=block_end_dt.strftime("%H:%M"),
+                content_type=block.content_type,
+                content_value=block.content_value,
+                block_id=block.block_id,
+                days=block.days,
+                video_count=block.video_count,
+                approximate=getattr(block, 'approximate', False)
+            )
+            clipped_block.collection_file = getattr(block, 'collection_file', '') or ''
+
+            applies_today = (not block_days) or (weekday in get_weekday_indices(block_days))
+            if applies_today:
                 block_entries = generate_block_schedule(
-                    block,
+                    clipped_block,
                     available_videos,
                     recent_videos,
                     channel,
                     start_datetime=effective_start
                 )
                 schedule_entries.extend(block_entries)
-                # Update current_time to track where this block ended
                 if block_entries:
-                    # BUG FIX: The previous code just took the last entry's time,
-                    # but that's when the video STARTED, not when it ENDED!
-                    # We need to add the video duration to get the actual end time.
                     last_entry = block_entries[-1]
                     last_entry_time = datetime.strptime(last_entry["time"], "%H:%M:%S")
-                    last_entry_duration = last_entry.get("duration", 5400)  # Default 90 min
+                    last_entry_duration = last_entry.get("duration", 5400)
                     last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
                     current_time = last_entry_end
     
