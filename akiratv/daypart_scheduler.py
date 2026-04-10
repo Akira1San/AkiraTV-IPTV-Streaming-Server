@@ -1864,18 +1864,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 else:
                     logger.info(f"[{channel}] No gaps to fill")
     
-    # 4. Handle approximate blocks - move them to fit around ALL scheduled content (including gap filler)
-    # This runs AFTER gap filling so we can move blocks to fit around gap_filler videos
-    _handle_approximate_blocks(
-        schedule_entries,
-        daypart_inner.get("time_blocks", []),
-        daypart_inner,
-        weekday,
-        target_date,
-        channel,
-        available_videos,
-        recent_videos
-    )
+    # NOTE: _handle_approximate_blocks is disabled — the new gap fill system
+    # handles block placement correctly without needing post-processing.
+    # Approximate flag on individual blocks is preserved for future use.
     
     # After approximate handling, sort entries by time
     # 4. Sort by time
