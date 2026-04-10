@@ -1315,10 +1315,10 @@ class DaypartSchedulerMixin:
                         video["collection"] = col
                         available_videos.append(video)
 
-            # Also load videos from episodic block collection files
+            # Also load videos from episodic and tag block collection files
             loaded_col_ids = {col.get("id") for col in collections}
             for block in self.daypart_time_blocks:
-                if block.content_type == "episodic":
+                if block.content_type in ("episodic", "tag"):
                     col_file = getattr(block, "collection_file", "") or ""
                     if col_file:
                         try:
@@ -1330,9 +1330,10 @@ class DaypartSchedulerMixin:
                                     for video in col.get("videos", []):
                                         if video["path"] not in self.blacklisted_videos:
                                             video["collection"] = col
+                                            video["_col_file"] = col_file
                                             available_videos.append(video)
                         except Exception as ex:
-                            logger.warning(f"Could not load episodic collection file {col_file}: {ex}")
+                            logger.warning(f"Could not load collection file {col_file}: {ex}")
 
             try:
                 use_approx = self.use_approximation_var.get()
@@ -1351,6 +1352,7 @@ class DaypartSchedulerMixin:
                     video_count=block.video_count,
                     approximate=use_approx
                 )
+                block_copy.collection_file = getattr(block, 'collection_file', '') or ''
                 time_blocks_for_gen.append(block_copy)
 
             daypart_config = {
