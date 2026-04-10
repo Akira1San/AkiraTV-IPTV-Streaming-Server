@@ -104,14 +104,28 @@ class DaypartSchedulerMixin:
                            value="episodic", command=self.on_type_change).pack(side="left", padx=5)
             
             # Tag selection (shown for tag mode)
-            self.tag_frame = ttk.Frame(main_frame)
+            self.tag_frame = ttk.LabelFrame(main_frame, text="Tag Settings", padding=6)
             self.tag_frame.pack(fill="x", pady=(0, 10))
-            ttk.Label(self.tag_frame, text="Select Tag:").pack(side="left", padx=(0, 5))
+
+            # Collection file row for tag mode
+            tag_col_row = ttk.Frame(self.tag_frame)
+            tag_col_row.pack(fill="x", pady=(0, 4))
+            ttk.Label(tag_col_row, text="Collection:").pack(side="left", padx=(0, 5))
+            self._tag_col_file = ""  # path of loaded collection file for tag mode
+            self._tag_col_file_label = ttk.Label(tag_col_row, text="Using profile collections",
+                                                  font=("", 8), foreground="gray")
+            self._tag_col_file_label.pack(side="left", padx=(0, 6))
+            ttk.Button(tag_col_row, text="Browse…", command=self._tag_browse_collection).pack(side="left")
+
+            # Tag combobox row
+            tag_select_row = ttk.Frame(self.tag_frame)
+            tag_select_row.pack(fill="x", pady=(0, 4))
+            ttk.Label(tag_select_row, text="Select Tag:").pack(side="left", padx=(0, 5))
             self.tag_var = tk.StringVar()
-            self.tag_combo = ttk.Combobox(self.tag_frame, textvariable=self.tag_var, state="normal")
+            self.tag_combo = ttk.Combobox(tag_select_row, textvariable=self.tag_var, state="normal")
             self.tag_combo.pack(side="left", fill="x", expand=True)
             self.tag_var.trace_add("write", self.on_tag_select)
-            ttk.Button(self.tag_frame, text="New", command=self.on_new_tag).pack(side="left", padx=5)
+            ttk.Button(tag_select_row, text="New", command=self.on_new_tag).pack(side="left", padx=5)
             self.tag_combo['values'] = self.available_tags
             
             # Tag video list
@@ -328,6 +342,41 @@ class DaypartSchedulerMixin:
             except Exception as ex:
                 messagebox.showerror("Error", f"Could not load file:\n{ex}")
 
+        def _tag_browse_collection(self):
+            """Let the user pick a collections_*.json file to source tags from."""
+            from tkinter import filedialog
+            path = filedialog.askopenfilename(
+                title="Open collection file",
+                filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+            )
+            if not path:
+                return
+            try:
+                import json as _json
+                with open(path, "r", encoding="utf-8") as f:
+                    data = _json.load(f)
+                cols = data.get("collections", [])
+                if not cols:
+                    messagebox.showwarning("Empty", "No collections found in that file.")
+                    return
+                # Update available videos and tags from this file
+                self._tag_col_file = path
+                self._tag_col_file_label.config(text=f"File: {Path(path).name}")
+                self.available_videos = []
+                all_tags = set()
+                for col in cols:
+                    for video in col.get("videos", []):
+                        video["collection"] = col
+                        self.available_videos.append(video)
+                    all_tags.update(col.get("tags", []))
+                self.available_tags = sorted(list(all_tags))
+                self.tag_combo["values"] = self.available_tags
+                if self.available_tags:
+                    self.tag_combo.set(self.available_tags[0])
+                self.populate_tag_videos()
+            except Exception as ex:
+                messagebox.showerror("Error", f"Could not load file:\n{ex}")
+
         def on_type_change(self):
             """Toggle between tag, video, and episodic mode"""
             t = self.type_var.get()
@@ -527,6 +576,30 @@ class DaypartSchedulerMixin:
                 selected_days = [d for d, v in self.day_vars.items() if v.get()]
                 if len(selected_days) == len(all_days):
                     self.all_days_var.set(True)
+                # Restore collection file for tag blocks
+                col_file = getattr(self.block, 'collection_file', "") or ""
+                if col_file:
+                    try:
+                        import json as _json
+                        with open(col_file, "r", encoding="utf-8") as f:
+                            data = _json.load(f)
+                        cols = data.get("collections", [])
+                        if cols:
+                            self._tag_col_file = col_file
+                            self._tag_col_file_label.config(text=f"File: {Path(col_file).name}")
+                            self.available_videos = []
+                            all_tags = set()
+                            for col in cols:
+                                for video in col.get("videos", []):
+                                    video["collection"] = col
+                                    self.available_videos.append(video)
+                                all_tags.update(col.get("tags", []))
+                            self.available_tags = sorted(list(all_tags))
+                            self.tag_combo["values"] = self.available_tags
+                    except Exception:
+                        pass
+                self.tag_var.set(self.block.content_value)
+                self.populate_tag_videos()
             elif self.block.content_type == "episodic":
                 parts = self.block.content_value.split("|")
                 col_id = parts[0] if parts else ""
@@ -696,8 +769,7 @@ class DaypartSchedulerMixin:
                 days = [day for day, var in self.day_vars.items() if var.get()]
                 if self.all_days_var.get():
                     days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-                video_count = self.video_count_var.get()
-            elif content_type == "episodic":
+                video_count = self.video_count_var.get()            elif content_type == "episodic":
                 idx = self.ep_collection_combo.current()
                 if idx < 0 or idx >= len(self.available_collections):
                     messagebox.showerror("Error", "Please select a collection")
@@ -731,6 +803,8 @@ class DaypartSchedulerMixin:
             # restored when the INI is reloaded and the block is edited again
             if content_type == "episodic":
                 self.result.collection_file = getattr(self, '_ep_loaded_file', "") or ""
+            elif content_type == "tag":
+                self.result.collection_file = getattr(self, '_tag_col_file', "") or ""
             self.destroy()
     
     # ========================================================================
@@ -973,11 +1047,11 @@ class DaypartSchedulerMixin:
                         video["collection"] = col
                         available_videos.append(video)
 
-            # Also load videos from episodic block collection files not in the current profile
+            # Also load videos from episodic/tag block collection files not in the current profile
             import json as _json
             loaded_col_ids = {col.get("id") for col in collections}
             for block in self.daypart_time_blocks:
-                if block.content_type == "episodic":
+                if block.content_type in ("episodic", "tag"):
                     col_file = getattr(block, "collection_file", "") or ""
                     if col_file:
                         try:
@@ -991,7 +1065,7 @@ class DaypartSchedulerMixin:
                                             video["collection"] = col
                                             available_videos.append(video)
                         except Exception as ex:
-                            logger.warning(f"Could not load episodic collection file {col_file}: {ex}")
+                            logger.warning(f"Could not load collection file {col_file}: {ex}")
             
             # Check global approximate setting - try both self.app and self references
             try:
