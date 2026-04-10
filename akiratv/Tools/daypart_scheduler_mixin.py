@@ -1128,9 +1128,14 @@ class DaypartSchedulerMixin:
                     use_global_approximate = False
             print(f"[DEBUG] Global approximate setting: {use_global_approximate}")
             
-            # Create copies of blocks with approximate set based on global checkbox
+            # Create copies of blocks — approximate only if the block itself has it set
+            # The global checkbox enables approximate for blocks that were individually marked
             time_blocks_for_preview = []
             for block in self.daypart_time_blocks:
+                block_approximate = getattr(block, 'approximate', False) or use_global_approximate
+                # Gap fill blocks (00:00-23:59) should never be approximate
+                if block.start_time == "00:00" and block.end_time in ("23:59", "24:00"):
+                    block_approximate = False
                 block_copy = TimeBlock(
                     start_time=block.start_time,
                     end_time=block.end_time,
@@ -1139,7 +1144,7 @@ class DaypartSchedulerMixin:
                     block_id=block.block_id,
                     days=block.days,
                     video_count=block.video_count,
-                    approximate=use_global_approximate  # Use global setting
+                    approximate=block_approximate
                 )
                 block_copy.collection_file = getattr(block, 'collection_file', '') or ''
                 time_blocks_for_preview.append(block_copy)
