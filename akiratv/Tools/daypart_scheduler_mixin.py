@@ -530,6 +530,21 @@ class DaypartSchedulerMixin:
             elif self.block.content_type == "episodic":
                 parts = self.block.content_value.split("|")
                 col_id = parts[0] if parts else ""
+                # Restore the collection file path and reload collections into combobox
+                self._ep_loaded_file = getattr(self.block, 'collection_file', "") or ""
+                if self._ep_loaded_file:
+                    try:
+                        import json as _json
+                        with open(self._ep_loaded_file, "r", encoding="utf-8") as f:
+                            data = _json.load(f)
+                        loaded_cols = data.get("collections", [])
+                        if loaded_cols:
+                            self.available_collections = loaded_cols
+                            col_names = [c.get("name", c.get("id", "")) for c in self.available_collections]
+                            self.ep_collection_combo["values"] = col_names
+                    except Exception:
+                        pass
+                    self._ep_file_label.config(text=f"File: {Path(self._ep_loaded_file).name}")
                 for i, c in enumerate(self.available_collections):
                     if c.get("id", "") == col_id or c.get("name", "") == col_id:
                         self.ep_collection_combo.current(i)
@@ -540,10 +555,6 @@ class DaypartSchedulerMixin:
                 for day in self.block.days:
                     if day in self.day_vars:
                         self.day_vars[day].set(True)
-                # Restore the collection file path
-                self._ep_loaded_file = getattr(self.block, 'collection_file', "") or ""
-                if self._ep_loaded_file:
-                    self._ep_file_label.config(text=f"File: {Path(self._ep_loaded_file).name}")
                 self._refresh_ep_video_list()
             else:
                 self.type_var.set("video")
