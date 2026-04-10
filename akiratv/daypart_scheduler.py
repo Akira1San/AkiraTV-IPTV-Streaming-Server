@@ -818,7 +818,19 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         
         # Check both video-level tags and collection-level tags (videos inherit tags from their collection)
         tag_videos = [v for v in available_videos 
-                      if tag in v.get("tags", []) or tag in v.get("collection", {}).get("tags", [])]
+                      if tag in v.get("tags", []) or tag in v.get("collection", {}).get("tags", [])
+                      or tag == v.get("collection", {}).get("name", "")]
+        
+        # If no tag match and block has a collection_file, fall back to all videos from that file
+        if not tag_videos:
+            col_file = getattr(block, 'collection_file', "") or ""
+            if col_file:
+                tag_videos = [v for v in available_videos
+                              if v.get("collection", {}).get("source_file", "") == col_file
+                              or v.get("_col_file", "") == col_file]
+            # Last resort: use all available_videos if still empty
+            if not tag_videos:
+                tag_videos = list(available_videos)
         
         if not tag_videos:
             logger.warning(f"[{channel}] No videos found for tag: {tag}")

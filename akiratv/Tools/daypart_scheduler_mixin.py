@@ -358,7 +358,6 @@ class DaypartSchedulerMixin:
                 if not cols:
                     messagebox.showwarning("Empty", "No collections found in that file.")
                     return
-                # Update available videos and tags from this file
                 self._tag_col_file = path
                 self._tag_col_file_label.config(text=f"File: {Path(path).name}")
                 self.available_videos = []
@@ -368,6 +367,9 @@ class DaypartSchedulerMixin:
                         video["collection"] = col
                         self.available_videos.append(video)
                     all_tags.update(col.get("tags", []))
+                # If no tags defined, use collection names as tag options
+                if not all_tags:
+                    all_tags = {col.get("name", col.get("id", "")) for col in cols}
                 self.available_tags = sorted(list(all_tags))
                 self.tag_combo["values"] = self.available_tags
                 if self.available_tags:
@@ -510,12 +512,17 @@ class DaypartSchedulerMixin:
             self.tag_video_list.delete(0, tk.END)
             if not selected_tag:
                 return
+            matched = []
             for video in self.available_videos:
-                # Get tags from collection (tags are stored in collection, not video)
                 collection_tags = video.get("collection", {}).get("tags", [])
-                if selected_tag in collection_tags:
-                    filename = Path(video.get("path", "")).name
-                    self.tag_video_list.insert(tk.END, filename)
+                collection_name = video.get("collection", {}).get("name", "")
+                if selected_tag in collection_tags or selected_tag == collection_name:
+                    matched.append(video)
+            # If no tag match, show all videos (collection has no tags defined)
+            display_videos = matched if matched else self.available_videos
+            for video in display_videos:
+                filename = Path(video.get("path", "")).name
+                self.tag_video_list.insert(tk.END, filename)
         
         def filter_videos(self, *args):
             """Filter video list based on search"""
@@ -1060,6 +1067,7 @@ class DaypartSchedulerMixin:
                                     for video in col.get("videos", []):
                                         if video["path"] not in self.blacklisted_videos:
                                             video["collection"] = col
+                                            video["_col_file"] = col_file  # stamp for fallback matching
                                             available_videos.append(video)
                         except Exception as ex:
                             logger.warning(f"Could not load collection file {col_file}: {ex}")
