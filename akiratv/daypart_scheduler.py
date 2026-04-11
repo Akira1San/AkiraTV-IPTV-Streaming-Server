@@ -1765,41 +1765,23 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     last_entry_end = datetime.combine(target_date, last_entry_time.time()) + timedelta(seconds=last_entry_duration)
                     current_time = last_entry_end
 
-        # --- Pass 2: fill gaps around specific blocks using gap fill blocks ---
+        # --- Pass 2: gap fill + approximate snapping ---
         if gap_fill_blocks:
-            # Collect the time windows occupied by specific block entries
-            occupied = sorted(
-                [(datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()),
-                  datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()) + timedelta(seconds=e.get("duration", 5400)))
-                 for e in schedule_entries],
-                key=lambda x: x[0]
-            )
-
-            # Build free windows for the day, respecting cross-day continuity
             if base_datetime and base_datetime.date() < target_date:
-                fill_from = base_datetime  # continue from where previous day ended
+                fill_from = base_datetime
             elif base_datetime and base_datetime.date() == target_date and base_datetime.time() > datetime.min.time():
                 fill_from = base_datetime
             else:
                 fill_from = datetime.combine(target_date, datetime.min.time())
 
             day_end_dt = datetime.combine(target_date, datetime.strptime("23:59", "%H:%M").time())
-            free_windows = []
-            cursor = fill_from
-            for occ_start, occ_end in occupied:
-                if cursor < occ_start:
-                    free_windows.append((cursor, occ_start))
-                cursor = max(cursor, occ_end)
-            if cursor < day_end_dt:
-                free_windows.append((cursor, day_end_dt))
 
             def _fill_windows(windows):
                 for gf_data in gap_fill_blocks:
                     gf_block = TimeBlock.from_dict(gf_data)
                     gf_block.collection_file = gf_data.get("collection_file", "") or ""
                     for win_start, win_end in windows:
-                        win_duration = (win_end - win_start).total_seconds()
-                        if win_duration <= 0:
+                        if (win_end - win_start).total_seconds() <= 0:
                             continue
                         win_block = TimeBlock(
                             start_time=win_start.strftime("%H:%M"),
@@ -1818,39 +1800,40 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         )
                         schedule_entries.extend(win_entries)
 
-            _fill_windows(free_windows)
+            # Step A: fill the FULL day (ignoring specific block positions)
+            # so snapping has real gap fill videos to snap against
+            _fill_windows([(fill_from, day_end_dt)])
 
-            # --- Pass 3: approximate snapping ---
-            # Snap specific blocks that have approximate=True to avoid overlapping
-            # gap fill videos, then re-fill any new gaps created by the shift.
+            # Step B: snap approximate blocks against the gap fill entries
             snapped = _apply_approximate_snapping(
                 schedule_entries, specific_blocks, weekday, target_date, channel
             )
-            if snapped:
-                # Remove all gap fill entries and re-fill around the snapped positions
-                specific_block_ids = {
-                    TimeBlock.from_dict(bd).block_id for bd in specific_blocks
-                }
-                schedule_entries[:] = [
-                    e for e in schedule_entries
-                    if e.get("daypart_block_id") in specific_block_ids
-                ]
-                # Recalculate free windows from snapped specific entries
-                occupied2 = sorted(
-                    [(datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()),
-                      datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()) + timedelta(seconds=e.get("duration", 5400)))
-                     for e in schedule_entries],
-                    key=lambda x: x[0]
-                )
-                free_windows2 = []
-                cursor2 = fill_from
-                for occ_start, occ_end in occupied2:
-                    if cursor2 < occ_start:
-                        free_windows2.append((cursor2, occ_start))
-                    cursor2 = max(cursor2, occ_end)
-                if cursor2 < day_end_dt:
-                    free_windows2.append((cursor2, day_end_dt))
-                _fill_windows(free_windows2)
+
+            # Step C: remove ALL gap fill entries, then re-fill around
+            # the (possibly snapped) specific block positions
+            specific_block_ids = {TimeBlock.from_dict(bd).block_id for bd in specific_blocks}
+            schedule_entries[:] = [
+                e for e in schedule_entries
+                if e.get("daypart_block_id") in specific_block_ids
+            ]
+
+            occupied = sorted(
+                [(datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()),
+                  datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time())
+                  + timedelta(seconds=e.get("duration", 5400)))
+                 for e in schedule_entries],
+                key=lambda x: x[0]
+            )
+            free_windows = []
+            cursor = fill_from
+            for occ_start, occ_end in occupied:
+                if cursor < occ_start:
+                    free_windows.append((cursor, occ_start))
+                cursor = max(cursor, occ_end)
+            if cursor < day_end_dt:
+                free_windows.append((cursor, day_end_dt))
+
+            _fill_windows(free_windows)
     
     # 2b. TEMPORARILY DISABLED - approximate blocks are handled AFTER gap filling now
     # This runs after initial block scheduling but before gap filling
