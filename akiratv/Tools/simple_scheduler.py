@@ -65,6 +65,19 @@ def load_collections(profile_name="collections"):
         print(f"Error loading collections: {e}")
         return []
 
+def _normalize_path(path_str):
+    """Normalize a path string to the current OS format.
+    Handles Windows paths (C:\\... or C:/...) on Linux by stripping the drive letter."""
+    if not path_str:
+        return path_str
+    p = path_str.strip()
+    # Convert backslashes to forward slashes
+    p = p.replace("\\", "/")
+    # Strip Windows drive letter (e.g. "C:/foo" -> "/foo")
+    if len(p) >= 2 and p[1] == ":":
+        p = p[2:]
+    return p
+
 def load_blacklist(profile_name="collections"):
     """Load blacklist from INI file matching the profile name"""
     try:
@@ -87,7 +100,8 @@ def load_blacklist(profile_name="collections"):
             config.read(ini_file, encoding="utf-8")
             
             if "Blacklist" in config:
-                return set(config["Blacklist"].get("videos", "").splitlines())
+                raw = config["Blacklist"].get("videos", "").splitlines()
+                return set(_normalize_path(p) for p in raw if p.strip())
         return set()
     except Exception as e:
         print(f"Error loading blacklist: {e}")
@@ -1325,7 +1339,7 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         skipped_count = 0
         for collection in self.selected_collections:
             for video in collection.get("videos", []):
-                video_path = video.get("path", "")
+                video_path = _normalize_path(video.get("path", ""))
                 
                 # Skip missing videos (don't add them)
                 if video_path and not Path(video_path).exists():
