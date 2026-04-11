@@ -1579,14 +1579,15 @@ def _gaps_from_actual_ends(
 
 
 def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[dict],
-                                 weekday: int, target_date: date, channel: str):
+                                 weekday: int, target_date: date, channel: str) -> bool:
     """
     For blocks marked approximate=True, snap their start time to avoid overlapping
     with gap fill videos. Rules:
     - If a gap fill video ends AFTER the block's scheduled start → shift block to start after that video
     - If a gap fill video ends BEFORE the block's scheduled start → keep scheduled start (clean gap)
-    This ensures continuous streaming with no overlaps.
+    Returns True if any snapping was done.
     """
+    snapped = False
     for block_data in time_blocks:
         block = TimeBlock.from_dict(block_data)
         if not getattr(block, 'approximate', False):
@@ -1605,7 +1606,6 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
         scheduled_start = datetime.combine(target_date, parse_time_string(block.start_time).time())
 
         # Find gap fill video that overlaps the scheduled start time
-        # (i.e. started before scheduled_start and ends after it)
         overlapping_end = None
         for entry in schedule_entries:
             if entry.get("daypart_block_id") == block.block_id:
@@ -1613,7 +1613,6 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
             entry_start = datetime.combine(target_date,
                 datetime.strptime(entry["time"], "%H:%M:%S").time())
             entry_end = entry_start + timedelta(seconds=entry.get("duration", 5400))
-            # Gap fill video overlaps our scheduled start
             if entry_start < scheduled_start < entry_end:
                 overlapping_end = entry_end
                 break
@@ -1631,6 +1630,9 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
 
         logger.info(f"[{channel}] Approximate: shifted block {block.block_id} by "
                     f"{shift.total_seconds()/60:.1f} min (gap video ended at {overlapping_end.strftime('%H:%M')})")
+        snapped = True
+
+    return snapped
 
 
 def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
@@ -1792,32 +1794,64 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             if cursor < day_end_dt:
                 free_windows.append((cursor, day_end_dt))
 
-            # Use the first gap fill block's video pool to fill each free window
-            for gf_data in gap_fill_blocks:
-                gf_block = TimeBlock.from_dict(gf_data)
-                gf_block.collection_file = gf_data.get("collection_file", "") or ""
+            def _fill_windows(windows):
+                for gf_data in gap_fill_blocks:
+                    gf_block = TimeBlock.from_dict(gf_data)
+                    gf_block.collection_file = gf_data.get("collection_file", "") or ""
+                    for win_start, win_end in windows:
+                        win_duration = (win_end - win_start).total_seconds()
+                        if win_duration <= 0:
+                            continue
+                        win_block = TimeBlock(
+                            start_time=win_start.strftime("%H:%M"),
+                            end_time=win_end.strftime("%H:%M"),
+                            content_type=gf_block.content_type,
+                            content_value=gf_block.content_value,
+                            block_id=gf_block.block_id,
+                            days=gf_block.days,
+                            video_count=gf_block.video_count,
+                            approximate=False
+                        )
+                        win_block.collection_file = gf_block.collection_file
+                        win_entries = generate_block_schedule(
+                            win_block, available_videos, recent_videos, channel,
+                            start_datetime=win_start
+                        )
+                        schedule_entries.extend(win_entries)
 
-                for win_start, win_end in free_windows:
-                    win_duration = (win_end - win_start).total_seconds()
-                    if win_duration <= 0:
-                        continue
-                    # Create a temporary block for this window
-                    win_block = TimeBlock(
-                        start_time=win_start.strftime("%H:%M"),
-                        end_time=win_end.strftime("%H:%M"),
-                        content_type=gf_block.content_type,
-                        content_value=gf_block.content_value,
-                        block_id=gf_block.block_id,
-                        days=gf_block.days,
-                        video_count=gf_block.video_count,
-                        approximate=getattr(gf_block, 'approximate', False)
-                    )
-                    win_block.collection_file = gf_block.collection_file
-                    win_entries = generate_block_schedule(
-                        win_block, available_videos, recent_videos, channel,
-                        start_datetime=win_start
-                    )
-                    schedule_entries.extend(win_entries)
+            _fill_windows(free_windows)
+
+            # --- Pass 3: approximate snapping ---
+            # Snap specific blocks that have approximate=True to avoid overlapping
+            # gap fill videos, then re-fill any new gaps created by the shift.
+            snapped = _apply_approximate_snapping(
+                schedule_entries, specific_blocks, weekday, target_date, channel
+            )
+            if snapped:
+                # Remove all gap fill entries and re-fill around the snapped positions
+                specific_block_ids = {
+                    TimeBlock.from_dict(bd).block_id for bd in specific_blocks
+                }
+                schedule_entries[:] = [
+                    e for e in schedule_entries
+                    if e.get("daypart_block_id") in specific_block_ids
+                ]
+                # Recalculate free windows from snapped specific entries
+                occupied2 = sorted(
+                    [(datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()),
+                      datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()) + timedelta(seconds=e.get("duration", 5400)))
+                     for e in schedule_entries],
+                    key=lambda x: x[0]
+                )
+                free_windows2 = []
+                cursor2 = fill_from
+                for occ_start, occ_end in occupied2:
+                    if cursor2 < occ_start:
+                        free_windows2.append((cursor2, occ_start))
+                    cursor2 = max(cursor2, occ_end)
+                if cursor2 < day_end_dt:
+                    free_windows2.append((cursor2, day_end_dt))
+                _fill_windows(free_windows2)
     
     # 2b. TEMPORARILY DISABLED - approximate blocks are handled AFTER gap filling now
     # This runs after initial block scheduling but before gap filling
@@ -1919,12 +1953,17 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 else:
                     logger.info(f"[{channel}] No gaps to fill")
     
-    # 4. Approximate block start times to avoid overlaps with gap fill videos.
-    # For each specific block marked approximate (or when global approximate is on),
-    # find the gap fill video that overlaps or precedes the block's scheduled start
-    # and snap the block's entries to start right after that video ends.
-    _apply_approximate_snapping(schedule_entries, daypart_inner.get("time_blocks", []),
-                                weekday, target_date, channel)
+    # Approximate snapping is handled in pass 3 above (inside the gap_fill_blocks branch).
+    # If there are no gap fill blocks, run snapping standalone (no re-fill needed).
+    if not is_marathon_day:
+        _specific = [bd for bd in daypart_inner.get("time_blocks", [])
+                     if not (bd.get("start_time","00:00") == "00:00"
+                             and bd.get("end_time","23:59") in ("23:59","24:00"))]
+        _has_gap_fill = any(bd.get("start_time","00:00") == "00:00"
+                            and bd.get("end_time","23:59") in ("23:59","24:00")
+                            for bd in daypart_inner.get("time_blocks", []))
+        if not _has_gap_fill:
+            _apply_approximate_snapping(schedule_entries, _specific, weekday, target_date, channel)
     
     # After approximate handling, sort entries by time
     # 4. Sort by time
