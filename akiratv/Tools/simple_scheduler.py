@@ -455,6 +455,7 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         blacklist_mgmt_frame.pack(fill="x", pady=(5, 5))
         ttk.Button(blacklist_mgmt_frame, text="Remove from Blacklist", command=self.remove_from_blacklist_tab).pack(side="left", padx=5)
         ttk.Button(blacklist_mgmt_frame, text="Clear Blacklist", command=self.clear_blacklist).pack(side="left", padx=5)
+        ttk.Button(blacklist_mgmt_frame, text="Fix Paths", command=self.fix_blacklist_paths).pack(side="left", padx=5)
         
         # Blacklist list frame
         blacklist_list_frame = ttk.Frame(blacklist_tab)
@@ -1538,7 +1539,46 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
             self.blacklisted_videos.clear()
             self.update_added_list_display()
             messagebox.showinfo("Success", "Blacklist cleared!")
-    
+
+    def fix_blacklist_paths(self):
+        """Try to remap blacklisted paths that are missing by matching filenames
+        against videos in the currently loaded collections."""
+        if not self.blacklisted_videos:
+            messagebox.showinfo("Info", "Blacklist is empty, nothing to fix.")
+            return
+
+        # Build a filename -> actual path map from all collection videos
+        filename_to_path = {}
+        for col in self.collections:
+            for video in col.get("videos", []):
+                raw = _normalize_path(video.get("path", ""))
+                if raw:
+                    filename_to_path[Path(raw).name.lower()] = raw
+
+        fixed = 0
+        not_found = 0
+        new_blacklist = set()
+        for old_path in list(self.blacklisted_videos):
+            if Path(old_path).exists():
+                new_blacklist.add(old_path)  # already valid
+            else:
+                filename = Path(old_path).name.lower()
+                new_path = filename_to_path.get(filename)
+                if new_path and Path(new_path).exists():
+                    new_blacklist.add(new_path)
+                    fixed += 1
+                else:
+                    new_blacklist.add(old_path)  # keep as-is, still missing
+                    not_found += 1
+
+        self.blacklisted_videos = new_blacklist
+        self.update_added_list_display()
+
+        msg = f"Fixed {fixed} path(s)."
+        if not_found:
+            msg += f"\n{not_found} path(s) could not be resolved (file not found in collections)."
+        messagebox.showinfo("Fix Paths", msg)
+
     def on_added_video_select(self, event):
         """Handle added video selection - update info panel with selected video"""
         selection = self.added_list.curselection()
