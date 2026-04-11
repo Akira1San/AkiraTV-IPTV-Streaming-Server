@@ -1170,7 +1170,9 @@ class DaypartSchedulerMixin:
                     daypart_config,
                     available_videos,
                     self.current_channel or "default",
-                    target_date
+                    target_date,
+                    preview_mode=True,
+                    preview_ep_state={}
                 )
                 day_name = target_date.strftime("%A").lower()
                 for entry in entries:
@@ -1179,8 +1181,8 @@ class DaypartSchedulerMixin:
                 
             elif preview_mode == "weekly":
                 # Generate for 7 days starting from today
-                # Track the current time for continuous scheduling across days
-                current_time = None  # Will be set to midnight of first day
+                current_time = None
+                preview_ep_state = {}  # shared across days so episodes advance
                 for day_offset in range(7):
                     target_date = date.today() + timedelta(days=day_offset)
                     if current_time is None:
@@ -1190,7 +1192,9 @@ class DaypartSchedulerMixin:
                         available_videos,
                         self.current_channel or "default",
                         target_date,
-                        base_datetime=current_time
+                        base_datetime=current_time,
+                        preview_mode=True,
+                        preview_ep_state=preview_ep_state
                     )
                     day_name = target_date.strftime("%A").lower()
                     for entry in entries:
@@ -1211,8 +1215,9 @@ class DaypartSchedulerMixin:
                     end_date = date(int(end_parts[0]), int(end_parts[1]), int(end_parts[2]))
                     
                     # Track the current time for continuous scheduling
-                    current_time = None  # Will be set to midnight of first day
+                    current_time = None
                     current_date = start_date
+                    preview_ep_state = {}  # shared across days so episodes advance
                     while current_date <= end_date:
                         if current_time is None:
                             current_time = datetime.combine(current_date, datetime.min.time())
@@ -1221,7 +1226,9 @@ class DaypartSchedulerMixin:
                             available_videos,
                             self.current_channel or "default",
                             current_date,
-                            base_datetime=current_time
+                            base_datetime=current_time,
+                            preview_mode=True,
+                            preview_ep_state=preview_ep_state
                         )
                         day_name = current_date.strftime("%A").lower()
                         for entry in entries:

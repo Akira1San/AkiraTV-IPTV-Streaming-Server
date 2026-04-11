@@ -21,6 +21,32 @@ USER_DIR = BASE_DIR / "user"
 SCHEDULE_DIR = USER_DIR / "schedules"
 SCHEDULE_DIR.mkdir(parents=True, exist_ok=True)
 
+# Episodic state: tracks which episode index each block is at across days
+EPISODIC_STATE_DIR = USER_DIR / "episodic_state"
+EPISODIC_STATE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _load_episodic_state(channel: str) -> dict:
+    """Load the episodic episode-index state for a channel."""
+    state_file = EPISODIC_STATE_DIR / f"{channel}_episodic_state.json"
+    if state_file.exists():
+        try:
+            with open(state_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def _save_episodic_state(channel: str, state: dict):
+    """Persist the episodic episode-index state for a channel."""
+    state_file = EPISODIC_STATE_DIR / f"{channel}_episodic_state.json"
+    try:
+        with open(state_file, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2)
+    except Exception as e:
+        logger.warning(f"[{channel}] Could not save episodic state: {e}")
+
 # Approximate timing utilities live in a separate module
 from .daypart_approximate import (
     approximate_block_timing,
@@ -476,7 +502,9 @@ def validate_time_block(block: TimeBlock) -> Optional[str]:
 def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
                            recent_videos: List[Tuple[str, datetime]] = None,
                            channel: str = "",
-                           start_datetime: datetime = None) -> List[dict]:
+                           start_datetime: datetime = None,
+                           preview_mode: bool = False,
+                           preview_ep_state: dict = None) -> List[dict]:
     """
     Generate schedule entries for a time block.
     
@@ -648,12 +676,12 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             video_index += 1
 
     elif block.content_type == "episodic":
-        # Episodic block: play episodes from a collection in order, resuming where we left off.
+        # Episodic block: play episodes from a collection in order, advancing across days.
         # content_value format: "collection_id|start_season|start_episode|episodes_per_block"
         parts = block.content_value.split("|")
-        collection_id   = parts[0] if len(parts) > 0 else ""
-        start_season    = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1
-        start_episode   = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 1
+        collection_id      = parts[0] if len(parts) > 0 else ""
+        start_season       = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 1
+        start_episode      = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 1
         episodes_per_block = parts[3] if len(parts) > 3 else "1"
 
         # Determine how many episodes to play this block
@@ -669,6 +697,25 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
         col_videos = [v for v in available_videos
                       if v.get("collection", {}).get("id", "") == collection_id]
 
+        # Fallback: if each episode is its own collection (one-per-episode layout),
+        # load ALL videos from the block's collection_file as the full series pool.
+        if len(col_videos) <= 1:
+            col_file = getattr(block, "collection_file", "") or ""
+            if col_file:
+                try:
+                    import json as _json
+                    with open(col_file, "r", encoding="utf-8") as _f:
+                        _data = _json.load(_f)
+                    col_videos = []
+                    for _col in _data.get("collections", []):
+                        for _v in _col.get("videos", []):
+                            _v = dict(_v)
+                            _v["collection"] = _col
+                            col_videos.append(_v)
+                    logger.info(f"[{channel}] Episodic block: loaded {len(col_videos)} videos from collection file (one-per-episode layout)")
+                except Exception as _ex:
+                    logger.warning(f"[{channel}] Episodic block: could not load collection file {col_file}: {_ex}")
+
         if not col_videos:
             logger.warning(f"[{channel}] Episodic block: no videos for collection '{collection_id}'")
             return entries
@@ -679,7 +726,6 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             s = meta.get("season", 0) or 0
             e = meta.get("episode", 0) or 0
             if s == 0 and e == 0:
-                # Try to extract from filename
                 import re
                 fname = Path(v["path"]).stem
                 m = re.search(r"[Ss](\d+)[Ee](\d+)", fname)
@@ -693,28 +739,44 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
 
         col_videos.sort(key=_ep_sort_key)
 
-        # Find the starting index from the configured start_season/start_episode.
-        # For a pre-generated schedule each call starts fresh from that point.
-        ep_index = 0
-        for i, v in enumerate(col_videos):
-            s, e = _ep_sort_key(v)
-            if s > start_season or (s == start_season and e >= start_episode):
-                ep_index = i
-                break
+        # State source: live uses disk, preview uses in-memory dict passed from caller
+        block_key = f"{block.block_id}_{collection_id}"
+        if preview_mode:
+            state_dict = preview_ep_state if preview_ep_state is not None else {}
+        else:
+            state_dict = _load_episodic_state(channel)
+
+        if block_key in state_dict:
+            ep_index = state_dict[block_key]
+            logger.info(f"[{channel}] Episodic block resuming at index {ep_index}")
+        else:
+            ep_index = 0
+            for i, v in enumerate(col_videos):
+                s, e = _ep_sort_key(v)
+                if s > start_season or (s == start_season and e >= start_episode):
+                    ep_index = i
+                    break
+            logger.info(f"[{channel}] Episodic block starting fresh at index {ep_index} (S{start_season}E{start_episode})")
+
         played = 0
 
-        # Calculate block end time
-        if start_datetime is not None:
-            block_end_dt = start_datetime + timedelta(seconds=block.duration_seconds)
+        # Calculate block end time — only used when episodes_per_block is "all"
+        # (fill the time window). When a specific count is set, play exactly
+        # that many episodes regardless of how long they run.
+        if max_ep is None:
+            if start_datetime is not None:
+                block_end_dt = start_datetime + timedelta(seconds=block.duration_seconds)
+            else:
+                block_end_dt = None
         else:
-            block_end_dt = None
+            block_end_dt = None  # count-based: ignore time window
 
         while True:
             if max_ep is not None and played >= max_ep:
                 break
             if block_end_dt is not None and current_time >= block_end_dt:
                 break
-            elif block_end_dt is None and current_time.time() >= end_time.time():
+            elif block_end_dt is None and max_ep is None and current_time.time() >= end_time.time():
                 break
             if not col_videos:
                 break
@@ -730,7 +792,7 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
                 "duration": video.get("duration", 5400),
                 "collection_id": collection_id,
                 "channel": channel,
-                "source": "daypart_tag",
+                "source": "daypart_episodic",
                 "daypart_block_id": block.block_id,
                 "metadata": {
                     "scheduled_type": "episodic",
@@ -746,8 +808,17 @@ def generate_block_schedule(block: TimeBlock, available_videos: List[dict],
             ep_index += 1
             played += 1
 
-        # No state persistence here — this generates a static schedule.
-        # start_season/start_episode is the fixed starting point per generation.
+        # Advance state for next day
+        next_index = ep_index % len(col_videos)
+        if preview_mode:
+            # Write back to in-memory dict so next day's call picks up here
+            if preview_ep_state is not None:
+                preview_ep_state[block_key] = next_index
+            logger.info(f"[{channel}] Episodic block (preview) played {played} ep(s); next index={next_index}")
+        else:
+            state_dict[block_key] = next_index
+            _save_episodic_state(channel, state_dict)
+            logger.info(f"[{channel}] Episodic block played {played} ep(s); next index={next_index}")
 
     return entries
 
@@ -1317,7 +1388,9 @@ def _gaps_from_actual_ends(
 
 def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict],
                              channel: str, target_date: date,
-                             base_datetime: datetime = None) -> List[dict]:
+                             base_datetime: datetime = None,
+                             preview_mode: bool = False,
+                             preview_ep_state: dict = None) -> List[dict]:
     """
     Generate a complete day schedule using daypart configuration.
     
@@ -1436,7 +1509,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
             if applies_today:
                 block_entries = generate_block_schedule(
                     block, available_videos, recent_videos, channel,
-                    start_datetime=effective_start
+                    start_datetime=effective_start,
+                    preview_mode=preview_mode,
+                    preview_ep_state=preview_ep_state
                 )
                 schedule_entries.extend(block_entries)
                 if block_entries:
@@ -1486,7 +1561,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         win_block.collection_file = gf_block.collection_file
                         win_entries = generate_block_schedule(
                             win_block, gf_videos, recent_videos, channel,
-                            start_datetime=win_start
+                            start_datetime=win_start,
+                            preview_mode=preview_mode,
+                            preview_ep_state=preview_ep_state
                         )
                         schedule_entries.extend(win_entries)
 
