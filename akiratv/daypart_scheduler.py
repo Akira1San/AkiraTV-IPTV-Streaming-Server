@@ -1582,9 +1582,8 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
                                  weekday: int, target_date: date, channel: str) -> bool:
     """
     For blocks marked approximate=True, snap their start time to avoid overlapping
-    with gap fill videos. Rules:
-    - If a gap fill video ends AFTER the block's scheduled start → shift block to start after that video
-    - If a gap fill video ends BEFORE the block's scheduled start → keep scheduled start (clean gap)
+    with gap fill videos. Finds the latest gap fill video that ends at or after the
+    block's scheduled start, and shifts the block to start right after it.
     Returns True if any snapping was done.
     """
     snapped = False
@@ -1605,31 +1604,39 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
 
         scheduled_start = datetime.combine(target_date, parse_time_string(block.start_time).time())
 
-        # Find gap fill video that overlaps the scheduled start time
-        overlapping_end = None
+        # Find the latest end time of any non-block entry that overlaps or
+        # immediately precedes the block's scheduled start window.
+        # "Overlaps" means: entry starts before block ends AND entry ends after scheduled_start.
+        block_entries = [e for e in schedule_entries if e.get("daypart_block_id") == block.block_id]
+        if not block_entries:
+            continue
+        block_last_entry = max(block_entries, key=lambda e: e["time"])
+        block_end = (datetime.combine(target_date, datetime.strptime(block_last_entry["time"], "%H:%M:%S").time())
+                     + timedelta(seconds=block_last_entry.get("duration", 5400)))
+
+        latest_overlap_end = None
         for entry in schedule_entries:
             if entry.get("daypart_block_id") == block.block_id:
-                continue  # skip this block's own entries
+                continue
             entry_start = datetime.combine(target_date,
                 datetime.strptime(entry["time"], "%H:%M:%S").time())
             entry_end = entry_start + timedelta(seconds=entry.get("duration", 5400))
-            if entry_start < scheduled_start < entry_end:
-                overlapping_end = entry_end
-                break
+            # Entry overlaps the block's time window
+            if entry_start < block_end and entry_end > scheduled_start:
+                if latest_overlap_end is None or entry_end > latest_overlap_end:
+                    latest_overlap_end = entry_end
 
-        if overlapping_end is None:
+        if latest_overlap_end is None or latest_overlap_end <= scheduled_start:
             continue  # No overlap, keep scheduled start
 
-        # Shift all entries of this block to start at overlapping_end
-        shift = overlapping_end - scheduled_start
-        block_entries = [e for e in schedule_entries if e.get("daypart_block_id") == block.block_id]
+        # Shift all entries of this block to start at latest_overlap_end
+        shift = latest_overlap_end - scheduled_start
         for entry in block_entries:
             orig = datetime.combine(target_date, datetime.strptime(entry["time"], "%H:%M:%S").time())
-            new_time = orig + shift
-            entry["time"] = new_time.strftime("%H:%M:%S")
+            entry["time"] = (orig + shift).strftime("%H:%M:%S")
 
         logger.info(f"[{channel}] Approximate: shifted block {block.block_id} by "
-                    f"{shift.total_seconds()/60:.1f} min (gap video ended at {overlapping_end.strftime('%H:%M')})")
+                    f"{shift.total_seconds()/60:.1f} min → starts at {latest_overlap_end.strftime('%H:%M')}")
         snapped = True
 
     return snapped
