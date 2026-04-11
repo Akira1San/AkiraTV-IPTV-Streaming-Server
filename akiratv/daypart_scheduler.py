@@ -1780,6 +1780,15 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                 for gf_data in gap_fill_blocks:
                     gf_block = TimeBlock.from_dict(gf_data)
                     gf_block.collection_file = gf_data.get("collection_file", "") or ""
+                    # Only use videos from the gap fill block's own collection file
+                    gf_col_file = gf_block.collection_file
+                    if gf_col_file:
+                        gf_videos = [v for v in available_videos
+                                     if v.get("_col_file", "") == gf_col_file]
+                        if not gf_videos:
+                            gf_videos = available_videos  # fallback
+                    else:
+                        gf_videos = available_videos
                     for win_start, win_end in windows:
                         if (win_end - win_start).total_seconds() <= 0:
                             continue
@@ -1795,7 +1804,7 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                         )
                         win_block.collection_file = gf_block.collection_file
                         win_entries = generate_block_schedule(
-                            win_block, available_videos, recent_videos, channel,
+                            win_block, gf_videos, recent_videos, channel,
                             start_datetime=win_start
                         )
                         schedule_entries.extend(win_entries)

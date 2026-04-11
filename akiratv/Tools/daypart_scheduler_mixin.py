@@ -1522,7 +1522,7 @@ class DaypartSchedulerMixin:
                     print(f"[DEBUG] Copy error: {e}")
                     pass
             
-            text_lines.append(f"  {time_short}{end_time_str} [{source}] {title}")
+            text_lines.append(f"  {time_short}{end_time_str} [{entry.get('source','?')}|{entry.get('daypart_block_id','?')[:8]}] {title}")
         
         clipboard_text = "\n".join(text_lines)
         self.root.clipboard_clear()
