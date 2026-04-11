@@ -1483,13 +1483,15 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
             self.selected_video = None
             return
         
-        # Find the video in added_videos that matches the blacklist selection
-        # We need to map the blacklist list index to the actual video
-        blacklist_videos = [v for v in self.added_videos if v["path"] in self.blacklisted_videos]
-        if selection[0] < len(blacklist_videos):
-            video = blacklist_videos[selection[0]]
-            self.selected_video = video
-            self.update_info_panel(video)
+        # Use the same ordered list as update_blacklist_list_display
+        path_to_video = {v["path"]: v for v in self.added_videos}
+        blacklist_paths = list(self.blacklisted_videos)
+        if selection[0] < len(blacklist_paths):
+            video_path = blacklist_paths[selection[0]]
+            video = path_to_video.get(video_path)
+            if video:
+                self.selected_video = video
+                self.update_info_panel(video)
     
     def remove_from_blacklist_tab(self):
         """Remove selected videos from blacklist (from blacklist tab)"""
@@ -1498,14 +1500,13 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
             messagebox.showwarning("No Selection", "Select at least one video to remove from blacklist!")
             return
         
-        # Get blacklisted videos in order
-        blacklist_videos = [v for v in self.added_videos if v["path"] in self.blacklisted_videos]
+        # Use the same ordered list as update_blacklist_list_display
+        blacklist_paths = list(self.blacklisted_videos)
         
         removed_count = 0
         for idx in sorted(selection, reverse=True):
-            if idx < len(blacklist_videos):
-                video = blacklist_videos[idx]
-                video_path = video.get("path", "")
+            if idx < len(blacklist_paths):
+                video_path = blacklist_paths[idx]
                 if video_path in self.blacklisted_videos:
                     self.blacklisted_videos.remove(video_path)
                     removed_count += 1
@@ -2584,6 +2585,8 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         # The blacklist is profile-specific, so we need to start fresh
         self.added_videos.clear()
         self.video_to_collection_map.clear()
+        # Load blacklist BEFORE updating display so it reflects correctly
+        self.blacklisted_videos = load_blacklist(self.current_profile)
         # Only update display if widgets have been created
         if hasattr(self, 'added_list'):
             self.update_added_list_display()
@@ -2592,8 +2595,6 @@ class SimpleSchedulerWizard(DaypartSchedulerMixin):
         self.collection_list.delete(0, tk.END)
         for col in self.collections:
             self.collection_list.insert(tk.END, col["name"])
-        # Load blacklist from INI file
-        self.blacklisted_videos = load_blacklist(self.current_profile)
 
     def get_known_channels(self):
         channels = {"critters", "default"}
