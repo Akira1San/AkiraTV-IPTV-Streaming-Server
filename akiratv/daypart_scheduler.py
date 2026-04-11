@@ -1582,8 +1582,10 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
                                  weekday: int, target_date: date, channel: str) -> bool:
     """
     For blocks marked approximate=True, snap their start time to avoid overlapping
-    with gap fill videos. Finds the latest gap fill video that ends at or after the
-    block's scheduled start, and shifts the block to start right after it.
+    with gap fill videos.
+    Rule: if a gap fill video is currently playing at the block's scheduled start time
+    (i.e. started before AND ends after the scheduled start), shift the block to start
+    right when that video ends. Otherwise keep the scheduled start.
     Returns True if any snapping was done.
     """
     snapped = False
@@ -1592,7 +1594,6 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
         if not getattr(block, 'approximate', False):
             continue
 
-        # Check if block applies today
         block_days = block.days if hasattr(block, 'days') and block.days else []
         if not block_days and block.content_type in ("tag", "episodic"):
             parts = block.content_value.split("|")
@@ -1604,39 +1605,30 @@ def _apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[
 
         scheduled_start = datetime.combine(target_date, parse_time_string(block.start_time).time())
 
-        # Find the latest end time of any non-block entry that overlaps or
-        # immediately precedes the block's scheduled start window.
-        # "Overlaps" means: entry starts before block ends AND entry ends after scheduled_start.
-        block_entries = [e for e in schedule_entries if e.get("daypart_block_id") == block.block_id]
-        if not block_entries:
-            continue
-        block_last_entry = max(block_entries, key=lambda e: e["time"])
-        block_end = (datetime.combine(target_date, datetime.strptime(block_last_entry["time"], "%H:%M:%S").time())
-                     + timedelta(seconds=block_last_entry.get("duration", 5400)))
-
-        latest_overlap_end = None
+        # Find a gap fill video that is playing exactly at scheduled_start
+        # (started strictly before AND ends strictly after scheduled_start)
+        snap_to = None
         for entry in schedule_entries:
             if entry.get("daypart_block_id") == block.block_id:
                 continue
             entry_start = datetime.combine(target_date,
                 datetime.strptime(entry["time"], "%H:%M:%S").time())
             entry_end = entry_start + timedelta(seconds=entry.get("duration", 5400))
-            # Entry overlaps the block's time window
-            if entry_start < block_end and entry_end > scheduled_start:
-                if latest_overlap_end is None or entry_end > latest_overlap_end:
-                    latest_overlap_end = entry_end
+            if entry_start < scheduled_start and entry_end > scheduled_start:
+                snap_to = entry_end
+                break  # only need the one video playing at that moment
 
-        if latest_overlap_end is None or latest_overlap_end <= scheduled_start:
-            continue  # No overlap, keep scheduled start
+        if snap_to is None:
+            continue  # nothing playing at scheduled_start, keep it
 
-        # Shift all entries of this block to start at latest_overlap_end
-        shift = latest_overlap_end - scheduled_start
+        shift = snap_to - scheduled_start
+        block_entries = [e for e in schedule_entries if e.get("daypart_block_id") == block.block_id]
         for entry in block_entries:
             orig = datetime.combine(target_date, datetime.strptime(entry["time"], "%H:%M:%S").time())
             entry["time"] = (orig + shift).strftime("%H:%M:%S")
 
-        logger.info(f"[{channel}] Approximate: shifted block {block.block_id} by "
-                    f"{shift.total_seconds()/60:.1f} min → starts at {latest_overlap_end.strftime('%H:%M')}")
+        logger.info(f"[{channel}] Approximate: shifted block {block.block_id} "
+                    f"by {shift.total_seconds()/60:.1f} min → starts at {snap_to.strftime('%H:%M')}")
         snapped = True
 
     return snapped
