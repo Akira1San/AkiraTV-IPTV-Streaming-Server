@@ -20,7 +20,10 @@ from pathlib import Path
 from akiratv.daypart_scheduler import (
     TimeBlock, MarathonConfig, GapFillerConfig,
     DaypartScheduler, parse_time_string, validate_daypart_config,
-    generate_daypart_schedule, detect_gaps, approximate_block_timing
+    generate_daypart_schedule, detect_gaps
+)
+from akiratv.daypart_approximate import (
+    approximate_block_timing, approximate_block_timing_v2
 )
 from akiratv.collections import load_collections
 
@@ -681,11 +684,11 @@ class DaypartSchedulerMixin:
             
             # Import the new functions for gap filler support
             from akiratv.daypart_scheduler import (
-                detect_gaps, ScheduledEntry, 
+                detect_gaps, ScheduledEntry,
                 convert_gap_filler_to_scheduled_entries,
                 merge_blocks_and_gap_filler,
-                approximate_block_timing_v2
             )
+            from akiratv.daypart_approximate import approximate_block_timing_v2
             
             # Detect gaps between blocks
             gaps = detect_gaps(existing_blocks)
