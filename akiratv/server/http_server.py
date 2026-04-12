@@ -53,7 +53,7 @@ class HttpServer:
         
         file_path = base_path / path
         
-        if not file_path.exists():
+        if not file_path.exists() or file_path.is_dir():
             # Only log once per channel to avoid spam
             if channel_name not in self._logged_missing_channels:
                 self._logged_missing_channels.add(channel_name)
@@ -90,7 +90,10 @@ class HttpServer:
                 
                 return response
                 
-            except PermissionError:
+            except (PermissionError, IsADirectoryError) as e:
+                if isinstance(e, IsADirectoryError):
+                    print(f"[HLS] Path is a directory, not a file: {file_path}")
+                    raise web.HTTPNotFound()
                 if i < max_retries - 1:
                     print(f"[HLS] Perm denied on {file_path.name} (retry {i+1}/{max_retries})")
                     await asyncio.sleep(0.5)
