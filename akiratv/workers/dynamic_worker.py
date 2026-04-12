@@ -52,6 +52,13 @@ class DynamicWorker(BaseWorker):
         self.hls_dir = self.config.get_hls_output_path(self.channel)
         self.is_in_standby = False
         
+    def update_schedule(self, new_schedule_entries: List[Dict]):
+        """Update schedule entries in-place without restarting the worker."""
+        old_count = len(self.schedule_entries) if self.schedule_entries else 0
+        self.schedule_entries = new_schedule_entries
+        self.last_schedule_check = time.time()  # Reset to prevent immediate refresh
+        self.logger.info(f"Schedule updated in-place: {old_count} -> {len(new_schedule_entries)} entries")
+
     def _get_channel_resolution(self) -> str:
         """Get the target resolution for this channel from config."""
         try:
