@@ -202,9 +202,8 @@ def apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[d
     For blocks marked approximate=True, snap their start time to avoid overlapping
     with gap fill videos.
 
-    Rule: if a gap fill video is currently playing at the block's scheduled start
-    (started before AND ends after the scheduled start), shift the block to start
-    right when that video ends. Otherwise keep the scheduled start.
+    Rule: find the earliest point at or after the block's scheduled start where no
+    other entry is playing. Iterates until the position is clear of all overlaps.
 
     Returns True if any snapping was done.
     """
@@ -227,20 +226,31 @@ def apply_approximate_snapping(schedule_entries: List[dict], time_blocks: List[d
 
         scheduled_start = datetime.combine(target_date, parse_time_string(block.start_time).time())
 
-        # Find the gap fill video playing exactly at scheduled_start
-        snap_to = None
+        # Collect all non-block entries sorted by start time
+        other_entries = []
         for entry in schedule_entries:
             if entry.get("daypart_block_id") == block.block_id:
                 continue
             entry_start = datetime.combine(target_date,
                 datetime.strptime(entry["time"], "%H:%M:%S").time())
             entry_end = entry_start + timedelta(seconds=entry.get("duration", 5400))
-            if entry_start < scheduled_start and entry_end > scheduled_start:
-                snap_to = entry_end
-                break
+            other_entries.append((entry_start, entry_end))
+        other_entries.sort(key=lambda x: x[0])
 
-        if snap_to is None:
-            continue
+        # Walk forward from scheduled_start until we find a clear position
+        snap_to = scheduled_start
+        changed = True
+        while changed:
+            changed = False
+            for e_start, e_end in other_entries:
+                if e_start < snap_to < e_end:
+                    # snap_to is inside this entry — push past it
+                    snap_to = e_end
+                    changed = True
+                    break
+
+        if snap_to == scheduled_start:
+            continue  # No overlap, no shift needed
 
         shift = snap_to - scheduled_start
         block_entries = [e for e in schedule_entries if e.get("daypart_block_id") == block.block_id]
