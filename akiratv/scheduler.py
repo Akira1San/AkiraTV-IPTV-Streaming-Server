@@ -476,35 +476,57 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
             
             # Handle overnight/schedule wrap-around
             # If entry time is more than 2 hours ahead, treat as yesterday
-            # This handles cases where schedule spans midnight
             time_diff_seconds = (datetime.combine(datetime.min, entry_time) - datetime.combine(datetime.min, current_time)).total_seconds()
             
             if time_diff_seconds > 7200:
-                # Entry time is more than 2 hours ahead - treat as yesterday
                 entry_dt = datetime.combine(current_dt.date() - timedelta(days=1), entry_time)
             else:
-                # Entry is today (either in past or within 2 hours ahead)
                 entry_dt = datetime.combine(current_dt.date(), entry_time)
             
             if entry_dt <= current_dt:
                 current_entry_index = i
-            else:
-                # Stop at first future entry - don't include entries that haven't started yet
-                break
+            # Don't break — keep scanning so future entries are included in the return slice
         except (ValueError, KeyError) as e:
             logger.warning(f"Error parsing entry time for {entry.get('file', 'unknown')}: {e}")
             continue
 
-    # Return from current entry onward
+    # Return from current entry onward (includes all future entries for today)
     if current_entry_index >= 0:
         logger.info(f"Found {current_entry_index + 1} past schedule entry(ies), starting from entry {current_entry_index + 1}")
         return validated_entries[current_entry_index:]
     else:
-        # No past entries found - check if there are any future entries for today
+        # No past entries found today - check yesterday's schedule for an overnight entry still playing
+        yesterday_date = (current_dt - timedelta(days=1)).strftime("%Y-%m-%d")
+        yesterday_entries = []
+
+        # Check yesterday's calendar entry
+        if calendar_section:
+            for calendar_key, calendar_data in calendar_section.items():
+                if isinstance(calendar_data, dict) and calendar_data.get("date") == yesterday_date:
+                    for entry in calendar_data.get("entries", []):
+                        entry["channel"] = channel
+                    yesterday_entries = _validate_entries(calendar_data.get("entries", []), source=f"schedule:{channel}:yesterday")
+                    break
+
+        if yesterday_entries:
+            yesterday_entries.sort(key=lambda x: x["time"])
+            # Find the last entry from yesterday that could still be playing now
+            for entry in reversed(yesterday_entries):
+                try:
+                    entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
+                    entry_dt = datetime.combine(current_dt.date() - timedelta(days=1), entry_time)
+                    duration = 10800.0  # 3 hour conservative fallback; worker will seek correctly via ffprobe
+                    end_dt = entry_dt + timedelta(seconds=duration)
+                    if entry_dt <= current_dt < end_dt:
+                        logger.info(f"📅 Overnight carry-over: playing yesterday's entry '{entry.get('file', '')}' (started {entry_time})")
+                        # Prepend this overnight entry before today's entries
+                        return [entry] + validated_entries
+                except Exception:
+                    continue
+
         if validated_entries:
-            # Return entries but log that we're starting from beginning
             logger.info(f"No past entries found. Starting from beginning (first entry at {validated_entries[0].get('time', 'unknown')})")
-        return validated_entries  # Start from beginning if no past entries
+        return validated_entries
 
 
 def _validate_entries(entries: List[Dict], source: str) -> List[Dict]:

@@ -51,6 +51,7 @@ class DynamicWorker(BaseWorker):
         self.error_thread = None  # Track error logging thread for cleanup
         self.hls_dir = self.config.get_hls_output_path(self.channel)
         self.is_in_standby = False
+        self._duration_cache: dict = {}  # Cache ffprobe results to avoid repeated calls
         
     def update_schedule(self, new_schedule_entries: List[Dict]):
         """Update schedule entries in-place without restarting the worker."""
@@ -167,7 +168,12 @@ class DynamicWorker(BaseWorker):
             try:
                 scheduled_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
                 scheduled_dt = datetime.combine(date.today(), scheduled_time)
-                
+
+                # If the scheduled time is more than 2 hours in the future, it's an
+                # overnight carry-over from yesterday
+                if (scheduled_dt - current_time).total_seconds() > 7200:
+                    scheduled_dt = datetime.combine(date.today() - timedelta(days=1), scheduled_time)
+
                 # Get video duration
                 duration = self._get_entry_duration(entry['file'])
                 end_time = scheduled_dt + timedelta(seconds=duration)
@@ -293,7 +299,11 @@ class DynamicWorker(BaseWorker):
         try:
             scheduled_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             scheduled_dt = datetime.combine(date.today(), scheduled_time)
-            
+
+            # Overnight carry-over: if more than 2 hours in the future, it's yesterday
+            if (scheduled_dt - current_time).total_seconds() > 7200:
+                scheduled_dt = datetime.combine(date.today() - timedelta(days=1), scheduled_time)
+
             if current_time < scheduled_dt:
                 return 0
             
@@ -426,18 +436,23 @@ class DynamicWorker(BaseWorker):
         self.current_video = None
 
     def _get_entry_duration(self, video_path: str) -> float:
-        """Get total duration of a video file."""
+        """Get total duration of a video file (cached to avoid repeated ffprobe calls)."""
+        path_key = str(video_path)
+        if path_key in self._duration_cache:
+            return self._duration_cache[path_key]
         try:
             result = subprocess.run([
                 FFPROBE_PATH, "-v", "error", "-show_entries",
                 "format=duration", "-of", "csv=p=0",
-                str(video_path)
+                path_key
             ], capture_output=True, text=True, check=True, timeout=10)
             duration = float(result.stdout.strip())
-            return duration if duration > 0 else 5400.0
+            duration = duration if duration > 0 else 5400.0
         except Exception as e:
             self.logger.warning(f"Duration fallback for {video_path}: {e}")
-            return 5400.0
+            duration = 5400.0
+        self._duration_cache[path_key] = duration
+        return duration
 
     def _stop_current_ffmpeg(self):
         """Stop the current FFmpeg process gracefully."""
