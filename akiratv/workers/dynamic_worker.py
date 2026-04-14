@@ -170,8 +170,8 @@ class DynamicWorker(BaseWorker):
                 scheduled_dt = datetime.combine(date.today(), scheduled_time)
 
                 # If the scheduled time is more than 2 hours in the future, it's an
-                # overnight carry-over from yesterday
-                if (scheduled_dt - current_time).total_seconds() > 7200:
+                # overnight carry-over from yesterday — but only in early morning (before 06:00)
+                if (scheduled_dt - current_time).total_seconds() > 7200 and current_time.hour < 6:
                     scheduled_dt = datetime.combine(date.today() - timedelta(days=1), scheduled_time)
 
                 # Get video duration
@@ -300,8 +300,8 @@ class DynamicWorker(BaseWorker):
             scheduled_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             scheduled_dt = datetime.combine(date.today(), scheduled_time)
 
-            # Overnight carry-over: if more than 2 hours in the future, it's yesterday
-            if (scheduled_dt - current_time).total_seconds() > 7200:
+            # Overnight carry-over: only in early morning (before 06:00)
+            if (scheduled_dt - current_time).total_seconds() > 7200 and current_time.hour < 6:
                 scheduled_dt = datetime.combine(date.today() - timedelta(days=1), scheduled_time)
 
             if current_time < scheduled_dt:

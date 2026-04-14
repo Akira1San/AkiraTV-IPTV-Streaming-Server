@@ -474,11 +474,12 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
             entry_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             current_time = current_dt.time()
             
-            # Handle overnight/schedule wrap-around
-            # If entry time is more than 2 hours ahead, treat as yesterday
+            # Overnight wrap-around: only applies in early morning hours (before 06:00).
+            # e.g. at 01:30, an entry at 23:50 is from yesterday still playing.
+            # But at 19:48, an entry at 23:56 is simply a future entry today.
             time_diff_seconds = (datetime.combine(datetime.min, entry_time) - datetime.combine(datetime.min, current_time)).total_seconds()
             
-            if time_diff_seconds > 7200:
+            if time_diff_seconds > 7200 and current_dt.hour < 6:
                 entry_dt = datetime.combine(current_dt.date() - timedelta(days=1), entry_time)
             else:
                 entry_dt = datetime.combine(current_dt.date(), entry_time)
