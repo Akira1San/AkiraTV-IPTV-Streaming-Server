@@ -167,14 +167,13 @@ class DynamicWorker(BaseWorker):
         for i, entry in enumerate(self.schedule_entries):
             try:
                 scheduled_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
+                # Always treat as today first
                 scheduled_dt = datetime.combine(date.today(), scheduled_time)
 
-                # If the scheduled time is more than 2 hours in the future, it's an
-                # overnight carry-over from yesterday — but only in early morning (before 06:00)
-                if (scheduled_dt - current_time).total_seconds() > 7200 and current_time.hour < 6:
+                # Only treat as yesterday if early morning AND entry is late night
+                if current_time.hour < 6 and scheduled_time.hour >= 18:
                     scheduled_dt = datetime.combine(date.today() - timedelta(days=1), scheduled_time)
 
-                # Get video duration
                 duration = self._get_entry_duration(entry['file'])
                 end_time = scheduled_dt + timedelta(seconds=duration)
                 
@@ -300,8 +299,8 @@ class DynamicWorker(BaseWorker):
             scheduled_time = datetime.strptime(entry["time"], "%H:%M:%S").time()
             scheduled_dt = datetime.combine(date.today(), scheduled_time)
 
-            # Overnight carry-over: only in early morning (before 06:00)
-            if (scheduled_dt - current_time).total_seconds() > 7200 and current_time.hour < 6:
+            # Only treat as yesterday if early morning AND entry is late night
+            if current_time.hour < 6 and scheduled_time.hour >= 18:
                 scheduled_dt = datetime.combine(date.today() - timedelta(days=1), scheduled_time)
 
             if current_time < scheduled_dt:
