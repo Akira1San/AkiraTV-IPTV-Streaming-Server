@@ -1135,7 +1135,11 @@ class DaypartSchedulerMixin:
             # The global checkbox enables approximate for blocks that were individually marked
             time_blocks_for_preview = []
             for block in self.daypart_time_blocks:
-                block_approximate = getattr(block, 'approximate', False) or use_global_approximate
+                # Episodic blocks always run at their fixed configured time — never approximate
+                if block.content_type == "episodic":
+                    block_approximate = False
+                else:
+                    block_approximate = getattr(block, 'approximate', False) or use_global_approximate
                 # Gap fill blocks (00:00-23:59) should never be approximate
                 if block.start_time == "00:00" and block.end_time in ("23:59", "24:00"):
                     block_approximate = False
