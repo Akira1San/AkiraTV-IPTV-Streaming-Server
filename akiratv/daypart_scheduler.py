@@ -1530,13 +1530,59 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     block_days = [d.strip() for d in content_parts[1].split(",") if d.strip()]
 
             block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
-            # For episodic blocks, always use the configured start time (they have a fixed slot).
-            # For tag/video blocks, push forward if a previous block ran long.
-            if block.content_type == "episodic":
+            # For episodic blocks, snap to the nearest gap fill video boundary.
+            # Simulate gap fill from midnight to find what video ends closest to configured time.
+            if block.content_type == "episodic" and gap_fill_blocks:
+                ep_configured = block_start_dt
+                MAX_SNAP = timedelta(minutes=90)
+                # Get gap fill video pool
+                gf_pool = []
+                for gf_bd in gap_fill_blocks:
+                    gf_blk = TimeBlock.from_dict(gf_bd)
+                    gf_col = gf_bd.get("collection_file", "") or ""
+                    if gf_col:
+                        gf_vids = [v for v in available_videos if v.get("_col_file", "") == gf_col]
+                        if not gf_vids:
+                            gf_vids = available_videos
+                    else:
+                        gf_vids = available_videos
+                    gf_pool.extend(gf_vids)
+                if not gf_pool:
+                    gf_pool = available_videos
+
+                # Simulate filling from midnight to ep_configured + MAX_SNAP
+                sim_cur = datetime.combine(target_date, datetime.min.time())
+                sim_end = ep_configured + MAX_SNAP
+                sim_recent: list = []
+                playing_at: datetime = None
+                best_before: datetime = None
+                sim_idx = 0
+                while sim_cur < sim_end and sim_idx < 200:
+                    sim_idx += 1
+                    pool = gf_pool[:]
+                    if sim_recent:
+                        recent_paths = {p for p, _ in sim_recent[-20:]}
+                        filtered = [v for v in pool if v["path"] not in recent_paths]
+                        if filtered:
+                            pool = filtered
+                    v = random.choice(pool)
+                    dur = v.get("duration", 5400)
+                    v_end = sim_cur + timedelta(seconds=dur)
+                    if sim_cur <= ep_configured and v_end > ep_configured and v_end <= ep_configured + MAX_SNAP:
+                        if playing_at is None or v_end > playing_at:
+                            playing_at = v_end
+                    elif v_end <= ep_configured:
+                        if best_before is None or v_end > best_before:
+                            best_before = v_end
+                    sim_recent.append((v["path"], sim_cur))
+                    sim_cur = v_end
+
+                snap_to = playing_at if playing_at is not None else best_before
+                effective_start = snap_to if snap_to is not None else block_start_dt
+            elif block.content_type == "episodic":
                 effective_start = block_start_dt
             else:
                 effective_start = max(block_start_dt, current_time)
-
             applies_today = (not block_days) or (weekday in get_weekday_indices(block_days))
             if applies_today:
                 block_entries = generate_block_schedule(
@@ -1890,117 +1936,6 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     return False
 
                 schedule_entries[:] = [e for e in schedule_entries if not _overlaps_approx(e)]
-
-        # Snap episodic blocks to the nearest video boundary after all placement is done.
-        # Algorithm (proven in test_episodic_snap.py):
-        #   1. If a video is playing AT ep_configured → snap to its end
-        #   2. Otherwise → snap to the latest video end <= ep_configured
-        #   3. Remove gap fill entries that START inside the episodic slot
-        #   4. Re-fill gaps around the snapped episodic
-        if not is_marathon_day and gap_fill_blocks:
-            gf_ids_snap = {TimeBlock.from_dict(bd).block_id for bd in gap_fill_blocks}
-            approx_ids_snap = {TimeBlock.from_dict(bd).block_id for bd in approximate_blocks} if approximate_blocks else set()
-            snap_search_ids = gf_ids_snap | approx_ids_snap
-            MAX_SNAP_BACK = timedelta(minutes=90)
-
-            for ep_bd in specific_blocks:
-                ep_blk = TimeBlock.from_dict(ep_bd)
-                if ep_blk.content_type != "episodic":
-                    continue
-                ep_ents = sorted(
-                    [e for e in schedule_entries if e.get("daypart_block_id") == ep_blk.block_id],
-                    key=lambda e: e["time"]
-                )
-                if not ep_ents:
-                    continue
-
-                ep_configured = datetime.combine(target_date, parse_time_string(ep_blk.start_time).time())
-                ep_first = datetime.combine(target_date, datetime.strptime(ep_ents[0]["time"], "%H:%M:%S").time())
-
-                # Find snap point
-                playing_at_configured = None
-                best_end_before = None
-                for e in schedule_entries:
-                    if e.get("daypart_block_id") not in snap_search_ids:
-                        continue
-                    e_s = datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time())
-                    e_e = e_s + timedelta(seconds=e.get("duration", 5400))
-                    if e_s <= ep_configured and e_e > ep_configured and e_e <= ep_configured + MAX_SNAP_BACK:
-                        if playing_at_configured is None or e_e > playing_at_configured:
-                            playing_at_configured = e_e
-                    elif e_e <= ep_configured:
-                        if best_end_before is None or e_e > best_end_before:
-                            best_end_before = e_e
-
-                snap_to = playing_at_configured if playing_at_configured is not None else best_end_before
-                if snap_to is None or snap_to == ep_first:
-                    continue
-
-                # Shift episodic entries
-                shift = snap_to - ep_first
-                logger.info(f"[{channel}] Episodic snap: {ep_blk.block_id} "
-                            f"{ep_first.strftime('%H:%M')} → {snap_to.strftime('%H:%M')}")
-                for e in ep_ents:
-                    orig = datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time())
-                    e["time"] = (orig + shift).strftime("%H:%M:%S")
-
-                # Compute new episodic slot (truncate to seconds for comparison)
-                ep_start = datetime.combine(target_date, datetime.strptime(ep_ents[0]["time"], "%H:%M:%S").time())
-                ep_end_raw = datetime.combine(target_date, datetime.strptime(ep_ents[-1]["time"], "%H:%M:%S").time()) \
-                             + timedelta(seconds=ep_ents[-1].get("duration", 5400))
-                # Truncate to seconds to avoid sub-second precision issues
-                ep_end = ep_end_raw.replace(microsecond=0)
-
-                # Remove entries that START inside the episodic slot (gap fill + approximate)
-                schedule_entries[:] = [
-                    e for e in schedule_entries
-                    if e.get("daypart_block_id") == ep_blk.block_id
-                    or not (
-                        e.get("daypart_block_id") in snap_search_ids
-                        and ep_start <= datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()) < ep_end
-                    )
-                ]
-
-                # Re-fill gaps around the snapped episodic:
-                # Strip all gap fill entries, then re-fill cleanly around
-                # the episodic (and approximate blocks if any).
-                non_gf_ids = {ep_blk.block_id} | approx_ids_snap
-                # Keep episodic + approximate blocks; strip all gap fill
-                schedule_entries[:] = [
-                    e for e in schedule_entries
-                    if e.get("daypart_block_id") in non_gf_ids
-                    or e.get("daypart_block_id") not in snap_search_ids
-                ]
-                # Also keep specific blocks that aren't episodic
-                # (already handled — non_gf_ids covers episodic, approx covers approx)
-
-                all_occ = sorted(
-                    [(datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()),
-                      datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time())
-                      + timedelta(seconds=e.get("duration", 5400)))
-                     for e in schedule_entries],
-                    key=lambda x: x[0]
-                )
-                refill_wins = []
-                cur = fill_from
-                for occ_s, occ_e in all_occ:
-                    if cur < occ_s:
-                        refill_wins.append((cur, occ_s))
-                    cur = max(cur, occ_e)
-                if cur < day_end_dt:
-                    refill_wins.append((cur, day_end_dt))
-                _fill_windows(refill_wins, strict_fit=True)
-
-                # Final cleanup: remove any gap fill that starts inside episodic slot
-                # (strict_fit refill may overrun into it)
-                schedule_entries[:] = [
-                    e for e in schedule_entries
-                    if e.get("daypart_block_id") == ep_blk.block_id
-                    or not (
-                        e.get("daypart_block_id") in snap_search_ids
-                        and ep_start <= datetime.combine(target_date, datetime.strptime(e["time"], "%H:%M:%S").time()) < ep_end
-                    )
-                ]
 
     # 2b. TEMPORARILY DISABLED - approximate blocks are handled AFTER gap filling now
     # print("[generate_daypart_schedule] Calling _handle_approximate_blocks...")
