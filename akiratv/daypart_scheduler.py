@@ -1530,56 +1530,9 @@ def generate_daypart_schedule(daypart_config: dict, available_videos: List[dict]
                     block_days = [d.strip() for d in content_parts[1].split(",") if d.strip()]
 
             block_start_dt = datetime.combine(target_date, parse_time_string(block.start_time).time())
-            # For episodic blocks, snap to the nearest gap fill video boundary.
-            # Simulate gap fill from midnight to find what video ends closest to configured time.
-            if block.content_type == "episodic" and gap_fill_blocks:
-                ep_configured = block_start_dt
-                MAX_SNAP = timedelta(minutes=90)
-                # Get gap fill video pool
-                gf_pool = []
-                for gf_bd in gap_fill_blocks:
-                    gf_blk = TimeBlock.from_dict(gf_bd)
-                    gf_col = gf_bd.get("collection_file", "") or ""
-                    if gf_col:
-                        gf_vids = [v for v in available_videos if v.get("_col_file", "") == gf_col]
-                        if not gf_vids:
-                            gf_vids = available_videos
-                    else:
-                        gf_vids = available_videos
-                    gf_pool.extend(gf_vids)
-                if not gf_pool:
-                    gf_pool = available_videos
-
-                # Simulate filling from midnight to ep_configured + MAX_SNAP
-                sim_cur = datetime.combine(target_date, datetime.min.time())
-                sim_end = ep_configured + MAX_SNAP
-                sim_recent: list = []
-                playing_at: datetime = None
-                best_before: datetime = None
-                sim_idx = 0
-                while sim_cur < sim_end and sim_idx < 200:
-                    sim_idx += 1
-                    pool = gf_pool[:]
-                    if sim_recent:
-                        recent_paths = {p for p, _ in sim_recent[-20:]}
-                        filtered = [v for v in pool if v["path"] not in recent_paths]
-                        if filtered:
-                            pool = filtered
-                    v = random.choice(pool)
-                    dur = v.get("duration", 5400)
-                    v_end = sim_cur + timedelta(seconds=dur)
-                    if sim_cur <= ep_configured and v_end > ep_configured and v_end <= ep_configured + MAX_SNAP:
-                        if playing_at is None or v_end > playing_at:
-                            playing_at = v_end
-                    elif v_end <= ep_configured:
-                        if best_before is None or v_end > best_before:
-                            best_before = v_end
-                    sim_recent.append((v["path"], sim_cur))
-                    sim_cur = v_end
-
-                snap_to = playing_at if playing_at is not None else best_before
-                effective_start = snap_to if snap_to is not None else block_start_dt
-            elif block.content_type == "episodic":
+            # For episodic blocks, always use the configured start time in Pass 1.
+            # The snap pre-pass (inside if gap_fill_blocks) will re-place them correctly.
+            if block.content_type == "episodic":
                 effective_start = block_start_dt
             else:
                 effective_start = max(block_start_dt, current_time)
