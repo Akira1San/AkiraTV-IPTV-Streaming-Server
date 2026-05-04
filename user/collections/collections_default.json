@@ -1,1502 +1,628 @@
 {
   "collections": [
     {
-      "id": "du6lg7l5by2g",
-      "name": "du6lg7L5By2G",
-      "cover": null,
+      "id": "spartacus_s01e01",
+      "name": "Spartacus S01E01",
+      "cover": "",
       "description": "",
       "genre": [],
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/du6lg7L5By2G.mp4",
-          "duration": 6058.0
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E01.mp4",
+          "duration": 2880.836292
         }
       ],
-      "tags": []
+      "series_name": "spartac"
     },
     {
-      "id": "gunhed_ia",
-      "name": "Gunhed ia",
-      "cover": null,
+      "id": "spartacus_s01e02",
+      "name": "Spartacus S01E02",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Gunhed.ia.mp4",
-          "duration": 6055.060998
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E02.mp4",
+          "duration": 2832.412917
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "comanche_moon_e01_brrip_x264-war",
-      "name": "Comanche Moon E01 BRRip x264-WAR",
-      "cover": null,
+      "id": "spartacus_s01e03",
+      "name": "Spartacus S01E03",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Comanche.Moon.2008.E01.BRRip.x264-WAR.mp4",
-          "duration": 5526.122667
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E03.mp4",
+          "duration": 3113.777333
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "comanche_moon_e02_brrip_x264-war",
-      "name": "Comanche Moon E02 BRRip x264-WAR",
-      "cover": null,
+      "id": "spartacus_s01e04",
+      "name": "Spartacus S01E04",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Comanche.Moon.2008.E02.BRRip.x264-WAR.mp4",
-          "duration": 5321.04
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E04.mp4",
+          "duration": 2579.285042
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "comanche_moon_e03_brrip_x264-war",
-      "name": "Comanche Moon E03 BRRip x264-WAR",
-      "cover": null,
+      "id": "spartacus_s01e05",
+      "name": "Spartacus S01E05",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Comanche.Moon.2008.E03.BRRip.x264-WAR.mp4",
-          "duration": 5523.114667
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E05.mp4",
+          "duration": 2953.283667
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
+      "id": "spartacus_s01e06",
+      "name": "Spartacus S01E06",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Comanche.Moon.2008.BRRip.x264-WAR/Sample.mp4",
-          "duration": 64.355
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E06.mp4",
+          "duration": 2865.737875
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "akira_1988_trailer",
-      "name": "Akira (1988) Trailer",
-      "cover": "user/covers/akira.jpg",
+      "id": "spartacus_s01e07",
+      "name": "Spartacus S01E07",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Akira (1988) Trailer.mp4",
-          "duration": 75.882812
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E07.mp4",
+          "duration": 2796.460333
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "charge_blender_studio_re-score",
-      "name": "Charge (Blender Studio) Re-score",
-      "cover": null,
+      "id": "spartacus_s01e08",
+      "name": "Spartacus S01E08",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Charge (Blender Studio) Re-score.mp4",
-          "duration": 262.803447
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E08.mp4",
+          "duration": 2690.43775
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "ed_1024",
-      "name": "ed 1024",
-      "cover": "user/covers/eden_lake.jpg",
+      "id": "spartacus_s01e09",
+      "name": "Spartacus S01E09",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/ed_1024.mp4",
-          "duration": 653.823991
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E09.mp4",
+          "duration": 2603.35075
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "hero_blender_grease_pencil_showcase",
-      "name": "HERO – Blender Grease Pencil Showcase",
-      "cover": null,
+      "id": "spartacus_s01e10",
+      "name": "Spartacus S01E10",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/HERO – Blender Grease Pencil Showcase.mp4",
-          "duration": 236.797098
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E10.mp4",
+          "duration": 2802.257792
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sintel_-_open_movie_by_blender_foundation",
-      "name": "Sintel - Open Movie by Blender Foundation",
-      "cover": null,
+      "id": "spartacus_s01e11",
+      "name": "Spartacus S01E11",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Sintel - Open Movie by Blender Foundation.mp4",
-          "duration": 888.163265
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E11.mp4",
+          "duration": 2811.934125
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "swallowed_star_moviebattleofprimordialstar",
-      "name": "Swallowed Star MovieBattleofPrimordialStar",
-      "cover": null,
+      "id": "spartacus_s01e12",
+      "name": "Spartacus S01E12",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Swallowed Star MovieBattleofPrimordialStar.mp4",
-          "duration": 75.789932
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E12.mp4",
+          "duration": 2962.626333
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "congo_j",
-      "name": "Congo J",
-      "cover": null,
+      "id": "spartacus_s01e13",
+      "name": "Spartacus S01E13",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 1,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Congo 1995.J.1080p.BluRay.BG Audio.MadMax & Goredolo & Bodhi666.mkv",
-          "duration": 6495.717
+          "path": "/home/akira/Videos/Series/Spartacus/season 1/Spartacus S01E13.mp4",
+          "duration": 2895.309083
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "prince_of_persia_the_sands_of_time",
-      "name": "Prince of Persia The Sands of Time",
-      "cover": "user/covers/prince_of_persia_the_sands_of_time.jpg",
+      "id": "spartacus_s02e01",
+      "name": "Spartacus S02E01",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Prince.of.Persia.The.Sands.of.Time.2010.1080p.BluRay.x265.BGAudio-LooNTerN.mkv",
-          "duration": 6953.502
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E01.mp4",
+          "duration": 3259.798208
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "rambo_first_blood_part_ii",
-      "name": "Rambo First Blood Part II",
-      "cover": "user/covers/rambo_first_blood_part_ii.jpg",
+      "id": "spartacus_s02e02",
+      "name": "Spartacus S02E02",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Rambo.First.Blood.Part.II.1985.720p.BluRay.ENG.BG.AUDIO.x264.VDON.mkv",
-          "duration": 5758.806
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E02.mp4",
+          "duration": 3021.685333
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "the_evil_dead_j",
-      "name": "The Evil Dead J",
-      "cover": null,
+      "id": "spartacus_s02e03",
+      "name": "Spartacus S02E03",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/The Evil Dead 1981.J.1080p.BluRay.BG Audio.MadMax & Goredolo.mkv",
-          "duration": 5126.246
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E03.mp4",
+          "duration": 3096.051292
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "the_valley_of_death_j_dvdrip_bg_audio_mad_max_goredole",
-      "name": "The Valley of Death J DVDRip BG Audio Mad Max & Goredole",
-      "cover": null,
+      "id": "spartacus_s02e04",
+      "name": "Spartacus S02E04",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/The Valley of Death 1968.J.DVDRip.BG Audio.Mad Max & Goredole.mkv",
-          "duration": 5338.336
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E04.mp4",
+          "duration": 3383.421708
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "1978",
-      "name": "1978",
-      "cover": null,
+      "id": "spartacus_s02e05",
+      "name": "Spartacus S02E05",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/1978.2024.1080p.AMZN.WEB-DL.DDP.2.0.H.264-BITFLOW/1978.2024.1080p.AMZN.WEB-DL.DDP.2.0.H.264-BITFLOW.mkv",
-          "duration": 4818.24
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E05.mp4",
+          "duration": 3178.008167
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "from_dusk_till_dawn_iii_the_hangmans_daughter",
-      "name": "From Dusk Till Dawn III The Hangmans Daughter",
-      "cover": "user/covers/from_dusk_till_dawn.jpg",
+      "id": "spartacus_s02e06",
+      "name": "Spartacus S02E06",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.III.The.Hangman's.Daughter.1999.BDRip.XviD.AC3-WAR/From Dusk Till Dawn III The Hangmans Daughter.mkv",
-          "duration": 5582.072
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E06.mp4",
+          "duration": 3237.067167
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "hardware_j",
-      "name": "Hardware J",
-      "cover": null,
+      "id": "spartacus_s02e07",
+      "name": "Spartacus S02E07",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Hardware 1990.J.1080p.BluRay.BG Audio.MadMax & Goredolo/Hardware 1990.J.1080p.BluRay.BG Audio.MadMax & Goredolo.mkv",
-          "duration": 5654.304
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E07.mp4",
+          "duration": 3205.327125
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "mad_max_3_beyond_thunderdome",
-      "name": "Mad Max 3 Beyond Thunderdome",
-      "cover": "user/covers/thunder.jpg",
+      "id": "spartacus_s02e08",
+      "name": "Spartacus S02E08",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Mad.Max.3.Beyond.Thunderdome.1985.1080p.BluRay.AV1-DiN/Mad.Max.3.Beyond.Thunderdome.1985.1080p.BluRay.AV1-DiN.mkv",
-          "duration": 6418.543
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E08.mp4",
+          "duration": 3286.491542
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_s02e09",
+      "name": "Spartacus S02E09",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Mad.Max.3.Beyond.Thunderdome.1985.1080p.BluRay.AV1-DiN/sample.mkv",
-          "duration": 60.14
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E09.mp4",
+          "duration": 3228.099875
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "maximum_conviction_bdrip_x264_aac_bgaudio-siso",
-      "name": "Maximum Conviction BDRip x264 AAC BGAUDiO-SiSO",
-      "cover": "user/covers/maximum_conviction.jpg",
+      "id": "spartacus_s02e10",
+      "name": "Spartacus S02E10",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 2,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Maximum.Conviction.2012.BDRip.x264.AAC.BGAUDiO-SiSO/Maximum.Conviction.2012.BDRip.x264.AAC.BGAUDiO-SiSO.mkv",
-          "duration": 5870.9
+          "path": "/home/akira/Videos/Series/Spartacus/season 2/Spartacus S02E10.mp4",
+          "duration": 3469.382583
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_gods_of_the_arena_s0e01",
+      "name": "Spartacus Gods of the Arena S0E01",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 0,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Maximum.Conviction.2012.BDRip.x264.AAC.BGAUDiO-SiSO/sample.mkv",
-          "duration": 32.37
+          "path": "/home/akira/Videos/Series/Spartacus/season 0/Spartacus Gods.of.the.Arena S0E01.mp4",
+          "duration": 3058.30525
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_gods_of_the_arena_s0e02",
+      "name": "Spartacus Gods of the Arena S0E02",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 0,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Rambo.First.Blood.1982.1080p.BluRay.x265.DD2.0-5.1-WAR/sample.mkv",
-          "duration": 62.056
+          "path": "/home/akira/Videos/Series/Spartacus/season 0/Spartacus Gods.of.the.Arena S0E02.mp4",
+          "duration": 3141.429958
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "war-rambofirstblood",
-      "name": "war-rambofirstblood",
-      "cover": "user/covers/rambo_first_blood_part_ii.jpg",
+      "id": "spartacus_gods_of_the_arena_s0e03",
+      "name": "Spartacus Gods of the Arena S0E03",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 0,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Rambo.First.Blood.1982.1080p.BluRay.x265.DD2.0-5.1-WAR/war-rambofirstblood.mkv",
-          "duration": 5610.552
+          "path": "/home/akira/Videos/Series/Spartacus/season 0/Spartacus Gods.of.the.Arena S0E03.mp4",
+          "duration": 3408.571833
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_gods_of_the_arena_s0e04",
+      "name": "Spartacus Gods of the Arena S0E04",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 0,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Rambo.III.1988.1080p.BluRay.x265.DD2.0-5.1-WAR/sample.mkv",
-          "duration": 62.53
+          "path": "/home/akira/Videos/Series/Spartacus/season 0/Spartacus Gods.of.the.Arena S0E04.mp4",
+          "duration": 3091.713625
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "war-rambo3",
-      "name": "war-rambo3",
-      "cover": "user/covers/rambo.jpg",
+      "id": "spartacus_gods_of_the_arena_s0e05",
+      "name": "Spartacus Gods of the Arena S0E05",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 0,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Rambo.III.1988.1080p.BluRay.x265.DD2.0-5.1-WAR/war-rambo3.mkv",
-          "duration": 6091.372
+          "path": "/home/akira/Videos/Series/Spartacus/season 0/Spartacus Gods.of.the.Arena S0E05.mp4",
+          "duration": 3318.898917
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "return_to_silent_hill",
-      "name": "Return To Silent Hill",
-      "cover": null,
+      "id": "spartacus_gods_of_the_arena_s0e06",
+      "name": "Spartacus Gods of the Arena S0E06",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 0,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP.mkv",
-          "duration": 6326.432
+          "path": "/home/akira/Videos/Series/Spartacus/season 0/Spartacus Gods.of.the.Arena S0E06.mp4",
+          "duration": 3988.4845
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "riddick_dc",
-      "name": "Riddick DC",
-      "cover": null,
+      "id": "spartacus_s03e01",
+      "name": "Spartacus S03E01",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Riddick.2013.DC.1080p.BluRay.DD5.1.H.265-WAR/Riddick.2013.DC.1080p.BluRay.DD5.1.H.265-WAR.mkv",
-          "duration": 7613.536
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E01 720p.HDTV.x264-EVOLVE_Part 01.mp4",
+          "duration": 2945.525917
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_s03e02",
+      "name": "Spartacus S03E02",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Riddick.2013.DC.1080p.BluRay.DD5.1.H.265-WAR/sample.mkv",
-          "duration": 62.351
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E02 720p.HDTV.x264-EVOLVE_Part 01.mp4",
+          "duration": 3102.808042
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "shelter",
-      "name": "Shelter",
-      "cover": null,
+      "id": "spartacus_s03e03",
+      "name": "Spartacus S03E03",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Shelter.2026.1080p.TELESYNC.x264-SyncUP/Shelter.2026.1080p.TELESYNC.x264-SyncUP.mkv",
-          "duration": 6043.36
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E03 720p.HDTV.x264-EVOLVE_Part 01.mp4",
+          "duration": 3297.7945
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
+      "id": "spartacus_s03e04",
+      "name": "Spartacus S03E04",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Spacehunter.Adventures.in.The.Forbidden.Zone.1983.720p.BluRay.x265.DD2.0-TuKCo/Sample.mkv",
-          "duration": 40.401
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E04 720p.HDTV.x264-EVOLVE_Part 01.mp4",
+          "duration": 3300.297
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "spacehunter_adventures_in_the_forbidden_zone",
-      "name": "Spacehunter Adventures in The Forbidden Zone",
-      "cover": null,
+      "id": "spartacus_s03e05",
+      "name": "Spartacus S03E05",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Spacehunter.Adventures.in.The.Forbidden.Zone.1983.720p.BluRay.x265.DD2.0-TuKCo/Spacehunter.Adventures.in.The.Forbidden.Zone.1983.720p.BluRay.x265.DD2.0-TuKCo.mkv",
-          "duration": 5390.594
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E05 720p.HDTV.x264-EVOLVE_Part 01.mp4",
+          "duration": 3104.976875
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "spartacus",
-      "name": "Spartacus",
-      "cover": "user/covers/spartacus.jpg",
+      "id": "spartacus_s03e06",
+      "name": "Spartacus S03E06",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Spartacus (1960)/Spartacus 720p HD BG AUDIO.mkv",
-          "duration": 11804.522
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E06 720p.HDTV.x264-IMMERSE_Part 01.mp4",
+          "duration": 3296.293
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_s03e07",
+      "name": "Spartacus S03E07",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Spartacus.1960.REMASTERED.BRRip.x265-DiN/sample.mkv",
-          "duration": 54.142
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E07 720p.HDTV.x264-IMMERSE_Part 01.mp4",
+          "duration": 3147.936458
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "spartacus-din",
-      "name": "spartacus-din",
-      "cover": "user/covers/spartacus.jpg",
+      "id": "spartacus_s03e08",
+      "name": "Spartacus S03E08",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Spartacus.1960.REMASTERED.BRRip.x265-DiN/spartacus-din.mkv",
-          "duration": 11803.806
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E08 720p.HDTV.x264-IMMERSE_Part 01.mp4",
+          "duration": 3159.156
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
+      "id": "spartacus_s03e09",
+      "name": "Spartacus S03E09",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Splinter.2008.1080p.BluRay.x265.DD5.1-WAR/sample.mkv",
-          "duration": 63.112
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E09 720p.HDTV.x264-EVOLVE_Part 01.mp4",
+          "duration": 3393.556833
         }
-      ]
+      ],
+      "series_name": "spartac"
     },
     {
-      "id": "splinter",
-      "name": "Splinter",
-      "cover": null,
+      "id": "spartacus_s03e10",
+      "name": "Spartacus S03E10",
+      "cover": "",
       "description": "",
       "genre": [],
-      "year": 2026,
+      "tags": [],
+      "season": 3,
       "videos": [
         {
-          "path": "C:/Users/Admin/Downloads/Movies/Splinter.2008.1080p.BluRay.x265.DD5.1-WAR/Splinter.2008.1080p.BluRay.x265.DD5.1-WAR.mkv",
-          "duration": 4923.136
+          "path": "/home/akira/Videos/Series/Spartacus/season 3/Spartacus S03E10 720p.HDTV.x264-IMMERSE_Part 01.mp4",
+          "duration": 3536.407875
         }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.1990.1080p.BluRay.AV1-DiN/sample.mkv",
-          "duration": 60.14
-        }
-      ]
-    },
-    {
-      "id": "teenage_mutant_ninja_turtles",
-      "name": "Teenage Mutant Ninja Turtles",
-      "cover": "user/covers/ninja.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.1990.1080p.BluRay.AV1-DiN/Teenage.Mutant.Ninja.Turtles.1990.1080p.BluRay.AV1-DiN.mkv",
-          "duration": 5614.631
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.II.The.Secret.of.the.Ooze.1991.1080p.BluRay.AV1-DiN/sample.mkv",
-          "duration": 60.225
-        }
-      ]
-    },
-    {
-      "id": "teenage_mutant_ninja_turtles_ii_the_secret_of_the_ooze",
-      "name": "Teenage Mutant Ninja Turtles II The Secret of the Ooze",
-      "cover": "user/covers/ninja.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.II.The.Secret.of.the.Ooze.1991.1080p.BluRay.AV1-DiN/Teenage.Mutant.Ninja.Turtles.II.The.Secret.of.the.Ooze.1991.1080p.BluRay.AV1-DiN.mkv",
-          "duration": 5313.959
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.III.1993.1080p.BluRay.AV1-DiN/sample.mkv",
-          "duration": 60.14
-        }
-      ]
-    },
-    {
-      "id": "teenage_mutant_ninja_turtles_iii",
-      "name": "Teenage Mutant Ninja Turtles III",
-      "cover": "user/covers/ninja.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Teenage.Mutant.Ninja.Turtles.III.1993.1080p.BluRay.AV1-DiN/Teenage.Mutant.Ninja.Turtles.III.1993.1080p.BluRay.AV1-DiN.mkv",
-          "duration": 5747.303
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Autopsy.of.Jane.Doe.2016.BRRip.x264.AC3.BGAUDiO-SiSO/sample.mkv",
-          "duration": 31.686
-        }
-      ]
-    },
-    {
-      "id": "the_autopsy_of_jane_doe_brrip_x264_ac3_bgaudio-siso",
-      "name": "The Autopsy of Jane Doe BRRip x264 AC3 BGAUDiO-SiSO",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Autopsy.of.Jane.Doe.2016.BRRip.x264.AC3.BGAUDiO-SiSO/The.Autopsy.of.Jane.Doe.2016.BRRip.x264.AC3.BGAUDiO-SiSO.mkv",
-          "duration": 5186.56
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Black.Phone.2021.576p.WEBRip.x265.AAC-HUD/Sample.mkv",
-          "duration": 40.263
-        }
-      ]
-    },
-    {
-      "id": "the_black_phone_2021",
-      "name": "The Black Phone 2021",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Black.Phone.2021.576p.WEBRip.x265.AAC-HUD/The Black Phone 2021.mkv",
-          "duration": 6202.313
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2.2016.BRRip.x264.AC3.BGAUDiO-SiSO/sample.mkv",
-          "duration": 31.14
-        }
-      ]
-    },
-    {
-      "id": "the_conjuring_2_brrip_x264_ac3_bgaudio-siso",
-      "name": "The Conjuring 2 BRRip x264 AC3 BGAUDiO-SiSO",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2.2016.BRRip.x264.AC3.BGAUDiO-SiSO/The.Conjuring.2.2016.BRRip.x264.AC3.BGAUDiO-SiSO.mkv",
-          "duration": 8032.768
-        }
-      ]
-    },
-    {
-      "id": "whthecing",
-      "name": "whthecing",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2013.1080p.BluRay.x265.HEVC.DTS-WAR/whthecing.mkv",
-          "duration": 6718.048
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Hunt.2020.BDRip.x264.AC3.BGAUDiO-SiSO/sample.mkv",
-          "duration": 33.583
-        }
-      ]
-    },
-    {
-      "id": "the_hunt_bdrip_x264_ac3_bgaudio-siso",
-      "name": "The Hunt BDRip x264 AC3 BGAUDiO-SiSO",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Hunt.2020.BDRip.x264.AC3.BGAUDiO-SiSO/The.Hunt.2020.BDRip.x264.AC3.BGAUDiO-SiSO.mkv",
-          "duration": 5402.048
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.1992.1080p.BluRay.DUAL.AUDiO.H.265-WAR/sample.mkv",
-          "duration": 60.357
-        }
-      ]
-    },
-    {
-      "id": "tiger_claws",
-      "name": "Tiger Claws",
-      "cover": "user/covers/tiger_claws.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.1992.1080p.BluRay.DUAL.AUDiO.H.265-WAR/Tiger.Claws.1992.1080p.BluRay.DUAL.AUDiO.H.265-WAR.mkv",
-          "duration": 5545.624
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.II.1996.1080p.BluRay.DUAL.AUDiO.H.265-WAR/sample.mkv",
-          "duration": 61.618
-        }
-      ]
-    },
-    {
-      "id": "tiger_claws_ii",
-      "name": "Tiger Claws II",
-      "cover": "user/covers/tiger_claws.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Tiger.Claws.II.1996.1080p.BluRay.DUAL.AUDiO.H.265-WAR/Tiger.Claws.II.1996.1080p.BluRay.DUAL.AUDiO.H.265-WAR.mkv",
-          "duration": 5325.153
-        }
-      ]
-    },
-    {
-      "id": "critters_2_1988_clip",
-      "name": "Critters 2 1988 clip",
-      "cover": "user/covers/critters.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters 2 1988_clip.mkv",
-          "duration": 122.08
-        }
-      ]
-    },
-    {
-      "id": "critters_3_j",
-      "name": "Critters 3 J",
-      "cover": "user/covers/critters.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters 3 1991.J.720p.Bluray.BG Audio.Mad Max & Goredolo_clip.mkv",
-          "duration": 120.995
-        }
-      ]
-    },
-    {
-      "id": "critters_4_j",
-      "name": "Critters 4 J",
-      "cover": "user/covers/critters.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters 4 1992.J.720p.Bluray.BG Audio.Mad Max &.Bodhi666 & Goredolo_clip.mkv",
-          "duration": 123.831
-        }
-      ]
-    },
-    {
-      "id": "critters1986_clip",
-      "name": "Critters1986 clip",
-      "cover": "user/covers/critters.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Critters1986._clip.mkv",
-          "duration": 121.662
-        }
-      ]
-    },
-    {
-      "id": "ghost_in_the_shell_1995_original_english_trailer_fhd",
-      "name": "Ghost in the Shell (1995) Original English Trailer [FHD]",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Trailers/Ghost in the Shell (1995) Original English Trailer [FHD].mkv",
-          "duration": 97.291
-        }
-      ]
-    },
-    {
-      "id": "rflx-van_helsing_mkv",
-      "name": "rflx-van helsing mkv",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Van.Helsing.2004.480p.BDRip.x265.AAC.BGaudio-REFLUX/rflx-van.helsing.mkv.mkv",
-          "duration": 7897.932
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.2.Teil.1964.1080p.BluRay.x265.Dual-DiN/sample.mkv",
-          "duration": 60.0
-        }
-      ]
-    },
-    {
-      "id": "winnetou_2_teil",
-      "name": "Winnetou 2 Teil",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.2.Teil.1964.1080p.BluRay.x265.Dual-DiN/Winnetou.2.Teil.1964.1080p.BluRay.x265.Dual-DiN.mkv",
-          "duration": 5674.4
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.3.Teil.1965.1080p.BluRay.x265.Dual-DiN/sample.mkv",
-          "duration": 60.0
-        }
-      ]
-    },
-    {
-      "id": "winnetou_3_teil",
-      "name": "Winnetou 3 Teil",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.3.Teil.1965.1080p.BluRay.x265.Dual-DiN/Winnetou.3.Teil.1965.1080p.BluRay.x265.Dual-DiN.mkv",
-          "duration": 5570.88
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.und.das.Halbblut.Apanatschi.1966.1080p.BluRay.x265-DiN/sample.mkv",
-          "duration": 5400.0
-        }
-      ]
-    },
-    {
-      "id": "winnetou_und_das_halbblut_apanatschi",
-      "name": "Winnetou und das Halbblut Apanatschi",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.und.das.Halbblut.Apanatschi.1966.1080p.BluRay.x265-DiN/Winnetou.und.das.Halbblut.Apanatschi.1966.1080p.BluRay.x265-DiN.mkv",
-          "duration": 5422.304
-        }
-      ]
-    },
-    {
-      "id": "xiii_the_conspiracy",
-      "name": "XIII The Conspiracy",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/XIII.The.Conspiracy.2008.1080p.BDRip.AV1-DiN/XIII.The.Conspiracy.2008.1080p.BDRip.AV1-DiN.mkv",
-          "duration": 10804.807
-        }
-      ]
-    },
-    {
-      "id": "sample1",
-      "name": "Sample1",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP/Samples/Sample1.mkv",
-          "duration": 120.064
-        }
-      ]
-    },
-    {
-      "id": "sample2",
-      "name": "Sample2",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Return.To.Silent.Hill.2026.1080p.WEB.DL-SyncUP/Samples/Sample2.mkv",
-          "duration": 126.72
-        }
-      ]
-    },
-    {
-      "id": "sample1",
-      "name": "Sample1",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Shelter.2026.1080p.TELESYNC.x264-SyncUP/Samples/Sample1.mkv",
-          "duration": 103.488
-        }
-      ]
-    },
-    {
-      "id": "sample2",
-      "name": "Sample2",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Shelter.2026.1080p.TELESYNC.x264-SyncUP/Samples/Sample2.mkv",
-          "duration": 106.592
-        }
-      ]
-    },
-    {
-      "id": "whthecing",
-      "name": "whthecing",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Conjuring.2013.1080p.BluRay.x265.HEVC.DTS-WAR/Sample/whthecing.mkv",
-          "duration": 201.209
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Van.Helsing.2004.480p.BDRip.x265.AAC.BGaudio-REFLUX/cover, screens, nfo, sample/sample.mkv",
-          "duration": 120.845
-        }
-      ]
-    },
-    {
-      "id": "ballistic_j_ldrip_bg_audio_madmax_goredolo",
-      "name": "Ballistic J LDRip BG Audio MadMax & Goredolo",
-      "cover": "user/covers/ballistic.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Ballistic 1995.J.LDRip.BG Audio.MadMax & Goredolo.avi",
-          "duration": 5828.3225
-        }
-      ]
-    },
-    {
-      "id": "city_hunter_tvrip_xvid_bgaudio-redneck",
-      "name": "City Hunter TVRip XviD BGAudio-REDNECK",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/City.Hunter.TVRip.XviD.BGAudio-REDNECK.avi",
-          "duration": 5536.2
-        }
-      ]
-    },
-    {
-      "id": "heart_of_a_dragon_dvdrip_vhsbgaudio-weltmeister",
-      "name": "Heart of a Dragon DVDRip VHSBGAudio-Weltmeister",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Heart of a Dragon 1985 DVDRip VHSBGAudio-Weltmeister.avi",
-          "duration": 5214.16
-        }
-      ]
-    },
-    {
-      "id": "tombstone_brrip_bg_audio-atany_stezarai_stasoiakara",
-      "name": "Tombstone BRRip BG Audio-Atany & Stezarai & Stasoiakara",
-      "cover": "user/covers/tombstone.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Tombstone.1993.BRRip.BG.Audio-Atany & Stezarai & Stasoiakara.avi",
-          "duration": 7777.98632
-        }
-      ]
-    },
-    {
-      "id": "wmine",
-      "name": "wmine",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Dead.Mine.2012.BRRip.XviD-WAR/wmine.avi",
-          "duration": 5488.900083
-        }
-      ]
-    },
-    {
-      "id": "dead_space_downfall_480p_brrip_xvid_ac3-lxd-sample",
-      "name": "Dead Space Downfall 480p BRRip XviD AC3-LxD-sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD-sample.avi",
-          "duration": 31.364667
-        }
-      ]
-    },
-    {
-      "id": "dead_space_downfall_480p_brrip_xvid_ac3-lxd",
-      "name": "Dead Space Downfall 480p BRRip XviD AC3-LxD",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD/Dead.Space.Downfall.2008.480p.BRRip.XviD.AC3-LxD.avi",
-          "duration": 4464.376583
-        }
-      ]
-    },
-    {
-      "id": "evil_dead_rise_brrip_xvid_ac3_dual-slzd",
-      "name": "Evil Dead Rise BRRip XviD AC3 DUAL-SlzD",
-      "cover": "user/covers/evil_dead_rise.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Evil.Dead.Rise.2023.BRRip.XviD.AC3.DUAL-SlzD/Evil.Dead.Rise.2023.BRRip.XviD.AC3.DUAL-SlzD.avi",
-          "duration": 5787.072958
-        }
-      ]
-    },
-    {
-      "id": "from_dusk_till_dawn_ii_texas_blood_money_brrip_xvid_ac3-war",
-      "name": "From Dusk Till Dawn II Texas Blood Money BRRip XviD AC3-WAR",
-      "cover": "user/covers/from_dusk_till_dawn_2_texas_blood_money.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.II.Texas.Blood.Money.1999.BRRip.XviD.AC3-WAR/From.Dusk.Till.Dawn.II.Texas.Blood.Money.1999.BRRip.XviD.AC3-WAR.avi",
-          "duration": 5286.9024
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.II.Texas.Blood.Money.1999.BRRip.XviD.AC3-WAR/Sample.avi",
-          "duration": 47.58917
-        }
-      ]
-    },
-    {
-      "id": "from_dusk_till_dawn_iii_the_hangmans_daughter",
-      "name": "From Dusk Till Dawn III The Hangmans Daughter",
-      "cover": "user/covers/from_dusk_till_dawn.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.III.The.Hangman's.Daughter.1999.BDRip.XviD.AC3-WAR/From Dusk Till Dawn III The Hangmans Daughter.avi",
-          "duration": 5582.072039
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/From.Dusk.Till.Dawn.III.The.Hangman's.Daughter.1999.BDRip.XviD.AC3-WAR/Sample.avi",
-          "duration": 48.047962
-        }
-      ]
-    },
-    {
-      "id": "night_teeth_hdrip_xvid_ac3-evo",
-      "name": "Night Teeth HDRip XviD AC3-EVO",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Night.Teeth.2021.HDRip.XviD.AC3-EVO/Night.Teeth.2021.HDRip.XviD.AC3-EVO.avi",
-          "duration": 6522.656
-        }
-      ]
-    },
-    {
-      "id": "raven_hawk_1996_bg_audio",
-      "name": "Raven Hawk (1996) BG Audio",
-      "cover": "user/covers/Raven Hawk.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Raven Hawk-Граблива птица/Raven Hawk (1996) BG Audio.avi",
-          "duration": 5060.597551
-        }
-      ]
-    },
-    {
-      "id": "scooby-doo_brrip_xvid_bg_audio_lovejesus",
-      "name": "Scooby-Doo BRRip XviD BG Audio LoveJesus",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Scooby-Doo.2002.BRRip.XviD.BG.Audio.LoveJesus/Scooby-Doo.2002.BRRip.XviD.BG.Audio.LoveJesus.avi",
-          "duration": 5194.739512
-        }
-      ]
-    },
-    {
-      "id": "terminator-sample",
-      "name": "Terminator-sample",
-      "cover": "user/covers/Terminator.2.1991.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Terminator.DVDRip.BG-EN audio-K79/Terminator-sample.avi",
-          "duration": 75.075
-        }
-      ]
-    },
-    {
-      "id": "terminator_dvdrip_bg-en_audio-k79",
-      "name": "Terminator DVDRip BG-EN audio-K79",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Terminator.DVDRip.BG-EN audio-K79/Terminator.DVDRip.BG-EN audio-K79.avi",
-          "duration": 6432.968208
-        }
-      ]
-    },
-    {
-      "id": "asa-ted_iii-480p",
-      "name": "asa-ted III-480p",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Evil.Dead.III.Army.of.Darkness.1992.480p.BRRip.XviD.AC3-AsA/asa-ted.III-480p.avi",
-          "duration": 4846.007833
-        }
-      ]
-    },
-    {
-      "id": "l-expendables_xvid",
-      "name": "l-expendables xvid",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Expendables.2010.BDRip.XviD-Larceny/l-expendables.xvid.avi",
-          "duration": 6208.248
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Expendables.2010.EXTENDED.BRRip.XviD.AC3-ZmN/sample.avi",
-          "duration": 65.31525
-        }
-      ]
-    },
-    {
-      "id": "the_expendables_extended_brrip_xvid_ac3-zmn",
-      "name": "The Expendables EXTENDED BRRip XviD AC3-ZmN",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/The.Expendables.2010.EXTENDED.BRRip.XviD.AC3-ZmN/The.Expendables.2010.EXTENDED.BRRip.XviD.AC3-ZmN.avi",
-          "duration": 6797.582458
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Twinkle.Twinkle.Lucky.Stars.1985.DVDRip.XviD.BgAudio-ZElKA/Sample.avi",
-          "duration": 61.4
-        }
-      ]
-    },
-    {
-      "id": "twinkle_twinkle_lucky_stars_bg_audio_-zelka",
-      "name": "Twinkle, Twinkle, Lucky Stars [Bg Audio]-ZElKA",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Twinkle.Twinkle.Lucky.Stars.1985.DVDRip.XviD.BgAudio-ZElKA/Twinkle, Twinkle, Lucky Stars [Bg Audio]-ZElKA.avi",
-          "duration": 5454.04
-        }
-      ]
-    },
-    {
-      "id": "lycan-venom",
-      "name": "lycan-venom",
-      "cover": "user/covers/venom.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Venom.2005.BDRip.XviD.AC3-LYCAN/lycan-venom.avi",
-          "duration": 5212.290417
-        }
-      ]
-    },
-    {
-      "id": "sample",
-      "name": "Sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Who.Am.I.1998.DVDRip.AC3/Sample.AVI",
-          "duration": 32.328
-        }
-      ]
-    },
-    {
-      "id": "who_am_i_dvdrip_ac3",
-      "name": "Who Am I DVDRip AC3",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Who.Am.I.1998.DVDRip.AC3/Who.Am.I.1998.DVDRip.AC3.avi",
-          "duration": 7225.176292
-        }
-      ]
-    },
-    {
-      "id": "winnetou_-_1_teil_1963",
-      "name": "Winnetou - 1 Teil (1963)",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.1.Teil.1964.XviD.PAL.DVDRip.Cine/Winnetou - 1. Teil (1963).avi",
-          "duration": 5846.04
-        }
-      ]
-    },
-    {
-      "id": "winnetou_und_das_halbblut_apanatschi_1966",
-      "name": "Winnetou und das Halbblut Apanatschi (1966)",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Winnetou.und.das.Halbblut.Apanatschi .XviD.PAL.DVDRip.Cine/Winnetou und das Halbblut Apanatschi (1966).avi",
-          "duration": 5199.44
-        }
-      ]
-    },
-    {
-      "id": "wmine_sample",
-      "name": "wmine sample",
-      "cover": null,
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Dead.Mine.2012.BRRip.XviD-WAR/Sample/wmine.sample.avi",
-          "duration": 59.184125
-        }
-      ]
-    },
-    {
-      "id": "lycan-venom_sample",
-      "name": "lycan-venom sample",
-      "cover": "user/covers/venom.jpg",
-      "description": "",
-      "genre": [],
-      "year": 2026,
-      "videos": [
-        {
-          "path": "C:/Users/Admin/Downloads/Movies/Venom.2005.BDRip.XviD.AC3-LYCAN/Sample/lycan-venom.sample.avi",
-          "duration": 65.106708
-        }
-      ]
+      ],
+      "series_name": "spartac"
     }
   ]
 }
