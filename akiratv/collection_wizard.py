@@ -1726,7 +1726,6 @@ Your API key will be saved for future use.""")
                     "genre": [],
                     "tags": [],
                     "year": datetime.now().year,
-                    "season": 0,  # Default season (0 = specials/unspecified)
                     "videos": [{
                         "path": video_str,
                         "duration": duration
@@ -1899,9 +1898,8 @@ Your API key will be saved for future use.""")
                 "cover": "",  # Will be set via online metadata fetch
                 "description": "",  # Empty by default
                 "genre": [],       # Empty list by default
-                "tags": [],
+                "tags": [],        # Empty list by default
                 "year": datetime.now().year,  # Default to current year
-                "season": 0,  # Default season (0 = specials/unspecified)
                 "videos": [{
                     "path": video_str,
                     "duration": self.get_video_duration(video_str)
@@ -2085,19 +2083,34 @@ Your API key will be saved for future use.""")
             else:
                 self.metadata_vars["genre_var"].set("")
 
-            if collection.get("tags"):
-                self.metadata_vars["tags_var"].set(", ".join(collection["tags"]))
-            else:
-                self.metadata_vars["tags_var"].set("")
+            # Extract series_name and season from tags, and build display tag list
+            tags = collection.get("tags", [])
+            series_name = ""
+            season_val = 0
+            display_tags = []
+
+            for tag in tags:
+                if tag.startswith("Series: "):
+                    series_name = tag[8:]  # Remove "Series: " prefix
+                elif tag.startswith("Season: "):
+                    try:
+                        season_val = int(tag[8:])  # Remove "Season: " prefix
+                    except ValueError:
+                        pass
+                else:
+                    display_tags.append(tag)
+
+            # Set series/season fields
+            self.series_name_var.set(series_name)
+            self.season_var.set(season_val)
+
+            # Set tags display field (excluding Series/Season tags)
+            self.metadata_vars["tags_var"].set(", ".join(display_tags))
 
             if collection.get("year") and collection["year"] != datetime.now().year:
                 self.metadata_vars["year_var"].set(str(collection["year"]))
             else:
                 self.metadata_vars["year_var"].set("")
-
-            # Series name and season
-            self.series_name_var.set(collection.get("series_name", ""))
-            self.season_var.set(collection.get("season", 0))
 
             self.cover_var.set(collection.get("cover", ""))
 
@@ -2274,7 +2287,7 @@ Your API key will be saved for future use.""")
 
     def _save_ui_fields_to_selected_collections(self):
         """Internal method to save UI field values to selected collection(s)
-        
+
         Called automatically by save_collections() when there are selected items.
         """
         print(f"DEBUG: _save_ui_fields_to_selected_collections for {len(self.selected_indices)} collections")
@@ -2300,19 +2313,6 @@ Your API key will be saved for future use.""")
                 collection["genre"] = [g.strip() for g in genre_str.split(",") if g.strip()]
             else:
                 collection["genre"] = []
-                
-            tags_str = self.metadata_vars["tags_var"].get().strip()
-            if len(self.selected_indices) == 1:
-                # Single selection: use tags field value (empty clears tags)
-                if tags_str:
-                    collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
-                else:
-                    collection["tags"] = []
-            else:
-                # Multiple selections: only update tags if tags_str is non-empty
-                if tags_str:
-                    collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
-                # else: leave collection["tags"] unchanged
 
             year_str = self.metadata_vars["year_var"].get().strip()
             if year_str:
@@ -2328,17 +2328,40 @@ Your API key will be saved for future use.""")
             elif "year" in collection:
                 del collection["year"]
 
-            # Series name
+            # Remove legacy top-level fields if present (now stored as tags)
+            if "series_name" in collection:
+                del collection["series_name"]
+            if "season" in collection:
+                del collection["season"]
+
+            # Series name and season are stored as special tags
             series_name = self.series_name_var.get().strip()
             season_val = self.season_var.get()
             print(f"DEBUG:   Saving collection '{collection.get('name')}': series_name='{series_name}', season={season_val}")
-            if series_name:
-                collection["series_name"] = series_name
-            elif "series_name" in collection:
-                del collection["series_name"]
 
-            # Season (always store as int)
-            collection["season"] = season_val
+            # Get or build tags list
+            if len(self.selected_indices) == 1:
+                tags_str = self.metadata_vars["tags_var"].get().strip()
+                if tags_str:
+                    tags_list = [t.strip() for t in tags_str.split(",") if t.strip()]
+                else:
+                    tags_list = []
+            else:
+                # Multiple selection: preserve existing tags, will merge series/season into them
+                tags_list = collection.get("tags", [])
+
+            # Remove any existing Series: or Season: tags to avoid duplicates
+            tags_list = [t for t in tags_list if not (t.startswith("Series:") or t.startswith("Season:"))]
+
+            # Add new series/season tags
+            if series_name:
+                tags_list.append(f"Series: {series_name}")
+            tags_list.append(f"Season: {season_val}")
+
+            collection["tags"] = tags_list
+
+        # Refresh the list to show any name changes
+        self.refresh_collection_list()
 
 def launch_collection_wizard():
     root = tk.Tk()
