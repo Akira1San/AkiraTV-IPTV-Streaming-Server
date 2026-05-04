@@ -44,12 +44,19 @@ class CollectionWizard:
         self.omdb_api_key = ""  # Will be loaded from config or user input
         
         # Genre tags
-        self.genre_tags = ["Action", "Adventure", "Anime", "Comedy", "Drama", "Fantasy", 
+        self.genre_tags = ["Action", "Adventure", "Anime", "Comedy", "Drama", "Fantasy",
                           "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller", "Documentary"]
-        
+
         # Track selected videos for tagging
         self.selected_indices = set()
-        
+
+        # Series/Season fields for episodic content
+        self.series_name_var = tk.StringVar()
+        self.season_var = tk.IntVar(value=0)
+
+        # Flag to prevent recursive selection events during programmatic selection
+        self._suppress_select_event = False
+
         self.load_tmdb_config()
         self.load_collections()
         self.create_widgets()
@@ -645,10 +652,18 @@ Your API key will be saved for future use.""")
             
             # Show results
             if updated_count > 0:
-                # Refresh the UI
+                # Refresh the UI and preserve selection
+                saved_selection = list(self.selected_indices) if self.selected_indices else []
+                self._suppress_select_event = True
                 self.refresh_collection_list()
-                self.on_collection_select(None)  # Refresh metadata fields
-                
+                if saved_selection:
+                    for idx in saved_selection:
+                        self.collection_list.selection_set(idx)
+                self._suppress_select_event = False
+
+                # Update metadata fields display for the selected collection(s)
+                self._populate_metadata_fields()
+
                 message = f"Successfully updated {updated_count} collection(s) with {source_name} metadata!"
                 if failed_count > 0:
                     message += f"\n\n{failed_count} collection(s) could not be found on {source_name}."
@@ -739,13 +754,85 @@ Your API key will be saved for future use.""")
         # First, save UI field values to selected collection(s)
         if self.selected_indices:
             self._save_ui_fields_to_selected_collections()
-        
+
         try:
             # Get the profile name from the text field, not self.current_profile
             profile_name = self.profile_var.get().strip()
             if not profile_name:
                 messagebox.showwarning("Warning", "Please enter a profile name!")
                 return False
+
+            # Handle the filename properly - ensure collections_ prefix without duplication
+            # Remove collections_ prefix if it exists, then add it back
+            if profile_name.startswith("collections_"):
+                clean_name = profile_name[12:]  # Remove "collections_" prefix
+            else:
+                clean_name = profile_name
+
+            # Remove .json extension if provided
+            if clean_name.endswith(".json"):
+                clean_name = clean_name[:-5]
+
+            # Now add the prefix back
+            filename = f"collections_{clean_name}.json"
+            profile_file = COLLECTIONS_DIR / filename
+
+            # Debug: Show what we're about to save
+            print(f"DEBUG: Saving {len(self.collections)} collections to {profile_file}")
+            print(f"DEBUG: Full file path: {profile_file.absolute()}")
+            print(f"DEBUG: Profile from text field: '{profile_name}' -> clean name: '{clean_name}' -> filename: '{filename}'")
+
+            for i, collection in enumerate(self.collections[:3]):  # Show first 3 collections
+                print(f"DEBUG: Collection {i}: {collection.get('name', 'No name')} - {collection.get('description', 'No description')[:50]}...")
+
+            # Check if file exists before writing
+            if profile_file.exists():
+                print(f"DEBUG: File exists, will overwrite: {profile_file}")
+            else:
+                print(f"DEBUG: Creating new file: {profile_file}")
+
+            # Try to write the file
+            with open(profile_file, "w", encoding="utf-8") as f:
+                json.dump({"collections": self.collections}, f, indent=2, ensure_ascii=False)
+
+            # Refresh the collection list to reflect any changes (e.g., name updates)
+            # Preserve selection across refresh
+            selected_indices_before_refresh = list(self.selected_indices) if self.selected_indices else []
+            self._suppress_select_event = True
+            self.refresh_collection_list()
+            if selected_indices_before_refresh:
+                for idx in selected_indices_before_refresh:
+                    self.collection_list.selection_set(idx)
+            self._suppress_select_event = False
+
+            # Verify the file was written
+            if profile_file.exists():
+                file_size = profile_file.stat().st_size
+                print(f"DEBUG: File written successfully, size: {file_size} bytes")
+                # Update current_profile to match what we just saved
+                self.current_profile = clean_name
+            else:
+                print(f"DEBUG: ERROR - File was not created!")
+                return False
+
+            if show_success_message:
+                messagebox.showinfo("Success", f"Collections saved to {profile_file.name}!")
+            return True
+
+        except PermissionError as e:
+            print(f"DEBUG: Permission error - file may be locked by another process")
+            messagebox.showerror("File Locked",
+                f"Cannot save to {profile_file.name}!\n\n"
+                f"The file may be locked by AkiraTV or another program.\n\n"
+                f"Solutions:\n"
+                f"• Close AkiraTV and try again\n"
+                f"• Use 'Save As' with a different name\n"
+                f"• Check if the file is open in a text editor")
+            return False
+        except Exception as e:
+            print(f"DEBUG: Exception during save: {e}")
+            messagebox.showerror("Error", f"Failed to save collections:\n{str(e)}")
+            return False
             
             # Handle the filename properly - ensure collections_ prefix without duplication
             # Remove collections_ prefix if it exists, then add it back
@@ -779,7 +866,10 @@ Your API key will be saved for future use.""")
             # Try to write the file
             with open(profile_file, "w", encoding="utf-8") as f:
                 json.dump({"collections": self.collections}, f, indent=2, ensure_ascii=False)
-            
+
+            # Refresh the collection list to reflect any changes (e.g., name updates)
+            self.refresh_collection_list()
+
             # Verify the file was written
             if profile_file.exists():
                 file_size = profile_file.stat().st_size
@@ -789,7 +879,7 @@ Your API key will be saved for future use.""")
             else:
                 print(f"DEBUG: ERROR - File was not created!")
                 return False
-            
+
             if show_success_message:
                 messagebox.showinfo("Success", f"Collections saved to {profile_file.name}!")
             return True
@@ -931,7 +1021,7 @@ Your API key will be saved for future use.""")
             ttk.Label(detail_frame, text=label_text).grid(row=i, column=0, sticky="w", padx=5, pady=2)
             if var_name == "rating_var":
                 var = tk.StringVar()
-                combo = ttk.Combobox(detail_frame, textvariable=var, 
+                combo = ttk.Combobox(detail_frame, textvariable=var,
                                     values=["NR", "G", "PG", "PG-13", "R", "NC-17"], width=45)
                 combo.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
             elif var_name == "id_var":  # ID field should be read-only
@@ -943,7 +1033,7 @@ Your API key will be saved for future use.""")
                 entry = ttk.Entry(detail_frame, textvariable=var, width=50)
                 entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
             self.metadata_vars[var_name] = var
-        
+
         detail_frame.columnconfigure(1, weight=1)
         
         # Right column: Collections list + Tags side by side
@@ -1020,11 +1110,27 @@ Your API key will be saved for future use.""")
         special_frame.pack(fill="x", padx=5, pady=5)
         
         self.episodic_var = tk.BooleanVar()
-        episodic_cb = ttk.Checkbutton(special_frame, text="Episodic", 
-                                     variable=self.episodic_var,
-                                     command=lambda: self.toggle_tag("Episodic"))
+        episodic_cb = ttk.Checkbutton(special_frame, text="Episodic",
+                                      variable=self.episodic_var,
+                                      command=lambda: self.toggle_tag("Episodic"))
         episodic_cb.pack(anchor="w", padx=5, pady=2)
-        
+
+        # Episodic Details sub-frame (only visible when Episodic is checked - will be handled by logic)
+        episodic_details = ttk.Frame(special_frame)
+        episodic_details.pack(fill="x", padx=5, pady=(5, 0))
+
+        # Series Name
+        ttk.Label(episodic_details, text="Series Name:").grid(row=0, column=0, sticky="w", padx=(0, 5))
+        series_entry = ttk.Entry(episodic_details, textvariable=self.series_name_var, width=20)
+        series_entry.grid(row=0, column=1, sticky="ew")
+
+        # Season
+        ttk.Label(episodic_details, text="Season:").grid(row=1, column=0, sticky="w", padx=(0, 5), pady=(5, 0))
+        season_spin = ttk.Spinbox(episodic_details, from_=0, to=99, textvariable=self.season_var, width=5)
+        season_spin.grid(row=1, column=1, sticky="w", pady=(5, 5))
+
+        episodic_details.columnconfigure(1, weight=1)
+
         # Videos list frame (below collections list)
         videos_frame = ttk.LabelFrame(right_column, text="Videos in Collection")
         videos_frame.pack(side="bottom", fill="both", expand=True, pady=(10, 0))
@@ -1046,20 +1152,12 @@ Your API key will be saved for future use.""")
     def select_all(self):
         """Select all items in the list"""
         self.collection_list.selection_set(0, tk.END)
-        self.on_collection_select(None)
+        # The <<ListboxSelect>> event will trigger on_collection_select automatically
 
     def unselect_all(self):
         """Unselect all items in the list"""
         self.collection_list.selection_clear(0, tk.END)
-        self.selected_indices.clear()
-        # Clear metadata fields
-        for var in self.metadata_vars.values():
-            var.set("")
-        self.cover_var.set("")
-        # Reset tag checkboxes
-        for var in self.genre_vars.values():
-            var.set(False)
-        self.episodic_var.set(False)
+        # The <<ListboxSelect>> event will trigger on_collection_select automatically
 
     def remove_collections(self):
         """Remove selected collections from the list"""
@@ -1080,17 +1178,21 @@ Your API key will be saved for future use.""")
             # Clear selection and refresh
             self.selected_indices.clear()
             self.refresh_collection_list()
-            
+
             # Clear metadata fields
             for var in self.metadata_vars.values():
                 var.set("")
             self.cover_var.set("")
-            
+
             # Reset tag checkboxes
             for var in self.genre_vars.values():
                 var.set(False)
             self.episodic_var.set(False)
-            
+
+            # Clear series/season fields
+            self.series_name_var.set("")
+            self.season_var.set(0)
+
             messagebox.showinfo("Success", f"Removed {count} collection(s)!")
 
     def upgrade_video_duration(self):
@@ -1447,14 +1549,11 @@ Your API key will be saved for future use.""")
                 profile_name = file_name[12:]  # Remove "collections_" prefix
             else:
                 profile_name = file_name
-            
+
             self.profile_var.set(profile_name)
             self.current_profile = profile_name
-            
-            # Refresh the UI
-            self.refresh_collection_list()
-            
-            # Clear selection and metadata fields
+
+            # Clear selection and metadata fields BEFORE refreshing the list
             self.selected_indices.clear()
             for var in self.metadata_vars.values():
                 var.set("")
@@ -1462,7 +1561,12 @@ Your API key will be saved for future use.""")
             for var in self.genre_vars.values():
                 var.set(False)
             self.episodic_var.set(False)
-            
+            self.series_name_var.set("")
+            self.season_var.set(0)
+
+            # Refresh the UI
+            self.refresh_collection_list()
+
             messagebox.showinfo("Success", f"Loaded {len(self.collections)} collections from {Path(collection_file).name}")
             
         except Exception as e:
@@ -1595,6 +1699,7 @@ Your API key will be saved for future use.""")
                     "genre": [],
                     "tags": [],
                     "year": datetime.now().year,
+                    "season": 0,  # Default season (0 = specials/unspecified)
                     "videos": [{
                         "path": video_str,
                         "duration": duration
@@ -1767,7 +1872,9 @@ Your API key will be saved for future use.""")
                 "cover": "",  # Will be set via online metadata fetch
                 "description": "",  # Empty by default
                 "genre": [],       # Empty list by default
+                "tags": [],
                 "year": datetime.now().year,  # Default to current year
+                "season": 0,  # Default season (0 = specials/unspecified)
                 "videos": [{
                     "path": video_str,
                     "duration": self.get_video_duration(video_str)
@@ -1782,8 +1889,9 @@ Your API key will be saved for future use.""")
 
     def refresh_collection_list(self):
         """Refresh the collections listbox with red color for missing videos"""
+        print(f"DEBUG: refresh_collection_list called, suppress={self._suppress_select_event}")
         self.collection_list.delete(0, tk.END)
-        
+
         for collection in self.collections:
             # Check if any video in this collection is missing
             has_missing = False
@@ -1792,17 +1900,21 @@ Your API key will be saved for future use.""")
                 if video_path and not Path(video_path).exists():
                     has_missing = True
                     break
-            
+
             # Insert with appropriate display
             display_name = collection["name"]
             if has_missing:
                 display_name = f"❌ {display_name}"  # Add X marker for missing videos
-            
+
             self.collection_list.insert(tk.END, display_name)
-            
+
             # Set red color for items with missing videos
             if has_missing:
                 self.collection_list.itemconfig(tk.END, fg="red")
+
+        # Force update to ensure UI reflects changes immediately
+        self.collection_list.update_idletasks()
+        print(f"DEBUG: refresh_collection_list done, list has {self.collection_list.size()} items")
 
     def refresh_video_list(self):
         """Refresh the video list with red color for missing videos"""
@@ -1891,23 +2003,37 @@ Your API key will be saved for future use.""")
     
     def on_collection_select(self, event):
         """Handle collection selection"""
-        # Clear previous selection
-        self.selected_indices.clear()
-        
-        # Get current selection
-        selection = self.collection_list.curselection()
-        self.selected_indices = set(selection)
-        
-        # If exactly one item is selected, populate metadata fields
-        if len(selection) == 1:
-            idx = selection[0]
+        print(f"DEBUG: on_collection_select called, suppress={self._suppress_select_event}, current selection={self.collection_list.curselection()}, stored={self.selected_indices}")
+        if self._suppress_select_event:
+            print("DEBUG: Suppressed due to flag")
+            return
+
+        # Save any pending changes to previously selected collection(s)
+        if self.selected_indices:
+            print(f"DEBUG: Saving changes to {len(self.selected_indices)} selected collections")
+            self._save_ui_fields_to_selected_collections()
+
+        # Capture the new selection
+        new_selection = self.collection_list.curselection()
+        print(f"DEBUG: New selection from curselection: {new_selection}")
+        self.selected_indices = set(new_selection)
+
+        # Populate metadata fields based on stored selection
+        self._populate_metadata_fields()
+
+    def _populate_metadata_fields(self):
+        """Populate metadata fields based on current selection stored in self.selected_indices"""
+        print(f"DEBUG: _populate_metadata_fields, selected_indices={self.selected_indices}")
+        if len(self.selected_indices) == 1:
+            idx = next(iter(self.selected_indices))
             collection = self.collections[idx]
-            
+            print(f"DEBUG: Loading collection '{collection.get('name')}' into fields")
+
             # Populate metadata fields - but don't show defaults for empty fields
             self.metadata_vars["id_var"].set(collection.get("id", ""))
             self.metadata_vars["name_var"].set(collection.get("name", ""))
             self.metadata_vars["cover_var"].set(collection.get("cover", ""))
-            
+
             # Only populate if the field has a value
             if collection.get("description"):
                 self.metadata_vars["desc_var"].set(collection["description"])
@@ -1923,41 +2049,50 @@ Your API key will be saved for future use.""")
                 self.metadata_vars["genre_var"].set(", ".join(collection["genre"]))
             else:
                 self.metadata_vars["genre_var"].set("")
-                
+
             if collection.get("tags"):
                 self.metadata_vars["tags_var"].set(", ".join(collection["tags"]))
             else:
                 self.metadata_vars["tags_var"].set("")
-                
+
             if collection.get("year") and collection["year"] != datetime.now().year:
                 self.metadata_vars["year_var"].set(str(collection["year"]))
             else:
                 self.metadata_vars["year_var"].set("")
-            
+
+            # Series name and season
+            self.series_name_var.set(collection.get("series_name", ""))
+            self.season_var.set(collection.get("season", 0))
+
             self.cover_var.set(collection.get("cover", ""))
-            
+
             # Update cover preview
             self.display_cover_preview(collection.get("cover", ""))
-            
+
             # Update tag checkboxes
             self.update_tag_checkboxes(collection)
-            
+
             # Refresh the video list
             self.refresh_video_list()
         else:
             # Clear metadata fields if multiple or no items selected
+            print("DEBUG: Clearing metadata fields (multiple/no selection)")
             for var in self.metadata_vars.values():
                 var.set("")
             self.cover_var.set("")
-            
+
             # Clear cover preview
             self.cover_preview.configure(image="")
-            
+
             # Reset tag checkboxes
             for var in self.genre_vars.values():
                 var.set(False)
             self.episodic_var.set(False)
-            
+
+            # Clear series/season fields
+            self.series_name_var.set("")
+            self.season_var.set(0)
+
             # Refresh the video list
             self.refresh_video_list()
 
@@ -2157,8 +2292,15 @@ Your API key will be saved for future use.""")
             elif "year" in collection:
                 del collection["year"]
 
-        # Refresh the list to show any name changes
-        self.refresh_collection_list()
+            # Series name
+            series_name = self.series_name_var.get().strip()
+            if series_name:
+                collection["series_name"] = series_name
+            elif "series_name" in collection:
+                del collection["series_name"]
+
+            # Season (always store as int)
+            collection["season"] = self.season_var.get()
 
 def launch_collection_wizard():
     root = tk.Tk()
