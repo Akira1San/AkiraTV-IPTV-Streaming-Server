@@ -78,14 +78,23 @@ class CollectionWizard:
         self.root.configure(bg="")
         
         # Reset all custom style configurations
-        # This will make ttk use the system default colors
         style.configure('.')
-        
+
         # Reset Tkinter widget options to defaults
         self.root.option_add('*Listbox.background', "")
         self.root.option_add('*Listbox.foreground', "")
         self.root.option_add('*Listbox.selectBackground', "")
         self.root.option_add('*Listbox.selectForeground', "")
+        self.root.option_add('*Listbox.inactiveSelectBackground', "")
+        self.root.option_add('*Listbox.inactiveSelectForeground', "")
+
+        # Reset existing listboxes to system defaults
+        if hasattr(self, 'collection_list'):
+            self.collection_list.config(selectbackground='', selectforeground='',
+                                       inactiveselectbackground='', inactiveselectforeground='')
+        if hasattr(self, 'video_list'):
+            self.video_list.config(selectbackground='', selectforeground='',
+                                  inactiveselectbackground='', inactiveselectforeground='')
         self.root.option_add('*Listbox.borderWidth', "")
         self.root.option_add('*Listbox.relief', "")
         self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
@@ -189,6 +198,22 @@ class CollectionWizard:
                       background=light_bg,
                       troughcolor=dark_bg,
                       arrowcolor=text_color)
+
+        # Configure listbox to keep selection visible even when unfocused
+        # This prevents selection from "disappearing" when moving focus to other widgets
+        highlight_color = "#4a86e8"
+        self.root.option_add('*Listbox.selectBackground', highlight_color)
+        self.root.option_add('*Listbox.selectForeground', 'white')
+        self.root.option_add('*Listbox.inactiveSelectBackground', highlight_color)
+        self.root.option_add('*Listbox.inactiveSelectForeground', 'white')
+
+        # Apply to existing listboxes if they exist
+        if hasattr(self, 'collection_list'):
+            self.collection_list.config(selectbackground=highlight_color, selectforeground='white',
+                                       inactiveselectbackground=highlight_color, inactiveselectforeground='white')
+        if hasattr(self, 'video_list'):
+            self.video_list.config(selectbackground=highlight_color, selectforeground='white',
+                                  inactiveselectbackground=highlight_color, inactiveselectforeground='white')
         
         # Configure listbox
         self.root.option_add('*Listbox.background', light_bg)
@@ -1067,8 +1092,9 @@ Your API key will be saved for future use.""")
         scrollbar.pack(side="right", fill="y")
         
         # Create listbox with multi-select mode and extended selection (allows drag selection)
-        self.collection_list = tk.Listbox(list_container, selectmode=tk.EXTENDED, 
-                                         yscrollcommand=scrollbar.set)
+        self.collection_list = tk.Listbox(list_container, selectmode=tk.EXTENDED,
+                                         yscrollcommand=scrollbar.set,
+                                         exportselection=False)
         self.collection_list.pack(fill="both", expand=True)
         scrollbar.config(command=self.collection_list.yview)
         
@@ -1140,7 +1166,8 @@ Your API key will be saved for future use.""")
         video_scrollbar.pack(side="right", fill="y")
         
         # Create video listbox
-        self.video_list = tk.Listbox(videos_frame, yscrollcommand=video_scrollbar.set)
+        self.video_list = tk.Listbox(videos_frame, yscrollcommand=video_scrollbar.set,
+                                     exportselection=False)
         self.video_list.pack(fill="both", expand=True, padx=5, pady=5)
         video_scrollbar.config(command=self.video_list.yview)
         
@@ -2003,23 +2030,31 @@ Your API key will be saved for future use.""")
     
     def on_collection_select(self, event):
         """Handle collection selection"""
-        print(f"DEBUG: on_collection_select called, suppress={self._suppress_select_event}, current selection={self.collection_list.curselection()}, stored={self.selected_indices}")
+        print(f"\n=== on_collection_select TRIGGERED ===")
+        print(f"  suppress flag: {self._suppress_select_event}")
+        print(f"  event type: {event}")
+        print(f"  curselection BEFORE: {self.collection_list.curselection()}")
+        print(f"  selected_indices BEFORE: {self.selected_indices}")
+
         if self._suppress_select_event:
-            print("DEBUG: Suppressed due to flag")
+            print("  => RETURNING (suppressed)")
             return
 
         # Save any pending changes to previously selected collection(s)
         if self.selected_indices:
-            print(f"DEBUG: Saving changes to {len(self.selected_indices)} selected collections")
+            print(f"  Saving changes to {len(self.selected_indices)} collections")
             self._save_ui_fields_to_selected_collections()
 
         # Capture the new selection
         new_selection = self.collection_list.curselection()
-        print(f"DEBUG: New selection from curselection: {new_selection}")
+        print(f"  new_selection (from curselection): {new_selection}")
         self.selected_indices = set(new_selection)
+        print(f"  selected_indices AFTER: {self.selected_indices}")
 
-        # Populate metadata fields based on stored selection
+        # Populate metadata fields based on selection
+        print("  Calling _populate_metadata_fields...")
         self._populate_metadata_fields()
+        print("=== on_collection_select END ===\n")
 
     def _populate_metadata_fields(self):
         """Populate metadata fields based on current selection stored in self.selected_indices"""
@@ -2242,6 +2277,7 @@ Your API key will be saved for future use.""")
         
         Called automatically by save_collections() when there are selected items.
         """
+        print(f"DEBUG: _save_ui_fields_to_selected_collections for {len(self.selected_indices)} collections")
         for idx in self.selected_indices:
             collection = self.collections[idx]
 
@@ -2294,13 +2330,15 @@ Your API key will be saved for future use.""")
 
             # Series name
             series_name = self.series_name_var.get().strip()
+            season_val = self.season_var.get()
+            print(f"DEBUG:   Saving collection '{collection.get('name')}': series_name='{series_name}', season={season_val}")
             if series_name:
                 collection["series_name"] = series_name
             elif "series_name" in collection:
                 del collection["series_name"]
 
             # Season (always store as int)
-            collection["season"] = self.season_var.get()
+            collection["season"] = season_val
 
 def launch_collection_wizard():
     root = tk.Tk()
