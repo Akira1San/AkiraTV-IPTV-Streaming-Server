@@ -1546,7 +1546,10 @@ Your API key will be saved for future use.""")
                     print(f"DEBUG: New video found: {video_file.name}")
                 else:
                     print(f"DEBUG: Skipping duplicate: {video_file.name}")
-            
+
+            # Sort new videos by series name and episode number
+            new_videos.sort(key=lambda p: self._extract_series_and_episode(p))
+
             if not new_videos:
                 messagebox.showinfo("No Updates", f"No new videos found in:\n{base_folder}")
                 return
@@ -1737,6 +1740,9 @@ Your API key will be saved for future use.""")
         if not video_files:
             messagebox.showinfo("Info", "No video files found in the selected folder!")
             return
+
+        # Sort by series name and episode number
+        video_files.sort(key=lambda p: self._extract_series_and_episode(p))
 
         # Build collections with all required fields
         new_collections = []
@@ -2017,6 +2023,76 @@ Your API key will be saved for future use.""")
             tags_sorted = sorted(tags_list, key=lambda x: x.lower())
             self.metadata_vars["tags_var"].set(", ".join(tags_sorted))
 
+
+    def _extract_series_and_episode(self, filepath):
+        """Extract series name, season, and episode number from a video filepath for sorting.
+
+        Returns a tuple (series_name, season_num, episode_num) where series_name is lowercase.
+        Files without recognizable episode patterns return ("", 0, 0) so they appear first when sorted.
+        """
+        import re
+        filename = Path(filepath).stem
+
+        # Clean filename: remove common patterns
+        # Remove year: (2020), 2020, [2020]
+        cleaned = re.sub(r'[\(\[][12]\d{3}[\)\]]', '', filename)
+        cleaned = re.sub(r'\b(19|20)\d{2}\b', '', cleaned)
+
+        # Remove quality tags
+        quality_patterns = [
+            r'1080p', r'720p', r'2160p', r'4k', r'bluray', r'webrip',
+            r'hdtv', r'x264', r'x265', r'hevc', r'aac', r'dts'
+        ]
+        for pattern in quality_patterns:
+            cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE)
+
+        # Remove common suffixes like "READNFO", "PROPER", "REPACK"
+        cleaned = re.sub(r'(readnfo|proper|repack|internal|real|subfix)', '', cleaned, flags=re.IGNORECASE)
+
+        # Remove dots/underscores at boundaries
+        cleaned = re.sub(r'^[\._\s]+', '', cleaned)
+        cleaned = re.sub(r'[\._\s]+$', '', cleaned)
+
+        # Extract episode info using various patterns
+        # Patterns return (series_part, season, episode) via capture groups
+        patterns = [
+            # S01E02 or s01e02 format
+            (r'^(.*?)[sS](\d{1,2})[eE](\d{1,2})$', 1, 2, 3),
+            # 1x02 format
+            (r'^(.*?)(\d{1,2})x(\d{1,2})$', 1, 2, 3),
+            # Episode/ep 20 at end
+            (r'^(.*?)(?:episode|ep)[\s\.\-\_]?(\d{1,3})$', 1, None, 2),
+            # Part N or Part N of M at end
+            (r'^(.*?)(?:part|pt)[\s\.\-\_]?(\d{1,3})(?:\s+of\s+\d+)?$', 1, None, 2),
+            # Just a number at the very end (like "My Show 05")
+            (r'^(.*?)[\s\.\-\_]+(\d{1,3})$', 1, None, 2),
+            # For multi-part episodes like "S01E01-E02" treat first as start
+            (r'^(.*?)[sS](\d{1,2})[eE](\d{1,2})[eE]\d+', 1, 2, 3),
+        ]
+
+        for pattern, series_grp, season_grp, ep_grp in patterns:
+            match = re.search(pattern, cleaned, re.IGNORECASE)
+            if match:
+                series = match.group(series_grp).strip()
+                # Further clean series name
+                series = re.sub(r'[\.\-\_]+', ' ', series).strip()
+                series = re.sub(r'\s+', ' ', series).strip()
+                if not series:
+                    series = "unknown"
+
+                # Season: use captured group if season_grp provided and valid, else default 1
+                if season_grp is not None and season_grp <= len(match.groups()) and match.group(season_grp):
+                    season = int(match.group(season_grp))
+                else:
+                    season = 1
+
+                # Episode: captured group required
+                episode = int(match.group(ep_grp)) if ep_grp <= len(match.groups()) and match.group(ep_grp) else 1
+
+                return (series.lower(), season, episode)
+
+        # No pattern matched - return empty series with zeros to sort to top
+        return ("", 0, 0)
 
     def normalize_name(self, text: str) -> str:
         return (
