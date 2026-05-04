@@ -78,8 +78,9 @@ class CollectionWizard:
         self.root.configure(bg="")
         
         # Reset all custom style configurations
+        # This will make ttk use the system default colors
         style.configure('.')
-
+        
         # Reset Tkinter widget options to defaults
         self.root.option_add('*Listbox.background', "")
         self.root.option_add('*Listbox.foreground', "")
@@ -87,6 +88,9 @@ class CollectionWizard:
         self.root.option_add('*Listbox.selectForeground', "")
         self.root.option_add('*Listbox.inactiveSelectBackground', "")
         self.root.option_add('*Listbox.inactiveSelectForeground', "")
+        self.root.option_add('*Listbox.borderWidth', "")
+        self.root.option_add('*Listbox.relief', "")
+        self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
 
         # Reset existing listboxes to system defaults
         if hasattr(self, 'collection_list'):
@@ -95,9 +99,6 @@ class CollectionWizard:
         if hasattr(self, 'video_list'):
             self.video_list.config(selectbackground='', selectforeground='',
                                   inactiveselectbackground='', inactiveselectforeground='')
-        self.root.option_add('*Listbox.borderWidth', "")
-        self.root.option_add('*Listbox.relief', "")
-        self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
         
         self.root.option_add('*Text.background', "")
         self.root.option_add('*Text.foreground', "")
@@ -198,14 +199,18 @@ class CollectionWizard:
                       background=light_bg,
                       troughcolor=dark_bg,
                       arrowcolor=text_color)
-
-        # Configure listbox to keep selection visible even when unfocused
-        # This prevents selection from "disappearing" when moving focus to other widgets
-        highlight_color = "#4a86e8"
+        
+        # Configure listbox
+        self.root.option_add('*Listbox.background', light_bg)
+        self.root.option_add('*Listbox.foreground', text_color)
         self.root.option_add('*Listbox.selectBackground', highlight_color)
         self.root.option_add('*Listbox.selectForeground', 'white')
+        # Keep selection visible when listbox loses focus
         self.root.option_add('*Listbox.inactiveSelectBackground', highlight_color)
         self.root.option_add('*Listbox.inactiveSelectForeground', 'white')
+        self.root.option_add('*Listbox.borderWidth', 1)
+        self.root.option_add('*Listbox.relief', 'flat')
+        self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
 
         # Apply to existing listboxes if they exist
         if hasattr(self, 'collection_list'):
@@ -214,15 +219,6 @@ class CollectionWizard:
         if hasattr(self, 'video_list'):
             self.video_list.config(selectbackground=highlight_color, selectforeground='white',
                                   inactiveselectbackground=highlight_color, inactiveselectforeground='white')
-        
-        # Configure listbox
-        self.root.option_add('*Listbox.background', light_bg)
-        self.root.option_add('*Listbox.foreground', text_color)
-        self.root.option_add('*Listbox.selectBackground', highlight_color)
-        self.root.option_add('*Listbox.selectForeground', 'white')
-        self.root.option_add('*Listbox.borderWidth', 1)
-        self.root.option_add('*Listbox.relief', 'flat')
-        self.root.option_add('*Listbox.font', ("TkDefaultFont", 12))
         
         # Configure text widget
         self.root.option_add('*Text.background', light_bg)
@@ -684,38 +680,1367 @@ Your API key will be saved for future use.""")
                 if saved_selection:
                     for idx in saved_selection:
                         self.collection_list.selection_set(idx)
-        self._suppress_select_event = False
+                self._suppress_select_event = False
+
+                # Update metadata fields display for the selected collection(s)
+                self._populate_metadata_fields()
+
+                message = f"Successfully updated {updated_count} collection(s) with {source_name} metadata!"
+                if failed_count > 0:
+                    message += f"\n\n{failed_count} collection(s) could not be found on {source_name}."
+                messagebox.showinfo("Metadata Update Complete", message)
+            else:
+                messagebox.showwarning("No Updates", f"No metadata could be found for the selected collections on {source_name}.")
+        
+        # Start processing in a thread
+        thread = Thread(target=process_metadata)
+        thread.daemon = True
+        thread.start()
+
+    def export_metadata_ini(self):
+        """Export current collections to INI file with metadata"""
+        if not self.collections:
+            messagebox.showwarning("Warning", "No collections to export!")
+            return
+        
+        # Ask user for save location
+        ini_file = filedialog.asksaveasfilename(
+            title="Save Metadata INI File",
+            defaultextension=".ini",
+            filetypes=[("INI files", "*.ini"), ("All files", "*.*")],
+            initialdir="."
+        )
+        
+        if not ini_file:
+            return
+        
+        try:
+            config = configparser.ConfigParser()
+            
+            for i, collection in enumerate(self.collections):
+                section_name = f"COLLECTION_{i+1:03d}"
+                config.add_section(section_name)
+                
+                # Basic metadata
+                config.set(section_name, "id", collection.get("id", ""))
+                config.set(section_name, "name", collection.get("name", ""))
+                config.set(section_name, "cover", collection.get("cover", "") or "")
+                config.set(section_name, "description", collection.get("description", ""))
+                config.set(section_name, "search_hints", collection.get("search_hints", ""))
+                config.set(section_name, "genre", ", ".join(collection.get("genre", [])))
+                config.set(section_name, "year", str(collection.get("year", 2026)))
+                
+                # Videos
+                videos = collection.get("videos", [])
+                for j, video in enumerate(videos):
+                    config.set(section_name, f"video_{j+1}_path", video.get("path", ""))
+                    config.set(section_name, f"video_{j+1}_duration", str(video.get("duration", 5400.0)))
+            
+            # Write the INI file
+            with open(ini_file, "w", encoding="utf-8") as f:
+                config.write(f)
+            
+            messagebox.showinfo("Success", f"Metadata exported to {Path(ini_file).name}!")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to export metadata:\n{str(e)}")
+
+    def load_collections(self):
+        """Load collections from current profile"""
+        try:
+            # Try with collections_ prefix first (standard naming)
+            profile_file = COLLECTIONS_DIR / f"collections_{self.current_profile}.json"
+            if not profile_file.exists():
+                # Fallback to without prefix
+                profile_file = COLLECTIONS_DIR / f"{self.current_profile}.json"
+            
+            if profile_file.exists():
+                with open(profile_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.collections = data.get("collections", [])
+            else:
+                self.collections = []
+        except Exception as e:
+            print(f"Error loading collections: {e}")
+            self.collections = []
+
+    def save_collections(self, show_success_message=True):
+        """Save collections to current profile
+        
+        Also saves UI field values to selected collection(s) before saving to file.
+        
+        Args:
+            show_success_message: If True, show success messagebox after saving
+        """
+        # First, save UI field values to selected collection(s)
+        if self.selected_indices:
+            self._save_ui_fields_to_selected_collections()
+
+        try:
+            # Get the profile name from the text field, not self.current_profile
+            profile_name = self.profile_var.get().strip()
+            if not profile_name:
+                messagebox.showwarning("Warning", "Please enter a profile name!")
+                return False
+
+            # Handle the filename properly - ensure collections_ prefix without duplication
+            # Remove collections_ prefix if it exists, then add it back
+            if profile_name.startswith("collections_"):
+                clean_name = profile_name[12:]  # Remove "collections_" prefix
+            else:
+                clean_name = profile_name
+
+            # Remove .json extension if provided
+            if clean_name.endswith(".json"):
+                clean_name = clean_name[:-5]
+
+            # Now add the prefix back
+            filename = f"collections_{clean_name}.json"
+            profile_file = COLLECTIONS_DIR / filename
+
+            # Debug: Show what we're about to save
+            print(f"DEBUG: Saving {len(self.collections)} collections to {profile_file}")
+            print(f"DEBUG: Full file path: {profile_file.absolute()}")
+            print(f"DEBUG: Profile from text field: '{profile_name}' -> clean name: '{clean_name}' -> filename: '{filename}'")
+
+            for i, collection in enumerate(self.collections[:3]):  # Show first 3 collections
+                print(f"DEBUG: Collection {i}: {collection.get('name', 'No name')} - {collection.get('description', 'No description')[:50]}...")
+
+            # Check if file exists before writing
+            if profile_file.exists():
+                print(f"DEBUG: File exists, will overwrite: {profile_file}")
+            else:
+                print(f"DEBUG: Creating new file: {profile_file}")
+
+            # Try to write the file
+            with open(profile_file, "w", encoding="utf-8") as f:
+                json.dump({"collections": self.collections}, f, indent=2, ensure_ascii=False)
+
+            # Refresh the collection list to reflect any changes (e.g., name updates)
+            # Preserve selection across refresh
+            selected_indices_before_refresh = list(self.selected_indices) if self.selected_indices else []
+            self._suppress_select_event = True
+            self.refresh_collection_list()
+            if selected_indices_before_refresh:
+                for idx in selected_indices_before_refresh:
+                    self.collection_list.selection_set(idx)
+            self._suppress_select_event = False
+
+            # Verify the file was written
+            if profile_file.exists():
+                file_size = profile_file.stat().st_size
+                print(f"DEBUG: File written successfully, size: {file_size} bytes")
+                # Update current_profile to match what we just saved
+                self.current_profile = clean_name
+            else:
+                print(f"DEBUG: ERROR - File was not created!")
+                return False
+
+            if show_success_message:
+                messagebox.showinfo("Success", f"Collections saved to {profile_file.name}!")
+            return True
+
+        except PermissionError as e:
+            print(f"DEBUG: Permission error - file may be locked by another process")
+            messagebox.showerror("File Locked",
+                f"Cannot save to {profile_file.name}!\n\n"
+                f"The file may be locked by AkiraTV or another program.\n\n"
+                f"Solutions:\n"
+                f"• Close AkiraTV and try again\n"
+                f"• Use 'Save As' with a different name\n"
+                f"• Check if the file is open in a text editor")
+            return False
+        except Exception as e:
+            print(f"DEBUG: Exception during save: {e}")
+            messagebox.showerror("Error", f"Failed to save collections:\n{str(e)}")
+            return False
+            
+            # Handle the filename properly - ensure collections_ prefix without duplication
+            # Remove collections_ prefix if it exists, then add it back
+            if profile_name.startswith("collections_"):
+                clean_name = profile_name[12:]  # Remove "collections_" prefix
+            else:
+                clean_name = profile_name
+            
+            # Remove .json extension if provided
+            if clean_name.endswith(".json"):
+                clean_name = clean_name[:-5]
+            
+            # Now add the prefix back
+            filename = f"collections_{clean_name}.json"
+            profile_file = COLLECTIONS_DIR / filename
+            
+            # Debug: Show what we're about to save
+            print(f"DEBUG: Saving {len(self.collections)} collections to {profile_file}")
+            print(f"DEBUG: Full file path: {profile_file.absolute()}")
+            print(f"DEBUG: Profile from text field: '{profile_name}' -> clean name: '{clean_name}' -> filename: '{filename}'")
+            
+            for i, collection in enumerate(self.collections[:3]):  # Show first 3 collections
+                print(f"DEBUG: Collection {i}: {collection.get('name', 'No name')} - {collection.get('description', 'No description')[:50]}...")
+            
+            # Check if file exists before writing
+            if profile_file.exists():
+                print(f"DEBUG: File exists, will overwrite: {profile_file}")
+            else:
+                print(f"DEBUG: Creating new file: {profile_file}")
+            
+            # Try to write the file
+            with open(profile_file, "w", encoding="utf-8") as f:
+                json.dump({"collections": self.collections}, f, indent=2, ensure_ascii=False)
+
+            # Refresh the collection list to reflect any changes (e.g., name updates)
+            self.refresh_collection_list()
+
+            # Verify the file was written
+            if profile_file.exists():
+                file_size = profile_file.stat().st_size
+                print(f"DEBUG: File written successfully, size: {file_size} bytes")
+                # Update current_profile to match what we just saved
+                self.current_profile = clean_name
+            else:
+                print(f"DEBUG: ERROR - File was not created!")
+                return False
+
+            if show_success_message:
+                messagebox.showinfo("Success", f"Collections saved to {profile_file.name}!")
+            return True
+            
+        except PermissionError as e:
+            print(f"DEBUG: Permission error - file may be locked by another process")
+            messagebox.showerror("File Locked", 
+                f"Cannot save to {profile_file.name}!\n\n"
+                f"The file may be locked by AkiraTV or another program.\n\n"
+                f"Solutions:\n"
+                f"• Close AkiraTV and try again\n"
+                f"• Use 'Save As' with a different name\n"
+                f"• Check if the file is open in a text editor")
+            return False
+        except Exception as e:
+            print(f"DEBUG: Exception during save: {e}")
+            messagebox.showerror("Error", f"Failed to save collections:\n{str(e)}")
+            return False
+
+    def create_widgets(self):
+        # Main frame
+        main_frame = ttk.Frame(self.root)
+        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Profile selection
+        profile_frame = ttk.Frame(main_frame)
+        profile_frame.pack(fill="x", pady=(0, 10))
+        
+        # First row: Quick select dropdown
+        profile_row1 = ttk.Frame(profile_frame)
+        profile_row1.pack(fill="x", pady=(0, 5))
+        ttk.Label(profile_row1, text="Quick Channel Name:").pack(side="left")
+        self.quick_profile_var = tk.StringVar(value="")
+        self.profile_dropdown = ttk.Combobox(profile_row1, textvariable=self.quick_profile_var, 
+                                           values=self.get_available_collection_profiles(), 
+                                           state="readonly", width=25)
+        self.profile_dropdown.pack(side="left", padx=5)
+        self.profile_dropdown.bind("<<ComboboxSelected>>", self.on_quick_profile_select)
+        
+        refresh_btn = ttk.Button(profile_row1, text="Refresh", command=self.refresh_profile_dropdown)
+        refresh_btn.pack(side="left", padx=2)
+        self.create_tooltip(refresh_btn, "Refresh channel names from config.json")
+        
+        # Second row: Manual entry and save buttons
+        profile_row2 = ttk.Frame(profile_frame)
+        profile_row2.pack(fill="x")
+        ttk.Label(profile_row2, text="Profile Name:").pack(side="left")
+        self.profile_var = tk.StringVar(value=self.current_profile)
+        profile_entry = ttk.Entry(profile_row2, textvariable=self.profile_var, width=20)
+        profile_entry.pack(side="left", padx=5)
+        
+        load_btn = ttk.Button(profile_row2, text="Load Profile", command=self.load_profile)
+        load_btn.pack(side="left", padx=2)
+        self.create_tooltip(load_btn, "Load existing collection file by name")
+        
+        save_btn = ttk.Button(profile_row2, text="Save", command=self.save_collections)
+        save_btn.pack(side="left", padx=2)
+        self.create_tooltip(save_btn, "Save current collections to file")
+        
+        save_as_btn = ttk.Button(profile_row2, text="Save As", command=self.save_as_profile)
+        save_as_btn.pack(side="left", padx=2)
+        self.create_tooltip(save_as_btn, "Save collections with a new name")
+        
+        update_btn = ttk.Button(profile_row2, text="Update Collection", command=self.update_selected_collection)
+        update_btn.pack(side="left", padx=2)
+        self.create_tooltip(update_btn, "Add new videos to selected collection from its original folder")
+        
+        # Rest of UI (folder selection, buttons, etc.)
+        top_frame = ttk.Frame(main_frame)
+        top_frame.pack(fill="x", pady=(0, 10))
+        
+        ttk.Label(top_frame, text="Video Folder:").pack(side="left")
+        ttk.Entry(top_frame, textvariable=self.folder_path, width=50).pack(side="left", padx=5)
+        ttk.Button(top_frame, text="Browse", command=self.browse_folder).pack(side="left", padx=2)
+        
+        rescan_btn = ttk.Button(top_frame, text="Re-Scan Folder", command=self.rescan_folder)
+        rescan_btn.pack(side="left", padx=2)
+        self.create_tooltip(rescan_btn, "Scan video folder again and create new collections")
+        
+        btn_frame = ttk.Frame(top_frame)
+        btn_frame.pack(side="right")
+        
+        load_collections_btn = ttk.Button(btn_frame, text="Load Collections", command=self.load_collections_file)
+        load_collections_btn.pack(side="left", padx=2)
+        self.create_tooltip(load_collections_btn, "Load existing collection file for editing")
+        
+        # Online metadata buttons
+        metadata_btn = ttk.Button(btn_frame, text="[WEB] Fetch Metadata", command=self.fetch_online_metadata)
+        metadata_btn.pack(side="left", padx=2)
+        self.create_tooltip(metadata_btn, "Fetch movie metadata and posters from TMDB")
+        
+        export_ini_btn = ttk.Button(btn_frame, text="📄 Export INI", command=self.export_metadata_ini)
+        export_ini_btn.pack(side="left", padx=2)
+        self.create_tooltip(export_ini_btn, "Export collections to INI file with metadata")
+        
+        # Theme toggle button
+        self.theme_btn = ttk.Button(btn_frame, text="☀️ Light Mode", command=self.toggle_theme)
+        self.theme_btn.pack(side="left", padx=2)
+        self.create_tooltip(self.theme_btn, "Toggle between light and dark themes")
+        
+        # Create a container for the main content area
+        content_frame = ttk.Frame(main_frame)
+        content_frame.pack(fill="both", expand=True)
+        
+        # Left column: Cover preview + Collection details
+        left_column = ttk.Frame(content_frame)
+        left_column.pack(side="left", fill="y", padx=(0, 10))
+        
+        # Cover preview frame (top of left column)
+        cover_frame = ttk.LabelFrame(left_column, text="Cover Preview")
+        cover_frame.pack(fill="x", pady=(0, 10))
+        cover_frame.configure(width=280, height=300)
+        cover_frame.pack_propagate(False)  # Prevent frame from shrinking
+        
+        # Cover preview label - will display the cover image
+        self.cover_preview = tk.Label(cover_frame, bg="black", width=35, height=15)
+        self.cover_preview.pack(padx=10, pady=10, fill="both", expand=True)
+        
+        # Collection details frame (below cover preview)
+        detail_frame = ttk.LabelFrame(left_column, text="Collection Details")
+        detail_frame.pack(fill="both", expand=True)
+
+        self.cover_var = tk.StringVar() # cover
+
+        # Metadata fields - added ID field and Tags field
+        fields = [
+            ("ID:", "id_var"),
+            ("Name:", "name_var"),
+            ("Cover:", "cover_var"),
+            ("Description:", "desc_var"),
+            ("Search Hints:", "search_hints_var"),
+            ("Genre:", "genre_var"),
+            ("Tags:", "tags_var"),
+            ("Year:", "year_var")
+        ]
+        
+        self.metadata_vars = {}
+        for i, (label_text, var_name) in enumerate(fields):
+            ttk.Label(detail_frame, text=label_text).grid(row=i, column=0, sticky="w", padx=5, pady=2)
+            if var_name == "rating_var":
+                var = tk.StringVar()
+                combo = ttk.Combobox(detail_frame, textvariable=var,
+                                    values=["NR", "G", "PG", "PG-13", "R", "NC-17"], width=45)
+                combo.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+            elif var_name == "id_var":  # ID field should be read-only
+                var = tk.StringVar()
+                entry = ttk.Entry(detail_frame, textvariable=var, width=50, state="readonly")
+                entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+            else:
+                var = tk.StringVar()
+                entry = ttk.Entry(detail_frame, textvariable=var, width=50)
+                entry.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+            self.metadata_vars[var_name] = var
+
+        detail_frame.columnconfigure(1, weight=1)
+        
+        # Right column: Collections list + Tags side by side
+        right_column = ttk.Frame(content_frame)
+        right_column.pack(side="left", fill="both", expand=True)
+        
+        # Collections list with scrollbar (left side of right column)
+        list_frame = ttk.LabelFrame(right_column, text="Collections")
+        list_frame.pack(side="left", fill="both", expand=True)
+        
+        # Selection buttons
+        selection_btn_frame = ttk.Frame(list_frame)
+        selection_btn_frame.pack(fill="x", padx=5, pady=5)
+        
+        ttk.Button(selection_btn_frame, text="Select All", command=self.select_all).pack(side="left", padx=2)
+        ttk.Button(selection_btn_frame, text="Unselect All", command=self.unselect_all).pack(side="left", padx=2)
+        ttk.Button(selection_btn_frame, text="Remove", command=self.remove_collections).pack(side="left", padx=2)
+        upgrade_btn = ttk.Button(selection_btn_frame, text="⬆️ Upgrade", command=self.upgrade_video_duration)
+        upgrade_btn.pack(side="left", padx=2)
+        self.create_tooltip(upgrade_btn, "Rescan video file(s) and update duration (use when video file was replaced)")
+        fix_path_btn = ttk.Button(selection_btn_frame, text="🔧 Fix Path", command=self.fix_video_path)
+        fix_path_btn.pack(side="left", padx=2)
+        self.create_tooltip(fix_path_btn, "Fix missing video file path (browse for new location)")
+        
+        # Create a frame for the listbox and scrollbar
+        list_container = ttk.Frame(list_frame)
+        list_container.pack(fill="both", expand=True, padx=5, pady=5)
+        
+        # Create scrollbar
+        scrollbar = ttk.Scrollbar(list_container)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Create listbox with multi-select mode and extended selection (allows drag selection)
+        self.collection_list = tk.Listbox(list_container, selectmode=tk.EXTENDED,
+                                         yscrollcommand=scrollbar.set,
+                                         exportselection=False)
+        self.collection_list.pack(fill="both", expand=True)
+        scrollbar.config(command=self.collection_list.yview)
+        
+        # Bind selection event
+        self.collection_list.bind("<<ListboxSelect>>", self.on_collection_select)
+        
+        # Tags panel (right of collections list)
+        tags_frame = ttk.LabelFrame(right_column, text="Tags")
+        tags_frame.pack(side="right", fill="y", padx=(10, 0))
+        
+        # Genre tags
+        genre_frame = ttk.LabelFrame(tags_frame, text="Genre Tags")
+        genre_frame.pack(fill="x", padx=5, pady=5)
+        
+        self.genre_vars = {}
+        for tag in self.genre_tags:
+            var = tk.BooleanVar()
+            self.genre_vars[tag] = var
+            cb = ttk.Checkbutton(genre_frame, text=tag, variable=var, 
+                                command=lambda t=tag: self.toggle_tag(t))
+            cb.pack(anchor="w", padx=5, pady=2)
+        
+        # Actor tags
+        actor_frame = ttk.LabelFrame(tags_frame, text="Actor Tags")
+        actor_frame.pack(fill="x", padx=5, pady=5)
+        
+        self.actor_tags = ["Steven Seagal", "Jean-Claude Van Damme", "Arnold Schwarzenegger", 
+                          "Sylvester Stallone", "Bruce Willis", "Chuck Norris"]
+        self.actor_vars = {}
+        for tag in self.actor_tags:
+            var = tk.BooleanVar()
+            self.actor_vars[tag] = var
+            cb = ttk.Checkbutton(actor_frame, text=tag, variable=var, 
+                                command=lambda t=tag: self.toggle_tag(t))
+            cb.pack(anchor="w", padx=5, pady=2)
+        
+        # Special tags
+        special_frame = ttk.LabelFrame(tags_frame, text="Special Tags")
+        special_frame.pack(fill="x", padx=5, pady=5)
+        
+        self.episodic_var = tk.BooleanVar()
+        episodic_cb = ttk.Checkbutton(special_frame, text="Episodic",
+                                      variable=self.episodic_var,
+                                      command=lambda: self.toggle_tag("Episodic"))
+        episodic_cb.pack(anchor="w", padx=5, pady=2)
+
+        # Episodic Details sub-frame (only visible when Episodic is checked - will be handled by logic)
+        episodic_details = ttk.Frame(special_frame)
+        episodic_details.pack(fill="x", padx=5, pady=(5, 0))
+
+        # Series Name
+        ttk.Label(episodic_details, text="Series Name:").grid(row=0, column=0, sticky="w", padx=(0, 5))
+        series_entry = ttk.Entry(episodic_details, textvariable=self.series_name_var, width=20)
+        series_entry.grid(row=0, column=1, sticky="ew")
+
+        # Season
+        ttk.Label(episodic_details, text="Season:").grid(row=1, column=0, sticky="w", padx=(0, 5), pady=(5, 0))
+        season_spin = ttk.Spinbox(episodic_details, from_=0, to=99, textvariable=self.season_var, width=5)
+        season_spin.grid(row=1, column=1, sticky="w", pady=(5, 5))
+
+        episodic_details.columnconfigure(1, weight=1)
+
+        # Videos list frame (below collections list)
+        videos_frame = ttk.LabelFrame(right_column, text="Videos in Collection")
+        videos_frame.pack(side="bottom", fill="both", expand=True, pady=(10, 0))
+        
+        # Create scrollbar for video list
+        video_scrollbar = ttk.Scrollbar(videos_frame)
+        video_scrollbar.pack(side="right", fill="y")
+        
+        # Create video listbox
+        self.video_list = tk.Listbox(videos_frame, yscrollcommand=video_scrollbar.set,
+                                     exportselection=False)
+        self.video_list.pack(fill="both", expand=True, padx=5, pady=5)
+        video_scrollbar.config(command=self.video_list.yview)
+        
+        # Store reference for video list colors
+        self.video_list_colors = []
+        
+        self.refresh_collection_list()
+
+    def select_all(self):
+        """Select all items in the list"""
+        self.collection_list.selection_set(0, tk.END)
+        # The <<ListboxSelect>> event will trigger on_collection_select automatically
+
+    def unselect_all(self):
+        """Unselect all items in the list"""
+        self.collection_list.selection_clear(0, tk.END)
+        # The <<ListboxSelect>> event will trigger on_collection_select automatically
+
+    def remove_collections(self):
+        """Remove selected collections from the list"""
+        if not self.selected_indices:
+            messagebox.showwarning("Warning", "Please select at least one collection to remove!")
+            return
+            
+        # Confirm deletion
+        count = len(self.selected_indices)
+        if messagebox.askyesno("Confirm Remove", 
+                              f"Are you sure you want to remove {count} collection(s)?\n\nThis action cannot be undone."):
+            # Sort indices in reverse order to avoid index shifting when deleting
+            indices_to_remove = sorted(self.selected_indices, reverse=True)
+            
+            for idx in indices_to_remove:
+                del self.collections[idx]
+            
+            # Clear selection and refresh
+            self.selected_indices.clear()
+            self.refresh_collection_list()
+
+            # Clear metadata fields
+            for var in self.metadata_vars.values():
+                var.set("")
+            self.cover_var.set("")
+
+            # Reset tag checkboxes
+            for var in self.genre_vars.values():
+                var.set(False)
+            self.episodic_var.set(False)
+
+            # Clear series/season fields
+            self.series_name_var.set("")
+            self.season_var.set(0)
+
+            messagebox.showinfo("Success", f"Removed {count} collection(s)!")
+
+    def upgrade_video_duration(self):
+        """Rescan selected collection(s) and update video duration(s)
+        
+        This is useful when a video file has been replaced with another file
+        that has the same name but different duration.
+        """
+        if not self.selected_indices:
+            messagebox.showwarning("Warning", "Please select at least one collection to upgrade!")
+            return
+        
+        # Confirm action
+        count = len(self.selected_indices)
+        if not messagebox.askyesno("Confirm Upgrade", 
+                                   f"Rescan and update duration for {count} collection(s)?\n\n"
+                                   "This will read the actual video file(s) and update their duration."):
+            return
+        
+        updated_count = 0
+        not_found_count = 0
+        
+        for idx in self.selected_indices:
+            collection = self.collections[idx]
+            videos = collection.get("videos", [])
+            
+            for video in videos:
+                video_path = video.get("path", "")
+                if video_path:
+                    if Path(video_path).exists():
+                        old_duration = video.get("duration", 0)
+                        new_duration = self.get_video_duration(video_path)
+                        video["duration"] = new_duration
+                        updated_count += 1
+                        print(f"Updated: {Path(video_path).name} | {old_duration:.1f}s -> {new_duration:.1f}s")
+                    else:
+                        not_found_count += 1
+                        print(f"File not found: {video_path}")
+        
+        # Save the updated collections
+        if updated_count > 0:
+            self.save_collections()
+        
+        # Show result
+        result_msg = f"Updated duration for {updated_count} video(s)."
+        if not_found_count > 0:
+            result_msg += f"\n\nWarning: {not_found_count} video file(s) not found."
+        messagebox.showinfo("Upgrade Complete", result_msg)
+
+    def fix_video_path(self):
+        """Fix missing video file paths - supports batch fixing by searching a folder"""
+        if not self.selected_indices:
+            messagebox.showwarning("Warning", "Please select at least one collection to fix!")
+            return
+        
+        # Collect all missing videos from selected collections
+        missing_videos = []  # List of (collection_idx, video_idx, video_dict, filename)
+        for idx in self.selected_indices:
+            collection = self.collections[idx]
+            videos = collection.get("videos", [])
+            for video_idx, video in enumerate(videos):
+                video_path = video.get("path", "")
+                if video_path and not Path(video_path).exists():
+                    filename = Path(video_path).name
+                    missing_videos.append((idx, video_idx, video, filename))
+        
+        if not missing_videos:
+            messagebox.showinfo("Info", "No missing video files found in selected collections!")
+            return
+        
+        # Ask user how they want to fix
+        fix_dialog = tk.Toplevel(self.root)
+        fix_dialog.title("Fix Missing Video Paths")
+        fix_dialog.geometry("500x400")
+        fix_dialog.transient(self.root)
+        fix_dialog.grab_set()
+        
+        # Apply theme
+        if self.current_theme == "dark":
+            fix_dialog.configure(bg="#2d2d2d")
+        
+        # Center dialog
+        fix_dialog.update_idletasks()
+        x = (fix_dialog.winfo_screenwidth() // 2) - (fix_dialog.winfo_width() // 2)
+        y = (fix_dialog.winfo_screenheight() // 2) - (fix_dialog.winfo_height() // 2)
+        fix_dialog.geometry(f"+{x}+{y}")
+        
+        ttk.Label(fix_dialog, text=f"Found {len(missing_videos)} missing video file(s):", 
+                 font=("TkDefaultFont", 11, "bold")).pack(pady=10)
+        
+        # Show list of missing files (scrollable)
+        list_frame = ttk.Frame(fix_dialog)
+        list_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        scrollbar = ttk.Scrollbar(list_frame)
+        scrollbar.pack(side="right", fill="y")
+        
+        missing_listbox = tk.Listbox(list_frame, height=10, yscrollcommand=scrollbar.set)
+        missing_listbox.pack(fill="both", expand=True)
+        scrollbar.config(command=missing_listbox.yview)
+        
+        for _, _, _, filename in missing_videos:
+            missing_listbox.insert(tk.END, filename)
+        
+        # Options
+        option_frame = ttk.Frame(fix_dialog)
+        option_frame.pack(fill="x", padx=10, pady=10)
+        
+        mode_var = tk.StringVar(value="ask_each")
+        
+        ttk.Radiobutton(option_frame, text="Fix individually (browse for each file)", 
+                       variable=mode_var, value="ask_each").pack(anchor="w", pady=2)
+        ttk.Radiobutton(option_frame, text="Batch search folder (auto-match by filename)", 
+                       variable=mode_var, value="batch_search").pack(anchor="w", pady=2)
+        
+        # Buttons
+        btn_frame = ttk.Frame(fix_dialog)
+        btn_frame.pack(fill="x", padx=10, pady=10)
+        
+        result = {"proceed": False, "mode": None, "search_folder": None}
+        
+        def on_proceed():
+            result["proceed"] = True
+            result["mode"] = mode_var.get()
+            if result["mode"] == "batch_search":
+                # Ask for folder to search
+                search_folder = filedialog.askdirectory(
+                    title="Select Folder to Search for Missing Videos",
+                    initialdir="."
+                )
+                if search_folder:
+                    result["search_folder"] = search_folder
+                else:
+                    result["proceed"] = False  # Don't proceed if no folder selected
+            fix_dialog.destroy()
+        
+        def on_cancel():
+            fix_dialog.destroy()
+        
+        ttk.Button(btn_frame, text="Proceed", command=on_proceed).pack(side="right", padx=5)
+        ttk.Button(btn_frame, text="Cancel", command=on_cancel).pack(side="right")
+        
+        # Wait for dialog to close
+        fix_dialog.wait_window()
+        
+        if not result["proceed"]:
+            return
+        
+        # Handle individual fixing (original behavior)
+        if result["mode"] == "ask_each":
+            fixed_count = 0
+            for collection_idx, video_idx, video, filename in missing_videos:
+                # Show dialog for this specific file
+                if messagebox.askyesno("Missing Video File", 
+                    f"Video file not found:\n\n{video['path']}\n\n"
+                    f"Would you like to browse for '{filename}'?"):
+                    
+                    new_path = filedialog.askopenfilename(
+                        title=f"Find: {filename}",
+                        initialfile=filename,
+                        filetypes=[
+                            ("Video files", "*.mp4 *.mkv *.avi *.mov *.webm *.wmv *.flv *.m4v"),
+                            ("All files", "*.*")
+                        ]
+                    )
+                    
+                    if new_path:
+                        new_path = new_path.replace("\\", "/")
+                        video["path"] = new_path
+                        video["duration"] = self.get_video_duration(new_path)
+                        fixed_count += 1
+                        print(f"Fixed path: {filename} -> {new_path}")
+            
+            if fixed_count > 0:
+                self.save_collections()
+                self.refresh_collection_list()
+                messagebox.showinfo("Success", f"Fixed {fixed_count} video path(s)!")
+            else:
+                messagebox.showinfo("Info", "No paths were updated.")
+        
+        # Handle batch search fixing
+        elif result["mode"] == "batch_search":
+            search_folder = result["search_folder"]
+            if not search_folder or not Path(search_folder).exists():
+                messagebox.showerror("Error", "Invalid search folder!")
+                return
+            
+            # Build a mapping of all video files in the search folder (and subfolders)
+            # Key: lowercase filename (without extension or with extension - we'll try both)
+            # Value: full path
+            video_files_map = {}
+            video_extensions = {".mp4", ".mkv", ".avi", ".mov", ".webm", ".wmv", ".flv", ".m4v"}
+            
+            # Search recursively
+            for ext in video_extensions:
+                for file_path in Path(search_folder).rglob(f"*{ext}"):
+                    # Store by filename (case-insensitive matching)
+                    filename = file_path.name.lower()
+                    video_files_map[filename] = str(file_path.resolve()).replace("\\", "/")
+                    # Also store without extension for fuzzy matching
+                    stem = file_path.stem.lower()
+                    video_files_map[stem] = str(file_path.resolve()).replace("\\", "/")
+            
+            # Match missing videos
+            matches = []  # List of (collection_idx, video_idx, old_path, new_path)
+            unmatched = []
+            
+            for collection_idx, video_idx, video, filename in missing_videos:
+                # Try to find match
+                filename_lower = filename.lower()
+                stem = Path(filename).stem.lower()
+                
+                if filename_lower in video_files_map:
+                    new_path = video_files_map[filename_lower]
+                    matches.append((collection_idx, video_idx, video, new_path))
+                elif stem in video_files_map:
+                    new_path = video_files_map[stem]
+                    matches.append((collection_idx, video_idx, video, new_path))
+                else:
+                    unmatched.append(filename)
+            
+            # Show results to user for confirmation
+            if not matches:
+                messagebox.showwarning("No Matches", 
+                    f"Could not find any matching video files in:\n{search_folder}\n\n"
+                    f"Unmatched files:\n" + "\n".join(f"• {f}" for f in unmatched[:20]))
+                return
+            
+            # Build confirmation message
+            msg = f"Found matches for {len(matches)} of {len(missing_videos)} missing video(s).\n\n"
+            if unmatched:
+                msg += f"Unmatched ({len(unmatched)}):\n"
+                msg += "\n".join(f"• {f}" for f in unmatched[:10])
+                if len(unmatched) > 10:
+                    msg += f"\n... and {len(unmatched) - 10} more"
+                msg += "\n\n"
+            msg += "Update the paths for matched videos?\n"
+            
+            # Show first few matches as preview
+            msg += "\nPreview of updates:\n"
+            for i, (_, _, _, new_path) in enumerate(matches[:5]):
+                msg += f"• {Path(new_path).name}\n"
+            if len(matches) > 5:
+                msg += f"... and {len(matches) - 5} more\n"
+            
+            if not messagebox.askyesno("Confirm Batch Fix", msg):
+                return
+            
+            # Apply updates
+            updated_count = 0
+            for collection_idx, video_idx, video, new_path in matches:
+                video["path"] = new_path
+                video["duration"] = self.get_video_duration(new_path)
+                updated_count += 1
+            
+            # Save and refresh
+            if updated_count > 0:
+                self.save_collections()
+                self.refresh_collection_list()
+                messagebox.showinfo("Success", 
+                    f"Updated {updated_count} video path(s)!\n\n"
+                    f"Unmatched: {len(unmatched)} file(s)")
+            else:
+                messagebox.showinfo("Info", "No paths were updated.")
+
+    def create_tooltip(self, widget, text):
+        """Create a tooltip for a widget"""
+        def on_enter(event):
+            tooltip = tk.Toplevel()
+            tooltip.wm_overrideredirect(True)
+            tooltip.wm_geometry(f"+{event.x_root+10}+{event.y_root+10}")
+            
+            label = tk.Label(tooltip, text=text, background="lightyellow", 
+                           relief="solid", borderwidth=1, font=("TkDefaultFont", 9))
+            label.pack()
+            
+            widget.tooltip = tooltip
+        
+        def on_leave(event):
+            if hasattr(widget, 'tooltip'):
+                widget.tooltip.destroy()
+                del widget.tooltip
+        
+        widget.bind("<Enter>", on_enter)
+        widget.bind("<Leave>", on_leave)
+
+    def get_available_collection_profiles(self):
+        """Get channel names from config.json for quick profile naming"""
+        channels = [""]  # Start with empty option (none selected)
+        try:
+            # Read channel names from config.json
+            config_file = Path(__file__).resolve().parent.parent / "config.json"
+            if config_file.exists():
+                with open(config_file, "r", encoding="utf-8") as f:
+                    config = json.load(f)
+                    # Get channel names from config
+                    config_channels = config.get("channels", {}).keys()
+                    channels.extend(sorted(config_channels))
+            
+            # Also add some common channel names if config is empty
+            if len(channels) == 1:  # Only empty option
+                channels.extend(["akiratv", "horror", "anime", "action", "comedy", "drama"])
+                
+        except Exception as e:
+            print(f"Error reading config.json: {e}")
+            # Fallback to common channel names
+            channels = ["", "akiratv", "horror", "anime", "action", "comedy", "drama"]
+        
+        return channels
+
+    def refresh_profile_dropdown(self):
+        """Refresh the channel dropdown with current config"""
+        available_channels = self.get_available_collection_profiles()
+        self.profile_dropdown.configure(values=available_channels)
+        # Reset selection to empty
+        self.quick_profile_var.set("")
+
+    def on_quick_profile_select(self, event=None):
+        """Handle selection from the quick channel dropdown - just set the name"""
+        selected = self.quick_profile_var.get().strip()
+        if selected:
+            # Just update the text field with the selected channel name
+            # Don't load any files - this is just for quick naming
+            self.profile_var.set(selected)
+        # Note: We don't reset the dropdown selection so user can see what's selected
+
+    def load_profile(self):
+        """Load profile by name from the profile_var entry field"""
+        profile_name = self.profile_var.get().strip()
+        if not profile_name:
+            messagebox.showwarning("Warning", "Please enter a profile name!")
+            return
+            
+        self._load_profile_by_name(profile_name)
+
+    def load_collections_file(self):
+        """Load collections from a file for editing"""
+        collection_file = filedialog.askopenfilename(
+            title="Select Collection File to Load",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            initialdir=COLLECTIONS_DIR
+        )
+        if not collection_file:
+            return
+
+        try:
+            with open(collection_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                self.collections = data.get("collections", [])
+            
+            # Update the profile name to match the loaded file
+            file_name = Path(collection_file).stem
+            if file_name.startswith("collections_"):
+                profile_name = file_name[12:]  # Remove "collections_" prefix
+            else:
+                profile_name = file_name
+
+            self.profile_var.set(profile_name)
+            self.current_profile = profile_name
+
+            # Clear selection and metadata fields BEFORE refreshing the list
+            self.selected_indices.clear()
+            for var in self.metadata_vars.values():
+                var.set("")
+            self.cover_var.set("")
+            for var in self.genre_vars.values():
+                var.set(False)
+            self.episodic_var.set(False)
+            self.series_name_var.set("")
+            self.season_var.set(0)
+
+            # Refresh the UI
+            self.refresh_collection_list()
+
+            messagebox.showinfo("Success", f"Loaded {len(self.collections)} collections from {Path(collection_file).name}")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load collection file:\n{str(e)}")
+
+    def update_selected_collection(self):
+        """Update collections by scanning folder and adding new videos as separate collections"""
+        if not self.collections:
+            messagebox.showwarning("Warning", "Please load a collection file first or scan a folder!")
+            return
+        
+        # Get the folder from any existing collection to determine the base folder
+        base_folder = None
+        for collection in self.collections:
+            if collection.get("videos"):
+                first_video_path = collection["videos"][0]["path"]
+                base_folder = str(Path(first_video_path).parent)
+                break
+        
+        if not base_folder or not Path(base_folder).exists():
+            messagebox.showwarning("Warning", "Cannot determine video folder from existing collections!")
+            return
+        
+        # Scan the folder for videos
+        try:
+            print(f"DEBUG: Scanning folder for new videos: {base_folder}")
+            
+            # Get all video files in the folder (case-insensitive on Windows)
+            video_extensions = {".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v"}
+            all_videos_in_folder = []
+            
+            seen_paths = set()
+            for ext in video_extensions:
+                # Search for both lowercase and uppercase extensions (recursive - includes subfolders)
+                for video_file in Path(base_folder).rglob(f"*{ext}"):
+                    file_path = str(video_file).lower()
+                    if file_path not in seen_paths:
+                        seen_paths.add(file_path)
+                        all_videos_in_folder.append(video_file)
+                
+                for video_file in Path(base_folder).rglob(f"*{ext.upper()}"):
+                    file_path = str(video_file).lower()
+                    if file_path not in seen_paths:
+                        seen_paths.add(file_path)
+                        all_videos_in_folder.append(video_file)
+            
+            # Get existing video paths from ALL collections (normalized for comparison)
+            existing_paths = set()
+            for collection in self.collections:
+                for video in collection.get("videos", []):
+                    # Normalize paths to absolute, forward slash, lowercase for comparison
+                    video_path = video["path"]
+                    try:
+                        normalized_path = str(Path(video_path).resolve()).replace("\\", "/").lower()
+                        existing_paths.add(normalized_path)
+                    except:
+                        # If path resolution fails, normalize as best we can
+                        normalized_path = str(Path(video_path)).replace("\\", "/").lower()
+                        existing_paths.add(normalized_path)
+            
+            print(f"DEBUG: Found {len(existing_paths)} existing video paths across all collections")
+            # Debug print existing paths
+            for path in existing_paths:
+                print(f"DEBUG: Existing path: '{path}'")
+            
+            # Find new videos not in any collection
+            new_videos = []
+            for video_file in all_videos_in_folder:
+                # Normalize the new video path to absolute, forward slash, lowercase
+                try:
+                    video_path_normalized = str(video_file.resolve()).replace("\\", "/").lower()
+                except:
+                    video_path_normalized = str(video_file).replace("\\", "/").lower()
+                
+                print(f"DEBUG: Checking video: '{video_file.name}'")
+                print(f"DEBUG: Normalized path: '{video_path_normalized}'")
+                
+                # Check if this video is already in any collection
+                if video_path_normalized not in existing_paths:
+                    new_videos.append(video_file)
+                    print(f"DEBUG: New video found: {video_file.name}")
+                else:
+                    print(f"DEBUG: Skipping duplicate: {video_file.name}")
+
+            # Sort new videos by series name and episode number
+            new_videos.sort(key=lambda p: self._extract_series_and_episode(p))
+
+            if not new_videos:
+                messagebox.showinfo("No Updates", f"No new videos found in:\n{base_folder}")
+                return
+            
+            # Show preview of new videos
+            preview_text = f"Found {len(new_videos)} new videos to add as collections:\n\n"
+            for i, video_file in enumerate(new_videos[:10]):  # Show first 10
+                preview_text += f"• {video_file.name}\n"
+            
+            if len(new_videos) > 10:
+                preview_text += f"... and {len(new_videos) - 10} more videos"
+            
+            preview_text += f"\n\nCreate new collections for these videos?"
+            
+            # Ask user confirmation
+            result = messagebox.askyesno("Add New Videos", preview_text)
+            if not result:
+                return
+            
+            # Create new collections for each new video
+            new_collections = []
+            for video_file in new_videos:
+                video_str = str(video_file).replace("\\", "/")  # Normalize path format
+                
+                # Generate collection name and ID
+                stem = video_file.stem
+                clean_name = re.sub(r"[.\s]\d{4}[.\s]", " ", stem)
+                clean_name = re.sub(r"[.\s](1080p|720p|2160p|4K|BluRay|WEBRip).*", "", clean_name)
+                clean_name = re.sub(r"[._]", " ", clean_name)
+                clean_name = re.sub(r"\s+", " ", clean_name).strip()
+                if not clean_name:
+                    clean_name = stem
+
+                collection_id = self.generate_id(clean_name)
+                duration = self.get_video_duration(video_str)
+
+                # Create new collection
+                collection = {
+                    "id": collection_id,
+                    "name": clean_name,
+                    "cover": "",  # Will be set via online metadata fetch
+                    "description": "",
+                    "genre": [],
+                    "tags": [],
+                    "year": datetime.now().year,
+                    "videos": [{
+                        "path": video_str,
+                        "duration": duration
+                    }]
+                }
+                
+                new_collections.append(collection)
+            
+            # Add new collections to the existing list
+            self.collections.extend(new_collections)
+            
+            # Refresh the UI
+            self.refresh_collection_list()
+            
+            # Show success message
+            messagebox.showinfo("Success", f"Added {len(new_collections)} new collections!\n\nDon't forget to save the collections.")
+            
+            print(f"DEBUG: Added {len(new_collections)} new collections")
+            
+        except Exception as e:
+            print(f"DEBUG: Error during update: {e}")
+            messagebox.showerror("Error", f"Failed to update collections:\n{str(e)}")
+
+    def _load_profile_by_name(self, profile_name):
+        """Load profile by name from collections directory"""
+        try:
+            profile_name = profile_name.strip()
+            if not profile_name:
+                messagebox.showerror("Error", "Profile name cannot be empty")
+                return
+                
+            # Remove .json extension if provided
+            if profile_name.endswith(".json"):
+                profile_name = profile_name[:-5]
+            
+            # Search strategy: use COLLECTIONS_DIR constant, try various filename forms
+            candidates = [
+                COLLECTIONS_DIR / f"collections_{profile_name}.json",  # primary pattern
+                COLLECTIONS_DIR / f"{profile_name}.json",              # fallback pattern
+            ]
+            
+            profile_file = None
+            for candidate in candidates:
+                if candidate.exists():
+                    profile_file = candidate
+                    break
+            
+            if profile_file:
+                with open(profile_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.collections = data.get("collections", [])
+                self.refresh_collection_list()
+                self.current_profile = profile_name
+                messagebox.showinfo("Success", f"Loaded profile: {profile_name}.json")
+            else:
+                messagebox.showerror("Error", f"Profile not found: {profile_name}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load profile:\n{str(e)}")
+
+    def save_as_profile(self):
+        """Save collections to a new profile"""
+        profile_name = self.profile_var.get().strip()
+        if not profile_name:
+            messagebox.showwarning("Warning", "Please enter a profile name!")
+            return
+            
+        # Remove .json extension if provided  
+        if profile_name.endswith(".json"):
+            profile_name = profile_name[:-5]
+        
+        # Remove collections_ prefix if provided (we'll add it back)
+        if profile_name.startswith("collections_"):
+            profile_name = profile_name[12:]
+            
+        old_profile = self.current_profile
+        self.current_profile = profile_name  # Store without prefix
+        
+        # Save without showing success message from save_collections
+        success = self.save_collections(show_success_message=False)
+        
+        # Restore old profile so user continues working on original
+        self.current_profile = old_profile
+        
+        if success:
+            messagebox.showinfo("Success", f"Saved as profile: collections_{profile_name}.json")
+    
+    def browse_folder(self):
+        folder = filedialog.askdirectory(title="Select Video Folder")
+        if folder:
+            self.folder_path.set(folder)
+
+
+
+    def get_video_duration(self, video_path):
+        """Get video duration in seconds"""
+        try:
+            result = subprocess.run([
+                "ffprobe", "-v", "error", "-show_entries",
+                "format=duration", "-of", "csv=p=0",
+                str(video_path)
+            ], capture_output=True, text=True, check=True, timeout=10)
+            return float(result.stdout.strip())
+        except:
+            return 5400.0  # 90 minutes default
+
+    def generate_id(self, name):
+        """Generate collection ID from name, preserving international characters"""
+        # Normalize Unicode characters to their basic form
+        normalized = unicodedata.normalize('NFKD', name)
+        
+        # Keep letters (including Cyrillic), numbers, and replace other characters with underscores
+        result = []
+        for char in normalized.lower():
+            if char.isalnum() or char in [' ', '-', '_']:
+                # Keep alphanumeric characters and basic separators
+                if char == ' ':
+                    result.append('_')
+                else:
+                    result.append(char)
+            # Skip diacritics (they appear as combining marks after normalization)
+            elif not unicodedata.combining(char):
+                # Replace other non-alphanumeric characters with underscores
+                result.append('_')
+        
+        # Join and clean up multiple underscores
+        id_str = ''.join(result)
+        id_str = re.sub(r'_+', '_', id_str)  # Replace multiple underscores with single
+        id_str = id_str.strip('_')  # Remove leading/trailing underscores
+        
+        return id_str
+
+    def rescan_folder(self):
+        folder = self.folder_path.get()
+        if not folder or not Path(folder).exists():
+            messagebox.showwarning("Warning", "Please select a valid folder first!")
+            return
+
+        # Find all video files
+        video_files = []
+        for ext in [".mp4", ".mkv", ".avi", ".mov", ".webm"]:
+            video_files.extend(Path(folder).rglob(f"*{ext}"))
+
+        if not video_files:
+            messagebox.showinfo("Info", "No video files found in the selected folder!")
+            return
+
+        # Sort by series name and episode number
+        video_files.sort(key=lambda p: self._extract_series_and_episode(p))
+
+        # Build collections with all required fields
+        new_collections = []
+        for video_path in video_files:
+            video_str = str(video_path.resolve()).replace("\\", "/")
+            
+            # Generate base name
+            stem = video_path.stem
+            clean_name = re.sub(r"[.\s]\d{4}[.\s]", " ", stem)
+            clean_name = re.sub(r"[.\s](1080p|720p|2160p|4K|BluRay|WEBRip).*", "", clean_name)
+            clean_name = re.sub(r"[._]", " ", clean_name)
+            clean_name = re.sub(r"\s+", " ", clean_name).strip()
+            if not clean_name:
+                clean_name = stem
+
+            collection_id = self.generate_id(clean_name)
+
+            # Include all required fields with default values
+            collection = {
+                "id": collection_id,
+                "name": clean_name,
+                "cover": "",  # Will be set via online metadata fetch
+                "description": "",  # Empty by default
+                "genre": [],       # Empty list by default
+                "tags": [],        # Empty list by default
+                "year": datetime.now().year,  # Default to current year
+                "videos": [{
+                    "path": video_str,
+                    "duration": self.get_video_duration(video_str)
+                }]
+            }
+
+            new_collections.append(collection)
+
+        self.collections = new_collections
+        self.refresh_collection_list()
+        messagebox.showinfo("Success", f"Scanned {len(video_files)} videos and created {len(new_collections)} collections!")
+
+    def refresh_collection_list(self):
+        """Refresh the collections listbox with red color for missing videos"""
+        print(f"DEBUG: refresh_collection_list called, suppress={self._suppress_select_event}")
+        self.collection_list.delete(0, tk.END)
+
+        for collection in self.collections:
+            # Check if any video in this collection is missing
+            has_missing = False
+            for video in collection.get("videos", []):
+                video_path = video.get("path", "")
+                if video_path and not Path(video_path).exists():
+                    has_missing = True
+                    break
+
+            # Insert with appropriate display
+            display_name = collection["name"]
+            if has_missing:
+                display_name = f"❌ {display_name}"  # Add X marker for missing videos
+
+            self.collection_list.insert(tk.END, display_name)
+
+            # Set red color for items with missing videos
+            if has_missing:
+                self.collection_list.itemconfig(tk.END, fg="red")
+
+        # Force update to ensure UI reflects changes immediately
+        self.collection_list.update_idletasks()
+        print(f"DEBUG: refresh_collection_list done, list has {self.collection_list.size()} items")
+
+    def refresh_video_list(self):
+        """Refresh the video list with red color for missing videos"""
+        self.video_list.delete(0, tk.END)
+        self.video_list_colors.clear()
+        
+        # Get selected collection
+        selection = self.collection_list.curselection()
+        if not selection or len(selection) != 1:
+            return
+        
+        idx = selection[0]
+        collection = self.collections[idx]
+        
+        videos = collection.get("videos", [])
+        
+        if not videos:
+            self.video_list.insert(tk.END, "(No videos in this collection)")
+            self.video_list.itemconfig(tk.END, fg="gray")
+            return
+        
+        # Determine text color based on theme
+        normal_color = "white" if self.current_theme == "dark" else "black"
+        
+        for video in videos:
+            video_path = video.get("path", "")
+            video_name = Path(video_path).name if video_path else "Unknown"
+            
+            # Check if video file exists
+            if video_path and not Path(video_path).exists():
+                display_name = f"❌ {video_name} (MISSING)"
+                self.video_list.insert(tk.END, display_name)
+                self.video_list.itemconfig(tk.END, fg="red")
+                self.video_list_colors.append("missing")
+            else:
+                duration = video.get("duration", 0)
+                display_name = f"{video_name} [{duration:.1f}s]"
+                self.video_list.insert(tk.END, display_name)
+                # Use theme-appropriate color for normal videos
+                self.video_list.itemconfig(tk.END, fg=normal_color)
+                self.video_list_colors.append("normal")
+
+    def display_cover_preview(self, cover_path):
+        """Display cover image in the preview widget"""
+        try:
+            if cover_path:
+                # Check if cover path is absolute or relative
+                if not Path(cover_path).is_absolute():
+                    # Try to resolve relative path (covers are usually in user/covers)
+                    cover_path = Path(__file__).parent.parent / cover_path
+                
+                if Path(cover_path).exists():
+                    # Load and display the cover image
+                    from PIL import Image, ImageTk
+                    
+                    # Open and resize the image to fit the preview (maintaining aspect ratio)
+                    image = Image.open(cover_path)
+                    max_width = 200
+                    max_height = 300
+                    
+                    # Calculate aspect ratio
+                    aspect_ratio = image.width / image.height
+                    if image.width > max_width or image.height > max_height:
+                        if aspect_ratio > 1:  # Landscape
+                            new_width = max_width
+                            new_height = int(new_width / aspect_ratio)
+                        else:  # Portrait
+                            new_height = max_height
+                            new_width = int(new_height * aspect_ratio)
+                        
+                        image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                    
+                    # Convert to PhotoImage
+                    photo = ImageTk.PhotoImage(image)
+                    self.cover_preview.configure(image=photo)
+                    self.cover_preview.image = photo  # Keep reference to prevent garbage collection
+                else:
+                    # Cover file not found, clear the preview
+                    self.cover_preview.configure(image="")
+            else:
+                # No cover path, clear the preview
+                self.cover_preview.configure(image="")
+        except Exception as e:
+            print(f"Error displaying cover: {e}")
+            self.cover_preview.configure(image="")
+    
+    def on_collection_select(self, event):
+        """Handle collection selection"""
+        print(f"DEBUG: on_collection_select called, suppress={self._suppress_select_event}, current selection={self.collection_list.curselection()}, stored={self.selected_indices}")
+        if self._suppress_select_event:
+            print("DEBUG: Suppressed due to flag")
+            return
+
+        # Save any pending changes to previously selected collection(s)
+        if self.selected_indices:
+            print(f"DEBUG: Saving changes to {len(self.selected_indices)} selected collections")
+            self._save_ui_fields_to_selected_collections()
+
+        # Capture the new selection
+        new_selection = self.collection_list.curselection()
+        print(f"DEBUG: New selection from curselection: {new_selection}")
+        self.selected_indices = set(new_selection)
 
         # Populate metadata fields based on stored selection
         self._populate_metadata_fields()
-
-    def _update_collection_list_item(self, idx):
-        """Update the displayed text and color for a single collection at index idx.
-        
-        This is a targeted update that avoids rebuilding the entire list, preserving selection.
-        """
-        if idx < 0 or idx >= self.collection_list.size():
-            return
-        collection = self.collections[idx]
-        # Check if any video is missing
-        has_missing = False
-        for video in collection.get("videos", []):
-            video_path = video.get("path", "")
-            if video_path and not Path(video_path).exists():
-                has_missing = True
-                break
-        display_name = collection.get("name", "")
-        if has_missing:
-            display_name = f"❌ {display_name}"
-        # Replace the item at idx
-        self.collection_list.delete(idx)
-        self.collection_list.insert(idx, display_name)
-        # Update color
-        if has_missing:
-            self.collection_list.itemconfig(idx, fg="red")
-        else:
-            normal_color = "white" if self.current_theme == "dark" else "black"
-            self.collection_list.itemconfig(idx, fg=normal_color)
 
     def _populate_metadata_fields(self):
         """Populate metadata fields based on current selection stored in self.selected_indices"""
@@ -949,11 +2274,10 @@ Your API key will be saved for future use.""")
         )
 
     def _save_ui_fields_to_selected_collections(self):
-        """Internal method to save UI field values to selected collection(s
-
+        """Internal method to save UI field values to selected collection(s)
+        
         Called automatically by save_collections() when there are selected items.
         """
-        print(f"DEBUG: _save_ui_fields_to_selected_collections for {len(self.selected_indices)} collections")
         for idx in self.selected_indices:
             collection = self.collections[idx]
 
@@ -976,6 +2300,19 @@ Your API key will be saved for future use.""")
                 collection["genre"] = [g.strip() for g in genre_str.split(",") if g.strip()]
             else:
                 collection["genre"] = []
+                
+            tags_str = self.metadata_vars["tags_var"].get().strip()
+            if len(self.selected_indices) == 1:
+                # Single selection: use tags field value (empty clears tags)
+                if tags_str:
+                    collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
+                else:
+                    collection["tags"] = []
+            else:
+                # Multiple selections: only update tags if tags_str is non-empty
+                if tags_str:
+                    collection["tags"] = [t.strip() for t in tags_str.split(",") if t.strip()]
+                # else: leave collection["tags"] unchanged
 
             year_str = self.metadata_vars["year_var"].get().strip()
             if year_str:
@@ -1000,9 +2337,8 @@ Your API key will be saved for future use.""")
             # Series name and season are stored as special tags
             series_name = self.series_name_var.get().strip()
             season_val = self.season_var.get()
-            print(f"DEBUG:   Saving collection '{collection.get('name')}': series_name='{series_name}', season={season_val}")
 
-            # Get or build tags list
+            # Build tags list
             if len(self.selected_indices) == 1:
                 tags_str = self.metadata_vars["tags_var"].get().strip()
                 if tags_str:
@@ -1023,13 +2359,36 @@ Your API key will be saved for future use.""")
 
             collection["tags"] = tags_list
 
-        # Update display for modified collections to reflect name/tag changes without full refresh
-        # This preserves selection and avoids UI flashing
-        for idx in self.selected_indices:
+            # Update the list display for this collection (name, missing indicator)
             self._update_collection_list_item(idx)
 
-        # NOTE: Do NOT call refresh_collection_list here - it clears selection
-        # Only refresh when explicitly needed (e.g., after name changes in save_collections)
+    def _update_collection_list_item(self, idx):
+        """Update the displayed text and color for a single collection at index idx.
+
+        This is a targeted update that avoids rebuilding the entire list, preserving selection.
+        """
+        if idx < 0 or idx >= self.collection_list.size():
+            return
+        collection = self.collections[idx]
+        # Check if any video is missing
+        has_missing = False
+        for video in collection.get("videos", []):
+            video_path = video.get("path", "")
+            if video_path and not Path(video_path).exists():
+                has_missing = True
+                break
+        display_name = collection.get("name", "")
+        if has_missing:
+            display_name = f"❌ {display_name}"
+        # Replace the item at idx
+        self.collection_list.delete(idx)
+        self.collection_list.insert(idx, display_name)
+        # Update color
+        if has_missing:
+            self.collection_list.itemconfig(idx, fg="red")
+        else:
+            normal_color = "white" if self.current_theme == "dark" else "black"
+            self.collection_list.itemconfig(idx, fg=normal_color)
 
 def launch_collection_wizard():
     root = tk.Tk()
