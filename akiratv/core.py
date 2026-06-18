@@ -27,6 +27,7 @@ from .scheduler import get_full_todays_schedule
 from .scheduler import get_current_schedule_for_channel
 
 import logging
+from logging.handlers import RotatingFileHandler
 
 AKIRATV_INSTANCE = None
 
@@ -35,7 +36,13 @@ os.makedirs("logs", exist_ok=True)
 logger = logging.getLogger("AkiraTV")
 logger.setLevel(logging.INFO)
 
-file_handler = logging.FileHandler("logs/worker.log", mode='a', encoding='utf-8')
+file_handler = RotatingFileHandler(
+    "logs/worker.log",
+    mode='a',
+    maxBytes=5 * 1024 * 1024,
+    backupCount=3,
+    encoding='utf-8'
+)
 file_handler.setLevel(logging.INFO)
 
 formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")

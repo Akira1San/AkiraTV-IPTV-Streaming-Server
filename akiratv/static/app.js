@@ -663,6 +663,20 @@ async function clearCache() {
     }
 }
 
+async function clearLogFiles() {
+    if (!confirm('Clear all log files?')) return;
+    try {
+        const result = await apiCall('/api/logs/clear', 'POST');
+        if (result.success) {
+            showToast(result.message, 'success');
+        } else {
+            showToast(result.message || 'Failed to clear logs', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to clear logs', 'error');
+    }
+}
+
 async function reloadSchedule() {
     try {
         const result = await apiCall('/api/schedule/reload', 'POST');

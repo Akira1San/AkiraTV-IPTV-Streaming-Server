@@ -194,6 +194,32 @@ def get_logs_info():
         "message": f"Logs directory: {log_dir}"
     }
 
+@app.post("/api/logs/clear")
+def clear_logs():
+    """Clear all log files in the logs directory"""
+    import os
+    log_dir = os.path.abspath("logs")
+    
+    cleared = []
+    errors = []
+    
+    if os.path.exists(log_dir):
+        for file in os.listdir(log_dir):
+            file_path = os.path.join(log_dir, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.truncate(file_path, 0)
+                    cleared.append(file)
+            except Exception as e:
+                errors.append({"file": file, "error": str(e)})
+    
+    return {
+        "success": len(errors) == 0,
+        "cleared": cleared,
+        "errors": errors,
+        "message": f"Cleared {len(cleared)} log file(s)" + (f" with {len(errors)} error(s)" if errors else "")
+    }
+
 
 # ========================================
 # WEBSOCKET FOR LIVE UPDATES
