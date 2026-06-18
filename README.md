@@ -86,11 +86,14 @@
 
 5. **Start AkiraTV**
    ```bash
-   # Windows
-   RUN_AkiraTV.bat
+   # Web Interface (recommended)
+   ./launch_web.sh
    
-   # Linux/macOS
-   python -m akiratv
+   # Windows
+   launch_web.bat
+   
+   # Old Tkinter desktop UI (legacy)
+   # RUN_AkiraTV.sh
    ```
 
 6. **Access the Web Interface**
@@ -101,11 +104,13 @@
 
 ### Creating Your First Channel
 
-1. **Add Videos**: Place your video files in a directory
-2. **Create Channel**: Use the web interface to add a new channel
-3. **Configure Schedule**: Create a schedule file in `user/schedules/`
-4. **Add Logo**: Place channel logo in `user/channels/CHANNEL_NAME/`
-5. **Enable Channel**: Toggle the channel on in the web interface
+1. **Create a Collection**: Use the [Collection Manager](https://github.com/Akira1San/Collection-manager)
+   to scan your video folder and generate a collection JSON file
+2. **Create a Schedule**: Use [Day2](https://github.com/Akira1San/Day2) to build a programming
+   schedule from your collection
+3. **Start the Server**: Run `./launch_web.sh`
+4. **Add Channels**: Open the web UI → **Configuration** → add your channels (stored in `config.json`)
+5. **Press Stream**: Click **Start Streaming** in the control panel
 
 ### Channel Types Explained
 
@@ -431,7 +436,7 @@ GET /api/guide/weekly
 ### Automation Scripts
 
 - **Web UI Launcher**: `launch_web.sh` / `launch_web.bat`
-- **Desktop UI Launcher**: `RUN_AkiraTV.sh` / `RUN_AkiraTV.bat`
+- **Desktop UI Launcher**: `RUN_AkiraTV.sh` / `RUN_AkiraTV.bat` (old Tkinter UI, legacy)
 
 ### Directory Structure
 
