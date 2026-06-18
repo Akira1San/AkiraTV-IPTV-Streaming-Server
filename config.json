@@ -1,5 +1,6 @@
 {
   "ffmpeg": {
+    "bin_dir": "/home/akira/Downloads/ffmpeg-n8.1-latest-linux64-gpl-8.1/bin/",
     "hwaccel": "none",
     "enable_subtitles": false,
     "transcoding": {
@@ -96,7 +97,7 @@
         "enabled": false
       }
     },
-    "Test": {
+    "Western": {
       "enabled": true,
       "type": "dynamic",
       "transcoding": {
@@ -104,19 +105,13 @@
       },
       "enable_subtitles": false
     },
-    "Western": {
+    "TatkoTV2": {
       "enabled": true,
       "type": "dynamic",
       "transcoding": {
         "enabled": false
-      }
-    },
-    "RE2": {
-      "enabled": false,
-      "type": "dynamic",
-      "transcoding": {
-        "enabled": false
-      }
+      },
+      "enable_subtitles": false
     }
   },
   "worker": {

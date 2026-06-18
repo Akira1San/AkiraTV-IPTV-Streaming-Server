@@ -11,6 +11,7 @@ from pathlib import Path
 from datetime import datetime
 
 from .core import AkiraTV
+from .collections import FFMPEG_PATH, FFPROBE_PATH
 from .stats import AKIRATV_STATS, STATS_LOCK, get_active_viewers
 
 logger = logging.getLogger("AkiraTV")
@@ -684,15 +685,17 @@ class CoreAPI:
     def get_config(self) -> Dict[str, Any]:
         """
         Get current configuration
-        
+
         Returns:
-            Complete config dictionary
+            Complete config dictionary with effective FFmpeg paths injected
         """
         if self._engine:
-            return self._engine.config.data.copy()
+            result = self._engine.config.data.copy()
         else:
             config = self._get_config_object()
-            return config.data.copy()
+            result = config.data.copy()
+        result["_ffmpeg_bin_dir"] = str(Path(FFMPEG_PATH).parent)
+        return result
 
     def update_config(self, updates: Dict[str, Any]) -> Dict[str, Any]:
         """

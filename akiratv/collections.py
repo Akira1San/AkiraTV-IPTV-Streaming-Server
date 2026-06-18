@@ -9,18 +9,57 @@ import subprocess
 import subprocess
 import shutil
 import sys
+import os
+import logging
 from pathlib import Path
 
-def get_ffmpeg_bin_path() -> tuple:
-    """Get ffmpeg/ffprobe path, preferring bundled binary in akiratv/bin."""
+logger = logging.getLogger("AkiraTV")
+
+
+def get_ffmpeg_bin_path(bin_dir_override=None):
+    """
+    Resolve ffmpeg/ffprobe binary paths.
+
+    Priority:
+      1. Caller-supplied bin_dir override (from config.json) — looks for ffmpeg/ffprobe inside
+      2. Bundled binary at akiratv/bin/
+      3. System PATH (shutil.which)
+      4. Windows default C:\\ffmpeg\\bin\\
+      5. Bare string fallback "ffmpeg" / "ffprobe"
+    """
     import shutil
     from pathlib import Path
 
-    # 1. Check for bundled binary in akiratv/bin
+    dir_override = Path(bin_dir_override) if bin_dir_override else None
+    if dir_override:
+        if not dir_override.is_dir():
+            logger.warning(
+                "Configured ffmpeg bin_dir '%s' is not a directory, falling back to auto-detection",
+                bin_dir_override,
+            )
+            dir_override = None
+        else:
+            ffmpeg_in_dir = dir_override / "ffmpeg"
+            ffprobe_in_dir = dir_override / "ffprobe"
+            if ffmpeg_in_dir.exists() and ffprobe_in_dir.exists():
+                logger.info("Using ffmpeg/ffprobe from configured bin_dir: %s", bin_dir_override)
+                return str(ffmpeg_in_dir), str(ffprobe_in_dir)
+            missing = []
+            if not ffmpeg_in_dir.exists():
+                missing.append("ffmpeg")
+            if not ffprobe_in_dir.exists():
+                missing.append("ffprobe")
+            logger.warning(
+                "Configured ffmpeg bin_dir '%s' missing %s, falling back to auto-detection",
+                bin_dir_override, " and ".join(missing),
+            )
+            dir_override = None
+
     bin_dir = Path(__file__).parent / "bin"
+
+    # 1. Check bundled binary pair
     bundled_ffmpeg = bin_dir / "ffmpeg"
     bundled_ffprobe = bin_dir / "ffprobe"
-
     if bundled_ffmpeg.exists() and bundled_ffprobe.exists():
         return str(bundled_ffmpeg), str(bundled_ffprobe)
 
@@ -30,7 +69,7 @@ def get_ffmpeg_bin_path() -> tuple:
     if system_ffmpeg and system_ffprobe:
         return system_ffmpeg, system_ffprobe
 
-    # 3. Fallback to Windows default paths
+    # 3. Windows default
     windows_ffmpeg = r"C:\ffmpeg\bin\ffmpeg.exe"
     windows_ffprobe = r"C:\ffmpeg\bin\ffprobe.exe"
     if Path(windows_ffmpeg).exists() and Path(windows_ffprobe).exists():
@@ -38,6 +77,18 @@ def get_ffmpeg_bin_path() -> tuple:
 
     # 4. Last resort
     return "ffmpeg", "ffprobe"
+
+
+def init_ffmpeg_paths(config):
+    """Read bin_dir from config and set module-level FFMPEG_PATH / FFPROBE_PATH."""
+    global FFMPEG_PATH, FFPROBE_PATH
+    try:
+        bin_dir = config.get_ffmpeg_bin_dir()
+        FFMPEG_PATH, FFPROBE_PATH = get_ffmpeg_bin_path(bin_dir)
+    except Exception:
+        logger.exception("Failed to resolve ffmpeg paths from config, falling back to auto-detection")
+        FFMPEG_PATH, FFPROBE_PATH = get_ffmpeg_bin_path()
+
 
 FFMPEG_PATH, FFPROBE_PATH = get_ffmpeg_bin_path()
 

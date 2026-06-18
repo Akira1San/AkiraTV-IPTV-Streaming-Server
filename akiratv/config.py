@@ -12,6 +12,7 @@ USER_CHANNELS_DIR = USER_ROOT / "channels"
 
 DEFAULT_CONFIG = {
     "ffmpeg": {
+        "bin_dir": None,
         "hwaccel": "cuda",
         "enable_subtitles": False,
         "transcoding": {
@@ -143,6 +144,11 @@ class Config:
         overrides = self.data["channels"].get(channel, {})
         base.update(overrides)
         return base
+
+    def get_ffmpeg_bin_dir(self) -> str | None:
+        """Return bin_dir from config, or None if not set."""
+        ffmpeg_section = self.data.get("ffmpeg", {})
+        return ffmpeg_section.get("bin_dir") or None
 
     def get_hwaccel(self, channel: str) -> str:
         """Get hardware acceleration setting for channel"""

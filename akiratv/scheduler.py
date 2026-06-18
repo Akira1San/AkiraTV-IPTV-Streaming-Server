@@ -17,10 +17,6 @@ logger = logging.getLogger("AkiraTV")
 # Cache for collections to avoid repeated disk reads
 _collections_cache: Dict[str, List[Dict]] = {}
 
-# Daypart Scheduler
-from .daypart_scheduler import DaypartScheduler, generate_daypart_schedule, load_daypart_config
-
-
 def load_collections_for_channel(channel_name: str) -> List[Dict]:
     """
     Load collections for a specific channel/profile.
@@ -359,7 +355,7 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
     
     # Check for daypart scheduling
     try:
-        # Load daypart config for this channel
+        from .daypart_scheduler import load_daypart_config, generate_daypart_schedule
         daypart_config = load_daypart_config(channel)
         if daypart_config and daypart_config.get("enabled", False):
             logger.info(f"Using Daypart Scheduler for channel '{channel}'")

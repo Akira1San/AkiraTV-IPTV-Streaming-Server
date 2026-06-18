@@ -50,6 +50,10 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 class AkiraTV:
     def __init__(self):
         self.config = Config.load_or_create()
+
+        from akiratv.collections import init_ffmpeg_paths
+        init_ffmpeg_paths(self.config)
+
         self.workers: dict[str, tuple[BaseWorker, threading.Thread]] = {}
         self.running = False
         self.http_server: HttpServer | None = None

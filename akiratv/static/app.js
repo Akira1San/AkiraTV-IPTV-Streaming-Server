@@ -1316,6 +1316,13 @@ async function loadConfigurationData() {
         const streaming = config.streaming || {};
         document.getElementById('enablePreGen').checked = streaming.pre_gen || false;
         
+        // FFmpeg bin dir — show effective dir as placeholder, stored override as value
+        const binDirInput = document.getElementById('ffmpegBinDir');
+        if (binDirInput) {
+            binDirInput.placeholder = 'Auto-detected: ' + (config._ffmpeg_bin_dir || '/usr/bin');
+            binDirInput.value = ffmpeg.bin_dir || '';
+        }
+        
         // Handle custom bitrate visibility
         toggleCustomBitrate();
         
@@ -1497,8 +1504,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function saveConfiguration() {
     try {
+        const binDirEl = document.getElementById('ffmpegBinDir');
+        const binDir = binDirEl ? binDirEl.value.trim() : '';
+
         const config = {
             ffmpeg: {
+                bin_dir: binDir || null,
                 hwaccel: document.getElementById('hwaccel').value,
                 enable_subtitles: document.getElementById('enableSubtitles').checked,
                 transcoding: {
