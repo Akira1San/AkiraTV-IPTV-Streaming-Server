@@ -94,8 +94,8 @@
    ```
 
 6. **Access the Web Interface**
-   - Local: http://localhost:8001
-   - Network: http://YOUR_IP:8001
+   - Local: http://localhost:8000
+   - Network: http://YOUR_IP:8000
 
 ## 📖 Usage Guide
 
@@ -142,9 +142,15 @@ Combines standby loops with VOD interruptions:
 #### 🎮 Control Panel
 - **Start/Stop/Restart**: Engine control
 - **Clear Cache**: Remove temporary files
+- **Clear Logs**: Clear log files (logs auto-rotate at 5MB, 3 backups kept)
 - **Reload Schedules**: Update programming
 - **Configuration**: Global settings
+- **TV Guide**: Daily/weekly program guide
+- **Viewer**: Watch channels in the browser
+- **Video Library**: Browse and manage video files
 - **Generate XMLTV**: Create Kodi-compatible files
+- **Wizard**: Collection and scheduler setup tool
+- **Exit**: Stop engine and shut down the server
 
 #### 📺 TV Guide
 - **Daily View**: Current/next programs + today's schedule
@@ -310,7 +316,7 @@ Network Stream: http://192.168.1.100:8081/hls/movies/index.m3u8
 
 #### **Web Browser**
 ```
-AkiraTV Interface: http://192.168.1.100:8001
+AkiraTV Interface: http://192.168.1.100:8000
 ```
 
 ### 🔐 **Security Considerations**
@@ -334,8 +340,8 @@ AkiraTV Interface: http://192.168.1.100:8001
 │                 │    │                  │    │                 │
 │ 🏠 Same Network │◄──►│ 192.168.1.100    │◄──►│ LAN: :8081/hls  │
 │ 📱 Phone/Tablet │    │                  │    │                 │
-│ 📺 Kodi/VLC     │    │ Ports:           │    │ Web: :8001      │
-└─────────────────┘    │ • 8001 (Web UI)  │    │ API: :8000      │
+│ 📺 Kodi/VLC     │    │ Ports:           │    │ Web/API: :8000  │
+└─────────────────┘    │ • 8000 (Web/API) │    └─────────────────┘
                        │ • 8081 (Stream)  │    └─────────────────┘
 ┌─────────────────┐    │ • 8000 (API)     │    
 │ 🌐 Remote Access│    └──────────────────┘    ┌─────────────────┐
@@ -367,7 +373,7 @@ http://YOUR_IP:8081/channels.m3u
 http://YOUR_IP:8081/xmltv.xml
 
 # Web Interface
-http://YOUR_IP:8001
+http://YOUR_IP:8000
 
 # Tailscale URLs (replace TAILSCALE_IP)
 http://TAILSCALE_IP:8081/hls/CHANNEL_NAME/index.m3u8
@@ -377,14 +383,14 @@ http://TAILSCALE_IP:8081/hls/CHANNEL_NAME/index.m3u8
 ```bash
 # LAN (192.168.1.100)
 http://192.168.1.100:8081/hls/movies/index.m3u8
-http://192.168.1.100:8001
+http://192.168.1.100:8000
 
 # Tailscale (100.64.1.2)  
 http://100.64.1.2:8081/hls/movies/index.m3u8
 ```
 
 ### Local Network
-- **LAN Access**: `http://YOUR_IP:8001`
+- **Web/API Access**: `http://YOUR_IP:8000`
 - **Mobile Access**: Same URL works on phones/tablets
 
 ### Remote Access
@@ -424,9 +430,8 @@ GET /api/guide/weekly
 
 ### Automation Scripts
 
-- **Collection Wizard**: `collection_wizard.bat`
-- **Simple Scheduler**: `simple_scheduler.bat`
-- **Daypart Scheduler**: `Daypart_scheduler.bat`
+- **Web UI Launcher**: `launch_web.sh` / `launch_web.bat`
+- **Desktop UI Launcher**: `RUN_AkiraTV.sh` / `RUN_AkiraTV.bat`
 
 ### Directory Structure
 
@@ -490,7 +495,7 @@ AkiraTV's web interface is fully responsive:
 ### Common Issues
 
 **Server won't start**
-- Check if ports 8000/8001/8081 are available
+- Check if ports 8000/8081 are available
 - Verify Python and FFmpeg installation
 - Check logs in `logs/` directory
 
@@ -510,9 +515,9 @@ AkiraTV's web interface is fully responsive:
 - Ensure network connectivity between devices
 
 ### Log Files
-- **Application Logs**: `logs/worker.log`
-- **Scheduler Logs**: `daypart_scheduler.log`
+- **Application Logs**: `logs/worker.log` (auto-rotates at 5MB, keeps 3 backups)
 - **Web Server**: Console output
+- **Clear Logs**: Use the **Clear Logs** button in the web UI control panel
 
 ## 📄 License
 
