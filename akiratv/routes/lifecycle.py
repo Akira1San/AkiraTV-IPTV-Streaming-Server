@@ -3,6 +3,9 @@ Lifecycle routes for AkiraTV API
 Handles engine start, stop, restart, and status endpoints
 """
 
+import os
+import signal
+import threading
 from fastapi import APIRouter, HTTPException, Depends
 from ..models import Response
 from ..core_api import get_api
@@ -49,3 +52,9 @@ def get_status(api = Depends(get_core_api)):
         "uptime": api.uptime,
         "stats": api.stats
     }
+
+@router.post("/shutdown", response_model=Response)
+def shutdown_server():
+    """Shut down the entire server process"""
+    threading.Timer(1.0, lambda: os.kill(os.getpid(), signal.SIGINT)).start()
+    return Response(success=True, message="Server shutting down")

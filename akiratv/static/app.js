@@ -697,6 +697,20 @@ async function generateXMLTV() {
     }
 }
 
+async function exitApplication() {
+    if (!confirm('Exit AkiraTV? This will stop all streams and shut down the server.')) return;
+    try {
+        await apiCall('/api/stop', 'POST');
+        showToast('Shutting down...', 'info');
+        // Give the stop response time to be sent, then shutdown the server
+        setTimeout(async () => {
+            await apiCall('/api/shutdown', 'POST');
+        }, 500);
+    } catch (error) {
+        showToast('Failed to shutdown', 'error');
+    }
+}
+
 async function openConfigFile() {
     try {
         const result = await apiCall('/api/config/file');

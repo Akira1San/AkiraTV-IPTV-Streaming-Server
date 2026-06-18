@@ -30,6 +30,7 @@ const translations = {
         'control.vodLibrary': '🎬 Video Library',
         'control.openConfig': '📝 Open Config',
         'control.openLogs': '📋 Open Logs',
+        'control.exit': '🚪 Exit',
         
         // TV Guide
         'guide.title': '📺 TV Guide',
@@ -198,6 +199,7 @@ const translations = {
         'control.vodLibrary': '🎬 Видео библиотека',
         'control.openConfig': '📝 Отвори конфигурацията',
         'control.openLogs': '📋 Отвори логовете',
+        'control.exit': '🚪 Изход',
         
         // TV Guide
         'guide.title': '📺 Телевизионна програма',
