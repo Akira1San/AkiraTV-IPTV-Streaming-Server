@@ -1,4 +1,4 @@
-# AkiraTV - Local IPTV Streaming Server
+# AkiraTV - Home IPTV Streaming Server
 
 <div align="center">
   <img src="logo.png" alt="AkiraTV Logo" width="200"/>
