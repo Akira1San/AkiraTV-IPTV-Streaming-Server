@@ -4,6 +4,9 @@ temp/
 *.temp
 *.log
 
+# Log files
+logs/
+
 # Cover images
 user/covers/
 *.jpg
