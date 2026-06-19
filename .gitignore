@@ -7,28 +7,19 @@ temp/
 # Log files
 logs/
 
-# Cover images
-user/covers/
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.bmp
-
-# Videos
-videos/
-
-# Output files
-output/
-
-# User data
-user/collections/
-user/schedules/
-user/*.ini
-user/*.json
+# User data (private)
+user/
 
 # Playlists
 playlists/
+
+# Dev plans and config
+plans/
+.opencode/
+
+# Root-level private files
+CHANGELOG.md
+config.json
 
 # Python cache
 __pycache__/
@@ -42,3 +33,4 @@ akiratv/bin/
 
 # Kilo worktrees
 .kilo/
+.kiro/
