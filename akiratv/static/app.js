@@ -1363,13 +1363,13 @@ async function loadConfigurationData() {
 async function loadInfoData() {
     try {
         // Get engine status
-        const statusResult = await apiCall('/api/lifecycle/status');
-        const engineStatus = statusResult.running ? 'Running' : 'Stopped';
+        const statusResult = await apiCall('/api/status');
+        const engineStatus = statusResult.is_running ? 'Running' : 'Stopped';
         document.getElementById('infoEngineStatus').textContent = engineStatus;
-        document.getElementById('infoEngineStatus').className = 'status-value ' + (statusResult.running ? 'status-active' : 'status-inactive');
+        document.getElementById('infoEngineStatus').className = 'status-value ' + (statusResult.is_running ? 'status-active' : 'status-inactive');
         
         // Get channels
-        const channelsResult = await apiCall('/api/channels/channels');
+        const channelsResult = await apiCall('/api/channels');
         const channels = channelsResult.channels || {};
         const enabledChannels = Object.values(channels).filter(ch => ch.enabled).length;
         const totalChannels = Object.keys(channels).length;

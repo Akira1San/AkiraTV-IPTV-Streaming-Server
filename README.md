@@ -5,7 +5,6 @@
   
   **Transform your video collection into professional IPTV channels**
   
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
   [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](https://github.com/yourusername/akiratv)
 </div>
@@ -80,9 +79,8 @@
    - **macOS**: `brew install ffmpeg`
 
 4. **Configure your channels**
-   - Edit `config.json` to add your video directories
-   - Create channel schedules in `user/schedules/`
-   - Add channel logos to `user/channels/`
+   - Create channel schedules in `user/schedules/ schedule_name.json` and user/collections/ collection_name.json
+   - Add channel logos to `user/channels/ "tv channel name"/ logo.png`
 
 5. **Start AkiraTV**
    ```bash
@@ -154,7 +152,7 @@ Combines standby loops with VOD interruptions:
 - **Viewer**: Watch channels in the browser
 - **Video Library**: Browse and manage video files
 - **Generate XMLTV**: Create Kodi-compatible files
-- **Wizard**: Collection and scheduler setup tool
+- **Wizard**: Collection and scheduler setup tool -  abandon
 - **Exit**: Stop engine and shut down the server
 
 #### 📺 TV Guide
@@ -240,8 +238,6 @@ AkiraTV supports multiple transcoding options:
 - **Stream Copy** (Default): Zero CPU usage, original quality
 - **Software Transcoding**: CPU-based encoding
 - **Hardware Acceleration**: NVENC, QSV, AMF support
-
-See [README_TRANSCODING.txt](README_TRANSCODING.txt) for detailed transcoding guide.
 
 ## 🌐 Network Access & Streaming URLs
 
@@ -473,13 +469,6 @@ python launch_web.py
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-### Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
 ## 📱 Mobile Support
 
 AkiraTV's web interface is fully responsive:
@@ -526,13 +515,7 @@ AkiraTV's web interface is fully responsive:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/akiratv/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/akiratv/discussions)
-- **Documentation**: [Wiki](https://github.com/yourusername/akiratv/wiki)
+Free AI Generated - vibe
 
 ## 🙏 Acknowledgments
 
@@ -540,7 +523,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **FastAPI**: Modern web framework
 - **Vue.js**: Reactive web interface components
 - **HLS.js**: HTML5 video streaming
-- **Community**: Contributors and users
+
 
 ---
 
