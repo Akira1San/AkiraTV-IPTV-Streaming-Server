@@ -36,3 +36,9 @@ __pycache__/
 
 # VSCode
 .vscode/
+
+# FFmpeg binaries (user must install separately)
+akiratv/bin/
+
+# Kilo worktrees
+.kilo/
