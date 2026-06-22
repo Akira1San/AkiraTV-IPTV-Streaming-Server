@@ -105,6 +105,7 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
             normalized_path = Path(path).as_posix() 
             video_lookup[normalized_path] = {
                 "name": col.get("name", Path(path).stem),
+                "name_bg": col.get("name_bg", None),
                 "description": col.get("description", "No description."),
                 "genre": col.get("genre", ["Movie"]),
                 "year": col.get("year", None),
@@ -277,10 +278,16 @@ def create_programme(entry, video_lookup, day_name, calendar=None):
         prog.set("stop", stop_str)
         prog.set("channel", entry["channel"])
 
-        # Title
+        # Title (English)
         title = ET.SubElement(prog, "title")
         title.set("lang", "en")
         title.text = meta.get("name", Path(entry["file"]).stem)
+
+        # Title (Bulgarian) - if available
+        if meta.get("name_bg"):
+            title_bg = ET.SubElement(prog, "title")
+            title_bg.set("lang", "bg")
+            title_bg.text = meta["name_bg"]
 
         # Description
         desc = ET.SubElement(prog, "desc")
@@ -387,10 +394,16 @@ def create_programme_from_calendar(entry, video_lookup, date_str):
         prog.set("stop", stop_str)
         prog.set("channel", entry.get("channel", "default"))
 
-        # Title
+        # Title (English)
         title = ET.SubElement(prog, "title")
         title.set("lang", "en")
         title.text = meta.get("name", Path(entry["file"]).stem)
+
+        # Title (Bulgarian) - if available
+        if meta.get("name_bg"):
+            title_bg = ET.SubElement(prog, "title")
+            title_bg.set("lang", "bg")
+            title_bg.text = meta["name_bg"]
 
         # Description
         desc = ET.SubElement(prog, "desc")
