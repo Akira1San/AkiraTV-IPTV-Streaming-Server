@@ -897,7 +897,8 @@ class AkiraTVApp:
             generate_xmltv(
                 schedules_dir=str(schedules_dir),
                 collections_dir=str(collections_dir),
-                output_path=str(xmltv_path)
+                output_path=str(xmltv_path),
+                config=self.config_data
             )
             
             # Check if the file was actually created

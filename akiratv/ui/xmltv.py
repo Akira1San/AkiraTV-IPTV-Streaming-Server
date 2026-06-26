@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 import socket
 
-def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
+def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml", config=None):
     """
     Generate XMLTV file from schedule and collections data.
     Supports multiple channels, real dates, custom directories.
@@ -119,6 +119,11 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
     # for path, meta in video_lookup.items():
     #     print(f"[SEARCH] Debug: Path: {path}, Name: {meta.get('name')}, Channel: {path.split('/')[2] if len(path.split('/')) > 2 else 'unknown'}")
 
+    # Read config flag for Bulgarian title behavior
+    use_name_bg_as_primary = False
+    if config:
+        use_name_bg_as_primary = config.get("xmltv", {}).get("use_name_bg_as_primary", False)
+
     # --- 4. Create the XMLTV structure ---
     root = ET.Element("tv")
     root.set("generator-info-name", "AkiraTV")
@@ -171,7 +176,7 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
             date_str = calendar_data.get("date", "")
             entries = calendar_data.get("entries", [])
             for entry in entries:
-                prog = create_programme_from_calendar(entry, video_lookup, date_str)
+                prog = create_programme_from_calendar(entry, video_lookup, date_str, use_name_bg_as_primary)
                 if prog is not None:
                     root.append(prog)
                     calendar_count += 1
@@ -181,7 +186,7 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
         for entry in entries:
             # Check if this entry is already covered by a calendar entry
             # Skip weekly entries for dates that have calendar overrides
-            prog = create_programme(entry, video_lookup, day_name, calendar)
+            prog = create_programme(entry, video_lookup, day_name, calendar, use_name_bg_as_primary)
             if prog is not None:
                 root.append(prog)
                 weekly_count += 1
@@ -199,7 +204,7 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml"):
         # print(f"[ERROR] Error writing XMLTV file: {e}")  # DEBUG: Enable for error tracking
         pass
 
-def create_programme(entry, video_lookup, day_name, calendar=None):
+def create_programme(entry, video_lookup, day_name, calendar=None, use_name_bg_as_primary=False):
     """Create a single <programme> element with real timestamps for Bulgarian time.
     
     Args:
@@ -278,16 +283,21 @@ def create_programme(entry, video_lookup, day_name, calendar=None):
         prog.set("stop", stop_str)
         prog.set("channel", entry["channel"])
 
-        # Title (English)
-        title = ET.SubElement(prog, "title")
-        title.set("lang", "en")
-        title.text = meta.get("name", Path(entry["file"]).stem)
+        # Title - use name_bg as primary if flag is set
+        if use_name_bg_as_primary:
+            title = ET.SubElement(prog, "title")
+            title.set("lang", "en")
+            title.text = meta.get("name_bg") or meta.get("name", Path(entry["file"]).stem)
+        else:
+            title = ET.SubElement(prog, "title")
+            title.set("lang", "en")
+            title.text = meta.get("name", Path(entry["file"]).stem)
 
-        # Title (Bulgarian) - if available
-        if meta.get("name_bg"):
-            title_bg = ET.SubElement(prog, "title")
-            title_bg.set("lang", "bg")
-            title_bg.text = meta["name_bg"]
+            # Title (Bulgarian) - if available
+            if meta.get("name_bg"):
+                title_bg = ET.SubElement(prog, "title")
+                title_bg.set("lang", "bg")
+                title_bg.text = meta["name_bg"]
 
         # Description
         desc = ET.SubElement(prog, "desc")
@@ -338,7 +348,7 @@ def create_programme(entry, video_lookup, day_name, calendar=None):
         # print(f"⚠️  Error creating programme for {entry.get('file', 'unknown file')}: {e}")  # DEBUG: Enable for error tracking
         return None
 
-def create_programme_from_calendar(entry, video_lookup, date_str):
+def create_programme_from_calendar(entry, video_lookup, date_str, use_name_bg_as_primary=False):
     """Create a single <programme> element from a calendar entry with a specific date.
     
     Args:
@@ -394,16 +404,21 @@ def create_programme_from_calendar(entry, video_lookup, date_str):
         prog.set("stop", stop_str)
         prog.set("channel", entry.get("channel", "default"))
 
-        # Title (English)
-        title = ET.SubElement(prog, "title")
-        title.set("lang", "en")
-        title.text = meta.get("name", Path(entry["file"]).stem)
+        # Title - use name_bg as primary if flag is set
+        if use_name_bg_as_primary:
+            title = ET.SubElement(prog, "title")
+            title.set("lang", "en")
+            title.text = meta.get("name_bg") or meta.get("name", Path(entry["file"]).stem)
+        else:
+            title = ET.SubElement(prog, "title")
+            title.set("lang", "en")
+            title.text = meta.get("name", Path(entry["file"]).stem)
 
-        # Title (Bulgarian) - if available
-        if meta.get("name_bg"):
-            title_bg = ET.SubElement(prog, "title")
-            title_bg.set("lang", "bg")
-            title_bg.text = meta["name_bg"]
+            # Title (Bulgarian) - if available
+            if meta.get("name_bg"):
+                title_bg = ET.SubElement(prog, "title")
+                title_bg.set("lang", "bg")
+                title_bg.text = meta["name_bg"]
 
         # Description
         desc = ET.SubElement(prog, "desc")

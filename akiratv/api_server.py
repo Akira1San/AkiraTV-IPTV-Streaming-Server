@@ -142,7 +142,8 @@ def generate_xmltv():
         generate_xmltv(
             schedules_dir="user/schedules",
             collections_dir="user/collections", 
-            output_path=str(xmltv_path)
+            output_path=str(xmltv_path),
+            config=config
         )
         
         generate_m3u_playlist(config, str(m3u_path))

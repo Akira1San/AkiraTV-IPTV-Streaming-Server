@@ -64,6 +64,9 @@ DEFAULT_CONFIG = {
     },
     "ui": {
         "dark_mode": False
+    },
+    "xmltv": {
+        "use_name_bg_as_primary": False
     }
 }
 
