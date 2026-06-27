@@ -87,7 +87,7 @@ class BaseWorker:
         
         self.logger.info(f"Worker for channel {self.channel} stopped.")
 
-    def _execute_ffmpeg(self, args: List[str]):
+    def _execute_ffmpeg(self, args: List[str], enable_watchdog: bool = True):
         """Execute FFmpeg command and handle errors with File Context."""
 
         self.logger.info(f"Starting FFmpeg for {self.channel}: {' '.join(str(a) for a in args)}")
@@ -99,8 +99,11 @@ class BaseWorker:
                 text=False
             )
 
-            self.watchdog = Watchdog(self.ffmpeg_process, self.logger, timeout_seconds=30)
-            self.watchdog.start()
+            if enable_watchdog:
+                self.watchdog = Watchdog(self.ffmpeg_process, self.logger, timeout_seconds=30)
+                self.watchdog.start()
+            else:
+                self.logger.info(f"Watchdog disabled for {self.channel}")
 
             def log_errors():
                 try:

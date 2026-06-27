@@ -19,7 +19,7 @@ class ChannelUpdateRequest(BaseModel):
     enabled: Optional[bool] = None
     transcoding: Optional[str] = None  # "global" | "enabled" | "disabled"
     subtitles: Optional[str] = None    # "global" | "enabled" | "disabled"
-    type: Optional[str] = None         # "linear" | "vod" | "dynamic"
+    type: Optional[str] = None         # "linear" | "vod" | "dynamic" | "live"
 
 
 class FastScheduleRequest(BaseModel):

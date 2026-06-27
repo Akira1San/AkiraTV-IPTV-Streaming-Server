@@ -9,6 +9,7 @@ import socketserver
 from .workers.base_worker import BaseWorker
 from .workers.linear_worker import LinearWorker
 from .workers.vod_worker import VODWorker
+from .workers.live_worker import LiveWorker
 from .workers.transcoding import TranscodingService
 from .inventory import InventoryManager
 from .server.http_server import HttpServer
@@ -127,6 +128,8 @@ class AkiraTV:
                     self._start_linear_channel(channel_name)
                 elif channel_type == "dynamic":
                     self._start_dynamic_channel(channel_name)
+                elif channel_type == "live":
+                    self._start_live_channel(channel_name)
                 else:
                     logger.error(f"Unknown channel type '{channel_type}' for channel '{channel_name}'. Skipping.")
                     continue
@@ -187,6 +190,70 @@ class AkiraTV:
         self.workers[channel_name] = (worker, thread)
         thread.start()
         logger.info(f"[OK] Dynamic worker for {channel_name} started.")
+
+    def _start_live_channel(self, channel_name: str):
+        """Start a live channel with auto-restart wrapper"""
+        logger.info(f"Starting Live channel: {channel_name}")
+
+        thread = threading.Thread(
+            target=self._live_worker_with_restart,
+            args=(channel_name,),
+            daemon=True
+        )
+
+        self.workers[channel_name] = (None, thread)
+        thread.start()
+        logger.info(f"[OK] Live worker for {channel_name} started with auto-restart.")
+
+    def _live_worker_with_restart(self, channel_name: str):
+        """Wrapper that restarts a live worker when it exits (OBS disconnects)."""
+        while self.running and channel_name not in self.stopped_linear_channels:
+            try:
+                logger.info(f"[REFRESH] Starting/Restarting live worker for {channel_name}...")
+
+                channel_conf = self.config.data.get("channels", {}).get(channel_name, {})
+                port = channel_conf.get("port")
+
+                if port is None:
+                    channels_list = list(self.config.data.get("channels", {}).keys())
+                    try:
+                        channel_index = channels_list.index(channel_name)
+                    except ValueError:
+                        channel_index = 0
+                    port = 20000 + channel_index
+                    logger.info(f"Auto-assigned port {port} for live channel {channel_name}")
+
+                worker = LiveWorker(
+                    channel=channel_name,
+                    config=self.config,
+                    logger=logger,
+                    transcoding_service=self.transcoding_service,
+                    port=port
+                )
+
+                if channel_name in self.workers:
+                    _, thread = self.workers[channel_name]
+                    self.workers[channel_name] = (worker, thread)
+
+                logger.info(f"Live worker for {channel_name} waiting for OBS on port {port}...")
+                worker.run()
+
+                if self.running and channel_name not in self.stopped_linear_channels:
+                    logger.warning(f"⚠️ Live worker for {channel_name} exited. Restarting in 10s...")
+                    time.sleep(10)
+                else:
+                    logger.info(f"Live worker for {channel_name} stopped (shutdown requested).")
+                    break
+
+            except Exception as e:
+                logger.error(f"[ERROR] Error in live worker for {channel_name}: {e}")
+                if self.running and channel_name not in self.stopped_linear_channels:
+                    logger.info(f"Retrying in 10s...")
+                    time.sleep(10)
+                else:
+                    break
+
+        logger.info(f"Live worker restart loop for {channel_name} has exited.")
 
     def _start_linear_channel(self, channel_name: str):
         """Start a linear channel with auto-restart wrapper"""

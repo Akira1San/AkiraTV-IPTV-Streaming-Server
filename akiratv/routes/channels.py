@@ -179,8 +179,8 @@ def update_channel_settings(channel: str, request: ChannelUpdateRequest, api=Dep
     
     # Handle type change
     if request.type is not None:
-        if request.type not in ["linear", "vod", "dynamic"]:
-            raise HTTPException(status_code=400, detail="Channel type must be 'linear', 'vod', or 'dynamic'")
+        if request.type not in ["linear", "vod", "dynamic", "live"]:
+            raise HTTPException(status_code=400, detail="Channel type must be 'linear', 'vod', 'dynamic', or 'live'")
         
         current_type = channels_config[channel].get("type", "linear")
         if request.type != current_type:

@@ -319,6 +319,7 @@ function displayChannels(channels, channelUrls) {
                 <div class="channel-info">
                     ${t('channels.status')}: <strong style="color: ${statusColor}">${ch.status}</strong><br>
                     ${t('channels.type')}: ${ch.type.toUpperCase()}
+                    ${ch.type === 'live' ? `<br><span class="obs-hint">🔴 Connect OBS to <strong>tcp://YOUR_IP:${ch.port || '???'}</strong></span>` : ''}
                 </div>
                 
                 <!-- Channel Settings -->
@@ -345,6 +346,7 @@ function displayChannels(channels, channelUrls) {
                             <option value="linear" ${ch.type === 'linear' ? 'selected' : ''}>Linear</option>
                             <option value="vod" ${ch.type === 'vod' ? 'selected' : ''}>VOD</option>
                             <option value="dynamic" ${ch.type === 'dynamic' ? 'selected' : ''}>Dynamic</option>
+                            <option value="live" ${ch.type === 'live' ? 'selected' : ''}>Live</option>
                         </select>
                     </div>
                     <div class="setting-row">

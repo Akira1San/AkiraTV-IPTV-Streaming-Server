@@ -20,7 +20,7 @@ logger = logging.getLogger("AkiraTV")
 class ChannelStatus:
     """Status information for a channel"""
     name: str
-    type: str  # "linear" | "vod" | "dynamic"
+    type: str  # "linear" | "vod" | "dynamic" | "live"
     enabled: bool
     status: str  # "running" | "stopped" | "error"
     now_playing: str = ""
@@ -28,6 +28,7 @@ class ChannelStatus:
     viewers: int = 0
     uptime: float = 0.0  # seconds
     current_video: Optional[str] = None
+    port: Optional[int] = None
     
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -198,13 +199,23 @@ class CoreAPI:
             # Check if worker is running
             is_running = self._running and self._engine and name in self._engine.workers
             
+            ch_type = conf.get("type", "linear")
+            port = None
+            if ch_type == "live":
+                port = conf.get("port")
+                if port is None and self._engine and hasattr(self._engine, 'workers') and name in self._engine.workers:
+                    worker, _ = self._engine.workers[name]
+                    if worker and hasattr(worker, 'port'):
+                        port = worker.port
+
             status = ChannelStatus(
                 name=name,
-                type=conf.get("type", "linear"),
+                type=ch_type,
                 enabled=conf.get("enabled", True),
                 status="running" if is_running else "stopped",
                 viewers=0,
-                uptime=self.uptime if is_running else 0.0
+                uptime=self.uptime if is_running else 0.0,
+                port=port
             )
             channels.append(status)
         
@@ -286,7 +297,7 @@ class CoreAPI:
         
         Args:
             channel_name: Name of the new channel
-            channel_type: Type of channel ("linear", "vod", "dynamic")
+            channel_type: Type of channel ("linear", "vod", "dynamic", "live")
             
         Returns:
             {"success": bool, "message": str}
@@ -307,8 +318,8 @@ class CoreAPI:
             return {"success": False, "error": "Use only letters, numbers, '-', or '_'"}
         
         # Validate channel type
-        if channel_type not in ["linear", "vod", "dynamic"]:
-            return {"success": False, "error": "Channel type must be 'linear', 'vod', or 'dynamic'"}
+        if channel_type not in ["linear", "vod", "dynamic", "live"]:
+            return {"success": False, "error": "Channel type must be 'linear', 'vod', 'dynamic', or 'live'"}
         
         try:
             # Add channel to config
@@ -487,9 +498,9 @@ class CoreAPI:
             return {"success": False, "error": f"Channel '{channel}' not found"}
         
         try:
-            # For linear channels, mark as stopped to prevent auto-restart
-            if channel_status.type == "linear":
-                logger.info(f"CoreAPI: Marking linear channel '{channel}' as stopped")
+            # For linear and live channels, mark as stopped to prevent auto-restart
+            if channel_status.type in ("linear", "live"):
+                logger.info(f"CoreAPI: Marking {channel_status.type} channel '{channel}' as stopped")
                 self._engine.stopped_linear_channels.add(channel)
             
             # Check if worker exists and is running
@@ -563,10 +574,13 @@ class CoreAPI:
             channel_type = channel_status.type
             
             if channel_type == "linear":
-                # Remove from stopped_linear_channels to allow the worker to run
                 if channel in self._engine.stopped_linear_channels:
                     self._engine.stopped_linear_channels.remove(channel)
                 start_method = "_start_linear_channel"
+            elif channel_type == "live":
+                if channel in self._engine.stopped_linear_channels:
+                    self._engine.stopped_linear_channels.remove(channel)
+                start_method = "_start_live_channel"
             elif channel_type == "dynamic":
                 start_method = "_start_dynamic_channel"
             elif channel_type == "vod":
@@ -628,11 +642,14 @@ class CoreAPI:
             channels_config = config.get("channels", {})
             channel_type = channels_config.get(channel, {}).get("type", "linear")
             
-            # For linear channels, remove from stopped list to allow restart
             if channel_type == "linear":
                 if channel in self._engine.stopped_linear_channels:
                     self._engine.stopped_linear_channels.remove(channel)
                 self._engine._start_linear_channel(channel)
+            elif channel_type == "live":
+                if channel in self._engine.stopped_linear_channels:
+                    self._engine.stopped_linear_channels.remove(channel)
+                self._engine._start_live_channel(channel)
             elif channel_type == "vod":
                 self._engine._start_vod_channel(channel)
             elif channel_type == "dynamic":
