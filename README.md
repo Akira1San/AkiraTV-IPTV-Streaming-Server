@@ -21,6 +21,7 @@
 - **Linear**: Traditional TV with scheduled programming
 - **VOD**: Video-on-demand with API/UI control
 - **Dynamic**: Standby loops + VOD interruptions + optional schedules
+- **Live**: OBS Studio live streaming via TCP/MPEG-TS
 
 ### 🌐 **Professional Web Interface**
 - Modern, responsive dark theme UI
@@ -139,6 +140,13 @@ Combines standby loops with VOD interruptions:
 - Plays standby content when idle
 - Accepts VOD interruptions
 - Returns to standby after playback
+
+#### 🔴 Live Channels
+Live streaming from OBS Studio via TCP/MPEG-TS:
+- OBS sends MPEG-TS over TCP to a dedicated port
+- FFmpeg receives and converts to HLS in real time
+- Auto-restarts when OBS disconnects (re-waits for connection)
+- Port auto-assigned from 20000+ range (or set manually)
 
 ### Web Interface Features
 
