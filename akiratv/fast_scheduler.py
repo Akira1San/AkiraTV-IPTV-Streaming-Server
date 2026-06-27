@@ -27,6 +27,7 @@ class ScheduleEntry:
     entry_type: str = "content"  # "content", "bumper", "trailer"
     metadata: Dict[str, Any] = None
     collection_id: str = ""  # Collection ID reference for collection-based scheduling
+    collection_source: str = ""  # Collection file name (e.g., "TatkoTV") for direct lookup
     
     def __post_init__(self):
         if self.metadata is None:
@@ -113,6 +114,9 @@ class FastScheduler:
                     with open(collection_file, 'r', encoding='utf-8') as f:
                         collection_data = json.load(f)
                     
+                    # Extract collection source from file name (e.g., "collections_TatkoTV" → "TatkoTV")
+                    collection_source = collection_file.stem.replace("collections_", "", 1)
+                    
                     # Extract videos from collection - handle both formats
                     if isinstance(collection_data, dict):
                         # Check if it's the new format with "collections" array
@@ -128,6 +132,7 @@ class FastScheduler:
                                                 'duration': video.get('duration', 3600),  # Default 1 hour
                                                 'collection': collection_file.stem,
                                                 'collection_id': collection.get('id', ''),  # Store collection ID
+                                                'collection_source': collection_source,  # Store source for direct lookup
                                                 'metadata': {
                                                     'id': collection.get('id'),
                                                     'description': collection.get('description', ''),
@@ -148,6 +153,7 @@ class FastScheduler:
                                         'duration': video_info.get('duration', 3600),  # Default 1 hour
                                         'collection': collection_file.stem,
                                         'collection_id': '',  # Old format - no collection ID
+                                        'collection_source': collection_source,  # Store source for direct lookup
                                         'metadata': video_info
                                     }
                                     self.available_videos.append(video_entry)
@@ -210,7 +216,8 @@ class FastScheduler:
                             video_path=trailer['path'],
                             duration=trailer.get('duration', 30),
                             entry_type="trailer",
-                            collection_id=trailer.get('collection_id', '')
+                            collection_id=trailer.get('collection_id', ''),
+                            collection_source=trailer.get('collection_source', '')
                         )
                         self.state.schedule_entries.append(trailer_entry)
                         current_time += timedelta(seconds=trailer['duration'])
@@ -224,7 +231,8 @@ class FastScheduler:
                         duration=video['duration'],
                         entry_type="content",
                         metadata=video.get('metadata', {}),
-                        collection_id=video.get('metadata', {}).get('id', '')
+                        collection_id=video.get('metadata', {}).get('id', ''),
+                        collection_source=video.get('collection_source', '')
                     )
                     self.state.schedule_entries.append(video_entry)
                     current_time += timedelta(seconds=video['duration'])
@@ -239,7 +247,8 @@ class FastScheduler:
                             video_path=bumper['path'],
                             duration=bumper.get('duration', 10),
                             entry_type="bumper",
-                            collection_id=bumper.get('collection_id', '')
+                            collection_id=bumper.get('collection_id', ''),
+                            collection_source=bumper.get('collection_source', '')
                         )
                         self.state.schedule_entries.append(bumper_entry)
                         current_time += timedelta(seconds=bumper['duration'])

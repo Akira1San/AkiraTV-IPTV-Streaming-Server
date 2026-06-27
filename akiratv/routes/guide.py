@@ -73,7 +73,11 @@ def get_program_file_path(program: dict, channel_name: str = None) -> str:
     # Check for new collection_id format first
     collection_id = program.get("collection_id")
     if collection_id:
-        file_path = resolve_collection_to_path(collection_id, channel_name)
+        file_path = resolve_collection_to_path(
+            collection_id,
+            channel_name,
+            program.get("collection_source")
+        )
         if file_path:
             return file_path
         # If collection not found, log and return empty
@@ -100,10 +104,22 @@ def get_program_display_name(program: dict, channel_name: str = None) -> str:
     # Check for collection_id to get collection name
     collection_id = program.get("collection_id")
     if collection_id:
-        # Try to get collection name from collections
-        from pathlib import Path
+        collection_source = program.get("collection_source") or channel_name
         collections_dir = Path("user/collections")
         if collections_dir.exists():
+            # Try direct file from collection_source first
+            if collection_source:
+                source_file = collections_dir / f"collections_{collection_source}.json"
+                if source_file.exists():
+                    try:
+                        with open(source_file, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        for collection in data.get("collections", []):
+                            if collection.get("id") == collection_id:
+                                return collection.get("name", collection_id)
+                    except Exception:
+                        pass
+            # Fall back to scanning all collection files
             for collection_file in collections_dir.glob("collections_*.json"):
                 try:
                     with open(collection_file, "r", encoding="utf-8") as f:

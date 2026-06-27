@@ -71,23 +71,50 @@ def load_collections_for_channel(channel_name: str) -> List[Dict]:
     return []
 
 
-def resolve_collection_to_path(collection_id: str, channel_name: str = None) -> Optional[str]:
+def resolve_collection_to_path(collection_id: str, channel_name: str = None, collection_source: str = None) -> Optional[str]:
     """
     Resolve collection_id to full video path.
     
     Since each collection = one video, we use the first video in the collection.
     NO fallback to file paths - if collection not found, return None.
     
+    Resolution order (short-circuits on first match):
+    1. collection_source (direct file lookup, zero search)
+    2. channel_name (specific file + fallback search)
+    3. All collection files (scan everything)
+    
     Args:
         collection_id: The collection identifier (e.g., "into_the_sun")
         channel_name: Optional channel name to narrow search (e.g., "TatkoTV")
+        collection_source: Optional explicit collection file name for direct lookup
+                          (e.g., "TatkoTV" → collections_TatkoTV.json)
     
     Returns:
         Full path to video file, or None if not found
     """
     global _collections_cache
     
-    # If channel specified, try that specific file first
+    # 1) collection_source: direct file lookup, no searching
+    if collection_source:
+        source_file = COLLECTIONS_DIR / f"collections_{collection_source}.json"
+        if source_file.exists():
+            try:
+                with open(source_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                # Cache it
+                _collections_cache[collection_source] = data.get("collections", [])
+                for collection in data.get("collections", []):
+                    if collection.get("id") == collection_id:
+                        videos = collection.get("videos", [])
+                        if videos:
+                            return videos[0].get("path", "")
+            except Exception as e:
+                logger.error(f"Failed to load collection source file {source_file}: {e}")
+        # Source specified but not found — don't fall through to scan-elsewhere
+        logger.error(f"Collection source '{collection_source}' not found for collection_id '{collection_id}'")
+        return None
+    
+    # 2) If channel specified, try that specific file first
     if channel_name:
         collections = load_collections_for_channel(channel_name)
         for collection in collections:
@@ -96,7 +123,7 @@ def resolve_collection_to_path(collection_id: str, channel_name: str = None) -> 
                 if videos:
                     return videos[0].get("path", "")
     
-    # Search all cached collections
+    # 3) Search all cached collections
     for cached_collections in _collections_cache.values():
         for collection in cached_collections:
             if collection.get("id") == collection_id:
@@ -104,7 +131,7 @@ def resolve_collection_to_path(collection_id: str, channel_name: str = None) -> 
                 if videos:
                     return videos[0].get("path", "")
     
-    # Try loading from all collection files
+    # 4) Try loading from all collection files
     if COLLECTIONS_DIR.exists():
         for collection_file in COLLECTIONS_DIR.glob("collections_*.json"):
             try:
@@ -311,6 +338,8 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
                     "duration": current_entry.duration,
                     "type": current_entry.entry_type,
                     "metadata": current_entry.metadata or {},
+                    "collection_id": current_entry.collection_id,
+                    "collection_source": current_entry.collection_source,
                     "resume_position": resume_position  # Add resume position for crash recovery
                 }
                 fast_entries.append(fast_entry)
@@ -326,7 +355,9 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
                             "display_name": entry.video_name,
                             "duration": entry.duration,
                             "type": entry.entry_type,
-                            "metadata": entry.metadata or {}
+                            "metadata": entry.metadata or {},
+                            "collection_id": entry.collection_id,
+                            "collection_source": entry.collection_source,
                         }
                         fast_entries.append(fast_entry)
             else:
@@ -340,7 +371,9 @@ def get_current_schedule_for_channel(channel: str) -> List[Dict[str, Any]]:
                             "display_name": entry.video_name,
                             "duration": entry.duration,
                             "type": entry.entry_type,
-                            "metadata": entry.metadata or {}
+                            "metadata": entry.metadata or {},
+                            "collection_id": entry.collection_id,
+                            "collection_source": entry.collection_source,
                         }
                         fast_entries.append(fast_entry)
             
@@ -538,13 +571,18 @@ def _validate_entries(entries: List[Dict], source: str) -> List[Dict]:
             if "time" not in entry:
                 raise ValueError("missing 'time'")
             
-            # Resolve collection_id to file path if needed
-            if has_collection_id and not has_file:
+            # Resolve collection_id to file path
+            if has_collection_id:
                 channel = entry.get("channel", "default")
-                file_path = resolve_collection_to_path(entry["collection_id"], channel)
+                collection_source = entry.get("collection_source")
+                file_path = resolve_collection_to_path(
+                    entry["collection_id"], channel, collection_source
+                )
                 if file_path:
                     entry["file"] = file_path
                     logger.debug(f"Resolved collection_id '{entry['collection_id']}' to '{file_path}'")
+                elif has_file:
+                    logger.warning(f"collection_id '{entry['collection_id']}' not found, using existing file field")
                 else:
                     raise ValueError(f"collection_id '{entry['collection_id']}' not found")
             
