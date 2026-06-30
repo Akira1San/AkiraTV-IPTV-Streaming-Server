@@ -1346,6 +1346,11 @@ async function loadConfigurationData() {
         const xmltv = config.xmltv || {};
         document.getElementById('useNameBgAsPrimary').checked = xmltv.use_name_bg_as_primary || false;
 
+        // Kodi settings
+        const kodi = config.kodi || {};
+        document.getElementById('kodiEnabled').checked = kodi.enabled || false;
+        document.getElementById('kodiDevices').value = kodi.devices ? JSON.stringify(kodi.devices, null, 2) : '';
+
         // FFmpeg bin dir — show effective dir as placeholder, stored override as value
         const binDirInput = document.getElementById('ffmpegBinDir');
         if (binDirInput) {
@@ -1477,6 +1482,16 @@ async function saveConfiguration() {
             },
             xmltv: {
                 use_name_bg_as_primary: document.getElementById('useNameBgAsPrimary').checked
+            },
+            kodi: {
+                enabled: document.getElementById('kodiEnabled').checked,
+                devices: (() => {
+                    try {
+                        return JSON.parse(document.getElementById('kodiDevices').value || '[]');
+                    } catch (e) {
+                        return [];
+                    }
+                })()
             }
         };
         

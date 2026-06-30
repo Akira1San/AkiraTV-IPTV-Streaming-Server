@@ -354,6 +354,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="config-section">
+                            <h4>📺 Kodi Push Notification</h4>
+                            <p class="help-text">After XMLTV/M3U generation, notify Kodi devices to reload via JSON-RPC.</p>
+                            <div class="config-grid">
+                                <div class="config-item">
+                                    <label>
+                                        <input type="checkbox" id="kodiEnabled"> Enable Kodi notifications
+                                    </label>
+                                </div>
+                                <div class="config-item" style="grid-column: 1 / -1;">
+                                    <label>Devices (JSON array):</label>
+                                    <textarea id="kodiDevices" class="config-input" rows="5" style="font-family: monospace; font-size: 11px;" placeholder='[&#10;  {"host": "192.168.1.50", "port": 8080, "name": "Living Room"},&#10;  {"host": "192.168.1.60", "port": 8080, "name": "Bedroom"}&#10;]'></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     
