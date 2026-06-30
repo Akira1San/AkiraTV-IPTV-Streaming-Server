@@ -219,7 +219,6 @@
                     <!-- Tab Navigation -->
                     <div class="config-tabs">
                         <button class="config-tab active" onclick="showConfigTab('settings')">Settings</button>
-                        <button class="config-tab" onclick="showConfigTab('collections')">📁 Collections</button>
                         <button class="config-tab" onclick="showConfigTab('info')">Info</button>
                     </div>
                     
@@ -357,39 +356,6 @@
                         </div>
                     </div>
                     
-                    <!-- Collections Tab (Path Fixer for Android) -->
-                    <div id="collectionsTab" class="config-tab-content">
-                        <div class="config-section">
-                            <h4>📁 Fix Video Paths</h4>
-                            <p class="help-text">Update collection paths from Windows to Android USB storage. Use this when migrating from PC to Android TV box.</p>
-                            
-                            <div class="path-fixer">
-                                <div class="config-grid">
-                                    <div class="config-item">
-                                        <label>Old path prefix (Windows):</label>
-                                        <input type="text" id="oldPathPrefix" class="config-input" placeholder="E:/" value="E:/">
-                                    </div>
-                                    <div class="config-item">
-                                        <label>New path prefix (Android USB):</label>
-                                        <input type="text" id="newPathPrefix" class="config-input" placeholder="/storage/XXXX-XXXX/AkiraTV/videos">
-                                    </div>
-                                </div>
-                                <div class="config-actions" style="margin-top: 15px;">
-                                    <button class="btn btn-primary" onclick="fixPaths()">🔧 Fix All Paths</button>
-                                    <button class="btn btn-secondary" onclick="autoDetectUSB()">🔍 Auto-detect USB</button>
-                                </div>
-                                <div id="fixPathsResult" class="result-message" style="margin-top: 10px;"></div>
-                            </div>
-                        </div>
-
-                        <div class="config-section">
-                            <h4>📋 Collection Status</h4>
-                            <div id="collectionStatus">
-                                <p>Click to load collection info...</p>
-                                <button class="btn btn-secondary" onclick="loadCollectionStatus()">📥 Load Status</button>
-                            </div>
-                        </div>
-                    </div>
                     
                     <!-- Info Tab -->
                     <div id="infoTab" class="config-tab-content">

@@ -1306,10 +1306,6 @@ function showConfigTab(tabName) {
         loadInfoData();
     }
     
-    // Load collections status when collections tab is shown
-    if (tabName === 'collections') {
-        loadCollectionStatus();
-    }
 }
 
 async function loadConfigurationData() {
@@ -1411,95 +1407,6 @@ async function loadInfoData() {
 // ============================================
 // Path Fixer Functions (for Android Migration)
 // ============================================
-
-async function loadCollectionStatus() {
-    const statusDiv = document.getElementById('collectionStatus');
-    if (!statusDiv) return;
-    
-    try {
-        // Try to get list of collection files
-        const response = await fetch('/api/library/collections');
-        let collectionsInfo = '<p>Collection files found:</p><ul>';
-        
-        // For now, just show a placeholder
-        collectionsInfo += '<li>Check user/collections/ directory</li>';
-        collectionsInfo += '</ul>';
-        collectionsInfo += '<p><strong>Tip:</strong> Use the Path Fixer below to update Windows paths to Android USB paths.</p>';
-        
-        statusDiv.innerHTML = collectionsInfo;
-    } catch (error) {
-        statusDiv.innerHTML = '<p>Error loading collection status: ' + error.message + '</p>';
-    }
-}
-
-async function fixPaths() {
-    const oldPrefix = document.getElementById('oldPathPrefix')?.value;
-    const newPrefix = document.getElementById('newPathPrefix')?.value;
-    const resultDiv = document.getElementById('fixPathsResult');
-    
-    if (!oldPrefix || !newPrefix) {
-        resultDiv.innerHTML = '<span style="color: red;">Please enter both old and new path prefixes.</span>';
-        return;
-    }
-    
-    resultDiv.innerHTML = '<span>Fixing paths...</span>';
-    
-    try {
-        const response = await fetch('/api/config/fix-paths', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ oldPrefix, newPrefix })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            resultDiv.innerHTML = `<span style="color: green;">✅ Fixed ${result.fixed} collection(s)!</span>`;
-        } else {
-            resultDiv.innerHTML = `<span style="color: red;">❌ Error: ${result.error}</span>`;
-        }
-    } catch (error) {
-        resultDiv.innerHTML = `<span style="color: red;">❌ Error: ${error.message}</span>`;
-    }
-}
-
-function autoDetectUSB() {
-    // Try to get USB path from API (set by Android)
-    const newPrefixInput = document.getElementById('newPathPrefix');
-    const resultDiv = document.getElementById('fixPathsResult');
-    
-    // First try to get USB path from config API
-    fetch('/api/config/usb-path')
-        .then(res => res.json())
-        .then(data => {
-            if (data.usbPath) {
-                // USB path is configured, use it
-                const videoPath = data.usbPath + '/AkiraTV/videos';
-                newPrefixInput.value = videoPath;
-                resultDiv.innerHTML = `<span style="color: green;">✅ USB detected: ${data.usbPath}</span>`;
-            } else {
-                // No USB configured, check monitoring API for Android system info
-                return fetch('/api/monitoring/system');
-            }
-        })
-        .then(res => res ? res.json() : null)
-        .then(sysInfo => {
-            if (sysInfo && sysInfo.platform === 'android') {
-                // On Android, suggest common USB paths
-                newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
-                resultDiv.innerHTML = `<span style="color: orange;">⚠️ USB not configured. Please enter the path to your USB drive manually, or configure it in Android settings.</span>`;
-            } else {
-                // Not on Android or no USB detected
-                newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
-                resultDiv.innerHTML = `<span style="color: orange;">⚠️ Run this on Android TV to auto-detect USB path.</span>`;
-            }
-        })
-        .catch(error => {
-            console.error('Auto-detect error:', error);
-            newPrefixInput.placeholder = '/storage/XXXX-XXXX/AkiraTV/videos';
-            resultDiv.innerHTML = `<span style="color: red;">❌ Error detecting USB: ${error.message}</span>`;
-        });
-}
 
 function toggleStoragePath() {
     const storageMode = document.getElementById('storageMode').value;
