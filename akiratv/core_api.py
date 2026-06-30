@@ -328,13 +328,26 @@ class CoreAPI:
             if "channels" not in config.data:
                 config.data["channels"] = {}
             
-            config.data["channels"][channel_name] = {
+            channel_entry = {
                 "enabled": True,
                 "type": channel_type,
                 "transcoding": {
                     "enabled": False
                 }
             }
+
+            if channel_type == "live":
+                existing_ports = set()
+                for name, conf in config.data.get("channels", {}).items():
+                    if conf.get("type") == "live" and conf.get("port"):
+                        existing_ports.add(conf["port"])
+                port = 20000
+                while port in existing_ports:
+                    port += 1
+                channel_entry["port"] = port
+                logger.info(f"CoreAPI: Auto-assigned port {port} for live channel '{channel_name}'")
+
+            config.data["channels"][channel_name] = channel_entry
             
             config.save()
             
