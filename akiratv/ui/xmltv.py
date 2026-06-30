@@ -119,6 +119,35 @@ def generate_xmltv(schedules_dir, collections_dir, output_path="xmltv.xml", conf
     # for path, meta in video_lookup.items():
     #     print(f"[SEARCH] Debug: Path: {path}, Name: {meta.get('name')}, Channel: {path.split('/')[2] if len(path.split('/')) > 2 else 'unknown'}")
 
+    # Build collection_id → video path lookup for entries that use collection_id instead of file
+    collection_path_lookup = {}
+    for col in collections_data.get("collections", []):
+        col_id = col.get("id")
+        if col_id and col.get("videos"):
+            collection_path_lookup[col_id] = Path(col["videos"][0]["path"]).as_posix()
+
+    # Resolve collection_id to file path for entries that lack a file field
+    resolved_count = 0
+    for day_entries in schedule_data["weekly"].values():
+        for entry in day_entries:
+            if "file" not in entry and "collection_id" in entry:
+                resolved = collection_path_lookup.get(entry["collection_id"])
+                if resolved:
+                    entry["file"] = resolved
+                    resolved_count += 1
+
+    for calendar_data in schedule_data["calendar"].values():
+        if isinstance(calendar_data, dict):
+            for entry in calendar_data.get("entries", []):
+                if "file" not in entry and "collection_id" in entry:
+                    resolved = collection_path_lookup.get(entry["collection_id"])
+                    if resolved:
+                        entry["file"] = resolved
+                        resolved_count += 1
+
+    if resolved_count > 0:
+        print(f"[OK] Resolved {resolved_count} schedule entries from collection_id to file paths")
+
     # Read config flag for Bulgarian title behavior
     use_name_bg_as_primary = False
     if config:
