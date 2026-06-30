@@ -1345,7 +1345,11 @@ async function loadConfigurationData() {
         
         const streaming = config.streaming || {};
         document.getElementById('enablePreGen').checked = streaming.pre_gen || false;
-        
+
+        // XMLTV settings
+        const xmltv = config.xmltv || {};
+        document.getElementById('useNameBgAsPrimary').checked = xmltv.use_name_bg_as_primary || false;
+
         // FFmpeg bin dir — show effective dir as placeholder, stored override as value
         const binDirInput = document.getElementById('ffmpegBinDir');
         if (binDirInput) {
@@ -1563,6 +1567,9 @@ async function saveConfiguration() {
             },
             streaming: {
                 pre_gen: document.getElementById('enablePreGen').checked
+            },
+            xmltv: {
+                use_name_bg_as_primary: document.getElementById('useNameBgAsPrimary').checked
             }
         };
         

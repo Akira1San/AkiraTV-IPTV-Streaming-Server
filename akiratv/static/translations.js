@@ -167,6 +167,9 @@ const translations = {
         'wizard.scheduler.button': '📺 Create Schedule',
         'wizard.scheduler.modalTitle': '📅 Scheduler Wizard',
         
+        // Settings
+        'settings.useNameBgAsPrimary': 'Use Bulgarian name as primary XMLTV title',
+        
         // Common
         'common.cancel': 'Cancel',
         'common.save': 'Save',
@@ -336,6 +339,9 @@ const translations = {
         'wizard.scheduler.description': 'Изградете седмични програми за вашите канали. Плъзгайте и пускайте видеа за създаване на професионални телевизионни програми.',
         'wizard.scheduler.button': '📺 Създай програма',
         'wizard.scheduler.modalTitle': '📅 Помощник за програми',
+        
+        // Settings
+        'settings.useNameBgAsPrimary': 'Използвай българско име като основно XMLTV заглавие',
         
         // Common
         'common.cancel': 'Отказ',

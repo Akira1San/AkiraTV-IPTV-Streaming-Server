@@ -317,6 +317,12 @@ def create_programme(entry, video_lookup, day_name, calendar=None, use_name_bg_a
             title = ET.SubElement(prog, "title")
             title.set("lang", "en")
             title.text = meta.get("name_bg") or meta.get("name", Path(entry["file"]).stem)
+
+            # Title (Bulgarian) - also add when name_bg is primary
+            if meta.get("name_bg"):
+                title_bg = ET.SubElement(prog, "title")
+                title_bg.set("lang", "bg")
+                title_bg.text = meta["name_bg"]
         else:
             title = ET.SubElement(prog, "title")
             title.set("lang", "en")
@@ -438,6 +444,12 @@ def create_programme_from_calendar(entry, video_lookup, date_str, use_name_bg_as
             title = ET.SubElement(prog, "title")
             title.set("lang", "en")
             title.text = meta.get("name_bg") or meta.get("name", Path(entry["file"]).stem)
+
+            # Title (Bulgarian) - also add when name_bg is primary
+            if meta.get("name_bg"):
+                title_bg = ET.SubElement(prog, "title")
+                title_bg.set("lang", "bg")
+                title_bg.text = meta["name_bg"]
         else:
             title = ET.SubElement(prog, "title")
             title.set("lang", "en")
