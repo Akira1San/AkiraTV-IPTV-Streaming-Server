@@ -1037,8 +1037,10 @@ class CoreAPI:
             return {"success": False, "error": str(e)}
 
     def _deep_update(self, target: Dict, source: Dict):
-        """Deep merge source dict into target dict"""
+        """Deep merge source dict into target dict. Skips None values to avoid overwriting existing config."""
         for key, value in source.items():
+            if value is None:
+                continue
             if isinstance(value, dict) and key in target and isinstance(target[key], dict):
                 self._deep_update(target[key], value)
             else:
