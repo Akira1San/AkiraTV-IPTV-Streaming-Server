@@ -116,11 +116,15 @@ def reload_schedule(channel: Optional[str] = None):
 
 def notify_kodi(config):
     """Notify all Kodi devices to reload channels and EPG via JSON-RPC."""
+    import logging
+    logger = logging.getLogger("AkiraTV")
     kodi_conf = config.get("kodi", {})
     if not kodi_conf.get("enabled"):
+        logger.info("[Kodi] Push notifications disabled in config")
         return
     devices = kodi_conf.get("devices", [])
     if not devices:
+        logger.warning("[Kodi] No devices configured, skipping push")
         return
     import requests
     payloads = [
@@ -129,11 +133,13 @@ def notify_kodi(config):
     ]
     for device in devices:
         url = f"http://{device['host']}:{device.get('port', 8080)}/jsonrpc"
+        logger.info(f"[Kodi] Notifying {device.get('name', 'unknown')} at {url}")
         for payload in payloads:
             try:
-                requests.post(url, json=payload, timeout=5)
-            except requests.RequestException:
-                pass  # device might be offline
+                resp = requests.post(url, json=payload, timeout=5)
+                logger.info(f"[Kodi] {payload['method']} → {resp.status_code}")
+            except requests.RequestException as e:
+                logger.warning(f"[Kodi] {device.get('host')}:{device.get('port', 8080)} - {payload['method']} failed: {e}")
 
 @app.post("/api/xmltv/generate", response_model=Response)
 def generate_xmltv():
