@@ -69,7 +69,7 @@ DEFAULT_CONFIG = {
         "use_name_bg_as_primary": False
     },
     "kodi": {
-        "enabled": false,
+        "enabled": False,
         "devices": [
             {"host": "192.168.1.50", "port": 8080, "name": "Living Room"},
             {"host": "192.168.1.60", "port": 8080, "name": "Bedroom"}

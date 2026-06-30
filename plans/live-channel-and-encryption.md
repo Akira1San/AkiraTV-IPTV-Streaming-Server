@@ -254,7 +254,7 @@ A helper script `scripts/setup-encryption.sh` that:
 
 ---
 
-## 4. Kodi Push Integration
+## 4. Kodi Push Integration ✅
 
 ### Goal
 After XMLTV/M3U generation, automatically notify Kodi to reload its channel list and EPG data — so schedule changes appear instantly instead of waiting for the next poll interval.
