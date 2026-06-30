@@ -910,7 +910,13 @@ class AkiraTVApp:
                 return
 
             generate_m3u_playlist(self.config_data, output_path=str(m3u_path))
-            
+
+            try:
+                from akiratv.api_server import notify_kodi
+                notify_kodi(self.config_data)
+            except Exception:
+                pass  # Kodi notification is optional
+
             messagebox.showinfo(
                 "EPG + M3U Generated",
                 "[OK] xmltv.xml + channels.m3u saved!\n\n"

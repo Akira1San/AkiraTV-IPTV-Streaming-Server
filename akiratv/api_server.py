@@ -114,6 +114,27 @@ def reload_schedule(channel: Optional[str] = None):
     else:
         raise HTTPException(status_code=400, detail=result["error"])
 
+def notify_kodi(config):
+    """Notify all Kodi devices to reload channels and EPG via JSON-RPC."""
+    kodi_conf = config.get("kodi", {})
+    if not kodi_conf.get("enabled"):
+        return
+    devices = kodi_conf.get("devices", [])
+    if not devices:
+        return
+    import requests
+    payloads = [
+        {"jsonrpc": "2.0", "method": "PVR.TriggerChannelUpdate", "id": 1},
+        {"jsonrpc": "2.0", "method": "PVR.TriggerEPGUpdate", "id": 2},
+    ]
+    for device in devices:
+        url = f"http://{device['host']}:{device.get('port', 8080)}/jsonrpc"
+        for payload in payloads:
+            try:
+                requests.post(url, json=payload, timeout=5)
+            except requests.RequestException:
+                pass  # device might be offline
+
 @app.post("/api/xmltv/generate", response_model=Response)
 def generate_xmltv():
     """Generate XMLTV file for Kodi"""
@@ -147,6 +168,8 @@ def generate_xmltv():
         )
         
         generate_m3u_playlist(config, str(m3u_path))
+        
+        notify_kodi(config)
         
         # Get server info for URLs
         output_config = config.get("output", {})
